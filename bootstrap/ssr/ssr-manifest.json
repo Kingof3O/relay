@@ -10,7 +10,7 @@
     "/build/assets/AuthenticatedLayout-BDkBDsK0.js"
   ],
   "resources/js/Components/Checkbox.tsx": [
-    "/build/assets/Login-BgBvtD8J.js"
+    "/build/assets/Login-Nvva8lT5.js"
   ],
   "resources/js/Components/CommandPalette.tsx": [
     "/build/assets/AuthenticatedLayout-BDkBDsK0.js"
@@ -35,6 +35,9 @@
   ],
   "resources/js/Components/PrimaryButton.tsx": [
     "/build/assets/TextInput-CMpMv42q.js"
+  ],
+  "resources/js/Components/SecondaryButton.tsx": [
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Components/ShortcutsModal.tsx": [
     "/build/assets/AuthenticatedLayout-BDkBDsK0.js"
@@ -82,22 +85,25 @@
     "/build/assets/AuthenticatedLayout-BDkBDsK0.js"
   ],
   "resources/js/Features/Profile/components/AccountTelemetryCard.tsx": [
-    "/build/assets/Edit-BT8HwBBQ.js"
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Features/Profile/components/NotificationPreferencesCard.tsx": [
-    "/build/assets/Edit-BT8HwBBQ.js"
+    "/build/assets/Edit-BIYglzuY.js"
+  ],
+  "resources/js/Features/Profile/components/TwoFactorSecurityCard.tsx": [
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Features/Profile/components/UpdatePasswordForm.tsx": [
-    "/build/assets/Edit-BT8HwBBQ.js"
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Features/Profile/components/UpdateProfileInformationForm.tsx": [
-    "/build/assets/Edit-BT8HwBBQ.js"
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Features/Profile/components/VisualIdentityHero.tsx": [
-    "/build/assets/Edit-BT8HwBBQ.js"
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Features/Profile/index.ts": [
-    "/build/assets/Edit-BT8HwBBQ.js"
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Features/Requests/components/BoardFilterBar.tsx": [
     "/build/assets/AuthenticatedLayout-BDkBDsK0.js"
@@ -178,10 +184,10 @@
     "/build/assets/AuthenticatedLayout-BDkBDsK0.js"
   ],
   "resources/js/Layouts/GuestLayout.tsx": [
-    "/build/assets/Login-BgBvtD8J.js"
+    "/build/assets/Login-Nvva8lT5.js"
   ],
   "resources/js/Pages/Auth/Login.tsx": [
-    "/build/assets/Login-BgBvtD8J.js"
+    "/build/assets/Login-Nvva8lT5.js"
   ],
   "resources/js/Pages/Dashboard.tsx": [
     "/build/assets/Dashboard-Bo7mOWdy.js"
@@ -193,7 +199,7 @@
     "/build/assets/Index-pJuoueDo.js"
   ],
   "resources/js/Pages/Profile/Edit.tsx": [
-    "/build/assets/Edit-BT8HwBBQ.js"
+    "/build/assets/Edit-BIYglzuY.js"
   ],
   "resources/js/Pages/Requests/Index.tsx": [
     "/build/assets/Index-D7KYZDfU.js"

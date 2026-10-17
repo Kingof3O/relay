@@ -25,6 +25,7 @@ class ProfileController extends Controller
                 'assigned_count' => $assignedCount,
                 'completed_count' => $completedCount,
             ],
+            'twoFactorEnabled' => $user?->hasTwoFactorEnabled() ?? false,
         ]);
     }
 

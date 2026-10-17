@@ -94,6 +94,10 @@ final class WorkRequestController extends Controller
 
     public function update(UpdateWorkRequestRequest $formRequest, WorkRequest $request): JsonResponse|RedirectResponse
     {
+        if ($formRequest->has('status')) {
+            $this->authorize('changeStatus', $request);
+        }
+
         $updated = $this->requests->update($request, $formRequest->user(), $formRequest->validated());
 
         if ($formRequest->expectsJson()) {

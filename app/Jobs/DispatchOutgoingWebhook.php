@@ -97,23 +97,42 @@ class DispatchOutgoingWebhook implements ShouldQueue
             ],
         ];
 
-        // Gather destination URLs
-        $urls = [];
+        // Gather destination URLs and secrets
+        $destinations = [];
         if ($this->targetUrl) {
-            $urls[] = $this->targetUrl;
+            $matchingWebhook = Webhook::query()->where('url', $this->targetUrl)->first();
+            $destinations[] = [
+                'url' => $this->targetUrl,
+                'secret' => $matchingWebhook?->secret,
+            ];
         } else {
             $activeWebhooks = Webhook::query()->where('is_active', true)->get();
             foreach ($activeWebhooks as $webhook) {
-                $urls[] = $webhook->url;
+                $destinations[] = [
+                    'url' => $webhook->url,
+                    'secret' => $webhook->secret,
+                ];
             }
         }
 
-        foreach ($urls as $url) {
+        foreach ($destinations as $destination) {
+            $url = $destination['url'];
+            $secret = $destination['secret'];
+
             try {
                 $isDiscord = str_contains($url, 'discord.com/api/webhooks');
                 $payload = $isDiscord ? $discordPayload : $slackPayload;
 
-                Http::timeout(5)->post($url, $payload);
+                $client = Http::timeout(5);
+
+                if (! empty($secret)) {
+                    $signature = hash_hmac('sha256', (string) json_encode($payload), (string) $secret);
+                    $client = $client->withHeaders([
+                        'X-Relay-Signature' => "sha256={$signature}",
+                    ]);
+                }
+
+                $client->post($url, $payload);
             } catch (\Throwable $e) {
                 Log::warning("Outgoing webhook failed to deliver to {$url}: {$e->getMessage()}");
             }

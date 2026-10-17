@@ -29,7 +29,7 @@ final class RequestFileService
 
         if (($uploadedFile->getSize() ?: 0) > $maxBytes) {
             throw ValidationException::withMessages([
-                'file' => 'Each file must be 500 MB or smaller.',
+                'file' => 'Each file must be 64 MB or smaller.',
             ]);
         }
 

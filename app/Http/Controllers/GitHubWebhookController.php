@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Models\Webhook;
 use App\Models\WorkRequest;
 use App\Services\WorkRequestService;
 use Illuminate\Http\JsonResponse;
@@ -13,6 +14,18 @@ class GitHubWebhookController extends Controller
 {
     public function __invoke(Request $request, WorkRequestService $service): JsonResponse
     {
+        $secret = config('services.github.webhook_secret')
+            ?: Webhook::query()->where('name', 'github')->value('secret');
+
+        if (! empty($secret)) {
+            $signature = (string) $request->header('X-Hub-Signature-256', '');
+            $expectedSignature = 'sha256=' . hash_hmac('sha256', $request->getContent(), (string) $secret);
+
+            if (! hash_equals($expectedSignature, $signature)) {
+                return response()->json(['error' => 'Unauthorized: Invalid signature.'], 401);
+            }
+        }
+
         $commits = (array) $request->input('commits', []);
         $linkedCount = 0;
 

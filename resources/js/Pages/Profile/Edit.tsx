@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import {
     AccountTelemetryCard,
     NotificationPreferencesCard,
+    TwoFactorSecurityCard,
     UpdatePasswordForm,
     UpdateProfileInformationForm,
     VisualIdentityHero,
@@ -14,9 +15,10 @@ export interface ProfileEditProps {
         assigned_count: number;
         completed_count: number;
     };
+    twoFactorEnabled?: boolean;
 }
 
-export default function Edit({ stats }: ProfileEditProps) {
+export default function Edit({ stats, twoFactorEnabled = false }: ProfileEditProps) {
     return (
         <AuthenticatedLayout
             header={
@@ -59,6 +61,7 @@ export default function Edit({ stats }: ProfileEditProps) {
                     {/* Right Column (lg:col-span-8 space-y-6): Full-width Form Sections */}
                     <div className="space-y-6 lg:col-span-8">
                         <UpdateProfileInformationForm />
+                        <TwoFactorSecurityCard initialEnabled={twoFactorEnabled} />
                         <NotificationPreferencesCard />
                         <UpdatePasswordForm />
                     </div>

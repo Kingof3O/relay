@@ -2,10 +2,11 @@ import { i as InputError, n as PrimaryButton, r as InputLabel, t as TextInput_de
 import { t as Authenticated } from "./AuthenticatedLayout-BDkBDsK0.js";
 import { n as getAvatarGradient, r as getRoleBadgeStyle } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
-import { jsx, jsxs } from "react/jsx-runtime";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useRef, useState } from "react";
-import { Activity, AlertCircle, AtSign, Bell, Calendar, Check, CheckCircle2, Circle, Copy, ExternalLink, Eye, EyeOff, Hash, KanbanSquare, KeyRound, Layers, LayoutDashboard, Loader2, Lock, Mail, MessageSquare, Radio, RefreshCw, Shield, ShieldCheck, Sparkles, TrendingUp, User, UserCheck, Zap } from "lucide-react";
+import { Activity, AlertCircle, AtSign, Bell, Calendar, Check, CheckCircle2, Circle, Copy, Download, ExternalLink, Eye, EyeOff, Hash, KanbanSquare, KeyRound, Layers, LayoutDashboard, Loader2, Lock, Mail, MessageSquare, QrCode, Radio, RefreshCw, Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User, UserCheck, X, Zap } from "lucide-react";
 import { Transition } from "@headlessui/react";
+import axios from "axios";
 import { toast } from "sonner";
 //#region resources/js/Features/Profile/components/UpdatePasswordForm.tsx
 function calculateStrength(pwd) {
@@ -987,8 +988,342 @@ function NotificationPreferencesCard({ className = "" }) {
 	});
 }
 //#endregion
+//#region resources/js/Components/SecondaryButton.tsx
+function SecondaryButton({ type = "button", className = "", disabled, children, ...props }) {
+	return /* @__PURE__ */ jsx("button", {
+		...props,
+		type,
+		className: `inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-zinc-300 shadow-specular transition-all duration-150 ease-out hover:border-white/20 hover:bg-white/[0.08] hover:text-white focus:outline-none focus:ring-2 focus:ring-violet-400/40 focus:ring-offset-2 focus:ring-offset-[#07090e] active:scale-[0.98] ${disabled ? "opacity-40 cursor-not-allowed hover:bg-white/[0.04] active:scale-100" : ""} ` + className,
+		disabled,
+		children
+	});
+}
+//#endregion
+//#region resources/js/Features/Profile/components/TwoFactorSecurityCard.tsx
+function TwoFactorSecurityCard({ initialEnabled = false, className = "" }) {
+	const [enabled, setEnabled] = useState(initialEnabled);
+	const [isSettingUp, setIsSettingUp] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const [qrSvg, setQrSvg] = useState("");
+	const [secret, setSecret] = useState("");
+	const [recoveryCodes, setRecoveryCodes] = useState([]);
+	const [code, setCode] = useState("");
+	const [error, setError] = useState(null);
+	const [showRecoveryModal, setShowRecoveryModal] = useState(false);
+	const [copiedSecret, setCopiedSecret] = useState(false);
+	const [copiedCodes, setCopiedCodes] = useState(false);
+	const handleStartEnable = async () => {
+		setLoading(true);
+		setError(null);
+		try {
+			const response = await axios.post(route("two-factor.enable"));
+			setQrSvg(response.data.qr_svg || "");
+			setSecret(response.data.secret || "");
+			setRecoveryCodes(response.data.recovery_codes || []);
+			setIsSettingUp(true);
+		} catch (err) {
+			toast.error(err.response?.data?.message || "Failed to initialize two-factor authentication setup.");
+		} finally {
+			setLoading(false);
+		}
+	};
+	const handleConfirm = async (e) => {
+		e.preventDefault();
+		if (code.trim().length !== 6) {
+			setError("Please enter a 6-digit verification code.");
+			return;
+		}
+		setLoading(true);
+		setError(null);
+		try {
+			const response = await axios.post(route("two-factor.confirm"), { code });
+			setEnabled(true);
+			setIsSettingUp(false);
+			setCode("");
+			if (response.data.recovery_codes) setRecoveryCodes(response.data.recovery_codes);
+			setShowRecoveryModal(true);
+			toast.success("Two-factor authentication successfully enabled.");
+		} catch (err) {
+			setError(err.response?.data?.errors?.code?.[0] || err.response?.data?.message || "Invalid code.");
+		} finally {
+			setLoading(false);
+		}
+	};
+	const handleDisable = async () => {
+		if (!confirm("Are you sure you want to disable two-factor authentication? This reduces your account security.")) return;
+		setLoading(true);
+		try {
+			await axios.delete(route("two-factor.disable"));
+			setEnabled(false);
+			setIsSettingUp(false);
+			setRecoveryCodes([]);
+			toast.success("Two-factor authentication disabled.");
+		} catch (err) {
+			toast.error(err.response?.data?.message || "Failed to disable two-factor authentication.");
+		} finally {
+			setLoading(false);
+		}
+	};
+	const handleRegenerateCodes = async () => {
+		setLoading(true);
+		try {
+			const response = await axios.post(route("two-factor.recovery-codes"));
+			setRecoveryCodes(response.data.recovery_codes || []);
+			setShowRecoveryModal(true);
+			toast.success("New recovery codes generated.");
+		} catch (err) {
+			toast.error(err.response?.data?.message || "Failed to regenerate recovery codes.");
+		} finally {
+			setLoading(false);
+		}
+	};
+	const copySecretToClipboard = () => {
+		navigator.clipboard?.writeText(secret);
+		setCopiedSecret(true);
+		setTimeout(() => setCopiedSecret(false), 2e3);
+	};
+	const copyCodesToClipboard = () => {
+		navigator.clipboard?.writeText(recoveryCodes.join("\n"));
+		setCopiedCodes(true);
+		setTimeout(() => setCopiedCodes(false), 2e3);
+	};
+	const downloadRecoveryCodes = () => {
+		const text = `Relay Studio - Two-Factor Authentication Recovery Codes\nGenerated: ${(/* @__PURE__ */ new Date()).toISOString()}\n\nKeep these codes in a safe place. Each code can only be used once.\n\n${recoveryCodes.join("\n")}\n`;
+		const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement("a");
+		a.href = url;
+		a.download = `relay-recovery-codes-${(/* @__PURE__ */ new Date()).toISOString().slice(0, 10)}.txt`;
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	};
+	return /* @__PURE__ */ jsxs("section", {
+		className: `rounded-2xl border border-zinc-800/80 bg-zinc-900/60 p-6 backdrop-blur-xl shadow-xl ${className}`,
+		children: [
+			/* @__PURE__ */ jsxs("div", {
+				className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "space-y-1",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "flex items-center gap-2",
+						children: [/* @__PURE__ */ jsx("div", {
+							className: "flex h-8 w-8 items-center justify-center rounded-lg border border-purple-500/20 bg-purple-500/10 text-purple-400",
+							children: /* @__PURE__ */ jsx(Shield, { className: "h-4 w-4" })
+						}), /* @__PURE__ */ jsx("h2", {
+							className: "text-base font-semibold text-zinc-100",
+							children: "Two-Factor Authentication (TOTP)"
+						})]
+					}), /* @__PURE__ */ jsx("p", {
+						className: "text-xs text-zinc-400",
+						children: "Add an extra layer of defense using your authenticator app (1Password, Google Authenticator, Authy)."
+					})]
+				}), /* @__PURE__ */ jsx("div", {
+					className: "flex items-center gap-2",
+					children: enabled ? /* @__PURE__ */ jsxs("span", {
+						className: "inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-400",
+						children: [/* @__PURE__ */ jsx(ShieldCheck, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Enabled & Enforced" })]
+					}) : /* @__PURE__ */ jsxs("span", {
+						className: "inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-xs font-medium text-amber-400",
+						children: [/* @__PURE__ */ jsx(ShieldAlert, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Not Configured" })]
+					})
+				})]
+			}),
+			/* @__PURE__ */ jsxs("div", {
+				className: "mt-6 border-t border-zinc-800/70 pt-6",
+				children: [
+					!enabled && !isSettingUp && /* @__PURE__ */ jsxs("div", {
+						className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-xl border border-zinc-800/60 bg-zinc-950/40 p-4",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "space-y-1",
+							children: [/* @__PURE__ */ jsx("p", {
+								className: "text-sm font-medium text-zinc-200",
+								children: "Ready to secure your workspace account"
+							}), /* @__PURE__ */ jsx("p", {
+								className: "text-xs text-zinc-400",
+								children: "When enabled, you will be prompted for a 6-digit TOTP token during critical authentication checkpoints."
+							})]
+						}), /* @__PURE__ */ jsxs(PrimaryButton, {
+							onClick: handleStartEnable,
+							disabled: loading,
+							className: "bg-purple-600 hover:bg-purple-500 focus:bg-purple-700 text-xs",
+							children: [/* @__PURE__ */ jsx(QrCode, { className: "mr-1.5 h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: loading ? "Initializing..." : "Enable 2FA" })]
+						})]
+					}),
+					isSettingUp && !enabled && /* @__PURE__ */ jsxs("div", {
+						className: "rounded-xl border border-purple-500/30 bg-purple-950/10 p-5 space-y-6",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "flex items-start justify-between",
+							children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("h3", {
+								className: "text-sm font-semibold text-zinc-100 flex items-center gap-2",
+								children: [/* @__PURE__ */ jsx(KeyRound, { className: "h-4 w-4 text-purple-400" }), /* @__PURE__ */ jsx("span", { children: "Scan QR Code with Authenticator" })]
+							}), /* @__PURE__ */ jsx("p", {
+								className: "text-xs text-zinc-400 mt-1",
+								children: "Open your authenticator app, scan the QR code below or enter the key manually."
+							})] }), /* @__PURE__ */ jsx("button", {
+								onClick: () => setIsSettingUp(false),
+								className: "text-zinc-500 hover:text-zinc-300",
+								children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
+							})]
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "grid grid-cols-1 md:grid-cols-2 gap-6 items-center",
+							children: [/* @__PURE__ */ jsx("div", {
+								className: "flex flex-col items-center justify-center rounded-xl border border-zinc-800 bg-white p-4 shadow-inner",
+								children: qrSvg ? /* @__PURE__ */ jsx("div", {
+									className: "h-48 w-48 [&>svg]:h-full [&>svg]:w-full",
+									dangerouslySetInnerHTML: { __html: qrSvg }
+								}) : /* @__PURE__ */ jsx("div", {
+									className: "h-48 w-48 flex items-center justify-center text-zinc-400 text-xs",
+									children: "Loading QR..."
+								})
+							}), /* @__PURE__ */ jsxs("div", {
+								className: "space-y-4",
+								children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("label", {
+									className: "text-xs font-medium text-zinc-400 block mb-1",
+									children: "Manual Setup Key"
+								}), /* @__PURE__ */ jsxs("div", {
+									className: "flex items-center gap-2",
+									children: [/* @__PURE__ */ jsx("code", {
+										className: "flex-1 rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-2 text-xs font-mono text-purple-300 select-all truncate",
+										children: secret
+									}), /* @__PURE__ */ jsx("button", {
+										type: "button",
+										onClick: copySecretToClipboard,
+										className: "rounded-lg border border-zinc-800 bg-zinc-800/60 p-2 text-zinc-300 hover:bg-zinc-700",
+										title: "Copy key",
+										children: copiedSecret ? /* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5 text-emerald-400" }) : /* @__PURE__ */ jsx(Copy, { className: "h-3.5 w-3.5" })
+									})]
+								})] }), /* @__PURE__ */ jsxs("form", {
+									onSubmit: handleConfirm,
+									className: "space-y-3",
+									children: [/* @__PURE__ */ jsxs("div", { children: [
+										/* @__PURE__ */ jsx(InputLabel, {
+											htmlFor: "confirm_code",
+											value: "6-Digit Verification Code",
+											className: "text-zinc-300 text-xs"
+										}),
+										/* @__PURE__ */ jsx(TextInput_default, {
+											id: "confirm_code",
+											type: "text",
+											inputMode: "numeric",
+											pattern: "[0-9]*",
+											maxLength: 6,
+											value: code,
+											onChange: (e) => setCode(e.target.value),
+											placeholder: "123456",
+											className: "mt-1 block w-full text-center tracking-widest text-lg font-mono bg-zinc-950 border-zinc-800 text-zinc-100",
+											autoFocus: true
+										}),
+										error && /* @__PURE__ */ jsx(InputError, {
+											message: error,
+											className: "mt-1 text-xs"
+										})
+									] }), /* @__PURE__ */ jsx("div", {
+										className: "flex items-center gap-2 pt-1",
+										children: /* @__PURE__ */ jsxs(PrimaryButton, {
+											type: "submit",
+											disabled: loading || code.trim().length !== 6,
+											className: "w-full justify-center bg-purple-600 hover:bg-purple-500 text-xs",
+											children: [/* @__PURE__ */ jsx(Lock, { className: "mr-1.5 h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: loading ? "Verifying..." : "Confirm & Enable 2FA" })]
+										})
+									})]
+								})]
+							})]
+						})]
+					}),
+					enabled && /* @__PURE__ */ jsx("div", {
+						className: "space-y-4",
+						children: /* @__PURE__ */ jsxs("div", {
+							className: "flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 rounded-xl border border-zinc-800/60 bg-zinc-950/40 p-4",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "space-y-1",
+								children: [/* @__PURE__ */ jsx("p", {
+									className: "text-sm font-medium text-zinc-200",
+									children: "Recovery Codes & Emergency Access"
+								}), /* @__PURE__ */ jsx("p", {
+									className: "text-xs text-zinc-400",
+									children: "Store your one-time backup codes safely in case you ever lose access to your primary authenticator device."
+								})]
+							}), /* @__PURE__ */ jsxs("div", {
+								className: "flex items-center gap-2",
+								children: [/* @__PURE__ */ jsxs(SecondaryButton, {
+									onClick: handleRegenerateCodes,
+									disabled: loading,
+									className: "border-zinc-700 bg-zinc-800/60 text-xs text-zinc-300 hover:bg-zinc-700",
+									children: [/* @__PURE__ */ jsx(RefreshCw, { className: "mr-1.5 h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Regenerate Codes" })]
+								}), /* @__PURE__ */ jsx(SecondaryButton, {
+									onClick: handleDisable,
+									disabled: loading,
+									className: "border-rose-900/40 bg-rose-950/20 text-xs text-rose-300 hover:bg-rose-900/40",
+									children: /* @__PURE__ */ jsx("span", { children: "Disable 2FA" })
+								})]
+							})]
+						})
+					})
+				]
+			}),
+			showRecoveryModal && /* @__PURE__ */ jsx("div", {
+				className: "fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "w-full max-w-lg rounded-2xl border border-zinc-800 bg-zinc-900 p-6 shadow-2xl space-y-5",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "flex items-start justify-between",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "space-y-1",
+								children: [/* @__PURE__ */ jsxs("h3", {
+									className: "text-base font-semibold text-zinc-100 flex items-center gap-2",
+									children: [/* @__PURE__ */ jsx(Lock, { className: "h-4 w-4 text-emerald-400" }), /* @__PURE__ */ jsx("span", { children: "Store Your Recovery Codes" })]
+								}), /* @__PURE__ */ jsx("p", {
+									className: "text-xs text-zinc-400",
+									children: "These codes can be used to log in if your authenticator device is lost. Each code is valid only once."
+								})]
+							}), /* @__PURE__ */ jsx("button", {
+								onClick: () => setShowRecoveryModal(false),
+								className: "text-zinc-500 hover:text-zinc-300",
+								children: /* @__PURE__ */ jsx(X, { className: "h-5 w-5" })
+							})]
+						}),
+						/* @__PURE__ */ jsx("div", {
+							className: "grid grid-cols-2 gap-2 rounded-xl border border-zinc-800/80 bg-zinc-950/80 p-4 font-mono text-xs text-zinc-300",
+							children: recoveryCodes.map((rc, idx) => /* @__PURE__ */ jsx("div", {
+								className: "p-1 rounded bg-zinc-900/60 text-center tracking-wider text-emerald-400",
+								children: rc
+							}, idx))
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "flex flex-col sm:flex-row items-center justify-between gap-3 pt-2",
+							children: [/* @__PURE__ */ jsx("button", {
+								type: "button",
+								onClick: copyCodesToClipboard,
+								className: "inline-flex items-center gap-1.5 text-xs text-zinc-400 hover:text-zinc-200",
+								children: copiedCodes ? /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5 text-emerald-400" }), /* @__PURE__ */ jsx("span", {
+									className: "text-emerald-400",
+									children: "Codes copied!"
+								})] }) : /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Copy, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Copy all codes" })] })
+							}), /* @__PURE__ */ jsxs("div", {
+								className: "flex items-center gap-2",
+								children: [/* @__PURE__ */ jsxs(SecondaryButton, {
+									onClick: downloadRecoveryCodes,
+									className: "border-zinc-700 bg-zinc-800 text-xs text-zinc-200 hover:bg-zinc-700",
+									children: [/* @__PURE__ */ jsx(Download, { className: "mr-1.5 h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Download .txt" })]
+								}), /* @__PURE__ */ jsx(PrimaryButton, {
+									onClick: () => setShowRecoveryModal(false),
+									className: "bg-emerald-600 hover:bg-emerald-500 text-xs",
+									children: /* @__PURE__ */ jsx("span", { children: "I Have Saved Them" })
+								})]
+							})]
+						})
+					]
+				})
+			})
+		]
+	});
+}
+//#endregion
 //#region resources/js/Pages/Profile/Edit.tsx
-function Edit({ stats }) {
+function Edit({ stats, twoFactorEnabled = false }) {
 	return /* @__PURE__ */ jsxs(Authenticated, {
 		header: /* @__PURE__ */ jsxs("div", {
 			className: "flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between",
@@ -1030,6 +1365,7 @@ function Edit({ stats }) {
 					className: "space-y-6 lg:col-span-8",
 					children: [
 						/* @__PURE__ */ jsx(UpdateProfileInformation, {}),
+						/* @__PURE__ */ jsx(TwoFactorSecurityCard, { initialEnabled: twoFactorEnabled }),
 						/* @__PURE__ */ jsx(NotificationPreferencesCard, {}),
 						/* @__PURE__ */ jsx(UpdatePasswordForm, {})
 					]

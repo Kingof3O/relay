@@ -15,6 +15,7 @@ final class IndependentWorkspaceSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
+            'view_requests',
             'manage_team',
             'manage_roles',
             'manage_areas',
@@ -39,6 +40,7 @@ final class IndependentWorkspaceSeeder extends Seeder
         $ownerRole->permissions()->sync($permissionIds->values());
         $developerRole->permissions()->sync($permissionIds->values());
         $designerRole->permissions()->sync($permissionIds->only([
+            'view_requests',
             'create_requests',
             'edit_requests',
             'change_request_status',

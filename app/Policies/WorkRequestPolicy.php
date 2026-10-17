@@ -9,22 +9,22 @@ final class WorkRequestPolicy
 {
     public function viewAny(User $user): bool
     {
-        return true;
+        return (bool) $user->active && $user->hasPermission('view_requests');
     }
 
     public function view(User $user, WorkRequest $request): bool
     {
-        return true;
+        return (bool) $user->active && $user->hasPermission('view_requests');
     }
 
     public function create(User $user): bool
     {
-        return $user->hasPermission('create_requests');
+        return (bool) $user->active && $user->hasPermission('create_requests');
     }
 
     public function update(User $user, WorkRequest $request): bool
     {
-        if (! $user->hasPermission('edit_requests')) {
+        if (! $user->active || ! $user->hasPermission('edit_requests')) {
             return false;
         }
 
@@ -33,12 +33,12 @@ final class WorkRequestPolicy
 
     public function assign(User $user, WorkRequest $request): bool
     {
-        return $user->hasPermission('assign_requests');
+        return (bool) $user->active && $user->hasPermission('assign_requests');
     }
 
     public function changeStatus(User $user, WorkRequest $request): bool
     {
-        return $user->hasPermission('change_request_status');
+        return (bool) $user->active && $user->hasPermission('change_request_status');
     }
 
     public function comment(User $user, WorkRequest $request): bool

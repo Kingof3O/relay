@@ -20,7 +20,7 @@ chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 # Generate application key if missing
 if [ -z "$APP_KEY" ]; then
     echo "==> APP_KEY is empty. Generating new key..."
-    php /var/www/html/artisan key:generate --force
+    export APP_KEY=$(php /var/www/html/artisan key:generate --show)
 fi
 
 # Run pending database migrations

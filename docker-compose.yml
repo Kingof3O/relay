@@ -13,16 +13,17 @@ services:
       APP_NAME: "Relay Studio"
       APP_ENV: production
       APP_DEBUG: "false"
-      APP_URL: "http://localhost:8080"
-      APP_KEY: "${APP_KEY:-base64:m6YgbJySkg0L1G1sL5azFf8VVYAiAdwk8pWQqnD4pN4=}"
+      APP_URL: "${APP_URL:-http://localhost:8080}"
+      APP_KEY: "${APP_KEY}"
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: relay
       DB_USERNAME: relay
-      DB_PASSWORD: secret
+      DB_PASSWORD: ${DB_PASSWORD:-secret}
       REDIS_HOST: redis
       REDIS_PORT: 6379
+      REDIS_PASSWORD: "${REDIS_PASSWORD:-}"
       CACHE_STORE: redis
       QUEUE_CONNECTION: redis
       SESSION_DRIVER: redis
@@ -43,16 +44,15 @@ services:
     image: mysql:8.4
     container_name: relay-db
     restart: unless-stopped
-    command: --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: relay
       MYSQL_USER: relay
-      MYSQL_PASSWORD: secret
-      MYSQL_ROOT_PASSWORD: rootsecret
+      MYSQL_PASSWORD: ${DB_PASSWORD:-secret}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u relay -psecret || exit 1"]
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u relay -p$${MYSQL_PASSWORD:-secret} || exit 1"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -61,12 +61,16 @@ services:
     image: redis:7-alpine
     container_name: relay-redis
     restart: unless-stopped
+    command: >
+      sh -c 'if [ -n "$$REDIS_PASSWORD" ]; then exec redis-server --requirepass "$$REDIS_PASSWORD"; else exec redis-server; fi'
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "if [ -n \"$$REDIS_PASSWORD\" ]; then redis-cli -a \"$$REDIS_PASSWORD\" ping; else redis-cli ping; fi"]
       interval: 5s
       timeout: 5s
       retries: 5
