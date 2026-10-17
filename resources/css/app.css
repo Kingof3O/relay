@@ -1,0 +1,123 @@
+@import "tailwindcss";
+@config "../../tailwind.config.js";
+
+@layer base {
+    :root {
+        color-scheme: dark;
+    }
+
+    html {
+        background-color: #090a0f;
+        color: #f4f4f5;
+        scroll-behavior: smooth;
+        scrollbar-color: rgba(255, 255, 255, 0.12) transparent;
+        scrollbar-width: thin;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
+    body {
+        min-width: 320px;
+        background: #090a0f;
+        overflow-x: hidden;
+    }
+
+    /* Selection styling */
+    ::selection {
+        background-color: rgba(99, 102, 241, 0.3);
+        color: #ffffff;
+    }
+
+    /* Custom Webkit scrollbars */
+    ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 9999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Sleek minimal sidebar/column scrollbar */
+    .custom-scroll::-webkit-scrollbar {
+        width: 4px;
+        height: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* Custom styles for select and other form widgets to fit theme */
+    select {
+        background-color: #111216 !important;
+        border-color: rgba(255, 255, 255, 0.08) !important;
+        color: #f4f4f5 !important;
+    }
+
+    select option {
+        background-color: #111216 !important;
+        color: #f4f4f5 !important;
+    }
+
+    /* Remove autofill yellow/white background in Chromium */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus, 
+    input:-webkit-autofill:active {
+        -webkit-box-shadow: 0 0 0 1000px #111216 inset !important;
+        -webkit-text-fill-color: #f4f4f5 !important;
+        transition: background-color 5000s ease-in-out 0s;
+    }
+}
+
+@layer components {
+    /* Pure Modern Dark Obsidian Canvas */
+    .relay-shell {
+        background-color: #090a0f;
+    }
+
+    .relay-grid {
+        background-image: 
+            radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+        background-size: 24px 24px;
+        mask-image: radial-gradient(ellipse 70% 60% at 50% 25%, black 20%, transparent 80%);
+    }
+
+    /* Precision Dark Glass Panels */
+    .glass-panel {
+        background: #111216;
+        border: 1px solid rgba(255, 255, 255, 0.07);
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.04), 0 4px 20px -4px rgba(0, 0, 0, 0.5);
+    }
+
+    .glass-panel-hover {
+        transition: all 0.15s ease-out;
+    }
+    .glass-panel-hover:hover {
+        background: #15171d;
+        border-color: rgba(255, 255, 255, 0.12);
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 24px -4px rgba(0, 0, 0, 0.6);
+    }
+
+    /* Inner Specular Highlight */
+    .specular-highlight {
+        box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+    }
+}

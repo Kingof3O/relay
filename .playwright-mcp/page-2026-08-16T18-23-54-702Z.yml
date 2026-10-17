@@ -1,0 +1,21 @@
+- generic [ref=f2e3]:
+  - generic [ref=f2e4]:
+    - link [ref=f2e5] [cursor=pointer]:
+      - /url: /
+      - img "Relay" [ref=f2e6]
+    - generic [ref=f2e7]: RELAY
+  - generic [ref=f2e8]:
+    - generic [ref=f2e9]:
+      - heading "Welcome back" [level=2] [ref=f2e10]
+      - paragraph [ref=f2e11]: Sign in to manage your workspace
+    - generic [ref=f2e12]:
+      - generic [ref=f2e13]:
+        - generic [ref=f2e14]: Username
+        - textbox "Username" [active] [ref=f2e15]
+      - generic [ref=f2e16]:
+        - generic [ref=f2e17]: Password
+        - textbox "Password" [ref=f2e18]
+      - generic [ref=f2e20] [cursor=pointer]:
+        - checkbox "Remember me" [ref=f2e21]
+        - generic [ref=f2e22]: Remember me
+      - button "Log in" [ref=f2e24] [cursor=pointer]

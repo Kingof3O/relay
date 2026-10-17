@@ -1,0 +1,338 @@
+- generic [ref=f8e3]:
+  - complementary [ref=f8e4]:
+    - generic [ref=f8e5]:
+      - generic [ref=f8e6]:
+        - link [ref=f8e7] [cursor=pointer]:
+          - /url: /
+          - img "Relay" [ref=f8e8]
+        - generic [ref=f8e9]: Relay
+      - generic [ref=f8e10]:
+        - generic [ref=f8e11]:
+          - generic [ref=f8e12]: Main Menu
+          - navigation [ref=f8e13]:
+            - link "Dashboard" [ref=f8e14] [cursor=pointer]:
+              - /url: http://stm.test/dashboard
+            - link "Projects" [ref=f8e19] [cursor=pointer]:
+              - /url: http://stm.test/projects
+        - generic [ref=f8e25]:
+          - generic [ref=f8e26]: Administration
+          - navigation [ref=f8e27]:
+            - link "Users" [ref=f8e28] [cursor=pointer]:
+              - /url: http://stm.test/admin/users
+            - link "Roles" [ref=f8e33] [cursor=pointer]:
+              - /url: http://stm.test/admin/roles
+    - button "R Robin" [ref=f8e41] [cursor=pointer]:
+      - generic [ref=f8e42]:
+        - generic [ref=f8e43]: R
+        - generic [ref=f8e44]: Robin
+  - generic [ref=f8e47]:
+    - banner [ref=f8e48]:
+      - generic [ref=f8e50]:
+        - generic [ref=f8e51]:
+          - heading "Projects" [level=2] [ref=f8e52]
+          - paragraph [ref=f8e53]: Manage and track your workspaces
+        - button "Create Project" [ref=f8e54] [cursor=pointer]
+    - main [ref=f8e55]:
+      - generic [ref=f8e57]:
+        - generic [ref=f8e58]:
+          - generic [ref=f8e59]:
+            - generic [ref=f8e60]: Total Projects
+            - generic [ref=f8e61]: "20"
+          - generic [ref=f8e62]:
+            - generic [ref=f8e63]: Active
+            - generic [ref=f8e64]: "4"
+          - generic [ref=f8e67]:
+            - generic [ref=f8e68]: Planning
+            - generic [ref=f8e69]: "6"
+          - generic [ref=f8e72]:
+            - generic [ref=f8e73]: Completed
+            - generic [ref=f8e74]: "0"
+        - generic [ref=f8e77]:
+          - textbox "Search projects..." [ref=f8e79]
+          - generic [ref=f8e80]:
+            - button "All" [ref=f8e81] [cursor=pointer]
+            - button "Planning" [ref=f8e82] [cursor=pointer]
+            - button "Active" [ref=f8e83] [cursor=pointer]
+            - button "Paused" [ref=f8e84] [cursor=pointer]
+            - button "Released" [ref=f8e85] [cursor=pointer]
+            - button "Archived" [ref=f8e86] [cursor=pointer]
+        - generic [ref=f8e88]:
+          - table [ref=f8e90]:
+            - rowgroup [ref=f8e91]:
+              - row [ref=f8e92]:
+                - columnheader "Name" [ref=f8e93]
+                - columnheader "Status" [ref=f8e94]
+                - columnheader "Owner" [ref=f8e95]
+                - columnheader "Created By" [ref=f8e96]
+                - columnheader "Actions" [ref=f8e97]
+            - rowgroup [ref=f8e98]:
+              - row [ref=f8e99]:
+                - cell [ref=f8e100]:
+                  - link "McCullough Group alias" [ref=f8e101] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50
+                - cell "Planning" [ref=f8e102]
+                - cell "Robin" [ref=f8e104]
+                - cell "Main Developer" [ref=f8e105]
+                - cell [ref=f8e106]:
+                  - generic [ref=f8e107]:
+                    - link "View" [ref=f8e108] [cursor=pointer]:
+                      - /url: http://stm.test/projects/50
+                    - button "Edit" [ref=f8e109] [cursor=pointer]
+                    - button "Delete" [ref=f8e110] [cursor=pointer]
+              - row [ref=f8e111]:
+                - cell [ref=f8e112]:
+                  - link "Herman Ltd perspiciatis" [ref=f8e113] [cursor=pointer]:
+                    - /url: http://stm.test/projects/49
+                - cell "Released" [ref=f8e114]
+                - cell "Robin" [ref=f8e116]
+                - cell "Main Developer" [ref=f8e117]
+                - cell [ref=f8e118]:
+                  - generic [ref=f8e119]:
+                    - link "View" [ref=f8e120] [cursor=pointer]:
+                      - /url: http://stm.test/projects/49
+                    - button "Edit" [ref=f8e121] [cursor=pointer]
+                    - button "Delete" [ref=f8e122] [cursor=pointer]
+              - row [ref=f8e123]:
+                - cell [ref=f8e124]:
+                  - link "Zemlak-Oberbrunner asperiores" [ref=f8e125] [cursor=pointer]:
+                    - /url: http://stm.test/projects/48
+                - cell "Paused" [ref=f8e126]
+                - cell "Robin" [ref=f8e128]
+                - cell "Main Developer" [ref=f8e129]
+                - cell [ref=f8e130]:
+                  - generic [ref=f8e131]:
+                    - link "View" [ref=f8e132] [cursor=pointer]:
+                      - /url: http://stm.test/projects/48
+                    - button "Edit" [ref=f8e133] [cursor=pointer]
+                    - button "Delete" [ref=f8e134] [cursor=pointer]
+              - row [ref=f8e135]:
+                - cell [ref=f8e136]:
+                  - link "Steuber, Beier and Okuneva ut" [ref=f8e137] [cursor=pointer]:
+                    - /url: http://stm.test/projects/47
+                - cell "Planning" [ref=f8e138]
+                - cell "Robin" [ref=f8e140]
+                - cell "Main Developer" [ref=f8e141]
+                - cell [ref=f8e142]:
+                  - generic [ref=f8e143]:
+                    - link "View" [ref=f8e144] [cursor=pointer]:
+                      - /url: http://stm.test/projects/47
+                    - button "Edit" [ref=f8e145] [cursor=pointer]
+                    - button "Delete" [ref=f8e146] [cursor=pointer]
+              - row [ref=f8e147]:
+                - cell [ref=f8e148]:
+                  - link "Upton Inc qui" [ref=f8e149] [cursor=pointer]:
+                    - /url: http://stm.test/projects/46
+                - cell "Active" [ref=f8e150]
+                - cell "Robin" [ref=f8e152]
+                - cell "Main Developer" [ref=f8e153]
+                - cell [ref=f8e154]:
+                  - generic [ref=f8e155]:
+                    - link "View" [ref=f8e156] [cursor=pointer]:
+                      - /url: http://stm.test/projects/46
+                    - button "Edit" [ref=f8e157] [cursor=pointer]
+                    - button "Delete" [ref=f8e158] [cursor=pointer]
+              - row [ref=f8e159]:
+                - cell [ref=f8e160]:
+                  - link "Hand-Hackett qui" [ref=f8e161] [cursor=pointer]:
+                    - /url: http://stm.test/projects/45
+                - cell "Active" [ref=f8e162]
+                - cell "Robin" [ref=f8e164]
+                - cell "Main Developer" [ref=f8e165]
+                - cell [ref=f8e166]:
+                  - generic [ref=f8e167]:
+                    - link "View" [ref=f8e168] [cursor=pointer]:
+                      - /url: http://stm.test/projects/45
+                    - button "Edit" [ref=f8e169] [cursor=pointer]
+                    - button "Delete" [ref=f8e170] [cursor=pointer]
+              - row [ref=f8e171]:
+                - cell [ref=f8e172]:
+                  - link "Dooley, Erdman and O'Hara qui" [ref=f8e173] [cursor=pointer]:
+                    - /url: http://stm.test/projects/44
+                - cell "Active" [ref=f8e174]
+                - cell "Robin" [ref=f8e176]
+                - cell "Main Developer" [ref=f8e177]
+                - cell [ref=f8e178]:
+                  - generic [ref=f8e179]:
+                    - link "View" [ref=f8e180] [cursor=pointer]:
+                      - /url: http://stm.test/projects/44
+                    - button "Edit" [ref=f8e181] [cursor=pointer]
+                    - button "Delete" [ref=f8e182] [cursor=pointer]
+              - row [ref=f8e183]:
+                - cell [ref=f8e184]:
+                  - link "Shields, Weimann and Okuneva ut" [ref=f8e185] [cursor=pointer]:
+                    - /url: http://stm.test/projects/43
+                - cell "Planning" [ref=f8e186]
+                - cell "Robin" [ref=f8e188]
+                - cell "Main Developer" [ref=f8e189]
+                - cell [ref=f8e190]:
+                  - generic [ref=f8e191]:
+                    - link "View" [ref=f8e192] [cursor=pointer]:
+                      - /url: http://stm.test/projects/43
+                    - button "Edit" [ref=f8e193] [cursor=pointer]
+                    - button "Delete" [ref=f8e194] [cursor=pointer]
+              - row [ref=f8e195]:
+                - cell [ref=f8e196]:
+                  - link "Schuppe, Spencer and Deckow mollitia" [ref=f8e197] [cursor=pointer]:
+                    - /url: http://stm.test/projects/42
+                - cell "Planning" [ref=f8e198]
+                - cell "Robin" [ref=f8e200]
+                - cell "Main Developer" [ref=f8e201]
+                - cell [ref=f8e202]:
+                  - generic [ref=f8e203]:
+                    - link "View" [ref=f8e204] [cursor=pointer]:
+                      - /url: http://stm.test/projects/42
+                    - button "Edit" [ref=f8e205] [cursor=pointer]
+                    - button "Delete" [ref=f8e206] [cursor=pointer]
+              - row [ref=f8e207]:
+                - cell [ref=f8e208]:
+                  - link "Rodriguez, Lang and Flatley recusandae" [ref=f8e209] [cursor=pointer]:
+                    - /url: http://stm.test/projects/41
+                - cell "Paused" [ref=f8e210]
+                - cell "Robin" [ref=f8e212]
+                - cell "Main Developer" [ref=f8e213]
+                - cell [ref=f8e214]:
+                  - generic [ref=f8e215]:
+                    - link "View" [ref=f8e216] [cursor=pointer]:
+                      - /url: http://stm.test/projects/41
+                    - button "Edit" [ref=f8e217] [cursor=pointer]
+                    - button "Delete" [ref=f8e218] [cursor=pointer]
+              - row [ref=f8e219]:
+                - cell [ref=f8e220]:
+                  - link "Barton LLC voluptas" [ref=f8e221] [cursor=pointer]:
+                    - /url: http://stm.test/projects/40
+                - cell "Planning" [ref=f8e222]
+                - cell "Robin" [ref=f8e224]
+                - cell "Main Developer" [ref=f8e225]
+                - cell [ref=f8e226]:
+                  - generic [ref=f8e227]:
+                    - link "View" [ref=f8e228] [cursor=pointer]:
+                      - /url: http://stm.test/projects/40
+                    - button "Edit" [ref=f8e229] [cursor=pointer]
+                    - button "Delete" [ref=f8e230] [cursor=pointer]
+              - row [ref=f8e231]:
+                - cell [ref=f8e232]:
+                  - link "Russel, Christiansen and Cummerata rerum" [ref=f8e233] [cursor=pointer]:
+                    - /url: http://stm.test/projects/39
+                - cell "Paused" [ref=f8e234]
+                - cell "Robin" [ref=f8e236]
+                - cell "Main Developer" [ref=f8e237]
+                - cell [ref=f8e238]:
+                  - generic [ref=f8e239]:
+                    - link "View" [ref=f8e240] [cursor=pointer]:
+                      - /url: http://stm.test/projects/39
+                    - button "Edit" [ref=f8e241] [cursor=pointer]
+                    - button "Delete" [ref=f8e242] [cursor=pointer]
+              - row [ref=f8e243]:
+                - cell [ref=f8e244]:
+                  - link "Howe, Luettgen and Kutch excepturi" [ref=f8e245] [cursor=pointer]:
+                    - /url: http://stm.test/projects/38
+                - cell "Archived" [ref=f8e246]
+                - cell "Robin" [ref=f8e248]
+                - cell "Main Developer" [ref=f8e249]
+                - cell [ref=f8e250]:
+                  - generic [ref=f8e251]:
+                    - link "View" [ref=f8e252] [cursor=pointer]:
+                      - /url: http://stm.test/projects/38
+                    - button "Edit" [ref=f8e253] [cursor=pointer]
+                    - button "Delete" [ref=f8e254] [cursor=pointer]
+              - row [ref=f8e255]:
+                - cell [ref=f8e256]:
+                  - link "Klocko, Pfannerstill and Windler natus" [ref=f8e257] [cursor=pointer]:
+                    - /url: http://stm.test/projects/37
+                - cell "Released" [ref=f8e258]
+                - cell "Robin" [ref=f8e260]
+                - cell "Main Developer" [ref=f8e261]
+                - cell [ref=f8e262]:
+                  - generic [ref=f8e263]:
+                    - link "View" [ref=f8e264] [cursor=pointer]:
+                      - /url: http://stm.test/projects/37
+                    - button "Edit" [ref=f8e265] [cursor=pointer]
+                    - button "Delete" [ref=f8e266] [cursor=pointer]
+              - row [ref=f8e267]:
+                - cell [ref=f8e268]:
+                  - link "Boyer and Sons fuga" [ref=f8e269] [cursor=pointer]:
+                    - /url: http://stm.test/projects/36
+                - cell "Released" [ref=f8e270]
+                - cell "Robin" [ref=f8e272]
+                - cell "Main Developer" [ref=f8e273]
+                - cell [ref=f8e274]:
+                  - generic [ref=f8e275]:
+                    - link "View" [ref=f8e276] [cursor=pointer]:
+                      - /url: http://stm.test/projects/36
+                    - button "Edit" [ref=f8e277] [cursor=pointer]
+                    - button "Delete" [ref=f8e278] [cursor=pointer]
+              - row [ref=f8e279]:
+                - cell [ref=f8e280]:
+                  - link "Tremblay-Legros quia" [ref=f8e281] [cursor=pointer]:
+                    - /url: http://stm.test/projects/35
+                - cell "Active" [ref=f8e282]
+                - cell "Robin" [ref=f8e284]
+                - cell "Main Developer" [ref=f8e285]
+                - cell [ref=f8e286]:
+                  - generic [ref=f8e287]:
+                    - link "View" [ref=f8e288] [cursor=pointer]:
+                      - /url: http://stm.test/projects/35
+                    - button "Edit" [ref=f8e289] [cursor=pointer]
+                    - button "Delete" [ref=f8e290] [cursor=pointer]
+              - row [ref=f8e291]:
+                - cell [ref=f8e292]:
+                  - link "Morissette and Sons odio" [ref=f8e293] [cursor=pointer]:
+                    - /url: http://stm.test/projects/34
+                - cell "Released" [ref=f8e294]
+                - cell "Robin" [ref=f8e296]
+                - cell "Main Developer" [ref=f8e297]
+                - cell [ref=f8e298]:
+                  - generic [ref=f8e299]:
+                    - link "View" [ref=f8e300] [cursor=pointer]:
+                      - /url: http://stm.test/projects/34
+                    - button "Edit" [ref=f8e301] [cursor=pointer]
+                    - button "Delete" [ref=f8e302] [cursor=pointer]
+              - row [ref=f8e303]:
+                - cell [ref=f8e304]:
+                  - link "Balistreri PLC itaque" [ref=f8e305] [cursor=pointer]:
+                    - /url: http://stm.test/projects/33
+                - cell "Released" [ref=f8e306]
+                - cell "Robin" [ref=f8e308]
+                - cell "Main Developer" [ref=f8e309]
+                - cell [ref=f8e310]:
+                  - generic [ref=f8e311]:
+                    - link "View" [ref=f8e312] [cursor=pointer]:
+                      - /url: http://stm.test/projects/33
+                    - button "Edit" [ref=f8e313] [cursor=pointer]
+                    - button "Delete" [ref=f8e314] [cursor=pointer]
+              - row [ref=f8e315]:
+                - cell [ref=f8e316]:
+                  - link "Schinner, Reynolds and Weissnat reprehenderit" [ref=f8e317] [cursor=pointer]:
+                    - /url: http://stm.test/projects/32
+                - cell "Planning" [ref=f8e318]
+                - cell "Robin" [ref=f8e320]
+                - cell "Main Developer" [ref=f8e321]
+                - cell [ref=f8e322]:
+                  - generic [ref=f8e323]:
+                    - link "View" [ref=f8e324] [cursor=pointer]:
+                      - /url: http://stm.test/projects/32
+                    - button "Edit" [ref=f8e325] [cursor=pointer]
+                    - button "Delete" [ref=f8e326] [cursor=pointer]
+              - row [ref=f8e327]:
+                - cell [ref=f8e328]:
+                  - link "Brown, Gaylord and Schowalter asperiores" [ref=f8e329] [cursor=pointer]:
+                    - /url: http://stm.test/projects/31
+                - cell "Archived" [ref=f8e330]
+                - cell "Robin" [ref=f8e332]
+                - cell "Main Developer" [ref=f8e333]
+                - cell [ref=f8e334]:
+                  - generic [ref=f8e335]:
+                    - link "View" [ref=f8e336] [cursor=pointer]:
+                      - /url: http://stm.test/projects/31
+                    - button "Edit" [ref=f8e337] [cursor=pointer]
+                    - button "Delete" [ref=f8e338] [cursor=pointer]
+          - navigation [ref=f8e339]:
+            - generic [ref=f8e340]: « Previous
+            - link "1" [ref=f8e341] [cursor=pointer]:
+              - /url: http://stm.test/projects?page=1
+            - link "2" [ref=f8e342] [cursor=pointer]:
+              - /url: http://stm.test/projects?page=2
+            - link "3" [ref=f8e343] [cursor=pointer]:
+              - /url: http://stm.test/projects?page=3
+            - link "Next »" [ref=f8e344] [cursor=pointer]:
+              - /url: http://stm.test/projects?page=2

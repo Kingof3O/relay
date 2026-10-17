@@ -1,0 +1,366 @@
+import React, { useState } from 'react';
+import { Check, Copy } from 'lucide-react';
+
+interface MarkdownViewerProps {
+    content: string;
+    onToggleChecklist?: (newContent: string) => void;
+    className?: string;
+}
+
+// Token highlighter for JS/TS, PHP, Python, SQL, Bash, and JSON
+function highlightCodeLine(line: string, language: string): React.ReactNode {
+    const lang = (language || '').toLowerCase().trim();
+
+    let commentPattern = '//.*$';
+    if (['python', 'py', 'bash', 'sh', 'zsh'].includes(lang)) {
+        commentPattern = '#.*$';
+    } else if (lang === 'sql') {
+        commentPattern = '(--.*$)|(/\\*.*?\\*/)';
+    } else if (lang === 'php') {
+        commentPattern = '(//.*$)|(#.*$)|(/\\*.*?\\*/)';
+    }
+
+    let keywordList = [
+        'const', 'let', 'var', 'function', 'return', 'if', 'else', 'for', 'while',
+        'switch', 'case', 'break', 'continue', 'import', 'export', 'from', 'default',
+        'class', 'extends', 'async', 'await', 'try', 'catch', 'finally', 'throw',
+        'new', 'typeof', 'instanceof', 'interface', 'type', 'enum', 'public',
+        'private', 'protected', 'readonly', 'static', 'true', 'false', 'null',
+        'undefined', 'this', 'super', 'yield',
+    ];
+
+    if (lang === 'php') {
+        keywordList = [
+            'function', 'class', 'interface', 'trait', 'public', 'protected', 'private',
+            'readonly', 'static', 'final', 'return', 'if', 'else', 'elseif', 'foreach',
+            'for', 'while', 'switch', 'case', 'break', 'continue', 'use', 'namespace',
+            'new', 'try', 'catch', 'finally', 'throw', 'extends', 'implements', 'true',
+            'false', 'null', 'echo', 'print', 'fn',
+        ];
+    } else if (['python', 'py'].includes(lang)) {
+        keywordList = [
+            'def', 'class', 'return', 'if', 'elif', 'else', 'for', 'while', 'in',
+            'import', 'from', 'as', 'try', 'except', 'finally', 'raise', 'with',
+            'async', 'await', 'lambda', 'pass', 'yield', 'True', 'False', 'None',
+            'and', 'or', 'not', 'is',
+        ];
+    } else if (lang === 'sql') {
+        keywordList = [
+            'SELECT', 'FROM', 'WHERE', 'INSERT', 'INTO', 'VALUES', 'UPDATE', 'SET',
+            'DELETE', 'JOIN', 'LEFT', 'RIGHT', 'INNER', 'OUTER', 'ON', 'GROUP', 'BY',
+            'ORDER', 'HAVING', 'LIMIT', 'OFFSET', 'AND', 'OR', 'NOT', 'IN', 'IS',
+            'NULL', 'AS', 'CREATE', 'TABLE', 'ALTER', 'DROP', 'INDEX', 'PRIMARY',
+            'KEY', 'FOREIGN', 'REFERENCES', 'UNION', 'ALL', 'DISTINCT',
+        ];
+    } else if (['bash', 'sh', 'zsh'].includes(lang)) {
+        keywordList = [
+            'if', 'then', 'else', 'elif', 'fi', 'for', 'while', 'do', 'done', 'in',
+            'case', 'esac', 'echo', 'exit', 'return', 'function', 'export', 'source',
+            'local',
+        ];
+    } else if (lang === 'json') {
+        keywordList = ['true', 'false', 'null'];
+    }
+
+    const keywordPattern = `\\b(?:${keywordList.join('|')})\\b`;
+    const phpTagPattern = lang === 'php' ? '(?:<\\?php|\\?>)|' : '';
+
+    const tokenRegex = new RegExp(
+        `(?<comment>${commentPattern})|(?<str>"(?:\\\\.|[^"\\\\])*"|'(?:\\\\.|[^'\\\\])*'|\`(?:\\\\.|[^\`\\\\])*\`)|(?<num>\\b\\d+(?:\\.\\d+)?\\b)|(?<fn>\\b[a-zA-Z_$][a-zA-Z0-9_$]*(?=\\s*\\())|(?<kw>${phpTagPattern}${keywordPattern})|(?<variable>\\$[a-zA-Z0-9_]+)`,
+        lang === 'sql' ? 'gi' : 'g'
+    );
+
+    const elements: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match: RegExpExecArray | null;
+
+    while ((match = tokenRegex.exec(line)) !== null) {
+        if (match.index > lastIndex) {
+            elements.push(line.slice(lastIndex, match.index));
+        }
+
+        const groups = match.groups || {};
+        const matchedText = match[0];
+
+        if (groups.comment) {
+            elements.push(
+                <span key={match.index} className="text-zinc-500 italic">
+                    {matchedText}
+                </span>
+            );
+        } else if (groups.str) {
+            elements.push(
+                <span key={match.index} className="text-emerald-400">
+                    {matchedText}
+                </span>
+            );
+        } else if (groups.num) {
+            elements.push(
+                <span key={match.index} className="text-violet-400">
+                    {matchedText}
+                </span>
+            );
+        } else if (groups.kw) {
+            elements.push(
+                <span key={match.index} className="text-sky-400 font-medium">
+                    {matchedText}
+                </span>
+            );
+        } else if (groups.fn) {
+            elements.push(
+                <span key={match.index} className="text-amber-400">
+                    {matchedText}
+                </span>
+            );
+        } else if (groups.variable) {
+            elements.push(
+                <span key={match.index} className="text-cyan-300">
+                    {matchedText}
+                </span>
+            );
+        } else {
+            elements.push(matchedText);
+        }
+
+        lastIndex = tokenRegex.lastIndex;
+    }
+
+    if (lastIndex < line.length) {
+        elements.push(line.slice(lastIndex));
+    }
+
+    return elements.length > 0 ? elements : line;
+}
+
+function CodeBlock({ code, language }: { code: string; language: string }) {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(code);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+    };
+
+    const lines = code.split('\n');
+
+    return (
+        <div className="group relative my-3">
+            <div className="absolute right-3 top-3 flex items-center gap-2 z-10">
+                {language && (
+                    <span className="rounded bg-white/[0.06] border border-white/[0.08] px-1.5 py-0.5 text-[10px] font-mono uppercase text-zinc-400">
+                        {language}
+                    </span>
+                )}
+                <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="flex h-6 w-6 items-center justify-center rounded bg-white/[0.06] text-zinc-400 opacity-0 group-hover:opacity-100 hover:text-white transition-opacity border border-white/[0.08]"
+                    title="Copy code"
+                >
+                    {copied ? <Check className="h-3 w-3 text-emerald-400" /> : <Copy className="h-3 w-3" />}
+                </button>
+            </div>
+            <pre className="bg-[#090a0f] border border-white/[0.08] p-4 rounded-xl font-mono text-sm overflow-x-auto text-zinc-200">
+                <code>
+                    {lines.map((line, i) => (
+                        <div key={i} className="leading-relaxed">
+                            {highlightCodeLine(line, language)}
+                        </div>
+                    ))}
+                </code>
+            </pre>
+        </div>
+    );
+}
+
+export default function MarkdownViewer({
+    content,
+    onToggleChecklist,
+    className = '',
+}: MarkdownViewerProps) {
+    if (!content) return null;
+
+    const rawLines = content.split('\n');
+
+    const handleCheckboxToggle = (lineIndex: number, currentChecked: boolean) => {
+        if (!onToggleChecklist) return;
+        const newLines = [...rawLines];
+        const targetLine = newLines[lineIndex];
+
+        if (currentChecked) {
+            newLines[lineIndex] = targetLine.replace(/- \[[xX]\]/, '- [ ]');
+        } else {
+            newLines[lineIndex] = targetLine.replace(/- \[ \]/, '- [x]');
+        }
+
+        onToggleChecklist(newLines.join('\n'));
+    };
+
+    // Helper to format inline markdown (bold, code, links)
+    const formatInline = (text: string): React.ReactNode => {
+        const parts = text.split(/(\*\*.*?\*\*|`.*?`)/g);
+
+        return parts.map((part, index) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+                return (
+                    <strong key={index} className="font-semibold text-zinc-100">
+                        {part.slice(2, -2)}
+                    </strong>
+                );
+            }
+            if (part.startsWith('`') && part.endsWith('`')) {
+                return (
+                    <code
+                        key={index}
+                        className="rounded border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 font-mono text-[11px] text-zinc-300"
+                    >
+                        {part.slice(1, -1)}
+                    </code>
+                );
+            }
+            return part;
+        });
+    };
+
+    // Parse items including fenced code blocks
+    type Block =
+        | { type: 'code'; code: string; language: string }
+        | { type: 'line'; line: string; originalIndex: number };
+
+    const blocks: Block[] = [];
+    let inCodeBlock = false;
+    let codeLanguage = '';
+    let codeLines: string[] = [];
+
+    for (let i = 0; i < rawLines.length; i++) {
+        const line = rawLines[i];
+        const codeBlockMatch = line.match(/^```(\w+)?$/);
+
+        if (codeBlockMatch && !inCodeBlock) {
+            inCodeBlock = true;
+            codeLanguage = codeBlockMatch[1] || '';
+            codeLines = [];
+            continue;
+        }
+
+        if (line.trim() === '```' && inCodeBlock) {
+            inCodeBlock = false;
+            blocks.push({
+                type: 'code',
+                code: codeLines.join('\n'),
+                language: codeLanguage,
+            });
+            codeLanguage = '';
+            codeLines = [];
+            continue;
+        }
+
+        if (inCodeBlock) {
+            codeLines.push(line);
+        } else {
+            blocks.push({
+                type: 'line',
+                line,
+                originalIndex: i,
+            });
+        }
+    }
+
+    if (inCodeBlock) {
+        blocks.push({
+            type: 'code',
+            code: codeLines.join('\n'),
+            language: codeLanguage,
+        });
+    }
+
+    return (
+        <div className={`space-y-1.5 text-xs leading-relaxed text-zinc-300 select-text ${className}`}>
+            {blocks.map((block, idx) => {
+                if (block.type === 'code') {
+                    return <CodeBlock key={idx} code={block.code} language={block.language} />;
+                }
+
+                const { line, originalIndex } = block;
+                const trimmed = line.trim();
+
+                // Checklist item: `- [ ]` or `- [x]`
+                const checkMatch = line.match(/^(\s*)-\s*\[([ xX])\]\s*(.*)$/);
+                if (checkMatch) {
+                    const isChecked = checkMatch[2].toLowerCase() === 'x';
+                    const itemText = checkMatch[3];
+
+                    return (
+                        <div
+                            key={idx}
+                            className="flex items-start gap-2.5 py-0.5 group/item cursor-pointer"
+                            onClick={() => handleCheckboxToggle(originalIndex, isChecked)}
+                        >
+                            <input
+                                type="checkbox"
+                                checked={isChecked}
+                                onChange={() => handleCheckboxToggle(originalIndex, isChecked)}
+                                className="mt-0.5 h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
+                            />
+                            <span
+                                className={`flex-1 transition-colors ${
+                                    isChecked
+                                        ? 'line-through text-zinc-500'
+                                        : 'text-zinc-200 group-hover/item:text-white'
+                                }`}
+                            >
+                                {formatInline(itemText)}
+                            </span>
+                        </div>
+                    );
+                }
+
+                // Bullet point: `- ` or `* `
+                if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+                    return (
+                        <div key={idx} className="flex items-start gap-2 pl-1 py-0.2">
+                            <span className="h-1.5 w-1.5 rounded-full bg-zinc-500 mt-1.5 shrink-0" />
+                            <span>{formatInline(trimmed.slice(2))}</span>
+                        </div>
+                    );
+                }
+
+                // Heading 3
+                if (trimmed.startsWith('### ')) {
+                    return (
+                        <h4 key={idx} className="mt-2 text-xs font-bold text-zinc-100 uppercase tracking-wider">
+                            {trimmed.slice(4)}
+                        </h4>
+                    );
+                }
+
+                // Empty line
+                if (!trimmed) {
+                    return <div key={idx} className="h-1" />;
+                }
+
+                return (
+                    <p key={idx} className="text-zinc-300">
+                        {formatInline(line)}
+                    </p>
+                );
+            })}
+        </div>
+    );
+}
+
+/**
+ * Utility to extract checklist statistics from markdown text.
+ * Returns { completed: number, total: number, percentage: number }
+ */
+export function getChecklistStats(content?: string | null) {
+    if (!content) return null;
+    const matches = content.match(/- \[[ xX]\]/g);
+    if (!matches || matches.length === 0) return null;
+
+    const total = matches.length;
+    const completed = matches.filter((m) => m.toLowerCase().includes('x')).length;
+    const percentage = Math.round((completed / total) * 100);
+
+    return { completed, total, percentage };
+}

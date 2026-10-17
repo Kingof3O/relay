@@ -1,0 +1,148 @@
+- generic [ref=f14e3]:
+  - complementary [ref=f14e4]:
+    - generic [ref=f14e5]:
+      - generic [ref=f14e6]:
+        - link [ref=f14e7] [cursor=pointer]:
+          - /url: /
+          - img "Relay" [ref=f14e8]
+        - generic [ref=f14e9]: Relay
+      - generic [ref=f14e10]:
+        - generic [ref=f14e11]:
+          - generic [ref=f14e12]: Main Menu
+          - navigation [ref=f14e13]:
+            - link "Dashboard" [ref=f14e14] [cursor=pointer]:
+              - /url: http://stm.test/dashboard
+            - link "Projects" [ref=f14e19] [cursor=pointer]:
+              - /url: http://stm.test/projects
+        - generic [ref=f14e25]:
+          - generic [ref=f14e26]: Administration
+          - navigation [ref=f14e27]:
+            - link "Users" [ref=f14e28] [cursor=pointer]:
+              - /url: http://stm.test/admin/users
+            - link "Roles" [ref=f14e33] [cursor=pointer]:
+              - /url: http://stm.test/admin/roles
+    - button "R Robin" [ref=f14e41] [cursor=pointer]:
+      - generic [ref=f14e42]:
+        - generic [ref=f14e43]: R
+        - generic [ref=f14e44]: Robin
+  - generic [ref=f14e47]:
+    - banner [ref=f14e48]:
+      - generic [ref=f14e50]:
+        - generic [ref=f14e51]:
+          - generic [ref=f14e52]:
+            - navigation [ref=f14e53]:
+              - link "Projects" [ref=f14e55] [cursor=pointer]:
+                - /url: http://stm.test/projects
+              - generic "McCullough Group alias" [ref=f14e59]
+            - heading "McCullough Group alias" [level=1] [ref=f14e60]
+            - generic [ref=f14e61]:
+              - generic [ref=f14e62]: Planning
+              - generic [ref=f14e63]: Owned by Robin
+              - generic [ref=f14e64]: Created Aug 16, 2026 • 09:40 PM
+          - generic [ref=f14e65]:
+            - button "Edit" [ref=f14e66] [cursor=pointer]
+            - button "Delete" [ref=f14e69] [cursor=pointer]
+        - navigation [ref=f14e73]:
+          - link "Overview" [ref=f14e74] [cursor=pointer]:
+            - /url: http://stm.test/projects/50
+          - link "Ideas 20" [ref=f14e75] [cursor=pointer]:
+            - /url: http://stm.test/projects/50/ideas
+            - text: Ideas
+            - generic [ref=f14e76]: "20"
+    - main [ref=f14e77]:
+      - generic [ref=f14e79]:
+        - generic [ref=f14e80]:
+          - generic [ref=f14e81]:
+            - heading "Description" [level=2] [ref=f14e83]
+            - generic [ref=f14e84]: No description has been added yet.
+          - generic [ref=f14e85]:
+            - generic [ref=f14e86]:
+              - generic [ref=f14e87]:
+                - heading "Recent Ideas" [level=2] [ref=f14e88]
+                - paragraph [ref=f14e89]: Latest work items in this project
+              - link "View all →" [ref=f14e90] [cursor=pointer]:
+                - /url: http://stm.test/projects/50/ideas
+            - generic [ref=f14e91]:
+              - generic [ref=f14e92]:
+                - generic [ref=f14e93]:
+                  - link "Necessitatibus magnam distinctio enim cupiditate ut." [ref=f14e94] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/1000
+                  - generic [ref=f14e95]: In Progress
+                - link "View" [ref=f14e97] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/1000
+              - generic [ref=f14e98]:
+                - generic [ref=f14e99]:
+                  - link "Non sit esse hic officiis." [ref=f14e100] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/999
+                  - generic [ref=f14e101]:
+                    - generic [ref=f14e102]: Needs Changes
+                    - generic [ref=f14e103]: → Jazmin Little
+                - link "View" [ref=f14e104] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/999
+              - generic [ref=f14e105]:
+                - generic [ref=f14e106]:
+                  - link "Voluptas illum minima saepe consequatur rem quos deleniti." [ref=f14e107] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/998
+                  - generic [ref=f14e108]: Needs Info
+                - link "View" [ref=f14e110] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/998
+              - generic [ref=f14e111]:
+                - generic [ref=f14e112]:
+                  - link "Perspiciatis eos eveniet possimus fuga harum facilis temporibus." [ref=f14e113] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/997
+                  - generic [ref=f14e114]:
+                    - generic [ref=f14e115]: New
+                    - generic [ref=f14e116]: → Maureen Stark
+                - link "View" [ref=f14e117] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/997
+              - generic [ref=f14e118]:
+                - generic [ref=f14e119]:
+                  - link "Enim quaerat rerum officiis est nobis." [ref=f14e120] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/996
+                  - generic [ref=f14e121]: New
+                - link "View" [ref=f14e123] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/996
+        - generic [ref=f14e124]:
+          - generic [ref=f14e125]:
+            - heading "Completion" [level=2] [ref=f14e126]
+            - generic [ref=f14e127]:
+              - generic [ref=f14e132]:
+                - generic [ref=f14e133]: 0%
+                - generic [ref=f14e134]: Done
+              - generic [ref=f14e135]:
+                - generic [ref=f14e136]:
+                  - generic [ref=f14e137]: "20"
+                  - text: Total
+                - generic [ref=f14e138]:
+                  - generic [ref=f14e139]: "0"
+                  - text: Active
+                - generic [ref=f14e140]:
+                  - generic [ref=f14e141]: "0"
+                  - text: Done
+          - generic [ref=f14e142]:
+            - heading "Details" [level=2] [ref=f14e143]
+            - generic [ref=f14e144]:
+              - generic [ref=f14e145]:
+                - generic [ref=f14e146]: Status
+                - generic [ref=f14e147]: Planning
+              - generic [ref=f14e148]:
+                - generic [ref=f14e149]:
+                  - generic [ref=f14e150]: Owner
+                  - generic [ref=f14e151]:
+                    - generic [ref=f14e152]: R
+                    - generic [ref=f14e153]: Robin
+                - generic [ref=f14e154]:
+                  - generic [ref=f14e155]: Created by
+                  - generic [ref=f14e156]:
+                    - generic [ref=f14e157]: M
+                    - generic [ref=f14e158]: Main Developer
+                - generic [ref=f14e159]:
+                  - generic [ref=f14e160]: Created
+                  - generic [ref=f14e161]: Aug 16, 2026 • 09:40 PM
+          - generic [ref=f14e162]:
+            - generic [ref=f14e167]:
+              - heading "Ideas Board" [level=3] [ref=f14e168]
+              - paragraph [ref=f14e169]: Manage requirements & feedback
+            - link [ref=f14e170] [cursor=pointer]:
+              - /url: http://stm.test/projects/50/ideas
+              - button "Open Ideas Board →" [ref=f14e171]

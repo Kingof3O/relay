@@ -1,0 +1,341 @@
+- generic [ref=f15e3]:
+  - complementary [ref=f15e4]:
+    - generic [ref=f15e5]:
+      - generic [ref=f15e6]:
+        - link [ref=f15e7] [cursor=pointer]:
+          - /url: /
+          - img "Relay" [ref=f15e8]
+        - generic [ref=f15e9]: Relay
+      - generic [ref=f15e10]:
+        - generic [ref=f15e11]:
+          - generic [ref=f15e12]: Main Menu
+          - navigation [ref=f15e13]:
+            - link "Dashboard" [ref=f15e14] [cursor=pointer]:
+              - /url: http://stm.test/dashboard
+            - link "Projects" [ref=f15e19] [cursor=pointer]:
+              - /url: http://stm.test/projects
+        - generic [ref=f15e25]:
+          - generic [ref=f15e26]: Administration
+          - navigation [ref=f15e27]:
+            - link "Users" [ref=f15e28] [cursor=pointer]:
+              - /url: http://stm.test/admin/users
+            - link "Roles" [ref=f15e33] [cursor=pointer]:
+              - /url: http://stm.test/admin/roles
+    - button "R Robin" [ref=f15e41] [cursor=pointer]:
+      - generic [ref=f15e42]:
+        - generic [ref=f15e43]: R
+        - generic [ref=f15e44]: Robin
+  - generic [ref=f15e47]:
+    - banner [ref=f15e48]:
+      - generic [ref=f15e50]:
+        - generic [ref=f15e51]:
+          - generic [ref=f15e52]:
+            - navigation [ref=f15e53]:
+              - link "Projects" [ref=f15e55] [cursor=pointer]:
+                - /url: http://stm.test/projects
+              - generic "McCullough Group alias" [ref=f15e59]
+            - heading "McCullough Group alias" [level=1] [ref=f15e60]
+          - button "Create Idea" [ref=f15e62] [cursor=pointer]
+        - navigation [ref=f15e64]:
+          - link "Overview" [ref=f15e65] [cursor=pointer]:
+            - /url: http://stm.test/projects/50
+          - link "Ideas 20" [ref=f15e66] [cursor=pointer]:
+            - /url: http://stm.test/projects/50/ideas
+            - text: Ideas
+            - generic [ref=f15e67]: "20"
+    - main [ref=f15e68]:
+      - generic [ref=f15e70]:
+        - generic [ref=f15e71]:
+          - generic [ref=f15e72]:
+            - generic [ref=f15e73]: Total Ideas
+            - generic [ref=f15e74]: "20"
+          - generic [ref=f15e75]:
+            - generic [ref=f15e76]: Active
+            - generic [ref=f15e77]: "0"
+          - generic [ref=f15e80]:
+            - generic [ref=f15e81]: Completed
+            - generic [ref=f15e82]: "0"
+          - generic [ref=f15e85]:
+            - generic [ref=f15e86]: New / Review
+            - generic [ref=f15e87]: "6"
+        - generic [ref=f15e90]:
+          - textbox "Search ideas..." [ref=f15e92]
+          - generic [ref=f15e93]:
+            - button "All" [ref=f15e94] [cursor=pointer]
+            - button "New" [ref=f15e95] [cursor=pointer]
+            - button "In Progress" [ref=f15e96] [cursor=pointer]
+            - button "Waiting For Reply" [ref=f15e97] [cursor=pointer]
+            - button "Needs Info" [ref=f15e98] [cursor=pointer]
+            - button "Needs Changes" [ref=f15e99] [cursor=pointer]
+            - button "Partially Done" [ref=f15e100] [cursor=pointer]
+            - button "Done" [ref=f15e101] [cursor=pointer]
+        - table [ref=f15e105]:
+          - rowgroup [ref=f15e106]:
+            - row [ref=f15e107]:
+              - columnheader "Title" [ref=f15e108]
+              - columnheader "Status" [ref=f15e109]
+              - columnheader "Progress" [ref=f15e110]
+              - columnheader "Assigned" [ref=f15e111]
+              - columnheader "Last Reply" [ref=f15e112]
+              - columnheader "Actions" [ref=f15e113]
+          - rowgroup [ref=f15e114]:
+            - row [ref=f15e115]:
+              - cell [ref=f15e116]:
+                - link "Necessitatibus magnam distinctio enim cupiditate ut." [ref=f15e117] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/1000
+              - cell "In Progress" [ref=f15e118]
+              - cell "15%" [ref=f15e120]
+              - cell "-" [ref=f15e122]
+              - cell "Aug 3, 2026 • 03:30 AM" [ref=f15e123]
+              - cell [ref=f15e124]:
+                - generic [ref=f15e125]:
+                  - link "View" [ref=f15e126] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/1000
+                  - button "Edit" [ref=f15e127] [cursor=pointer]
+            - row [ref=f15e128]:
+              - cell [ref=f15e129]:
+                - link "Non sit esse hic officiis." [ref=f15e130] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/999
+              - cell "Needs Changes" [ref=f15e131]
+              - cell "65%" [ref=f15e133]
+              - cell "Jazmin Little" [ref=f15e135]
+              - cell "Jul 31, 2026 • 11:06 AM" [ref=f15e136]
+              - cell [ref=f15e137]:
+                - generic [ref=f15e138]:
+                  - link "View" [ref=f15e139] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/999
+                  - button "Edit" [ref=f15e140] [cursor=pointer]
+            - row [ref=f15e141]:
+              - cell [ref=f15e142]:
+                - link "Voluptas illum minima saepe consequatur rem quos deleniti." [ref=f15e143] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/998
+              - cell "Needs Info" [ref=f15e144]
+              - cell "5%" [ref=f15e146]
+              - cell "-" [ref=f15e148]
+              - cell "Aug 5, 2026 • 10:32 PM" [ref=f15e149]
+              - cell [ref=f15e150]:
+                - generic [ref=f15e151]:
+                  - link "View" [ref=f15e152] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/998
+                  - button "Edit" [ref=f15e153] [cursor=pointer]
+            - row [ref=f15e154]:
+              - cell [ref=f15e155]:
+                - link "Perspiciatis eos eveniet possimus fuga harum facilis temporibus." [ref=f15e156] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/997
+              - cell "New" [ref=f15e157]
+              - cell "48%" [ref=f15e159]
+              - cell "Maureen Stark" [ref=f15e161]
+              - cell "Jul 16, 2026 • 03:51 PM" [ref=f15e162]
+              - cell [ref=f15e163]:
+                - generic [ref=f15e164]:
+                  - link "View" [ref=f15e165] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/997
+                  - button "Edit" [ref=f15e166] [cursor=pointer]
+            - row [ref=f15e167]:
+              - cell [ref=f15e168]:
+                - link "Enim quaerat rerum officiis est nobis." [ref=f15e169] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/996
+              - cell "New" [ref=f15e170]
+              - cell "87%" [ref=f15e172]
+              - cell "-" [ref=f15e174]
+              - cell "-" [ref=f15e175]
+              - cell [ref=f15e176]:
+                - generic [ref=f15e177]:
+                  - link "View" [ref=f15e178] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/996
+                  - button "Edit" [ref=f15e179] [cursor=pointer]
+            - row [ref=f15e180]:
+              - cell [ref=f15e181]:
+                - link "Quos et ut molestias dicta." [ref=f15e182] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/995
+              - cell "Needs Changes" [ref=f15e183]
+              - cell "50%" [ref=f15e185]
+              - cell "Prof. Judah Mann" [ref=f15e187]
+              - cell "-" [ref=f15e188]
+              - cell [ref=f15e189]:
+                - generic [ref=f15e190]:
+                  - link "View" [ref=f15e191] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/995
+                  - button "Edit" [ref=f15e192] [cursor=pointer]
+            - row [ref=f15e193]:
+              - cell [ref=f15e194]:
+                - link "Sit vel molestiae ut voluptatem iusto." [ref=f15e195] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/994
+              - cell "New" [ref=f15e196]
+              - cell "2%" [ref=f15e198]
+              - cell "Tyreek Marvin" [ref=f15e200]
+              - cell "Jul 10, 2026 • 12:13 AM" [ref=f15e201]
+              - cell [ref=f15e202]:
+                - generic [ref=f15e203]:
+                  - link "View" [ref=f15e204] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/994
+                  - button "Edit" [ref=f15e205] [cursor=pointer]
+            - row [ref=f15e206]:
+              - cell [ref=f15e207]:
+                - link "Porro ipsa placeat est in." [ref=f15e208] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/993
+              - cell "Partially Done" [ref=f15e209]
+              - cell "96%" [ref=f15e211]
+              - cell "Omer Maggio Sr." [ref=f15e213]
+              - cell "Aug 8, 2026 • 02:09 PM" [ref=f15e214]
+              - cell [ref=f15e215]:
+                - generic [ref=f15e216]:
+                  - link "View" [ref=f15e217] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/993
+                  - button "Edit" [ref=f15e218] [cursor=pointer]
+            - row [ref=f15e219]:
+              - cell [ref=f15e220]:
+                - link "Aperiam illo magnam aut hic iusto." [ref=f15e221] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/992
+              - cell "In Progress" [ref=f15e222]
+              - cell "80%" [ref=f15e224]
+              - cell "Sandy Kutch" [ref=f15e226]
+              - cell "Jul 30, 2026 • 08:02 PM" [ref=f15e227]
+              - cell [ref=f15e228]:
+                - generic [ref=f15e229]:
+                  - link "View" [ref=f15e230] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/992
+                  - button "Edit" [ref=f15e231] [cursor=pointer]
+            - row [ref=f15e232]:
+              - cell [ref=f15e233]:
+                - link "Qui inventore officia perspiciatis." [ref=f15e234] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/991
+              - cell "Waiting For Reply" [ref=f15e235]
+              - cell "11%" [ref=f15e237]
+              - cell "Prof. Judah Mann" [ref=f15e239]
+              - cell "-" [ref=f15e240]
+              - cell [ref=f15e241]:
+                - generic [ref=f15e242]:
+                  - link "View" [ref=f15e243] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/991
+                  - button "Edit" [ref=f15e244] [cursor=pointer]
+            - row [ref=f15e245]:
+              - cell [ref=f15e246]:
+                - link "Soluta atque ut magnam nam." [ref=f15e247] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/990
+              - cell "Needs Info" [ref=f15e248]
+              - cell "95%" [ref=f15e250]
+              - cell "Birdie Bahringer III" [ref=f15e252]
+              - cell "Aug 10, 2026 • 05:15 PM" [ref=f15e253]
+              - cell [ref=f15e254]:
+                - generic [ref=f15e255]:
+                  - link "View" [ref=f15e256] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/990
+                  - button "Edit" [ref=f15e257] [cursor=pointer]
+            - row [ref=f15e258]:
+              - cell [ref=f15e259]:
+                - link "Sapiente dicta similique neque sunt." [ref=f15e260] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/989
+              - cell "In Progress" [ref=f15e261]
+              - cell "13%" [ref=f15e263]
+              - cell "-" [ref=f15e265]
+              - cell "-" [ref=f15e266]
+              - cell [ref=f15e267]:
+                - generic [ref=f15e268]:
+                  - link "View" [ref=f15e269] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/989
+                  - button "Edit" [ref=f15e270] [cursor=pointer]
+            - row [ref=f15e271]:
+              - cell [ref=f15e272]:
+                - link "Ducimus ducimus et eaque ex." [ref=f15e273] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/988
+              - cell "Partially Done" [ref=f15e274]
+              - cell "45%" [ref=f15e276]
+              - cell "Coby Kunze" [ref=f15e278]
+              - cell "-" [ref=f15e279]
+              - cell [ref=f15e280]:
+                - generic [ref=f15e281]:
+                  - link "View" [ref=f15e282] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/988
+                  - button "Edit" [ref=f15e283] [cursor=pointer]
+            - row [ref=f15e284]:
+              - cell [ref=f15e285]:
+                - link "Id reprehenderit culpa earum ad sed iure sequi ut." [ref=f15e286] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/987
+              - cell "Partially Done" [ref=f15e287]
+              - cell "85%" [ref=f15e289]
+              - cell "Prof. Judah Mann" [ref=f15e291]
+              - cell "Aug 5, 2026 • 02:54 AM" [ref=f15e292]
+              - cell [ref=f15e293]:
+                - generic [ref=f15e294]:
+                  - link "View" [ref=f15e295] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/987
+                  - button "Edit" [ref=f15e296] [cursor=pointer]
+            - row [ref=f15e297]:
+              - cell [ref=f15e298]:
+                - link "Sequi perferendis consectetur ducimus quae et." [ref=f15e299] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/986
+              - cell "Needs Info" [ref=f15e300]
+              - cell "28%" [ref=f15e302]
+              - cell "Sandy Kutch" [ref=f15e304]
+              - cell "-" [ref=f15e305]
+              - cell [ref=f15e306]:
+                - generic [ref=f15e307]:
+                  - link "View" [ref=f15e308] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/986
+                  - button "Edit" [ref=f15e309] [cursor=pointer]
+            - row [ref=f15e310]:
+              - cell [ref=f15e311]:
+                - link "Nihil dolor in aliquid rem omnis a." [ref=f15e312] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/985
+              - cell "In Progress" [ref=f15e313]
+              - cell "58%" [ref=f15e315]
+              - cell "Coby Kunze" [ref=f15e317]
+              - cell "Aug 13, 2026 • 05:03 PM" [ref=f15e318]
+              - cell [ref=f15e319]:
+                - generic [ref=f15e320]:
+                  - link "View" [ref=f15e321] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/985
+                  - button "Edit" [ref=f15e322] [cursor=pointer]
+            - row [ref=f15e323]:
+              - cell [ref=f15e324]:
+                - link "Ipsa deserunt facilis debitis velit et rerum sit." [ref=f15e325] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/984
+              - cell "New" [ref=f15e326]
+              - cell "25%" [ref=f15e328]
+              - cell "-" [ref=f15e330]
+              - cell "Jul 28, 2026 • 04:20 PM" [ref=f15e331]
+              - cell [ref=f15e332]:
+                - generic [ref=f15e333]:
+                  - link "View" [ref=f15e334] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/984
+                  - button "Edit" [ref=f15e335] [cursor=pointer]
+            - row [ref=f15e336]:
+              - cell [ref=f15e337]:
+                - link "Porro recusandae molestias eligendi autem sit similique molestiae cumque." [ref=f15e338] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/983
+              - cell "New" [ref=f15e339]
+              - cell "46%" [ref=f15e341]
+              - cell "-" [ref=f15e343]
+              - cell "Jul 3, 2026 • 10:11 AM" [ref=f15e344]
+              - cell [ref=f15e345]:
+                - generic [ref=f15e346]:
+                  - link "View" [ref=f15e347] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/983
+                  - button "Edit" [ref=f15e348] [cursor=pointer]
+            - row [ref=f15e349]:
+              - cell [ref=f15e350]:
+                - link "Consequatur vitae assumenda et mollitia in." [ref=f15e351] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/982
+              - cell "In Progress" [ref=f15e352]
+              - cell "69%" [ref=f15e354]
+              - cell "Miss Janiya Gutmann DVM" [ref=f15e356]
+              - cell "Jun 28, 2026 • 05:37 PM" [ref=f15e357]
+              - cell [ref=f15e358]:
+                - generic [ref=f15e359]:
+                  - link "View" [ref=f15e360] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/982
+                  - button "Edit" [ref=f15e361] [cursor=pointer]
+            - row [ref=f15e362]:
+              - cell [ref=f15e363]:
+                - link "Voluptas non cupiditate eligendi est enim cumque." [ref=f15e364] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/981
+              - cell "New" [ref=f15e365]
+              - cell "0%" [ref=f15e367]
+              - cell "-" [ref=f15e369]
+              - cell "Jul 19, 2026 • 12:10 AM" [ref=f15e370]
+              - cell [ref=f15e371]:
+                - generic [ref=f15e372]:
+                  - link "View" [ref=f15e373] [cursor=pointer]:
+                    - /url: http://stm.test/projects/50/ideas/981
+                  - button "Edit" [ref=f15e374] [cursor=pointer]

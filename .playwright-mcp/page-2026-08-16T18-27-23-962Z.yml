@@ -1,0 +1,280 @@
+- generic [ref=f4e3]:
+  - complementary [ref=f4e4]:
+    - generic [ref=f4e5]:
+      - generic [ref=f4e6]:
+        - link [ref=f4e7] [cursor=pointer]:
+          - /url: /
+          - img "Relay" [ref=f4e8]
+        - generic [ref=f4e9]: Relay
+      - generic [ref=f4e10]:
+        - generic [ref=f4e11]:
+          - generic [ref=f4e12]: Main Menu
+          - navigation [ref=f4e13]:
+            - link "Dashboard" [ref=f4e14] [cursor=pointer]:
+              - /url: http://stm.test/dashboard
+            - link "Projects" [ref=f4e20] [cursor=pointer]:
+              - /url: http://stm.test/projects
+        - generic [ref=f4e25]:
+          - generic [ref=f4e26]: Administration
+          - navigation [ref=f4e27]:
+            - link "Users" [ref=f4e28] [cursor=pointer]:
+              - /url: http://stm.test/admin/users
+            - link "Roles" [ref=f4e33] [cursor=pointer]:
+              - /url: http://stm.test/admin/roles
+    - button "R Robin" [ref=f4e41] [cursor=pointer]:
+      - generic [ref=f4e42]:
+        - generic [ref=f4e43]: R
+        - generic [ref=f4e44]: Robin
+  - generic [ref=f4e47]:
+    - banner [ref=f4e48]:
+      - heading "Dashboard" [level=2] [ref=f4e50]
+    - main [ref=f4e51]:
+      - generic [ref=f4e53]:
+        - generic [ref=f4e54]:
+          - generic [ref=f4e55]:
+            - generic [ref=f4e57]: Projects
+            - generic [ref=f4e62]: "50"
+          - generic [ref=f4e68]:
+            - generic [ref=f4e70]: Ideas waiting for reply
+            - generic [ref=f4e75]: "135"
+          - generic [ref=f4e81]:
+            - generic [ref=f4e83]: Your assigned ideas
+            - generic [ref=f4e88]: "0"
+          - generic [ref=f4e94]:
+            - generic [ref=f4e96]: Open tasks (your ideas)
+            - generic [ref=f4e101]: "0"
+        - generic [ref=f4e107]:
+          - generic [ref=f4e108]:
+            - generic [ref=f4e109]:
+              - heading "Ideas distribution" [level=3] [ref=f4e110]
+              - paragraph [ref=f4e111]: Visual breakdown of idea statuses
+            - generic [ref=f4e112]:
+              - generic [ref=f4e123]:
+                - generic [ref=f4e124]: "1000"
+                - generic [ref=f4e125]: Ideas
+              - generic [ref=f4e126]:
+                - generic [ref=f4e127]:
+                  - generic [ref=f4e128]: done
+                  - generic [ref=f4e131]:
+                    - generic [ref=f4e132]: 14%
+                    - generic [ref=f4e133]: "142"
+                - generic [ref=f4e135]:
+                  - generic [ref=f4e136]: in_progress
+                  - generic [ref=f4e139]:
+                    - generic [ref=f4e140]: 12%
+                    - generic [ref=f4e141]: "119"
+                - generic [ref=f4e143]:
+                  - generic [ref=f4e144]: needs_changes
+                  - generic [ref=f4e147]:
+                    - generic [ref=f4e148]: 14%
+                    - generic [ref=f4e149]: "142"
+                - generic [ref=f4e151]:
+                  - generic [ref=f4e152]: needs_info
+                  - generic [ref=f4e155]:
+                    - generic [ref=f4e156]: 16%
+                    - generic [ref=f4e157]: "158"
+                - generic [ref=f4e159]:
+                  - generic [ref=f4e160]: new
+                  - generic [ref=f4e163]:
+                    - generic [ref=f4e164]: 15%
+                    - generic [ref=f4e165]: "151"
+                - generic [ref=f4e167]:
+                  - generic [ref=f4e168]: partially_done
+                  - generic [ref=f4e171]:
+                    - generic [ref=f4e172]: 15%
+                    - generic [ref=f4e173]: "153"
+                - generic [ref=f4e175]:
+                  - generic [ref=f4e176]: waiting_for_reply
+                  - generic [ref=f4e179]:
+                    - generic [ref=f4e180]: 14%
+                    - generic [ref=f4e181]: "135"
+          - generic [ref=f4e183]:
+            - heading "Your assigned ideas" [level=3] [ref=f4e184]
+            - generic [ref=f4e185]: No assigned ideas.
+        - generic [ref=f4e186]:
+          - generic [ref=f4e187]:
+            - heading "Waiting for reply" [level=3] [ref=f4e188]
+            - generic [ref=f4e189]:
+              - generic [ref=f4e190]:
+                - generic [ref=f4e191]:
+                  - generic [ref=f4e192]: Walker LLC dignissimos — Temporibus voluptatum sit autem nobis saepe qui ea.
+                  - generic [ref=f4e193]:
+                    - generic [ref=f4e194]: "Last reply: -"
+                    - generic [ref=f4e195]: •
+                    - generic [ref=f4e196]: "Assignee: Mertie Hilpert"
+                - link "Open" [ref=f4e197] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/989
+              - generic [ref=f4e198]:
+                - generic [ref=f4e199]:
+                  - generic [ref=f4e200]: Harber-Fay dolor — Tempore qui laborum illum et.
+                  - generic [ref=f4e201]:
+                    - generic [ref=f4e202]: "Last reply: -"
+                    - generic [ref=f4e203]: •
+                    - generic [ref=f4e204]: "Assignee: Maynard Romaguera III"
+                - link "Open" [ref=f4e205] [cursor=pointer]:
+                  - /url: http://stm.test/projects/49/ideas/979
+              - generic [ref=f4e206]:
+                - generic [ref=f4e207]:
+                  - generic [ref=f4e208]: Harber-Fay dolor — Dolorem ex veritatis dolores.
+                  - generic [ref=f4e209]:
+                    - generic [ref=f4e210]: "Last reply: -"
+                    - generic [ref=f4e211]: •
+                    - generic [ref=f4e212]: "Assignee: Alexie Kuphal"
+                - link "Open" [ref=f4e213] [cursor=pointer]:
+                  - /url: http://stm.test/projects/49/ideas/975
+              - generic [ref=f4e214]:
+                - generic [ref=f4e215]:
+                  - generic [ref=f4e216]: O'Keefe and Sons quisquam — Et rerum modi libero iure.
+                  - generic [ref=f4e217]:
+                    - generic [ref=f4e218]: "Last reply: -"
+                    - generic [ref=f4e219]: •
+                    - generic [ref=f4e220]: "Assignee: Gudrun Shields"
+                - link "Open" [ref=f4e221] [cursor=pointer]:
+                  - /url: http://stm.test/projects/48/ideas/953
+              - generic [ref=f4e222]:
+                - generic [ref=f4e223]:
+                  - generic [ref=f4e224]: O'Keefe and Sons quisquam — Delectus unde voluptatum hic sint eveniet harum.
+                  - generic [ref=f4e225]:
+                    - generic [ref=f4e226]: "Last reply: -"
+                    - generic [ref=f4e227]: •
+                    - generic [ref=f4e228]: "Assignee: Toney Reichert"
+                - link "Open" [ref=f4e229] [cursor=pointer]:
+                  - /url: http://stm.test/projects/48/ideas/946
+              - generic [ref=f4e230]:
+                - generic [ref=f4e231]:
+                  - generic [ref=f4e232]: O'Keefe and Sons quisquam — Repudiandae tenetur ratione eum sint voluptates.
+                  - generic [ref=f4e233]:
+                    - generic [ref=f4e234]: "Last reply: -"
+                    - generic [ref=f4e235]: •
+                    - generic [ref=f4e236]: "Assignee: -"
+                - link "Open" [ref=f4e237] [cursor=pointer]:
+                  - /url: http://stm.test/projects/48/ideas/942
+              - generic [ref=f4e238]:
+                - generic [ref=f4e239]:
+                  - generic [ref=f4e240]: Mayert-Heidenreich explicabo — Unde incidunt impedit voluptas velit et natus sit et.
+                  - generic [ref=f4e241]:
+                    - generic [ref=f4e242]: "Last reply: -"
+                    - generic [ref=f4e243]: •
+                    - generic [ref=f4e244]: "Assignee: Stanton Yundt"
+                - link "Open" [ref=f4e245] [cursor=pointer]:
+                  - /url: http://stm.test/projects/45/ideas/882
+              - generic [ref=f4e246]:
+                - generic [ref=f4e247]:
+                  - generic [ref=f4e248]: Moore, Barrows and Turcotte eum — Atque autem reiciendis aspernatur dolorum quia.
+                  - generic [ref=f4e249]:
+                    - generic [ref=f4e250]: "Last reply: -"
+                    - generic [ref=f4e251]: •
+                    - generic [ref=f4e252]: "Assignee: Ms. Golda Konopelski II"
+                - link "Open" [ref=f4e253] [cursor=pointer]:
+                  - /url: http://stm.test/projects/44/ideas/876
+              - generic [ref=f4e254]:
+                - generic [ref=f4e255]:
+                  - generic [ref=f4e256]: Moore, Barrows and Turcotte eum — Eum blanditiis sit dolorem ipsum.
+                  - generic [ref=f4e257]:
+                    - generic [ref=f4e258]: "Last reply: -"
+                    - generic [ref=f4e259]: •
+                    - generic [ref=f4e260]: "Assignee: -"
+                - link "Open" [ref=f4e261] [cursor=pointer]:
+                  - /url: http://stm.test/projects/44/ideas/867
+              - generic [ref=f4e262]:
+                - generic [ref=f4e263]:
+                  - generic [ref=f4e264]: Moore, Barrows and Turcotte eum — Quidem dicta enim dicta voluptatibus et optio dolor.
+                  - generic [ref=f4e265]:
+                    - generic [ref=f4e266]: "Last reply: -"
+                    - generic [ref=f4e267]: •
+                    - generic [ref=f4e268]: "Assignee: -"
+                - link "Open" [ref=f4e269] [cursor=pointer]:
+                  - /url: http://stm.test/projects/44/ideas/865
+          - generic [ref=f4e270]:
+            - heading "Open tasks" [level=3] [ref=f4e271]
+            - generic [ref=f4e272]:
+              - generic [ref=f4e273]:
+                - generic [ref=f4e274]:
+                  - generic [ref=f4e275]: Soluta dolor enim natus quam corporis ea.
+                  - generic [ref=f4e276]:
+                    - generic [ref=f4e277]: Walker LLC dignissimos — Expedita tenetur quos inventore laudantium nulla perspiciatis in cum.
+                    - generic [ref=f4e278]: •
+                    - generic [ref=f4e279]: "Assignee: -"
+                - link "Open" [ref=f4e280] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/1000
+              - generic [ref=f4e281]:
+                - generic [ref=f4e282]:
+                  - generic [ref=f4e283]: Recusandae doloremque nihil ipsum et nulla.
+                  - generic [ref=f4e284]:
+                    - generic [ref=f4e285]: Walker LLC dignissimos — Expedita tenetur quos inventore laudantium nulla perspiciatis in cum.
+                    - generic [ref=f4e286]: •
+                    - generic [ref=f4e287]: "Assignee: -"
+                - link "Open" [ref=f4e288] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/1000
+              - generic [ref=f4e289]:
+                - generic [ref=f4e290]:
+                  - generic [ref=f4e291]: Omnis impedit perspiciatis delectus.
+                  - generic [ref=f4e292]:
+                    - generic [ref=f4e293]: Walker LLC dignissimos — Expedita tenetur quos inventore laudantium nulla perspiciatis in cum.
+                    - generic [ref=f4e294]: •
+                    - generic [ref=f4e295]: "Assignee: -"
+                - link "Open" [ref=f4e296] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/1000
+              - generic [ref=f4e297]:
+                - generic [ref=f4e298]:
+                  - generic [ref=f4e299]: Ea animi et quis qui.
+                  - generic [ref=f4e300]:
+                    - generic [ref=f4e301]: Walker LLC dignissimos — Expedita tenetur quos inventore laudantium nulla perspiciatis in cum.
+                    - generic [ref=f4e302]: •
+                    - generic [ref=f4e303]: "Assignee: -"
+                - link "Open" [ref=f4e304] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/1000
+              - generic [ref=f4e305]:
+                - generic [ref=f4e306]:
+                  - generic [ref=f4e307]: Voluptatem eaque odio eos ut quod.
+                  - generic [ref=f4e308]:
+                    - generic [ref=f4e309]: Walker LLC dignissimos — Accusantium provident ut quis quibusdam quo.
+                    - generic [ref=f4e310]: •
+                    - generic [ref=f4e311]: "Assignee: Keyon Lowe"
+                - link "Open" [ref=f4e312] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/999
+              - generic [ref=f4e313]:
+                - generic [ref=f4e314]:
+                  - generic [ref=f4e315]: Tempora quia totam ut ad.
+                  - generic [ref=f4e316]:
+                    - generic [ref=f4e317]: Walker LLC dignissimos — Error totam id expedita et quasi.
+                    - generic [ref=f4e318]: •
+                    - generic [ref=f4e319]: "Assignee: Prof. Zack Carroll Sr."
+                - link "Open" [ref=f4e320] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/998
+              - generic [ref=f4e321]:
+                - generic [ref=f4e322]:
+                  - generic [ref=f4e323]: Maiores consectetur at quis minima omnis.
+                  - generic [ref=f4e324]:
+                    - generic [ref=f4e325]: Walker LLC dignissimos — Error totam id expedita et quasi.
+                    - generic [ref=f4e326]: •
+                    - generic [ref=f4e327]: "Assignee: Prof. Zack Carroll Sr."
+                - link "Open" [ref=f4e328] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/998
+              - generic [ref=f4e329]:
+                - generic [ref=f4e330]:
+                  - generic [ref=f4e331]: Omnis mollitia quia fugit ut rerum.
+                  - generic [ref=f4e332]:
+                    - generic [ref=f4e333]: Walker LLC dignissimos — Eos sed nisi at temporibus veritatis voluptatem eos sed.
+                    - generic [ref=f4e334]: •
+                    - generic [ref=f4e335]: "Assignee: -"
+                - link "Open" [ref=f4e336] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/997
+              - generic [ref=f4e337]:
+                - generic [ref=f4e338]:
+                  - generic [ref=f4e339]: Consequatur laudantium quo rem consequatur odit dolorem.
+                  - generic [ref=f4e340]:
+                    - generic [ref=f4e341]: Walker LLC dignissimos — Eos sed nisi at temporibus veritatis voluptatem eos sed.
+                    - generic [ref=f4e342]: •
+                    - generic [ref=f4e343]: "Assignee: -"
+                - link "Open" [ref=f4e344] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/997
+              - generic [ref=f4e345]:
+                - generic [ref=f4e346]:
+                  - generic [ref=f4e347]: Ipsam et quos ab.
+                  - generic [ref=f4e348]:
+                    - generic [ref=f4e349]: Walker LLC dignissimos — Eos sed nisi at temporibus veritatis voluptatem eos sed.
+                    - generic [ref=f4e350]: •
+                    - generic [ref=f4e351]: "Assignee: -"
+                - link "Open" [ref=f4e352] [cursor=pointer]:
+                  - /url: http://stm.test/projects/50/ideas/997

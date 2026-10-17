@@ -1,0 +1,411 @@
+🔥 MASTER PROMPT — SCHMOBIN INTERNAL MANAGEMENT PLATFORM
+Context
+
+You are building an internal-only team management platform for a gaming/streaming brand called Schmobin.
+
+This platform is NOT public, NOT for end users, and NOT for registration.
+It is strictly for internal team collaboration.
+
+Core Tech Stack (MANDATORY)
+
+Backend: Laravel (latest stable)
+
+Frontend: Inertia.js
+
+Frontend Framework: React
+
+Language: TypeScript ONLY (no JavaScript anywhere)
+
+Styling: Tailwind CSS
+
+Auth: Laravel session-based auth
+
+Database: MySQL
+
+No Socket.IO
+
+No external SaaS (no Firebase, no Clerk, no Auth0)
+
+Access Rules (VERY IMPORTANT)
+
+❌ No public registration
+
+✅ Only Main Dev and Robin (Owner) can:
+
+Create users
+
+Edit users
+
+Assign roles
+
+Edit role permissions
+
+Other users cannot manage users or roles
+
+Roles System (DYNAMIC & EDITABLE)
+
+The system must support dynamic roles with permissions.
+
+Default roles (seeded):
+
+Owner (Robin) → full access
+
+Main Developer → full access
+
+Team Member → limited access
+
+⚠️ Robin and Main Dev can:
+
+Create new roles
+
+Edit existing roles
+
+Assign granular permissions per role
+
+Permissions examples:
+
+manage_users
+
+manage_roles
+
+create_projects
+
+edit_projects
+
+delete_projects
+
+create_ideas
+
+update_ideas
+
+mark_tasks
+
+upload_files
+
+comment
+
+approve_work
+
+Permissions must be:
+
+Stored in DB
+
+Assigned per role
+
+Enforced using Laravel Policies + Middleware
+
+Users
+
+User fields:
+
+name
+
+email
+
+password
+
+role_id
+
+active (boolean)
+
+Users cannot self-register.
+All users are created internally.
+
+Project Concept
+
+A Project represents a game or content unit (example: ChatDuell, QuizDuell, etc.).
+
+Project fields:
+
+name
+
+description
+
+status (planning / active / paused / released / archived)
+
+owner_id (Robin)
+
+created_by
+
+Each project contains:
+
+Ideas
+
+Tasks / Follow-ups
+
+Files
+
+Comments
+
+Idea & Follow-up Workflow (CRITICAL)
+
+This is the heart of the system.
+
+Idea flow:
+
+Robin creates an idea
+
+Example:
+
+Game name: ChatDuell
+Flow:
+1. User joins
+2. Question appears
+3. Chat votes
+4. Winner shown
+
+
+Idea status starts as:
+
+New
+
+Main Dev reviews
+
+Marks:
+
+In Progress
+
+Needs Info
+
+Done
+
+Partially Done
+
+Follow-ups
+
+Robin can reply with:
+
+Bugs
+
+Errors
+
+New features
+
+Main Dev follows up again
+
+Same pattern for:
+
+Designer
+
+Video Editor
+
+This must behave like a threaded timeline, NOT a simple comment section.
+
+Unified Follow-up System (ALL ROLES USE SAME SYSTEM)
+
+Robin posts initial request
+
+Assigned person responds
+
+Robin replies again if needed
+
+Status updates at each step
+
+Follow-up entry fields:
+
+user_id
+
+content (markdown supported)
+
+status_at_time
+
+attachments (optional)
+
+created_at
+
+Tasks / Status Tracking
+
+Each idea has:
+
+Overall status
+
+Progress indicator
+
+Last updated by
+
+Last reply time
+
+Statuses:
+
+New
+
+In Progress
+
+Waiting for Reply
+
+Needs Changes
+
+Done
+
+Files & Uploads
+
+Designer & Editor can upload files
+
+Files are always linked to:
+
+Project
+
+Idea
+
+Allowed:
+
+Images
+
+Videos
+
+ZIP
+
+PDFs
+
+File metadata:
+
+uploader
+
+version
+
+type
+
+size
+
+created_at
+
+UI / UX REQUIREMENTS
+
+Clean dashboard
+
+No public pages
+
+Role-based navigation
+
+Sidebar layout
+
+Dark mode friendly
+
+Mobile responsive
+
+Dashboards:
+
+Robin Dashboard
+
+All projects
+
+Pending replies
+
+Status overview
+
+Main Dev Dashboard
+
+Active ideas
+
+Waiting replies
+
+Project progress
+
+Team Member Dashboard
+
+Assigned ideas
+
+Upload requests
+
+Feedback threads
+
+Routing Rules
+
+All routes must be protected
+
+Unauthorized users must get 403
+
+Guests must be redirected to login
+
+Auth
+
+Login only
+
+Password reset optional
+
+No registration route exists at all
+
+Database Design (MANDATORY)
+
+You must create:
+
+users
+
+roles
+
+permissions
+
+role_permission (pivot)
+
+projects
+
+ideas
+
+follow_ups
+
+files
+
+Include:
+
+migrations
+
+seeders for roles & permissions
+
+Code Quality Rules
+
+Use:
+
+Form Requests
+
+Policies
+
+Service classes where needed
+
+No fat controllers
+
+Strict typing everywhere (PHP & TS)
+
+Clean folder structure
+
+Frontend Rules
+
+Inertia + React + TypeScript
+
+No JS files
+
+Tailwind only
+
+Reusable components
+
+Proper error handling
+
+Deliverables (DO NOT SKIP)
+
+Full database schema
+
+Laravel auth setup
+
+Role & permission system
+
+Project management
+
+Idea + follow-up workflow
+
+File upload system
+
+Policies & middleware
+
+Inertia React pages
+
+Seeders
+
+Production-ready structure
+
+Important Instruction to AI
+
+⚠️ Do NOT ask questions.
+⚠️ Do NOT simplify.
+⚠️ Do NOT skip edge cases.
+⚠️ Assume this will be deployed to production.
+
+Build everything completely.

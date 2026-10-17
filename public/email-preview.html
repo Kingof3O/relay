@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relay Studio · Email Template Style Showcase</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #050608;
+            color: #e4e4e7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        /* Top Navigation Header */
+        .preview-header {
+            background: #090a0f;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 16px 24px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .preview-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .brand-logo {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            color: white;
+            box-shadow: 0 0 16px rgba(139, 92, 246, 0.4);
+        }
+        .brand-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.01em;
+        }
+        .brand-subtitle {
+            font-size: 11px;
+            color: #71717a;
+            font-weight: 500;
+        }
+
+        /* Style Selector Pills */
+        .style-switcher {
+            display: flex;
+            align-items: center;
+            background: #121318;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 4px;
+            gap: 4px;
+        }
+        .style-btn {
+            background: transparent;
+            border: none;
+            color: #a1a1aa;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .style-btn:hover {
+            color: white;
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .style-btn.active {
+            background: #27272a;
+            color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .style-btn .num-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 5px;
+            border-radius: 4px;
+        }
+        .style-btn.active .num-badge {
+            background: #8b5cf6;
+            color: white;
+        }
+
+        /* Viewport Mode Switcher */
+        .viewport-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .view-btn {
+            background: #121318;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: #a1a1aa;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .view-btn.active {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.4);
+            color: #c4b5fd;
+        }
+
+        /* Main Workspace Container */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 40px 20px;
+            background: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.05) 0%, transparent 50%), #050608;
+        }
+        .preview-stage {
+            width: 100%;
+            max-width: 640px;
+            transition: max-width 0.25s ease;
+        }
+        .preview-stage.mobile-view {
+            max-width: 380px;
+        }
+
+        .style-description-banner {
+            max-width: 640px;
+            width: 100%;
+            margin-bottom: 24px;
+            background: #090a0f;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+        .style-info-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: white;
+        }
+        .style-info-desc {
+            font-size: 12px;
+            color: #a1a1aa;
+            margin-top: 2px;
+        }
+        .pick-btn {
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: background 0.15s ease;
+        }
+        .pick-btn:hover {
+            background: #7c3aed;
+        }
+
+        /* Container for each style */
+        .email-template {
+            display: none;
+            width: 100%;
+        }
+        .email-template.active {
+            display: block;
+            animation: fadeIn 0.2s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Common Email Elements */
+        .tag-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+        .tag-pill.urgent {
+            background: rgba(244, 63, 94, 0.15);
+            border: 1px solid rgba(244, 63, 94, 0.3);
+            color: #fda4af;
+        }
+        .tag-pill.review {
+            background: rgba(139, 92, 246, 0.15);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            color: #d8b4fe;
+        }
+        .tag-pill.in-progress {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            color: #93c5fd;
+        }
+        .dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+        .dot.urgent { background: #f43f5e; box-shadow: 0 0 6px #f43f5e; }
+        .dot.review { background: #a855f7; box-shadow: 0 0 6px #a855f7; }
+        .dot.blue { background: #3b82f6; box-shadow: 0 0 6px #3b82f6; }
+
+        /* ========================================================
+           STYLE 1: Linear Dark Minimal
+           Clean, sleek, single-column obsidian card, high contrast
+           ======================================================== */
+        .s1-wrap {
+            background: #090a0f;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+        }
+        .s1-header {
+            padding: 24px 28px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .s1-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .s1-body {
+            padding: 28px;
+        }
+        .s1-subtext {
+            font-size: 13px;
+            color: #a1a1aa;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+        .s1-subtext strong {
+            color: #f4f4f5;
+        }
+        .s1-ticket-box {
+            background: #111218;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .s1-ticket-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .s1-ticket-id {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: #a1a1aa;
+        }
+        .s1-ticket-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+        .s1-ticket-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            font-size: 12px;
+        }
+        .s1-meta-label {
+            color: #71717a;
+            font-size: 11px;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .s1-meta-value {
+            color: #e4e4e7;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .s1-cta-row {
+            margin-top: 28px;
+        }
+        .s1-cta-btn {
+            display: inline-block;
+            background: #8b5cf6;
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35);
+            transition: all 0.15s ease;
+        }
+        .s1-cta-btn:hover {
+            background: #7c3aed;
+        }
+        .s1-footer {
+            padding: 20px 28px;
+            background: #06070a;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 11px;
+            color: #71717a;
+            line-height: 1.5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* ========================================================
+           STYLE 2: Raycast Obsidian Glow
+           Frosted glass, specular borders, radial glow, vibrant badges
+           ======================================================== */
+        .s2-wrap {
+            position: relative;
+            background: #090a0f;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+        }
+        .s2-glow-bg {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 320px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(59, 130, 246, 0.1) 60%, transparent 100%);
+            pointer-events: none;
+            filter: blur(40px);
+        }
+        .s2-header {
+            position: relative;
+            padding: 28px 32px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .s2-body {
+            position: relative;
+            padding: 0 32px 32px;
+        }
+        .s2-hero-card {
+            background: rgba(18, 19, 24, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+        .s2-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .s2-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: -0.02em;
+            margin-bottom: 10px;
+        }
+        .s2-desc {
+            font-size: 13px;
+            color: #a1a1aa;
+            line-height: 1.6;
+            margin-bottom: 18px;
+            border-left: 2px solid rgba(139, 92, 246, 0.5);
+            padding-left: 12px;
+        }
+        .s2-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 12px;
+        }
+        .s2-cell-label {
+            font-size: 10px;
+            color: #71717a;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .s2-cell-val {
+            font-size: 12px;
+            font-weight: 600;
+            color: #e4e4e7;
+            margin-top: 2px;
+        }
+        .s2-cta-btn {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.15s ease;
+        }
+        .s2-footer {
+            padding: 20px 32px;
+            background: rgba(0, 0, 0, 0.4);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #71717a;
+        }
+
+        /* ========================================================
+           STYLE 3: Dual-Tone Priority Accent
+           Linear top accent bar indicating urgency, clean modular cards
+           ======================================================== */
+        .s3-wrap {
+            background: #0b0c10;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+        }
+        .s3-accent-bar {
+            height: 4px;
+            background: linear-gradient(90deg, #f43f5e 0%, #fb923c 50%, #8b5cf6 100%);
+        }
+        .s3-header {
+            padding: 24px 28px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .s3-body {
+            padding: 28px;
+        }
+        .s3-headline {
+            font-size: 14px;
+            color: #e4e4e7;
+            margin-bottom: 20px;
+        }
+        .s3-card {
+            background: #13141a;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+        .s3-badge-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .s3-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            line-height: 1.4;
+            margin-bottom: 14px;
+        }
+        .s3-details-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        .s3-details-table td {
+            padding: 8px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .s3-td-label {
+            color: #71717a;
+            width: 110px;
+        }
+        .s3-td-val {
+            color: #f4f4f5;
+            font-weight: 600;
+        }
+        .s3-cta-btn {
+            display: inline-block;
+            background: #ffffff;
+            color: #090a0f;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            transition: all 0.15s ease;
+        }
+        .s3-cta-btn:hover {
+            background: #e4e4e7;
+        }
+        .s3-footer {
+            padding: 18px 28px;
+            background: #08090d;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 11px;
+            color: #71717a;
+            text-align: center;
+        }
+
+        /* ========================================================
+           STYLE 4: Developer Monospace (GitHub / Vercel Aesthetic)
+           High-density, technical, JetBrains Mono details, diff style
+           ======================================================== */
+        .s4-wrap {
+            background: #08090c;
+            border: 1px solid #27272a;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 16px 32px rgba(0, 0, 0, 0.8);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .s4-header {
+            padding: 16px 20px;
+            background: #0f1015;
+            border-bottom: 1px solid #27272a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .s4-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            color: #f4f4f5;
+        }
+        .s4-body {
+            padding: 24px 20px;
+        }
+        .s4-terminal-box {
+            background: #040507;
+            border: 1px solid #1f2028;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .s4-term-line {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #a1a1aa;
+        }
+        .s4-term-line span.hl {
+            color: #38bdf8;
+        }
+        .s4-term-line span.act {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+        .s4-code-block {
+            margin-top: 12px;
+            padding: 10px 12px;
+            background: #0c0d12;
+            border: 1px solid #1e2029;
+            border-radius: 6px;
+            font-size: 11px;
+            color: #e4e4e7;
+            white-space: pre-wrap;
+        }
+        .s4-cta-btn {
+            display: inline-block;
+            background: #18181b;
+            color: #f4f4f5;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 10px 18px;
+            border: 1px solid #3f3f46;
+            border-radius: 8px;
+            transition: all 0.15s ease;
+        }
+        .s4-cta-btn:hover {
+            background: #27272a;
+            border-color: #71717a;
+        }
+        .s4-footer {
+            padding: 14px 20px;
+            background: #050608;
+            border-top: 1px solid #1f2028;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: #52525b;
+            display: flex;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation with Interactive Selectors -->
+    <header class="preview-header">
+        <div class="preview-brand">
+            <div class="brand-logo">R</div>
+            <div>
+                <div class="brand-title">Relay Studio · Email Styles</div>
+                <div class="brand-subtitle">Interactive Design Picker for Work Assignment & Updates</div>
+            </div>
+        </div>
+
+        <!-- 4 Style Buttons -->
+        <div class="style-switcher">
+            <button class="style-btn active" onclick="switchStyle(1)">
+                <span class="num-badge">01</span> Linear Dark Minimal
+            </button>
+            <button class="style-btn" onclick="switchStyle(2)">
+                <span class="num-badge">02</span> Raycast Obsidian Glow
+            </button>
+            <button class="style-btn" onclick="switchStyle(3)">
+                <span class="num-badge">03</span> Dual-Tone Accent
+            </button>
+            <button class="style-btn" onclick="switchStyle(4)">
+                <span class="num-badge">04</span> Developer Monospace
+            </button>
+        </div>
+
+        <!-- Viewport Controls -->
+        <div class="viewport-controls">
+            <button class="view-btn active" id="btn-desktop" onclick="setViewport('desktop')">Desktop (640px)</button>
+            <button class="view-btn" id="btn-mobile" onclick="setViewport('mobile')">Mobile (380px)</button>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="workspace">
+
+        <!-- Informational Banner for Current Selection -->
+        <div class="style-description-banner">
+            <div>
+                <div class="style-info-title" id="style-title">Style 1: Linear Dark Minimal (Recommended)</div>
+                <div class="style-info-desc" id="style-desc">Clean single-column obsidian card, subtle borders, high-contrast typography, violet CTA, perfect for email clients in dark mode.</div>
+            </div>
+            <button class="pick-btn" onclick="copyChoice()">Pick This Style</button>
+        </div>
+
+        <!-- Stage Container -->
+        <div class="preview-stage" id="stage">
+
+            <!-- ==============================================
+                 STYLE 1: Linear Dark Minimal
+                 ============================================== -->
+            <div class="email-template active" id="style-1">
+                <div class="s1-wrap">
+                    <div class="s1-header">
+                        <div class="s1-logo-row">
+                            <div class="brand-logo" style="width: 24px; height: 24px; font-size: 11px;">R</div>
+                            <span style="font-size: 13px; font-weight: 700; color: white;">Relay Studio</span>
+                        </div>
+                        <span class="tag-pill urgent"><span class="dot urgent"></span> Urgent</span>
+                    </div>
+
+                    <div class="s1-body">
+                        <div class="s1-subtext">
+                            <strong>Sarah Chen</strong> assigned a new work request to you in <strong>Payment Engine v2</strong>:
+                        </div>
+
+                        <div class="s1-ticket-box">
+                            <div class="s1-ticket-header">
+                                <span class="s1-ticket-id">#REQ-104</span>
+                                <span class="tag-pill review"><span class="dot review"></span> Review Needed</span>
+                            </div>
+                            <div class="s1-ticket-title">
+                                Fix Stripe Webhook Idempotency & Replay Attack Vulnerability
+                            </div>
+                            <div style="font-size: 12px; color: #a1a1aa; line-height: 1.5; margin-bottom: 16px;">
+                                Duplicate events during burst checkout are generating duplicate credit ledger records. Needs atomic Redis lock validation before processing.
+                            </div>
+
+                            <div class="s1-ticket-meta">
+                                <div>
+                                    <div class="s1-meta-label">Initiative</div>
+                                    <div class="s1-meta-value">
+                                        <span class="dot blue"></span> Core Infrastructure
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="s1-meta-label">Requester</div>
+                                    <div class="s1-meta-value">
+                                        Sarah Chen (@sarah)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="s1-cta-row">
+                            <a href="#view" class="s1-cta-btn">View Work Request &rarr;</a>
+                            <span style="margin-left: 14px; font-size: 11px; color: #71717a;">or press <kbd style="background: #18181b; border: 1px solid #27272a; padding: 2px 6px; border-radius: 4px; color: #a1a1aa;">G</kbd> then <kbd style="background: #18181b; border: 1px solid #27272a; padding: 2px 6px; border-radius: 4px; color: #a1a1aa;">B</kbd> in app</span>
+                        </div>
+                    </div>
+
+                    <div class="s1-footer">
+                        <span>Relay Studio Notification Dispatcher</span>
+                        <span>Notifications settings in Profile</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==============================================
+                 STYLE 2: Raycast Obsidian Glow
+                 ============================================== -->
+            <div class="email-template" id="style-2">
+                <div class="s2-wrap">
+                    <div class="s2-glow-bg"></div>
+
+                    <div class="s2-header">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <div class="brand-logo" style="width: 26px; height: 26px; font-size: 12px;">R</div>
+                            <span style="font-size: 13px; font-weight: 700; color: white;">Relay Studio</span>
+                        </div>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #a78bfa; background: rgba(167, 139, 250, 0.1); border: 1px solid rgba(167, 139, 250, 0.2); padding: 3px 8px; border-radius: 6px;">
+                            NEW ASSIGNMENT
+                        </span>
+                    </div>
+
+                    <div class="s2-body">
+                        <div class="s2-hero-card">
+                            <div class="s2-badge-row">
+                                <span class="tag-pill urgent"><span class="dot urgent"></span> High Priority</span>
+                                <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #71717a;">#REQ-104</span>
+                            </div>
+
+                            <div class="s2-title">
+                                Fix Stripe Webhook Idempotency & Replay Attack Vulnerability
+                            </div>
+
+                            <div class="s2-desc">
+                                Sarah Chen assigned this work item to you. "Critical blocker for Q4 merchant go-live. Please verify Redis idempotency keys."
+                            </div>
+
+                            <div class="s2-grid">
+                                <div>
+                                    <div class="s2-cell-label">Initiative</div>
+                                    <div class="s2-cell-val">Payment Engine</div>
+                                </div>
+                                <div>
+                                    <div class="s2-cell-label">Stage</div>
+                                    <div class="s2-cell-val" style="color: #93c5fd;">In Progress</div>
+                                </div>
+                                <div>
+                                    <div class="s2-cell-label">Assigned By</div>
+                                    <div class="s2-cell-val">Sarah Chen</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <a href="#view" class="s2-cta-btn">Open in Relay Studio</a>
+                    </div>
+
+                    <div class="s2-footer">
+                        <span>Relay · Obsidian Work Platform</span>
+                        <a href="#mute" style="color: #71717a; text-decoration: none;">Mute Thread</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==============================================
+                 STYLE 3: Dual-Tone Priority Accent
+                 ============================================== -->
+            <div class="email-template" id="style-3">
+                <div class="s3-wrap">
+                    <div class="s3-accent-bar"></div>
+
+                    <div class="s3-header">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-weight: 800; font-size: 13px; color: white; letter-spacing: -0.02em;">RELAY STUDIO</span>
+                            <span style="color: #52525b;">/</span>
+                            <span style="font-size: 11px; color: #a1a1aa;">Work Dispatch</span>
+                        </div>
+                        <span class="tag-pill urgent"><span class="dot urgent"></span> Urgent</span>
+                    </div>
+
+                    <div class="s3-body">
+                        <div class="s3-headline">
+                            You have been assigned to an urgent work ticket:
+                        </div>
+
+                        <div class="s3-card">
+                            <div class="s3-badge-header">
+                                <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #a1a1aa; font-weight: 600;">REQ-104</span>
+                                <span class="tag-pill in-progress"><span class="dot blue"></span> Ready For Work</span>
+                            </div>
+
+                            <div class="s3-title">
+                                Fix Stripe Webhook Idempotency & Replay Attack Vulnerability
+                            </div>
+
+                            <table class="s3-details-table">
+                                <tr>
+                                    <td class="s3-td-label">Project</td>
+                                    <td class="s3-td-val">Payment Engine v2</td>
+                                </tr>
+                                <tr>
+                                    <td class="s3-td-label">Requester</td>
+                                    <td class="s3-td-val">Sarah Chen (@sarah)</td>
+                                </tr>
+                                <tr>
+                                    <td class="s3-td-label">Priority</td>
+                                    <td class="s3-td-val" style="color: #fda4af;">Urgent (P0)</td>
+                                </tr>
+                                <tr>
+                                    <td class="s3-td-label">Created</td>
+                                    <td class="s3-td-val">Today at 11:42 PM</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between;">
+                            <a href="#view" class="s3-cta-btn">View Work Request</a>
+                            <span style="font-size: 11px; color: #71717a;">Sent to kingof30@example.com</span>
+                        </div>
+                    </div>
+
+                    <div class="s3-footer">
+                        This transactional notification was generated automatically by Relay Studio.
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==============================================
+                 STYLE 4: Developer Monospace (GitHub/Vercel)
+                 ============================================== -->
+            <div class="email-template" id="style-4">
+                <div class="s4-wrap">
+                    <div class="s4-header">
+                        <div class="s4-brand">
+                            <span style="color: #a78bfa;">relay</span>/work-requests
+                        </div>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #71717a;">req_01j7b92f4x</span>
+                    </div>
+
+                    <div class="s4-body">
+                        <div class="s4-terminal-box">
+                            <div class="s4-term-line">
+                                <span class="act">&gt; assign</span> req-104 --to=<span class="hl">@kingof30</span> --by=<span class="hl">@sarah</span>
+                            </div>
+                            <div class="s4-term-line" style="margin-top: 4px;">
+                                <span style="color: #4ade80;">✔</span> Work request assigned to your queue [Priority: <span style="color: #f43f5e; font-weight: 600;">URGENT</span>]
+                            </div>
+
+                            <div class="s4-code-block">Title: Fix Stripe Webhook Idempotency & Replay Attack Vulnerability
+Project: Payment Engine v2
+Status: ready -&gt; in_progress
+
+Description:
+Duplicate events during burst checkout are generating duplicate credit ledger records. Needs atomic Redis lock validation before processing.</div>
+                        </div>
+
+                        <a href="#view" class="s4-cta-btn">Open Request in Terminal / Browser &rarr;</a>
+                    </div>
+
+                    <div class="s4-footer">
+                        <span>RELAY WORKSPACE ENGINE v2.4</span>
+                        <span>UNSUBSCRIBE: /settings/profile</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const styles = [
+            { id: 1, title: 'Style 1: Linear Dark Minimal (Recommended)', desc: 'Clean single-column obsidian card, subtle borders, high-contrast typography, violet CTA, perfect for email clients in dark mode.' },
+            { id: 2, title: 'Style 2: Raycast Obsidian Glow', desc: 'Frosted dark glass card with a subtle ambient purple glow, specular border lighting, and glowing stage pill.' },
+            { id: 3, title: 'Style 3: Dual-Tone Priority Accent', desc: 'Linear top accent bar indicating urgency (Rose/Amber/Violet), structured table data, and crisp monochrome CTA.' },
+            { id: 4, title: 'Style 4: Developer Monospace', desc: 'Technical CLI / GitHub style with JetBrains Mono, command syntax, and code-block diff formatting.' },
+        ];
+
+        let currentStyle = 1;
+
+        function switchStyle(index) {
+            currentStyle = index;
+            document.querySelectorAll('.style-btn').forEach((btn, i) => {
+                btn.classList.toggle('active', i + 1 === index);
+            });
+            document.querySelectorAll('.email-template').forEach((tmpl, i) => {
+                tmpl.classList.toggle('active', i + 1 === index);
+            });
+            const info = styles[index - 1];
+            document.getElementById('style-title').textContent = info.title;
+            document.getElementById('style-desc').textContent = info.desc;
+        }
+
+        function setViewport(mode) {
+            const stage = document.getElementById('stage');
+            const btnDesk = document.getElementById('btn-desktop');
+            const btnMob = document.getElementById('btn-mobile');
+            if (mode === 'mobile') {
+                stage.classList.add('mobile-view');
+                btnDesk.classList.remove('active');
+                btnMob.classList.add('active');
+            } else {
+                stage.classList.remove('mobile-view');
+                btnDesk.classList.add('active');
+                btnMob.classList.remove('active');
+            }
+        }
+
+        function copyChoice() {
+            const info = styles[currentStyle - 1];
+            alert('Selected: ' + info.title + '\n\nWe will implement this template for all work assignments and status updates!');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,190 @@
+import Sidebar from '@/Components/Sidebar';
+import CommandPalette from '@/Components/CommandPalette';
+import { QuickCreateModal } from '@/Features/Requests';
+import { NotificationPopover } from '@/Features/Notifications';
+import { Link, router, usePage } from '@inertiajs/react';
+import { Search, Plus } from 'lucide-react';
+import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
+import { Toaster } from 'sonner';
+
+import ShortcutsModal from '@/Components/ShortcutsModal';
+
+export default function Authenticated({
+    header,
+    children,
+}: PropsWithChildren<{ header?: ReactNode }>) {
+    const props = usePage().props as any;
+    const projects = props.projects ?? [];
+    const users = props.users ?? [];
+
+    const [commandOpen, setCommandOpen] = useState(false);
+    const [createOpen, setCreateOpen] = useState(false);
+    const [shortcutsOpen, setShortcutsOpen] = useState(false);
+    const [currentTime, setCurrentTime] = useState('');
+
+    useEffect(() => {
+        const updateTime = () => {
+            setCurrentTime(new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        };
+        updateTime();
+        const timer = setInterval(updateTime, 10000);
+        return () => clearInterval(timer);
+    }, []);
+
+    // Global keyboard shortcuts: 'C' (Create), '?' (Help), and 'G' navigation sequence
+    useEffect(() => {
+        let lastGTime = 0;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            const target = e.target as HTMLElement;
+            const isEditing =
+                ['INPUT', 'TEXTAREA', 'SELECT'].includes(target?.tagName) ||
+                target?.isContentEditable;
+
+            if (isEditing) return;
+
+            // '?' opens shortcuts modal
+            if (e.key === '?' || (e.shiftKey && e.key === '/')) {
+                e.preventDefault();
+                setShortcutsOpen(true);
+                return;
+            }
+
+            // 'C' opens quick create modal
+            if (e.key.toLowerCase() === 'c' && !e.metaKey && !e.ctrlKey) {
+                e.preventDefault();
+                setCreateOpen(true);
+                return;
+            }
+
+            // Two-key navigation sequences: G then [D, B, P, N, S]
+            const now = Date.now();
+            if (e.key.toLowerCase() === 'g' && !e.metaKey && !e.ctrlKey) {
+                lastGTime = now;
+                return;
+            }
+
+            if (lastGTime && now - lastGTime < 1000) {
+                const key = e.key.toLowerCase();
+                lastGTime = 0;
+                if (key === 'd') {
+                    e.preventDefault();
+                    router.visit(route('dashboard'));
+                } else if (key === 'b') {
+                    e.preventDefault();
+                    router.visit(route('requests.index'));
+                } else if (key === 'p') {
+                    e.preventDefault();
+                    router.visit(route('requests.index'));
+                } else if (key === 'n') {
+                    e.preventDefault();
+                    router.visit(route('notifications.index'));
+                } else if (key === 's') {
+                    e.preventDefault();
+                    router.visit(route('settings.index'));
+                }
+            }
+        };
+
+        const handleCustomOpen = () => setCreateOpen(true);
+        const handleCustomShortcuts = () => setShortcutsOpen(true);
+
+        window.addEventListener('keydown', handleKeyDown);
+        window.addEventListener('open-quick-create', handleCustomOpen);
+        window.addEventListener('open-shortcuts', handleCustomShortcuts);
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('open-quick-create', handleCustomOpen);
+            window.removeEventListener('open-shortcuts', handleCustomShortcuts);
+        };
+    }, []);
+
+    return (
+        <div className="relay-shell relative flex min-h-screen font-sans text-zinc-100 antialiased selection:bg-zinc-700/60 selection:text-white">
+            <div className="relay-grid pointer-events-none fixed inset-0 z-0 opacity-40" />
+            <Sidebar />
+            <div className="relative z-10 flex min-w-0 flex-1 flex-col">
+                {/* Modern Precision Navbar */}
+                <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between gap-5 border-b border-zinc-800/80 bg-[#090a0f]/90 px-7 backdrop-blur-xl sm:px-9">
+                    <div className="min-w-0 flex-1">{header}</div>
+
+                    <div className="flex items-center gap-3">
+                        {/* Live Studio Status Pill */}
+                        <div className="hidden xl:flex h-10 items-center gap-2.5 rounded-xl border border-zinc-800 bg-[#121318] px-3.5 text-xs text-zinc-400 font-mono shadow-sm">
+                            <span className="relative flex h-2 w-2">
+                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                            </span>
+                            <span className="text-zinc-300">{currentTime || 'Studio Active'}</span>
+                        </div>
+
+                        {/* Precision Search Pill */}
+                        <button
+                            type="button"
+                            onClick={() => setCommandOpen(true)}
+                            className="hidden sm:flex h-10 items-center justify-between gap-3 rounded-xl border border-zinc-800 bg-[#121318] px-3.5 text-sm text-zinc-400 shadow-sm transition-colors hover:border-zinc-700 hover:text-zinc-200 w-52 sm:w-64 md:w-72"
+                        >
+                            <div className="flex items-center gap-2.5">
+                                <Search className="h-4 w-4 text-zinc-400" />
+                                <span className="truncate text-xs sm:text-[13px]">Search or jump…</span>
+                            </div>
+                            <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">
+                                ⌘K
+                            </kbd>
+                        </button>
+
+                        {/* Quick Create Action Button */}
+                        <button
+                            type="button"
+                            onClick={() => setCreateOpen(true)}
+                            className="flex h-10 items-center gap-2 rounded-xl bg-white px-4 text-sm font-semibold text-zinc-950 shadow-sm transition-all hover:bg-zinc-200 active:scale-[0.98]"
+                            title="New Request (Press C)"
+                        >
+                            <Plus className="h-4 w-4" />
+                            <span className="hidden md:inline">New Request</span>
+                            <kbd className="hidden lg:inline rounded-md bg-zinc-200 px-1.5 py-0.5 text-[10px] font-mono text-zinc-800">C</kbd>
+                        </button>
+
+                        {/* Interactive Real-Time Notifications Center */}
+                        <NotificationPopover />
+                    </div>
+                </header>
+                <main className="w-full flex-1 p-6 sm:p-8">{children}</main>
+            </div>
+
+            {/* Global Linear-Style Command Palette */}
+            <CommandPalette
+                open={commandOpen}
+                setOpen={setCommandOpen}
+                onOpenCreate={() => setCreateOpen(true)}
+                onOpenShortcuts={() => setShortcutsOpen(true)}
+                projects={projects}
+            />
+
+            {/* Global Keyboard Shortcuts Cheat-sheet Modal */}
+            <ShortcutsModal
+                open={shortcutsOpen}
+                onClose={() => setShortcutsOpen(false)}
+            />
+
+            {/* Global Quick Create Modal */}
+            <QuickCreateModal
+                show={createOpen}
+                onClose={() => setCreateOpen(false)}
+                projects={projects}
+                users={users}
+                onFinished={() => router.reload()}
+            />
+
+            {/* Global Toaster for Linear Notifications */}
+            <Toaster
+                theme="dark"
+                position="bottom-right"
+                closeButton
+                toastOptions={{
+                    className: 'rounded-xl border border-white/[0.08] bg-[#090a0f]/95 text-zinc-100 shadow-2xl backdrop-blur-xl text-xs font-medium ring-1 ring-white/[0.04]',
+                }}
+            />
+        </div>
+    );
+}
