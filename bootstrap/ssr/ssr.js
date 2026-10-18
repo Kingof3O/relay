@@ -688,13 +688,13 @@ createServer((page) => createInertiaApp({
 		"./Pages/Cycles/Index.tsx": () => import("./assets/Index-Bn6iJI5n.js"),
 		"./Pages/Dashboard.tsx": () => import("./assets/Dashboard-DPKEK3e3.js"),
 		"./Pages/Error.tsx": () => import("./assets/Error-BuVLPSOz.js"),
-		"./Pages/Integrations/Index.tsx": () => import("./assets/Index-CFIr0Kbn.js"),
+		"./Pages/Integrations/Index.tsx": () => import("./assets/Index-BPAtMlVm.js"),
 		"./Pages/Notifications/Index.tsx": () => import("./assets/Index-CQsHRL9U.js"),
 		"./Pages/Profile/Edit.tsx": () => import("./assets/Edit-DaNmvW_M.js"),
 		"./Pages/Requests/Index.tsx": () => import("./assets/Index-BUPzDU_b.js"),
 		"./Pages/Requests/Show.tsx": () => import("./assets/Show-Dv7H35VB.js"),
 		"./Pages/Roadmap/Index.tsx": () => import("./assets/Index-BuvaJJO6.js"),
-		"./Pages/Settings/Index.tsx": () => import("./assets/Index-DGKiJya0.js")
+		"./Pages/Settings/Index.tsx": () => import("./assets/Index-BnvMKCai.js")
 	})),
 	setup: ({ App, props }) => {
 		const ziggy = page.props?.ziggy;

@@ -21,6 +21,7 @@ const PRESET_COLORS = [
 export function EmailTemplateCard({ config, onUpdated, canManage }: Props) {
     const [senderName, setSenderName] = useState(config.sender_name);
     const [accentColor, setAccentColor] = useState(config.accent_color || '#8B5CF6');
+    const [logoUrl, setLogoUrl] = useState(config.logo_url || '');
     const [footerNote, setFooterNote] = useState(config.footer_note || '');
     const [events, setEvents] = useState(config.events);
 
@@ -44,6 +45,7 @@ export function EmailTemplateCard({ config, onUpdated, canManage }: Props) {
             const response = await axios.post(route('integrations.email.update'), {
                 sender_name: senderName.trim(),
                 accent_color: accentColor,
+                logo_url: logoUrl.trim() || null,
                 footer_note: footerNote.trim(),
                 events,
             });
@@ -135,6 +137,36 @@ export function EmailTemplateCard({ config, onUpdated, canManage }: Props) {
                     />
                     <p className="mt-1 text-[11px] text-zinc-500">
                         Appears as the display name in the email subject and top navigation bar.
+                    </p>
+                </div>
+
+                {/* Brand Logo URL with Live Thumbnail */}
+                <div>
+                    <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-1.5">
+                        Brand Logo Image URL
+                    </label>
+                    <div className="flex items-center gap-3">
+                        <div className="h-10 w-10 rounded-lg bg-[#090a0f] border border-zinc-800 p-1.5 flex items-center justify-center shrink-0">
+                            <img
+                                src={logoUrl || '/img/logo.png'}
+                                alt="Logo Preview"
+                                className="h-full w-full object-contain rounded"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/img/logo.png';
+                                }}
+                            />
+                        </div>
+                        <input
+                            type="url"
+                            disabled={!canManage}
+                            value={logoUrl}
+                            onChange={(e) => setLogoUrl(e.target.value)}
+                            placeholder="/img/logo.png or https://your-domain.com/logo.png"
+                            className="flex-1 rounded-lg border border-zinc-800 bg-[#090a0f] px-3.5 py-2 text-xs font-mono text-zinc-100 placeholder-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:opacity-50"
+                        />
+                    </div>
+                    <p className="mt-1 text-[11px] text-zinc-500">
+                        Default uses the bundled high-resolution Relay Studio mark (<code className="text-zinc-400">/img/logo.png</code>).
                     </p>
                 </div>
 

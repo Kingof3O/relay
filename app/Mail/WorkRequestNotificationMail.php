@@ -82,6 +82,7 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
                 'url' => $url,
                 'senderName' => EmailNotificationService::getSenderName(),
                 'customAccentColor' => EmailNotificationService::getAccentColor(),
+                'logoUrl' => EmailNotificationService::getLogoUrl(),
                 'footerNote' => EmailNotificationService::getFooterNote(),
             ],
         );

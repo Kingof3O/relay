@@ -18,6 +18,8 @@ final class EmailNotificationService
 
     public const CACHE_KEY_ACCENT_COLOR = 'integration.email.accent_color';
 
+    public const CACHE_KEY_LOGO_URL = 'integration.email.logo_url';
+
     public const CACHE_KEY_FOOTER_NOTE = 'integration.email.footer_note';
 
     public const CACHE_KEY_EVENTS = 'integration.email.events';
@@ -35,6 +37,16 @@ final class EmailNotificationService
     public static function getAccentColor(): string
     {
         return (string) (Cache::get(self::CACHE_KEY_ACCENT_COLOR) ?: '#8B5CF6');
+    }
+
+    public static function getLogoUrl(): string
+    {
+        $cached = Cache::get(self::CACHE_KEY_LOGO_URL);
+        if (! blank($cached)) {
+            return (string) $cached;
+        }
+
+        return url('/img/logo.png');
     }
 
     public static function getFooterNote(): string
@@ -77,6 +89,10 @@ final class EmailNotificationService
             Cache::forever(self::CACHE_KEY_ACCENT_COLOR, (string) ($settings['accent_color'] ?? '#8B5CF6'));
         }
 
+        if (array_key_exists('logo_url', $settings)) {
+            Cache::forever(self::CACHE_KEY_LOGO_URL, (string) ($settings['logo_url'] ?? ''));
+        }
+
         if (array_key_exists('footer_note', $settings)) {
             Cache::forever(self::CACHE_KEY_FOOTER_NOTE, (string) ($settings['footer_note'] ?? ''));
         }
@@ -98,6 +114,7 @@ final class EmailNotificationService
             'from_address' => config('mail.from.address', 'hello@example.com'),
             'mailer' => config('mail.default', 'smtp'),
             'accent_color' => self::getAccentColor(),
+            'logo_url' => self::getLogoUrl(),
             'footer_note' => self::getFooterNote(),
             'events' => self::getSubscribedEvents(),
         ];

@@ -90,6 +90,7 @@ final class IntegrationsDashboardTest extends TestCase
         $response = $this->actingAs($this->owner)->postJson(route('integrations.email.update'), [
             'sender_name' => 'Acme Dispatch',
             'accent_color' => '#10B981',
+            'logo_url' => 'https://example.com/logo.png',
             'footer_note' => 'Confidential · Acme Corporation',
             'events' => [
                 'ticket_created' => true,
@@ -100,9 +101,11 @@ final class IntegrationsDashboardTest extends TestCase
         $response->assertStatus(200);
         $response->assertJsonPath('email.sender_name', 'Acme Dispatch');
         $response->assertJsonPath('email.accent_color', '#10B981');
+        $response->assertJsonPath('email.logo_url', 'https://example.com/logo.png');
 
         $this->assertSame('Acme Dispatch', EmailNotificationService::getSenderName());
         $this->assertSame('#10B981', EmailNotificationService::getAccentColor());
+        $this->assertSame('https://example.com/logo.png', EmailNotificationService::getLogoUrl());
     }
 
     public function test_owner_can_send_test_email(): void

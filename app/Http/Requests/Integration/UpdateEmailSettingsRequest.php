@@ -19,6 +19,7 @@ final class UpdateEmailSettingsRequest extends FormRequest
         return [
             'sender_name' => ['required', 'string', 'max:100'],
             'accent_color' => ['required', 'string', 'regex:/^#[0-9a-fA-F]{6}$/'],
+            'logo_url' => ['nullable', 'string', 'url', 'max:500'],
             'footer_note' => ['nullable', 'string', 'max:500'],
             'events' => ['nullable', 'array'],
             'events.ticket_created' => ['nullable', 'boolean'],

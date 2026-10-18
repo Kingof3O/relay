@@ -20,6 +20,7 @@ export interface EmailConfig {
     from_address: string;
     mailer: string;
     accent_color: string;
+    logo_url: string;
     footer_note: string;
     events: {
         ticket_created: boolean;

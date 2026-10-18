@@ -1,5 +1,5 @@
 import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-BGgfVQov.js";
-import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-B-LOWpFJ.js";
+import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-Bh0-NC0K.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, router } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
