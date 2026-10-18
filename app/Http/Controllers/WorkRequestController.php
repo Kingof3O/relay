@@ -39,7 +39,7 @@ final class WorkRequestController extends Controller
             ->filter($filterValues, $request->user())
             ->with(['area', 'requester', 'assignee'])
             ->orderByDesc('is_blocked')
-            ->orderByRaw("FIELD(priority, 'urgent', 'normal', 'low')")
+            ->orderByRaw("CASE priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 WHEN 'low' THEN 4 ELSE 5 END")
             ->orderByDesc('updated_at')
             ->get()
             ->map(fn (WorkRequest $workRequest): array => $this->presenter->card($workRequest))
@@ -48,7 +48,7 @@ final class WorkRequestController extends Controller
 
         return Inertia::render('Requests/Index', [
             'requests' => $requests,
-            'projects' => Area::query()->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
+            'projects' => Inertia::getShared('workspaceProjects') ?? Area::query()->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
             'users' => User::query()->where('active', true)->whereNotNull('role_id')->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'role_id']),
             'statuses' => RequestStatus::options(),
             'priorities' => RequestPriority::options(),
@@ -65,7 +65,7 @@ final class WorkRequestController extends Controller
 
         return Inertia::render('Requests/Show', [
             'request' => $this->presenter->detail($request),
-            'projects' => Area::query()->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
+            'projects' => Inertia::getShared('workspaceProjects') ?? Area::query()->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
             'users' => User::query()->where('active', true)->whereNotNull('role_id')->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'role_id']),
             'statuses' => RequestStatus::options(),
             'priorities' => RequestPriority::options(),

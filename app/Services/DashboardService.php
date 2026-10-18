@@ -70,7 +70,7 @@ final class DashboardService
         $completedCounts = RequestActivity::query()
             ->where('type', 'status_changed')
             ->where('created_at', '>=', $startDate)
-            ->where('body', 'like', '%done%')
+            ->where('metadata->to', 'done')
             ->selectRaw('DATE(created_at) as day_date, count(*) as total')
             ->groupBy('day_date')
             ->pluck('total', 'day_date');
@@ -81,12 +81,11 @@ final class DashboardService
             $created = (int) ($createdCounts->get($dayString, 0));
             $completed = (int) ($completedCounts->get($dayString, 0));
 
-            // Provide realistic velocity curve if seed data is on same date
             return [
                 'day' => $date->format('D'),
                 'date' => $date->format('M j'),
-                'created' => $created ?: rand(2, 5),
-                'completed' => $completed ?: rand(1, 4),
+                'created' => $created,
+                'completed' => $completed,
             ];
         })->values()->all();
 

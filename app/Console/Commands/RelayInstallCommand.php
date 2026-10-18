@@ -190,6 +190,7 @@ ASCII;
         $this->components->info('Step 4/5: Initial Administrator / Owner Setup');
 
         $permissions = [
+            'manage_workspace',
             'manage_team',
             'manage_roles',
             'manage_areas',

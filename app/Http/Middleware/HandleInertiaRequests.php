@@ -62,7 +62,7 @@ class HandleInertiaRequests extends Middleware
             'unreadNotificationsCount' => fn (): int => $user === null
                 ? 0
                 : $user->unreadNotifications()->count(),
-            'workspaceProjects' => fn (): array => \App\Models\Area::query()
+            'workspaceProjects' => fn (): array => once(fn (): array => \App\Models\Area::query()
                 ->whereNull('archived_at')
                 ->orderBy('sort_order')
                 ->withCount(['requests' => fn ($q) => $q->where('status', '!=', 'done')])
@@ -74,7 +74,7 @@ class HandleInertiaRequests extends Middleware
                     'color' => $area->color ?? '#8B5CF6',
                     'active_count' => $area->requests_count,
                 ])
-                ->all(),
+                ->all()),
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\RoleName;
 use App\Models\User;
 use App\Models\WorkRequest;
 
@@ -28,7 +29,7 @@ final class WorkRequestPolicy
             return false;
         }
 
-        return $user->role?->name !== 'Designer' || $request->requester_id === $user->id;
+        return $user->role?->name !== RoleName::Designer->value || $request->requester_id === $user->id;
     }
 
     public function assign(User $user, WorkRequest $request): bool

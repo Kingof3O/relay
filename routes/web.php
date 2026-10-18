@@ -34,14 +34,16 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::delete('/requests/{request}/relations/{relation}', [\App\Http\Controllers\RequestRelationController::class, 'destroy'])->name('requests.relations.destroy');
     Route::get('/requests/{request}', [WorkRequestController::class, 'show'])->name('requests.show');
 
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
-    Route::post('/settings/projects', [AreaController::class, 'store'])->name('settings.projects.store');
-    Route::patch('/settings/projects/{area}', [AreaController::class, 'update'])->name('settings.projects.update');
-    Route::post('/settings/projects/reorder', [AreaController::class, 'reorder'])->name('settings.projects.reorder');
-    Route::delete('/settings/projects/{area}', [AreaController::class, 'destroy'])->name('settings.projects.destroy');
-    Route::post('/settings/team', [TeamMemberController::class, 'store'])->name('settings.team.store');
-    Route::patch('/settings/team/{user}', [TeamMemberController::class, 'update'])->name('settings.team.update');
-    Route::delete('/settings/team/{user}', [TeamMemberController::class, 'destroy'])->name('settings.team.destroy');
+    Route::middleware('permission:manage_workspace')->group(function (): void {
+        Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+        Route::post('/settings/projects', [AreaController::class, 'store'])->name('settings.projects.store');
+        Route::patch('/settings/projects/{area}', [AreaController::class, 'update'])->name('settings.projects.update');
+        Route::post('/settings/projects/reorder', [AreaController::class, 'reorder'])->name('settings.projects.reorder');
+        Route::delete('/settings/projects/{area}', [AreaController::class, 'destroy'])->name('settings.projects.destroy');
+        Route::post('/settings/team', [TeamMemberController::class, 'store'])->name('settings.team.store');
+        Route::patch('/settings/team/{user}', [TeamMemberController::class, 'update'])->name('settings.team.update');
+        Route::delete('/settings/team/{user}', [TeamMemberController::class, 'destroy'])->name('settings.team.destroy');
+    });
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::post('/notifications/read-all', [NotificationController::class, 'readAll'])->name('notifications.read-all');

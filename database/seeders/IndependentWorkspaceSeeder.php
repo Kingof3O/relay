@@ -16,6 +16,7 @@ final class IndependentWorkspaceSeeder extends Seeder
     {
         $permissions = [
             'view_requests',
+            'manage_workspace',
             'manage_team',
             'manage_roles',
             'manage_areas',

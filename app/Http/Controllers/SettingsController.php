@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RoleName;
 use App\Models\Area;
 use App\Models\Role;
 use App\Models\User;
@@ -34,7 +35,7 @@ final class SettingsController extends Controller
                 ? User::query()->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'email', 'role_id', 'active', 'created_at'])
                 : [],
             'roles' => $user->hasPermission('manage_team')
-                ? Role::query()->whereIn('name', ['Owner', 'Developer', 'Designer'])->orderBy('name')->get(['id', 'name'])
+                ? Role::query()->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value])->orderBy('name')->get(['id', 'name'])
                 : [],
             'canManageAreas' => $user->hasPermission('manage_areas'),
             'canManageTeam' => $user->hasPermission('manage_team'),

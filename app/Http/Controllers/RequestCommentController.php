@@ -10,6 +10,7 @@ use App\Services\WorkRequestPresenter;
 use App\Services\WorkRequestService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 final class RequestCommentController extends Controller
 {
@@ -31,14 +32,14 @@ final class RequestCommentController extends Controller
 
         // Parse @mentions using regex /@([a-zA-Z0-9_\-\.]+)/
         if (preg_match_all('/@([a-zA-Z0-9_\-\.]+)/', $validated['body'], $matches)) {
-            $tokens = array_unique($matches[1]);
+            $tokens = array_slice(array_unique($matches[1]), 0, 10);
             if (!empty($tokens)) {
                 $mentionedUsers = User::query()
+                    ->where('active', true)
                     ->whereIn('username', $tokens)
-                    ->orWhereIn('name', $tokens)
-                    ->get()
-                    ->filter(fn (User $user): bool => $user->id !== $author->id)
-                    ->unique('id');
+                    ->where('id', '!=', $author->id)
+                    ->limit(10)
+                    ->get();
 
                 $payload = [
                     'event' => 'mention',
@@ -50,7 +51,9 @@ final class RequestCommentController extends Controller
 
                 foreach ($mentionedUsers as $mentionedUser) {
                     $mentionedUser->notify(new RequestDatabaseNotification($payload));
-                    SendRequestEmail::dispatch($mentionedUser->id, $payload);
+                    DB::afterCommit(function () use ($mentionedUser, $payload): void {
+                        SendRequestEmail::dispatch($mentionedUser->id, $payload);
+                    });
                 }
             }
         }

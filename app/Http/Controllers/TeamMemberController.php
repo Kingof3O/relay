@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\RoleName;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
@@ -37,7 +38,7 @@ final class TeamMemberController extends Controller
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'username' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'role_id' => ['sometimes', 'required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', ['Owner', 'Developer', 'Designer']))],
+            'role_id' => ['sometimes', 'required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value]))],
             'active' => ['sometimes', 'boolean'],
             'password' => ['sometimes', 'nullable', 'string', 'min:8', 'max:255'],
         ]);
@@ -95,7 +96,7 @@ final class TeamMemberController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:255'],
-            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', ['Owner', 'Developer', 'Designer']))],
+            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value]))],
             'active' => ['sometimes', 'boolean'],
         ];
     }
