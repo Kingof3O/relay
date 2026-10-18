@@ -290,4 +290,71 @@ final class WorkspaceInvitationTest extends TestCase
 
         $loginResponse->assertRedirect(route('dashboard'));
     }
+
+    public function test_existing_user_can_accept_invitation_with_same_username_into_another_workspace(): void
+    {
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $developerRole = Role::query()->where('name', 'Developer')->firstOrFail();
+
+        // Create second workspace
+        $workspace2 = Workspace::query()->create([
+            'name' => 'Secondary Labs',
+            'slug' => 'secondary-labs',
+            'owner_id' => $owner->id,
+        ]);
+
+        // Existing user hussien exists in workspace 1
+        $existingUser = User::query()->where('username', 'hussien')->firstOrFail();
+
+        $invitation = WorkspaceInvitation::query()->create([
+            'workspace_id' => $workspace2->id,
+            'email' => $existingUser->email,
+            'role_id' => $developerRole->id,
+            'token' => 'existing-user-token-777',
+            'expires_at' => now()->addDays(7),
+        ]);
+
+        // Existing user accepts invitation retaining their existing username
+        $response = $this->post(route('invitations.store', $invitation->token), [
+            'name' => 'Hussien Updated',
+            'username' => 'hussien',
+            'password' => 'newsecurepass123',
+            'password_confirmation' => 'newsecurepass123',
+        ]);
+
+        $response->assertRedirect(route('dashboard'));
+        $this->assertDatabaseMissing('workspace_invitations', ['id' => $invitation->id]);
+        $this->assertDatabaseHas('workspace_user', [
+            'workspace_id' => $workspace2->id,
+            'user_id' => $existingUser->id,
+            'role_id' => $developerRole->id,
+        ]);
+        $this->assertSame($workspace2->id, session('active_workspace_id'));
+    }
+
+    public function test_cannot_invite_user_who_is_already_a_member_of_the_workspace(): void
+    {
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $developerRole = Role::query()->where('name', 'Developer')->firstOrFail();
+
+        $workspace = Workspace::query()->create([
+            'name' => 'Alpha Studio',
+            'slug' => 'alpha-studio',
+            'owner_id' => $owner->id,
+        ]);
+        $workspace->users()->attach($owner->id, ['role_id' => $owner->role_id]);
+
+        $existingMember = User::query()->where('username', 'hussien')->firstOrFail();
+        $workspace->users()->attach($existingMember->id, ['role_id' => $developerRole->id]);
+
+        $response = $this->actingAs($owner)
+            ->withSession(['active_workspace_id' => $workspace->id])
+            ->postJson(route('settings.team.invite'), [
+                'email' => $existingMember->email,
+                'role_id' => $developerRole->id,
+            ]);
+
+        $response->assertStatus(422);
+        $response->assertJsonFragment(['message' => 'This user is already a member of this workspace.']);
+    }
 }

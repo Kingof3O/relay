@@ -47,14 +47,14 @@ class InvitationAcceptController extends Controller
             abort(410, 'This invitation has expired.');
         }
 
-        $validated = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]);
-
         /** @var User|null $user */
         $user = User::query()->where('email', $invitation->email)->first();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('users', 'username')->ignore($user?->id)],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ]);
 
         if ($user) {
             $user->update([

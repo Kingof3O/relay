@@ -41,6 +41,15 @@ final class TeamMemberController extends Controller
             ]);
         }
 
+        if ($activeWorkspace->users()->where('email', $validated['email'])->exists()) {
+            return response()->json(['message' => 'This user is already a member of this workspace.'], 422);
+        }
+
+        WorkspaceInvitation::query()
+            ->where('workspace_id', $activeWorkspace->id)
+            ->where('email', $validated['email'])
+            ->delete();
+
         $invitation = WorkspaceInvitation::query()->create([
             'workspace_id' => $activeWorkspace->id,
             'email' => $validated['email'],
