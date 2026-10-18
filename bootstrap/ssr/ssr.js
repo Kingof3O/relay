@@ -683,8 +683,8 @@ createServer((page) => createInertiaApp({
 	render: renderToString,
 	title: (title) => `${title} - ${appName}`,
 	resolve: (name) => resolvePageComponent(`./Pages/${name}.tsx`, /* #__PURE__ */ Object.assign({
-		"./Pages/Auth/AcceptInvitation.tsx": () => import("./assets/AcceptInvitation-CAH6LeRX.js"),
-		"./Pages/Auth/Login.tsx": () => import("./assets/Login-CnzYFXhA.js"),
+		"./Pages/Auth/AcceptInvitation.tsx": () => import("./assets/AcceptInvitation-CWKyI0Bu.js"),
+		"./Pages/Auth/Login.tsx": () => import("./assets/Login-BImR3_Ti.js"),
 		"./Pages/Cycles/Index.tsx": () => import("./assets/Index-Bxso9eYk.js"),
 		"./Pages/Dashboard.tsx": () => import("./assets/Dashboard-BPD134FD.js"),
 		"./Pages/Error.tsx": () => import("./assets/Error-BuVLPSOz.js"),
