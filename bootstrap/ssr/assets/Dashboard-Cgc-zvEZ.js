@@ -6,43 +6,54 @@ import { Activity, AlertOctagon, ArrowRight, BarChart3, Check, CheckCircle2, Clo
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 //#region resources/js/Features/Dashboard/components/DashboardHero.tsx
 function DashboardHero({ firstName, stats, statusBreakdown = {} }) {
-	const totalPipeline = Math.max(1, stats.total || 1);
+	const totalPipeline = Math.max(0, stats.total || 0);
 	const pipelineSegments = [
 		{
+			statusKey: "new",
 			label: "New",
 			count: statusBreakdown.new ?? 0,
-			color: "bg-zinc-600"
+			barColor: "bg-zinc-400",
+			dotColor: "bg-zinc-400"
 		},
 		{
+			statusKey: "ready",
 			label: "Ready",
 			count: statusBreakdown.ready ?? 0,
-			color: "bg-zinc-400"
+			barColor: "bg-sky-400",
+			dotColor: "bg-sky-400"
 		},
 		{
+			statusKey: "doing",
 			label: "In Progress",
 			count: statusBreakdown.doing ?? 0,
-			color: "bg-indigo-500"
+			barColor: "bg-indigo-400",
+			dotColor: "bg-indigo-400"
 		},
 		{
+			statusKey: "review",
 			label: "Review",
 			count: statusBreakdown.review ?? 0,
-			color: "bg-amber-400"
+			barColor: "bg-amber-400",
+			dotColor: "bg-amber-400"
 		},
 		{
+			statusKey: "done",
 			label: "Done",
 			count: statusBreakdown.done ?? 0,
-			color: "bg-emerald-400"
+			barColor: "bg-emerald-400",
+			dotColor: "bg-emerald-400"
 		}
 	];
-	return /* @__PURE__ */ jsx("section", {
+	const activeSegments = pipelineSegments.filter((s) => s.count > 0);
+	return /* @__PURE__ */ jsxs("section", {
 		className: "relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#111216] p-6 shadow-sm sm:p-7",
-		children: /* @__PURE__ */ jsxs("div", {
+		children: [/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-violet-500/5 blur-3xl" }), /* @__PURE__ */ jsxs("div", {
 			className: "relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end",
 			children: [/* @__PURE__ */ jsxs("div", {
 				className: "max-w-2xl",
 				children: [
 					/* @__PURE__ */ jsxs("div", {
-						className: "inline-flex items-center gap-2 rounded-full border border-zinc-700/60 bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-300",
+						className: "inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-xs font-medium text-zinc-300",
 						children: [
 							/* @__PURE__ */ jsx(Sparkles, { className: "h-3.5 w-3.5 text-zinc-400" }),
 							/* @__PURE__ */ jsxs("span", { children: ["Overview · ", firstName] }),
@@ -62,44 +73,74 @@ function DashboardHero({ firstName, stats, statusBreakdown = {} }) {
 						children: "Real-time studio throughput, active handoffs, triage queue, and initiative delivery metrics."
 					}),
 					/* @__PURE__ */ jsxs("div", {
-						className: "mt-5 max-w-lg",
+						className: "mt-5 max-w-xl",
 						children: [
 							/* @__PURE__ */ jsxs("div", {
-								className: "flex items-center justify-between text-[11px] text-zinc-400 mb-1.5 font-medium",
-								children: [/* @__PURE__ */ jsx("span", { children: "Pipeline Flow" }), /* @__PURE__ */ jsxs("span", {
-									className: "text-zinc-500",
+								className: "mb-2 flex items-center justify-between text-xs",
+								children: [/* @__PURE__ */ jsxs("div", {
+									className: "flex items-center gap-2",
 									children: [
-										stats.done,
-										" completed (",
-										stats.completion_rate,
-										"%)"
+										/* @__PURE__ */ jsx("span", {
+											className: "font-medium text-zinc-300",
+											children: "Delivery Pipeline"
+										}),
+										/* @__PURE__ */ jsx("span", {
+											className: "text-zinc-600",
+											children: "·"
+										}),
+										/* @__PURE__ */ jsxs("span", {
+											className: "font-mono text-[11px] text-zinc-400",
+											children: [
+												stats.total,
+												" total ",
+												stats.total === 1 ? "task" : "tasks"
+											]
+										})
 									]
+								}), /* @__PURE__ */ jsxs("div", {
+									className: "flex items-center gap-1.5 font-mono text-[11px] text-zinc-400",
+									children: [/* @__PURE__ */ jsxs("span", {
+										className: "font-semibold text-emerald-400",
+										children: [stats.done, " completed"]
+									}), /* @__PURE__ */ jsxs("span", {
+										className: "text-zinc-600",
+										children: [
+											"(",
+											stats.completion_rate,
+											"%)"
+										]
+									})]
 								})]
 							}),
 							/* @__PURE__ */ jsx("div", {
-								className: "flex h-2 w-full overflow-hidden rounded-full bg-zinc-800/80 p-0.5 border border-zinc-750",
-								children: pipelineSegments.map((segment) => {
-									const widthPct = Math.max(3, segment.count / totalPipeline * 100);
+								className: "flex h-2 w-full gap-1 overflow-hidden rounded-full bg-zinc-800/50",
+								children: activeSegments.length === 0 ? /* @__PURE__ */ jsx("div", { className: "h-full w-full bg-zinc-800/40" }) : activeSegments.map((segment) => {
+									const pct = totalPipeline > 0 ? Math.round(segment.count / totalPipeline * 100) : 0;
 									return /* @__PURE__ */ jsx("div", {
-										className: `h-full ${segment.color} first:rounded-l-full last:rounded-r-full transition-all duration-300`,
-										style: { width: `${widthPct}%` },
-										title: `${segment.label}: ${segment.count}`
-									}, segment.label);
+										style: { flex: segment.count },
+										className: `h-full ${segment.barColor} transition-all duration-300 hover:brightness-125`,
+										title: `${segment.label}: ${segment.count} (${pct}%)`
+									}, segment.statusKey);
 								})
 							}),
 							/* @__PURE__ */ jsx("div", {
-								className: "mt-2.5 flex flex-wrap items-center gap-4 text-[10px] text-zinc-400",
-								children: pipelineSegments.map((s) => /* @__PURE__ */ jsxs("div", {
-									className: "flex items-center gap-1.5",
-									children: [/* @__PURE__ */ jsx("span", { className: `h-1.5 w-1.5 rounded-full ${s.color}` }), /* @__PURE__ */ jsxs("span", { children: [
-										s.label,
-										": ",
-										/* @__PURE__ */ jsx("strong", {
-											className: "font-semibold text-zinc-200",
-											children: s.count
+								className: "mt-3 flex flex-wrap items-center gap-2",
+								children: pipelineSegments.map((segment) => /* @__PURE__ */ jsxs(Link, {
+									href: route("requests.index", { status: segment.statusKey }),
+									className: "group flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-1 text-xs transition-all duration-150 hover:border-white/[0.14] hover:bg-white/[0.06] active:scale-[0.98]",
+									title: `Filter ${segment.label} in Kanban`,
+									children: [
+										/* @__PURE__ */ jsx("span", { className: `h-1.5 w-1.5 rounded-full ${segment.dotColor} transition-transform group-hover:scale-125` }),
+										/* @__PURE__ */ jsx("span", {
+											className: "font-medium text-zinc-400 transition-colors group-hover:text-zinc-200",
+											children: segment.label
+										}),
+										/* @__PURE__ */ jsx("span", {
+											className: "font-mono text-[11px] font-semibold text-zinc-300 group-hover:text-white",
+											children: segment.count
 										})
-									] })]
-								}, s.label))
+									]
+								}, segment.statusKey))
 							})
 						]
 					})
@@ -128,7 +169,7 @@ function DashboardHero({ firstName, stats, statusBreakdown = {} }) {
 					]
 				})]
 			})]
-		})
+		})]
 	});
 }
 //#endregion
