@@ -34,6 +34,7 @@ class WorkRequest extends Model
         'blocked_reason',
         'due_date',
         'tags',
+        'lock_version',
     ];
 
     protected function casts(): array
@@ -48,6 +49,7 @@ class WorkRequest extends Model
             'is_blocked' => 'boolean',
             'due_date' => 'date',
             'tags' => 'array',
+            'lock_version' => 'integer',
         ];
     }
 

@@ -1,12 +1,20 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
-import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, Inbox, KanbanSquare, Keyboard, LayoutDashboard, Link2, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
+import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, Quote, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Command } from "cmdk";
 import axios, { isAxiosError } from "axios";
 import { Toaster, toast, toast as toast$1 } from "sonner";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import TaskList from "@tiptap/extension-task-list";
+import TaskItem from "@tiptap/extension-task-item";
+import { Table as Table$1 } from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
 //#region resources/js/Components/Dropdown.tsx
 var DropDownContext = createContext({
 	open: false,
@@ -646,6 +654,44 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 		projects: []
 	});
 	const [loading, setLoading] = useState(false);
+	const pageProps = usePage().props;
+	const usersList = pageProps.users || [];
+	const activeRequest = pageProps.request;
+	const pathTicketId = typeof window !== "undefined" ? window.location.pathname.match(/\/requests\/(\d+)/)?.[1] : null;
+	const ticketId = activeRequest?.id ?? (pathTicketId ? parseInt(pathTicketId, 10) : null);
+	const robinUser = usersList.find((u) => u.username?.toLowerCase() === "robin" || u.name?.toLowerCase().includes("robin"));
+	const hussienUser = usersList.find((u) => u.username?.toLowerCase() === "hussien" || u.name?.toLowerCase().includes("hussien"));
+	const handleTicketAction = async (payload, successMsg) => {
+		setOpen(false);
+		if (!ticketId) {
+			toast.info("Open a ticket to execute ticket actions");
+			router.visit(route("requests.index"));
+			return;
+		}
+		try {
+			await axios.patch(route("requests.update", ticketId), payload);
+			toast.success(successMsg);
+			router.reload();
+		} catch {
+			toast.error(`Failed: ${successMsg}`);
+		}
+	};
+	const getTomorrowStr = () => {
+		const d = /* @__PURE__ */ new Date();
+		d.setDate(d.getDate() + 1);
+		return d.toISOString().split("T")[0];
+	};
+	const getNextWeekStr = () => {
+		const d = /* @__PURE__ */ new Date();
+		d.setDate(d.getDate() + 7);
+		return d.toISOString().split("T")[0];
+	};
+	const copyTicketLink = () => {
+		setOpen(false);
+		const url = ticketId ? `${window.location.origin}/requests/${ticketId}` : window.location.href;
+		navigator.clipboard.writeText(url);
+		toast.success("Ticket link copied to clipboard");
+	};
 	useEffect(() => {
 		const down = (e) => {
 			if (e.key === "k" && (e.metaKey || e.ctrlKey) || e.key === "/" && !["INPUT", "TEXTAREA"].includes(e.target?.tagName)) {
@@ -781,6 +827,233 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										children: "Jump to project"
 									})]
 								}, `search-proj-${proj.id}`))
+							}),
+							/* @__PURE__ */ jsxs(Command.Group, {
+								heading: /* @__PURE__ */ jsx("span", {
+									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400",
+									children: ticketId ? `Ticket Actions (#REQ-${ticketId})` : "Linear Ticket Actions"
+								}),
+								children: [
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Assign to Robin",
+										onSelect: () => handleTicketAction({ assignee_id: robinUser?.id || 1 }, "Assigned to Robin"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300",
+												children: /* @__PURE__ */ jsx(UserCheck, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Assign to Robin"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "A R"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Assign to Hussien",
+										onSelect: () => handleTicketAction({ assignee_id: hussienUser?.id || 2 }, "Assigned to Hussien"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300",
+												children: /* @__PURE__ */ jsx(UserCheck, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Assign to Hussien"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "A H"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Set priority: Urgent",
+										onSelect: () => handleTicketAction({ priority: "urgent" }, "Priority set to Urgent"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-rose-500/20 text-rose-300",
+												children: /* @__PURE__ */ jsx(Flame, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Set priority: Urgent"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "P 1"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Set priority: High",
+										onSelect: () => handleTicketAction({ priority: "high" }, "Priority set to High"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300",
+												children: /* @__PURE__ */ jsx(Flame, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Set priority: High"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "P 2"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Set priority: Normal",
+										onSelect: () => handleTicketAction({ priority: "normal" }, "Priority set to Normal"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300",
+												children: /* @__PURE__ */ jsx(Flame, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Set priority: Normal"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "P 3"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Change status: Doing",
+										onSelect: () => handleTicketAction({ status: "doing" }, "Moved to Doing"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300",
+												children: /* @__PURE__ */ jsx(Clock, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Change status: Doing"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "S 1"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Change status: Review",
+										onSelect: () => handleTicketAction({ status: "review" }, "Moved to Review"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300",
+												children: /* @__PURE__ */ jsx(CheckCircle2, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Change status: Review"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "S 2"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Change status: Done",
+										onSelect: () => handleTicketAction({ status: "done" }, "Moved to Done"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300",
+												children: /* @__PURE__ */ jsx(CheckCircle2, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Change status: Done"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "S 3"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Set due date: Tomorrow",
+										onSelect: () => handleTicketAction({ due_date: getTomorrowStr() }, "Due date set to Tomorrow"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300",
+												children: /* @__PURE__ */ jsx(Calendar, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Set due date: Tomorrow"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "D T"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Set due date: Next week",
+										onSelect: () => handleTicketAction({ due_date: getNextWeekStr() }, "Due date set to Next week"),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-blue-500/20 text-blue-300",
+												children: /* @__PURE__ */ jsx(Calendar, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Set due date: Next week"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "D W"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Copy ticket link",
+										onSelect: copyTicketLink,
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300",
+												children: /* @__PURE__ */ jsx(Copy, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Copy ticket link"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "⌘ ⇧ C"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "View Keyboard Shortcuts (?)",
+										onSelect: () => {
+											setOpen(false);
+											onOpenShortcuts?.();
+										},
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300",
+												children: /* @__PURE__ */ jsx(Keyboard, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "View Keyboard Shortcuts (?)"
+											})]
+										}), /* @__PURE__ */ jsx("kbd", {
+											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
+											children: "?"
+										})]
+									})
+								]
 							}),
 							/* @__PURE__ */ jsxs(Command.Group, {
 								heading: /* @__PURE__ */ jsx("span", {
@@ -1005,7 +1278,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 }
 //#endregion
 //#region resources/js/Features/Requests/components/BoardHeader.tsx
-function BoardHeader({ viewMode, onViewModeChange, onAddRequest }) {
+function BoardHeader({ viewMode, onViewModeChange, onAddRequest, onOpenShortcuts }) {
 	const [exportOpen, setExportOpen] = useState(false);
 	const dropdownRef = useRef(null);
 	useEffect(() => {
@@ -1110,6 +1383,19 @@ function BoardHeader({ viewMode, onViewModeChange, onAddRequest }) {
 								})]
 							})]
 						})]
+					})]
+				}),
+				/* @__PURE__ */ jsxs("button", {
+					type: "button",
+					onClick: () => {
+						onOpenShortcuts?.();
+						if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("open-shortcuts"));
+					},
+					className: "flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-[#0d0e12] px-3 py-2 text-xs font-medium text-zinc-400 shadow-sm transition-all duration-150 hover:border-zinc-700 hover:bg-[#121318] hover:text-zinc-200 active:scale-[0.98]",
+					title: "Keyboard Shortcuts Cheat-sheet (Press ?)",
+					children: [/* @__PURE__ */ jsx(Keyboard, { className: "h-3.5 w-3.5 text-zinc-400" }), /* @__PURE__ */ jsx("kbd", {
+						className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-300",
+						children: "?"
 					})]
 				}),
 				/* @__PURE__ */ jsxs("button", {
@@ -2122,8 +2408,9 @@ var columnHeaders = {
 	review: { dot: "bg-purple-400" },
 	done: { dot: "bg-emerald-400" }
 };
-function KanbanBoard({ requests, statuses, onDragEnd, onQuickStatus, onOpenDrawer, selectedIds, onToggleSelect }) {
-	const [collapsedColumns, setCollapsedColumns] = useState(() => {
+function KanbanBoard({ requests, statuses, onDragEnd, onQuickStatus, onOpenDrawer, selectedIds, onToggleSelect, onCardMoved, collapsedColumns: propCollapsedColumns, onToggleColumnCollapse: propToggleColumnCollapse, isLoading = false }) {
+	const currentWorkspace = usePage().props.currentWorkspace;
+	const [internalCollapsedColumns, setInternalCollapsedColumns] = useState(() => {
 		if (typeof window !== "undefined") try {
 			return JSON.parse(localStorage.getItem("relay_collapsed_columns") || "[]");
 		} catch {
@@ -2131,13 +2418,45 @@ function KanbanBoard({ requests, statuses, onDragEnd, onQuickStatus, onOpenDrawe
 		}
 		return [];
 	});
+	const activeCollapsed = propCollapsedColumns ?? internalCollapsedColumns;
 	const toggleColumnCollapse = (columnKey) => {
-		setCollapsedColumns((prev) => {
+		if (propToggleColumnCollapse) propToggleColumnCollapse(columnKey);
+		else setInternalCollapsedColumns((prev) => {
 			const next = prev.includes(columnKey) ? prev.filter((k) => k !== columnKey) : [...prev, columnKey];
 			if (typeof window !== "undefined") localStorage.setItem("relay_collapsed_columns", JSON.stringify(next));
 			return next;
 		});
 	};
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+		let bc = null;
+		try {
+			bc = new BroadcastChannel("relay_workspace_live_sync");
+			bc.onmessage = (event) => {
+				if (event.data?.type === "CARD_MOVED" && event.data.card) onCardMoved?.(event.data.card);
+			};
+		} catch {}
+		const echo = window.Echo;
+		if (echo && currentWorkspace?.id) try {
+			const channel = echo.private(`workspace.${currentWorkspace.id}`);
+			channel.listen(".WorkRequestMoved", (e) => {
+				if (e?.request) {
+					onCardMoved?.(e.request);
+					toast.info(`Card #${e.request.id} moved`, { description: `Status changed to ${e.request.status_label || e.request.status}` });
+				}
+			});
+			channel.listen(".WorkRequestCommented", (e) => {
+				toast.info(`New comment on #REQ-${e.request_id}`);
+			});
+			return () => {
+				bc?.close();
+				echo.leave(`workspace.${currentWorkspace.id}`);
+			};
+		} catch {}
+		return () => {
+			bc?.close();
+		};
+	}, [currentWorkspace?.id, onCardMoved]);
 	const columns = useMemo(() => Object.entries(statuses).map(([value, label]) => ({
 		value,
 		label,
@@ -2244,6 +2563,71 @@ function KanbanBoard({ requests, statuses, onDragEnd, onQuickStatus, onOpenDrawe
 			});
 		}
 	}, [focusedCard]);
+	if (isLoading) return /* @__PURE__ */ jsx("div", {
+		className: "flex min-w-0 gap-4 overflow-x-auto pb-4 animate-pulse",
+		children: Object.entries(statuses).map(([key, label]) => /* @__PURE__ */ jsxs("div", {
+			className: "flex min-h-[580px] w-[310px] shrink-0 flex-col rounded-xl border border-white/[0.05] bg-[#111216] p-3 shadow-sm space-y-3",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center justify-between border-b border-zinc-800/80 pb-2.5",
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ jsx("div", { className: "h-2 w-2 rounded-full bg-zinc-700" }), /* @__PURE__ */ jsx("div", { className: "h-3 w-20 rounded bg-zinc-800" })]
+				}), /* @__PURE__ */ jsx("div", { className: "h-4 w-6 rounded bg-zinc-800" })]
+			}), /* @__PURE__ */ jsx("div", {
+				className: "space-y-3 pt-2",
+				children: [
+					1,
+					2,
+					3
+				].map((n) => /* @__PURE__ */ jsxs("div", {
+					className: "h-28 w-full rounded-xl border border-white/[0.04] bg-white/[0.02] p-3.5 space-y-2.5",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "flex justify-between",
+							children: [/* @__PURE__ */ jsx("div", { className: "h-3 w-16 rounded bg-zinc-800" }), /* @__PURE__ */ jsx("div", { className: "h-3 w-8 rounded bg-zinc-800" })]
+						}),
+						/* @__PURE__ */ jsx("div", { className: "h-3.5 w-3/4 rounded bg-zinc-800" }),
+						/* @__PURE__ */ jsx("div", { className: "h-3 w-1/2 rounded bg-zinc-850" })
+					]
+				}, n))
+			})]
+		}, key))
+	});
+	if (requests.length === 0) return /* @__PURE__ */ jsxs("div", {
+		className: "flex min-h-[520px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.08] bg-[#0c0d12]/50 p-12 text-center backdrop-blur-sm animate-in fade-in duration-200",
+		children: [
+			/* @__PURE__ */ jsx("div", {
+				className: "flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.1] bg-[#121318] text-violet-400 shadow-2xl ring-1 ring-white/[0.04]",
+				children: /* @__PURE__ */ jsx(Inbox, { className: "h-7 w-7" })
+			}),
+			/* @__PURE__ */ jsx("h3", {
+				className: "mt-4 text-base font-bold text-white tracking-tight",
+				children: "No work requests in pipeline"
+			}),
+			/* @__PURE__ */ jsx("p", {
+				className: "mt-1.5 max-w-sm text-xs text-zinc-400 leading-relaxed",
+				children: "The pipeline is currently clear. Create a new work request or adjust your active board filters to inspect backlog items."
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "mt-6 flex items-center gap-3",
+				children: /* @__PURE__ */ jsxs("button", {
+					type: "button",
+					onClick: () => {
+						if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("open-quick-create"));
+					},
+					className: "flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-zinc-950 shadow-md transition-all hover:bg-zinc-200 active:scale-[0.98]",
+					children: [
+						/* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }),
+						/* @__PURE__ */ jsx("span", { children: "Create Work Request" }),
+						/* @__PURE__ */ jsx("kbd", {
+							className: "rounded bg-zinc-200 px-1 py-0.5 text-[9px] font-mono text-zinc-800",
+							children: "C"
+						})
+					]
+				})
+			})
+		]
+	});
 	return /* @__PURE__ */ jsxs("div", {
 		className: "space-y-4",
 		children: [/* @__PURE__ */ jsx(DragDropContext, {
@@ -2252,7 +2636,7 @@ function KanbanBoard({ requests, statuses, onDragEnd, onQuickStatus, onOpenDrawe
 				className: "flex min-w-0 gap-4 overflow-x-auto pb-4",
 				children: columns.map((column, colIdx) => {
 					const style = columnHeaders[column.value] ?? { dot: "bg-zinc-400" };
-					if (collapsedColumns.includes(column.value)) return /* @__PURE__ */ jsxs("div", {
+					if (activeCollapsed.includes(column.value)) return /* @__PURE__ */ jsxs("div", {
 						onClick: () => toggleColumnCollapse(column.value),
 						className: "flex min-h-[580px] w-12 shrink-0 flex-col items-center justify-between rounded-xl border border-zinc-800 bg-[#0e1015] py-4 cursor-pointer hover:border-zinc-700 transition-colors shadow-sm select-none",
 						title: `Expand ${column.label}`,
@@ -4192,15 +4576,463 @@ function Card({ className = "", hoverable = false, glow = false, variant = "defa
 	});
 }
 //#endregion
+//#region resources/js/Components/Editor/SlashCommandMenu.tsx
+var SLASH_COMMANDS = [
+	{
+		id: "todo",
+		title: "To-do List",
+		description: "Interactive checkbox task items",
+		shortcut: "/todo",
+		icon: CheckSquare,
+		execute: (editor) => {
+			if (editor.commands.toggleTaskList) editor.commands.toggleTaskList();
+			else editor.chain().focus().insertContent("\n- [ ] ").run();
+		}
+	},
+	{
+		id: "code",
+		title: "Code Block",
+		description: "Fenced monospace code snippet with syntax styling",
+		shortcut: "/code",
+		icon: Code,
+		execute: (editor) => {
+			if (editor.commands.toggleCodeBlock) editor.commands.toggleCodeBlock();
+			else editor.chain().focus().insertContent("\n```typescript\n// code here\n```\n").run();
+		}
+	},
+	{
+		id: "h2",
+		title: "Heading 2",
+		description: "Large section heading",
+		shortcut: "/h2",
+		icon: Heading2,
+		execute: (editor) => {
+			if (editor.commands.toggleHeading) editor.commands.toggleHeading({ level: 2 });
+		}
+	},
+	{
+		id: "h3",
+		title: "Heading 3",
+		description: "Medium sub-section heading",
+		shortcut: "/h3",
+		icon: Heading3,
+		execute: (editor) => {
+			if (editor.commands.toggleHeading) editor.commands.toggleHeading({ level: 3 });
+		}
+	},
+	{
+		id: "table",
+		title: "Table",
+		description: "Structured 3x3 data matrix",
+		shortcut: "/table",
+		icon: Table,
+		execute: (editor) => {
+			if (editor.commands.insertTable) editor.commands.insertTable({
+				rows: 3,
+				cols: 3,
+				withHeaderRow: true
+			});
+			else editor.chain().focus().insertContent("\n| Header 1 | Header 2 | Header 3 |\n| --- | --- | --- |\n| Data 1 | Data 2 | Data 3 |\n").run();
+		}
+	},
+	{
+		id: "quote",
+		title: "Blockquote",
+		description: "Emphasized citation or callout",
+		shortcut: "/quote",
+		icon: Quote,
+		execute: (editor) => {
+			if (editor.commands.toggleBlockquote) editor.commands.toggleBlockquote();
+			else editor.chain().focus().insertContent("\n> ").run();
+		}
+	}
+];
+function SlashCommandMenu({ isOpen, query, onSelect, onClose, position }) {
+	const [selectedIndex, setSelectedIndex] = useState(0);
+	const menuRef = useRef(null);
+	const filtered = SLASH_COMMANDS.filter((cmd) => {
+		const cleanQuery = query.toLowerCase().replace(/^\//, "");
+		if (!cleanQuery) return true;
+		return cmd.title.toLowerCase().includes(cleanQuery) || cmd.id.toLowerCase().includes(cleanQuery) || cmd.shortcut.toLowerCase().includes(cleanQuery) || cmd.description.toLowerCase().includes(cleanQuery);
+	});
+	useEffect(() => {
+		setSelectedIndex(0);
+	}, [query]);
+	useEffect(() => {
+		if (!isOpen) return;
+		const handleKeyDown = (e) => {
+			if (e.key === "ArrowDown") {
+				e.preventDefault();
+				setSelectedIndex((prev) => (prev + 1) % (filtered.length || 1));
+			} else if (e.key === "ArrowUp") {
+				e.preventDefault();
+				setSelectedIndex((prev) => (prev - 1 + (filtered.length || 1)) % (filtered.length || 1));
+			} else if (e.key === "Enter") {
+				e.preventDefault();
+				if (filtered[selectedIndex]) onSelect(filtered[selectedIndex]);
+			} else if (e.key === "Escape") {
+				e.preventDefault();
+				onClose();
+			}
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [
+		isOpen,
+		filtered,
+		selectedIndex,
+		onSelect,
+		onClose
+	]);
+	if (!isOpen || filtered.length === 0) return null;
+	return /* @__PURE__ */ jsxs("div", {
+		ref: menuRef,
+		className: "absolute z-50 w-72 overflow-hidden rounded-xl border border-white/[0.1] bg-[#090a0f] p-1.5 shadow-2xl backdrop-blur-xl ring-1 ring-white/[0.05] animate-in fade-in zoom-in-95 duration-100",
+		style: position ? {
+			top: `${position.top}px`,
+			left: `${position.left}px`
+		} : {
+			top: "100%",
+			left: 0
+		},
+		children: [/* @__PURE__ */ jsx("div", {
+			className: "px-2.5 py-1 text-[10px] font-mono font-semibold uppercase tracking-wider text-zinc-500 border-b border-white/[0.06] mb-1",
+			children: "Insert Block"
+		}), /* @__PURE__ */ jsx("div", {
+			className: "max-h-60 overflow-y-auto custom-scroll space-y-0.5",
+			children: filtered.map((cmd, idx) => {
+				const Icon = cmd.icon;
+				const isSelected = idx === selectedIndex;
+				return /* @__PURE__ */ jsxs("button", {
+					type: "button",
+					onClick: () => onSelect(cmd),
+					onMouseEnter: () => setSelectedIndex(idx),
+					className: `flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left transition-colors ${isSelected ? "bg-violet-600/20 text-white" : "text-zinc-300 hover:bg-white/[0.04]"}`,
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "flex items-center gap-2.5 min-w-0",
+						children: [/* @__PURE__ */ jsx("div", {
+							className: `flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border ${isSelected ? "border-violet-500/40 bg-violet-500/20 text-violet-300" : "border-white/[0.08] bg-[#121318] text-zinc-400"}`,
+							children: /* @__PURE__ */ jsx(Icon, { className: "h-3.5 w-3.5" })
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "min-w-0",
+							children: [/* @__PURE__ */ jsx("div", {
+								className: "text-xs font-semibold leading-tight",
+								children: cmd.title
+							}), /* @__PURE__ */ jsx("div", {
+								className: "text-[10px] text-zinc-400 truncate",
+								children: cmd.description
+							})]
+						})]
+					}), /* @__PURE__ */ jsx("kbd", {
+						className: "shrink-0 font-mono text-[10px] text-zinc-500 px-1 py-0.5 rounded border border-white/[0.08] bg-white/[0.02]",
+						children: cmd.shortcut
+					})]
+				}, cmd.id);
+			})
+		})]
+	});
+}
+//#endregion
+//#region resources/js/Components/Editor/TipTapEditor.tsx
+function markdownToHtml(md) {
+	if (!md) return "";
+	if (/<[a-z][\s\S]*>/i.test(md)) return md;
+	const lines = md.split("\n");
+	const result = [];
+	let inCode = false;
+	let codeLanguage = "";
+	let codeContent = [];
+	let inTaskList = false;
+	for (let i = 0; i < lines.length; i++) {
+		const line = lines[i];
+		const codeMatch = line.match(/^```(\w+)?$/);
+		if (codeMatch && !inCode) {
+			inCode = true;
+			codeLanguage = codeMatch[1] || "";
+			codeContent = [];
+			continue;
+		}
+		if (line.trim() === "```" && inCode) {
+			inCode = false;
+			const langClass = codeLanguage ? ` class="language-${codeLanguage}"` : "";
+			result.push(`<pre><code${langClass}>${codeContent.join("\n")}</code></pre>`);
+			continue;
+		}
+		if (inCode) {
+			codeContent.push(line);
+			continue;
+		}
+		const taskMatch = line.match(/^(\s*)-\s*\[([ xX])\]\s*(.*)$/);
+		if (taskMatch) {
+			if (!inTaskList) {
+				inTaskList = true;
+				result.push("<ul data-type=\"taskList\">");
+			}
+			const isChecked = taskMatch[2].toLowerCase() === "x";
+			result.push(`<li data-type="taskItem" data-checked="${isChecked}"><label><input type="checkbox" ${isChecked ? "checked" : ""}><span></span></label><div><p>${taskMatch[3]}</p></div></li>`);
+			continue;
+		} else if (inTaskList) {
+			inTaskList = false;
+			result.push("</ul>");
+		}
+		if (line.startsWith("### ")) {
+			result.push(`<h3>${line.slice(4)}</h3>`);
+			continue;
+		}
+		if (line.startsWith("## ")) {
+			result.push(`<h2>${line.slice(3)}</h2>`);
+			continue;
+		}
+		if (line.startsWith("# ")) {
+			result.push(`<h1>${line.slice(2)}</h1>`);
+			continue;
+		}
+		if (line.startsWith("> ")) {
+			result.push(`<blockquote><p>${line.slice(2)}</p></blockquote>`);
+			continue;
+		}
+		if (line.startsWith("- ") || line.startsWith("* ")) {
+			result.push(`<ul><li><p>${line.slice(2)}</p></li></ul>`);
+			continue;
+		}
+		if (!line.trim()) {
+			result.push("<p></p>");
+			continue;
+		}
+		result.push(`<p>${line}</p>`);
+	}
+	if (inTaskList) result.push("</ul>");
+	return result.join("");
+}
+function htmlToMarkdown(html) {
+	if (!html) return "";
+	const div = document.createElement("div");
+	div.innerHTML = html;
+	const convertNode = (node) => {
+		if (node.nodeType === Node.TEXT_NODE) return node.textContent || "";
+		if (node.nodeType !== Node.ELEMENT_NODE) return "";
+		const el = node;
+		switch (el.tagName.toLowerCase()) {
+			case "h1": return `# ${Array.from(el.childNodes).map(convertNode).join("")}\n\n`;
+			case "h2": return `## ${Array.from(el.childNodes).map(convertNode).join("")}\n\n`;
+			case "h3": return `### ${Array.from(el.childNodes).map(convertNode).join("")}\n\n`;
+			case "p": {
+				const inner = Array.from(el.childNodes).map(convertNode).join("");
+				return inner ? `${inner}\n\n` : "\n";
+			}
+			case "strong":
+			case "b": return `**${Array.from(el.childNodes).map(convertNode).join("")}**`;
+			case "em":
+			case "i": return `*${Array.from(el.childNodes).map(convertNode).join("")}*`;
+			case "code":
+				if (el.parentElement?.tagName.toLowerCase() === "pre") return el.textContent || "";
+				return `\`${el.textContent}\``;
+			case "pre": {
+				const codeEl = el.querySelector("code");
+				return `\`\`\`${codeEl?.className?.match(/language-(\w+)/)?.[1] || ""}\n${codeEl?.textContent || el.textContent || ""}\n\`\`\`\n\n`;
+			}
+			case "blockquote": return `> ${Array.from(el.childNodes).map(convertNode).join("").trim()}\n\n`;
+			case "ul":
+				if (el.getAttribute("data-type") === "taskList") return Array.from(el.children).map((li) => {
+					const checked = li.getAttribute("data-checked") === "true";
+					const text = (li.querySelector("div") || li).textContent?.trim() || "";
+					return `- [${checked ? "x" : " "}] ${text}`;
+				}).join("\n") + "\n\n";
+				return Array.from(el.children).map((li) => `- ${Array.from(li.childNodes).map(convertNode).join("").trim()}`).join("\n") + "\n\n";
+			case "ol": return Array.from(el.children).map((li, idx) => `${idx + 1}. ${Array.from(li.childNodes).map(convertNode).join("").trim()}`).join("\n") + "\n\n";
+			case "table": {
+				const rows = Array.from(el.querySelectorAll("tr"));
+				if (rows.length === 0) return "";
+				const tableLines = [];
+				rows.forEach((row, rowIdx) => {
+					const cells = Array.from(row.querySelectorAll("th, td")).map((c) => c.textContent?.trim() || "");
+					tableLines.push(`| ${cells.join(" | ")} |`);
+					if (rowIdx === 0) tableLines.push(`| ${cells.map(() => "---").join(" | ")} |`);
+				});
+				return tableLines.join("\n") + "\n\n";
+			}
+			default: return Array.from(el.childNodes).map(convertNode).join("");
+		}
+	};
+	return Array.from(div.childNodes).map(convertNode).join("").trim();
+}
+function TipTapEditor({ content = "", onChange, editable = true, placeholder = "Write details, scope, or type \"/\" for commands…", className = "" }) {
+	const [slashOpen, setSlashOpen] = useState(false);
+	const [slashQuery, setSlashQuery] = useState("");
+	const [slashPosition, setSlashPosition] = useState({
+		top: 0,
+		left: 0
+	});
+	const containerRef = useRef(null);
+	const editor = useEditor({
+		extensions: [
+			StarterKit.configure({ codeBlock: false }),
+			TaskList.configure({ HTMLAttributes: { class: "custom-task-list space-y-1.5 my-2" } }),
+			TaskItem.configure({
+				nested: true,
+				HTMLAttributes: { class: "flex items-start gap-2.5 group cursor-pointer" }
+			}),
+			Table$1.configure({
+				resizable: true,
+				HTMLAttributes: { class: "my-3 border-collapse border border-white/[0.1] rounded-lg overflow-hidden w-full text-xs text-zinc-300" }
+			}),
+			TableRow,
+			TableHeader.configure({ HTMLAttributes: { class: "border border-white/[0.1] bg-white/[0.04] p-2 font-semibold text-zinc-200 text-left" } }),
+			TableCell.configure({ HTMLAttributes: { class: "border border-white/[0.08] p-2 bg-[#090a0f]/60" } })
+		],
+		content: markdownToHtml(content ?? ""),
+		editable,
+		onUpdate: ({ editor: ed }) => {
+			const md = htmlToMarkdown(ed.getHTML());
+			onChange?.(md);
+			const selection = ed.state.selection;
+			const slashMatch = ed.state.doc.textBetween(Math.max(0, selection.from - 20), selection.from, "\n", "\0").match(/\/([a-zA-Z0-9_-]*)$/);
+			if (slashMatch) {
+				setSlashQuery(slashMatch[1]);
+				setSlashOpen(true);
+			} else setSlashOpen(false);
+		}
+	});
+	useEffect(() => {
+		if (!editor || content === void 0 || content === null) return;
+		const currentMd = htmlToMarkdown(editor.getHTML());
+		if (content.trim() !== currentMd.trim()) editor.commands.setContent(markdownToHtml(content));
+	}, [content, editor]);
+	useEffect(() => {
+		if (editor) editor.setEditable(editable);
+	}, [editable, editor]);
+	const handleSelectSlashCommand = useCallback((command) => {
+		if (!editor) return;
+		const { state } = editor;
+		const { from } = state.selection;
+		const slashMatch = state.doc.textBetween(Math.max(0, from - 20), from, "\n", "\0").match(/\/([a-zA-Z0-9_-]*)$/);
+		if (slashMatch) {
+			const matchLength = slashMatch[0].length;
+			editor.commands.deleteRange({
+				from: from - matchLength,
+				to: from
+			});
+		}
+		setSlashOpen(false);
+		command.execute(editor);
+		editor.commands.focus();
+	}, [editor]);
+	if (!editor) return null;
+	return /* @__PURE__ */ jsxs("div", {
+		ref: containerRef,
+		className: `relative rounded-xl border border-white/[0.08] bg-[#090a0f] text-zinc-100 shadow-inner ${className}`,
+		children: [
+			editable && /* @__PURE__ */ jsxs("div", {
+				className: "flex flex-wrap items-center gap-1 border-b border-white/[0.06] bg-[#07090e]/80 px-3 py-1.5 rounded-t-xl",
+				children: [
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleBold().run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("bold") ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Bold (⌘B)",
+						children: /* @__PURE__ */ jsx(Bold, { className: "h-3 w-3" })
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleItalic().run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("italic") ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Italic (⌘I)",
+						children: /* @__PURE__ */ jsx(Italic, { className: "h-3 w-3" })
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleCode().run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("code") ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Inline Code",
+						children: /* @__PURE__ */ jsx(Code, { className: "h-3 w-3" })
+					}),
+					/* @__PURE__ */ jsx("span", { className: "mx-1 h-3.5 w-px bg-white/[0.08]" }),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleHeading({ level: 2 }).run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("heading", { level: 2 }) ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Heading 2 (/h2)",
+						children: /* @__PURE__ */ jsx(Heading2, { className: "h-3.5 w-3.5" })
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("heading", { level: 3 }) ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Heading 3 (/h3)",
+						children: /* @__PURE__ */ jsx(Heading3, { className: "h-3.5 w-3.5" })
+					}),
+					/* @__PURE__ */ jsx("span", { className: "mx-1 h-3.5 w-px bg-white/[0.08]" }),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleTaskList().run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("taskList") ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Task Checklist (/todo)",
+						children: /* @__PURE__ */ jsx(CheckSquare, { className: "h-3 w-3" })
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleBulletList().run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("bulletList") ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Bullet List",
+						children: /* @__PURE__ */ jsx(List, { className: "h-3 w-3" })
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().toggleBlockquote().run(),
+						className: `flex h-6 w-6 items-center justify-center rounded transition-colors ${editor.isActive("blockquote") ? "bg-violet-600/30 text-violet-300" : "text-zinc-400 hover:bg-white/[0.06] hover:text-white"}`,
+						title: "Quote (/quote)",
+						children: /* @__PURE__ */ jsx(Quote, { className: "h-3 w-3" })
+					}),
+					/* @__PURE__ */ jsx("button", {
+						type: "button",
+						onClick: () => editor.chain().focus().insertTable({
+							rows: 3,
+							cols: 3,
+							withHeaderRow: true
+						}).run(),
+						className: "flex h-6 w-6 items-center justify-center rounded text-zinc-400 hover:bg-white/[0.06] hover:text-white transition-colors",
+						title: "Table (/table)",
+						children: /* @__PURE__ */ jsx(Table, { className: "h-3 w-3" })
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "ml-auto text-[10px] font-mono text-zinc-500",
+						children: [
+							"Type ",
+							/* @__PURE__ */ jsx("kbd", {
+								className: "rounded border border-white/[0.1] bg-white/[0.04] px-1 text-zinc-400",
+								children: "/"
+							}),
+							" for blocks"
+						]
+					})
+				]
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "p-4 min-h-[140px] text-xs leading-relaxed font-sans tiptap-content",
+				children: /* @__PURE__ */ jsx(EditorContent, { editor })
+			}),
+			editable && /* @__PURE__ */ jsx(SlashCommandMenu, {
+				isOpen: slashOpen,
+				query: slashQuery,
+				onSelect: handleSelectSlashCommand,
+				onClose: () => setSlashOpen(false)
+			})
+		]
+	});
+}
+//#endregion
 //#region resources/js/Features/Requests/components/Detail/RequestDescriptionCard.tsx
-function RequestDescriptionCard({ description, canEdit, onUpdate }) {
+function RequestDescriptionCard({ description, lockVersion, canEdit, onUpdate }) {
 	const [isEditingDescription, setIsEditingDescription] = useState(false);
 	const [descriptionDraft, setDescriptionDraft] = useState(description ?? "");
 	useEffect(() => {
 		if (!isEditingDescription) setDescriptionDraft(description ?? "");
 	}, [description, isEditingDescription]);
 	const handleSave = () => {
-		onUpdate({ description: descriptionDraft });
+		onUpdate({
+			description: descriptionDraft,
+			...lockVersion !== void 0 ? { lock_version: lockVersion } : {}
+		});
 		setIsEditingDescription(false);
 	};
 	const handleCancel = () => {
@@ -4209,7 +5041,10 @@ function RequestDescriptionCard({ description, canEdit, onUpdate }) {
 	};
 	const handleToggleEdit = () => {
 		if (isEditingDescription) {
-			if (descriptionDraft !== (description ?? "")) onUpdate({ description: descriptionDraft });
+			if (descriptionDraft !== (description ?? "")) onUpdate({
+				description: descriptionDraft,
+				...lockVersion !== void 0 ? { lock_version: lockVersion } : {}
+			});
 			setIsEditingDescription(false);
 		} else {
 			setDescriptionDraft(description ?? "");
@@ -4220,23 +5055,27 @@ function RequestDescriptionCard({ description, canEdit, onUpdate }) {
 		className: "p-5 sm:p-6",
 		children: [/* @__PURE__ */ jsxs("div", {
 			className: "mb-3 flex items-center justify-between border-b border-white/[0.06] pb-3",
-			children: [/* @__PURE__ */ jsx("h2", {
-				className: "text-xs font-bold uppercase tracking-wider text-zinc-300",
-				children: "Description & Scope"
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center gap-2",
+				children: [/* @__PURE__ */ jsx("h2", {
+					className: "text-xs font-bold uppercase tracking-wider text-zinc-300",
+					children: "Description & Scope"
+				}), lockVersion && /* @__PURE__ */ jsxs("span", {
+					className: "rounded border border-white/[0.08] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[9px] text-zinc-500",
+					children: ["v", lockVersion]
+				})]
 			}), canEdit && /* @__PURE__ */ jsxs("button", {
 				type: "button",
 				onClick: handleToggleEdit,
-				className: "flex items-center gap-1 text-[11px] font-semibold text-violet-400 hover:text-violet-300 transition-colors",
-				children: [/* @__PURE__ */ jsx(Edit3, { className: "h-3 w-3" }), /* @__PURE__ */ jsx("span", { children: isEditingDescription ? "Done Editing" : "Edit Text" })]
+				className: "flex items-center gap-1.5 text-[11px] font-semibold text-violet-400 hover:text-violet-300 transition-colors",
+				children: [/* @__PURE__ */ jsx(Edit3, { className: "h-3 w-3" }), /* @__PURE__ */ jsx("span", { children: isEditingDescription ? "Done Editing" : "Edit with TipTap" })]
 			})]
 		}), isEditingDescription && canEdit ? /* @__PURE__ */ jsxs("div", {
 			className: "space-y-3",
-			children: [/* @__PURE__ */ jsx("textarea", {
-				value: descriptionDraft,
-				onChange: (event) => setDescriptionDraft(event.target.value),
-				rows: 6,
-				placeholder: "Describe requirements, acceptance criteria, or use - [ ] for checklists…",
-				className: "w-full resize-y rounded-xl border border-white/[0.08] bg-[#07090e]/80 p-3.5 text-xs font-mono leading-relaxed text-zinc-200 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+			children: [/* @__PURE__ */ jsx(TipTapEditor, {
+				content: descriptionDraft,
+				onChange: (val) => setDescriptionDraft(val),
+				placeholder: "Describe requirements, acceptance criteria, or type / for blocks..."
 			}), /* @__PURE__ */ jsxs("div", {
 				className: "flex justify-end gap-2",
 				children: [/* @__PURE__ */ jsx("button", {
@@ -4244,11 +5083,11 @@ function RequestDescriptionCard({ description, canEdit, onUpdate }) {
 					onClick: handleCancel,
 					className: "rounded-lg px-3 py-1.5 text-xs font-medium text-zinc-400 hover:text-white transition-colors",
 					children: "Cancel"
-				}), /* @__PURE__ */ jsx("button", {
+				}), /* @__PURE__ */ jsxs("button", {
 					type: "button",
 					onClick: handleSave,
-					className: "rounded-lg bg-violet-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-500 transition-colors shadow-sm",
-					children: "Save Description"
+					className: "flex items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-500 transition-colors shadow-sm",
+					children: [/* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Save Description" })]
 				})]
 			})]
 		}) : /* @__PURE__ */ jsx("div", {
@@ -4257,12 +5096,15 @@ function RequestDescriptionCard({ description, canEdit, onUpdate }) {
 				content: description,
 				onToggleChecklist: (updated) => {
 					setDescriptionDraft(updated);
-					onUpdate({ description: updated });
+					onUpdate({
+						description: updated,
+						...lockVersion !== void 0 ? { lock_version: lockVersion } : {}
+					});
 				}
 			}) : /* @__PURE__ */ jsx("p", {
 				onClick: () => canEdit && setIsEditingDescription(true),
 				className: "text-xs text-zinc-500 italic cursor-pointer hover:text-zinc-400",
-				children: "No description provided. Click to add details or interactive checklists..."
+				children: "No description provided. Click to add details, code blocks, or interactive checklists..."
 			})
 		})]
 	});
@@ -5281,10 +6123,69 @@ var triggerConfetti = triggerCelebration;
 //#endregion
 //#region resources/js/Features/Requests/hooks/useKanbanBoard.ts
 function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = [] }) {
+	const authUser = usePage().props.auth?.user;
+	const initialPreferences = authUser?.preferences;
 	const [boardRequests, setBoardRequests] = useState(initialRequests);
+	const [viewMode, setViewMode] = useState(() => {
+		if (initialPreferences?.board_view_mode) return initialPreferences.board_view_mode;
+		if (typeof window !== "undefined") {
+			const stored = localStorage.getItem("relay_board_view_mode");
+			if (stored) return stored;
+		}
+		return "board";
+	});
+	const [collapsedColumns, setCollapsedColumns] = useState(() => {
+		if (Array.isArray(initialPreferences?.collapsed_columns)) return initialPreferences.collapsed_columns;
+		if (typeof window !== "undefined") try {
+			return JSON.parse(localStorage.getItem("relay_collapsed_columns") || "[]");
+		} catch {
+			return [];
+		}
+		return [];
+	});
 	useEffect(() => {
 		setBoardRequests(initialRequests);
 	}, [initialRequests]);
+	const preferenceTimerRef = useRef(null);
+	const persistPreferences = useCallback((newViewMode, newCollapsed) => {
+		if (typeof window !== "undefined") {
+			localStorage.setItem("relay_board_view_mode", newViewMode);
+			localStorage.setItem("relay_collapsed_columns", JSON.stringify(newCollapsed));
+		}
+		if (preferenceTimerRef.current) clearTimeout(preferenceTimerRef.current);
+		preferenceTimerRef.current = setTimeout(() => {
+			router.patch("/profile", { preferences: {
+				...authUser?.preferences || {},
+				board_view_mode: newViewMode,
+				collapsed_columns: newCollapsed
+			} }, {
+				preserveState: true,
+				preserveScroll: true,
+				preserveUrl: true,
+				only: ["auth"]
+			});
+		}, 500);
+	}, [authUser]);
+	const handleSetViewMode = (mode) => {
+		setViewMode(mode);
+		persistPreferences(mode, collapsedColumns);
+	};
+	const toggleColumnCollapse = (columnKey) => {
+		setCollapsedColumns((prev) => {
+			const next = prev.includes(columnKey) ? prev.filter((k) => k !== columnKey) : [...prev, columnKey];
+			persistPreferences(viewMode, next);
+			return next;
+		});
+	};
+	const handleCardMoved = useCallback((updatedCard) => {
+		setBoardRequests((prev) => {
+			if (!prev.some((r) => r.id === updatedCard.id)) return [updatedCard, ...prev];
+			return prev.map((r) => r.id === updatedCard.id ? {
+				...r,
+				...updatedCard
+			} : r);
+		});
+	}, []);
 	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
 		const { source, destination, draggableId } = result;
@@ -5408,6 +6309,11 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 	return {
 		boardRequests,
 		setBoardRequests,
+		viewMode,
+		handleSetViewMode,
+		collapsedColumns,
+		toggleColumnCollapse,
+		handleCardMoved,
 		handleDragEnd,
 		handleQuickStatus,
 		handleCardUpdated,

@@ -32,6 +32,7 @@ export interface WorkspaceUser {
     role?: { id: number; name: string } | null;
     active?: boolean;
     force_password_reset?: boolean;
+    preferences?: Record<string, any> | null;
     created_at?: string | null;
 }
 
@@ -117,6 +118,7 @@ export interface WorkRequestCard {
     assignee?: WorkspaceUser | null;
     files_count?: number;
     file_states?: string[];
+    lock_version?: number;
     created_at?: string | null;
     updated_at?: string | null;
 }

@@ -100,6 +100,26 @@ final class WorkRequestController extends Controller
             $this->authorize('changeStatus', $request);
         }
 
+        if ($formRequest->has('lock_version')) {
+            $submittedLockVersion = (int) $formRequest->input('lock_version');
+            $currentLockVersion = (int) ($request->lock_version ?? 1);
+
+            if ($submittedLockVersion !== $currentLockVersion) {
+                if ($formRequest->expectsJson()) {
+                    return response()->json([
+                        'message' => 'This request has been updated by another teammate.',
+                        'error' => 'This request has been updated by another teammate.',
+                        'current_lock_version' => $currentLockVersion,
+                    ], 409);
+                }
+
+                return back()->with([
+                    'error' => 'This request has been updated by another teammate.',
+                    'conflict' => true,
+                ])->setStatusCode(409);
+            }
+        }
+
         $updated = $this->requests->update($request, $formRequest->user(), $formRequest->validated());
 
         if ($formRequest->expectsJson()) {

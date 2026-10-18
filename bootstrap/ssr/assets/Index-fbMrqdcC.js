@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-C9_Pb_Sd.js";
+import { t as Authenticated } from "./AuthenticatedLayout-Da8j2hUo.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";
@@ -326,7 +326,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 			})]
 		}),
 		children: [/* @__PURE__ */ jsx(Head, { title: `Roadmap · Q${quarter} ${year}` }), /* @__PURE__ */ jsxs("div", {
-			className: "mx-auto max-w-7xl space-y-6",
+			className: "mx-auto max-w-[1600px] space-y-6",
 			children: [/* @__PURE__ */ jsxs("div", {
 				className: "grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4",
 				children: [

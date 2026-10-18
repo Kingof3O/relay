@@ -7,18 +7,21 @@ import {
     FileSpreadsheet,
     FileCode,
     ChevronDown,
+    Keyboard,
 } from 'lucide-react';
 
 interface BoardHeaderProps {
     viewMode: 'board' | 'list';
     onViewModeChange: (mode: 'board' | 'list') => void;
     onAddRequest: () => void;
+    onOpenShortcuts?: () => void;
 }
 
 export default function BoardHeader({
     viewMode,
     onViewModeChange,
     onAddRequest,
+    onOpenShortcuts,
 }: BoardHeaderProps) {
     const [exportOpen, setExportOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
@@ -141,6 +144,22 @@ export default function BoardHeader({
                         </div>
                     )}
                 </div>
+
+                {/* Keyboard Shortcuts Keycap Button */}
+                <button
+                    type="button"
+                    onClick={() => {
+                        onOpenShortcuts?.();
+                        if (typeof window !== 'undefined') {
+                            window.dispatchEvent(new CustomEvent('open-shortcuts'));
+                        }
+                    }}
+                    className="flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-[#0d0e12] px-3 py-2 text-xs font-medium text-zinc-400 shadow-sm transition-all duration-150 hover:border-zinc-700 hover:bg-[#121318] hover:text-zinc-200 active:scale-[0.98]"
+                    title="Keyboard Shortcuts Cheat-sheet (Press ?)"
+                >
+                    <Keyboard className="h-3.5 w-3.5 text-zinc-400" />
+                    <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-300">?</kbd>
+                </button>
 
                 {/* Add Request Button */}
                 <button

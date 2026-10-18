@@ -37,6 +37,7 @@ class ProfileUpdateRequest extends FormRequest
             'notification_preferences.email_on_assignment' => ['sometimes', 'boolean'],
             'notification_preferences.email_on_status_change' => ['sometimes', 'boolean'],
             'notification_preferences.email_on_comment' => ['sometimes', 'boolean'],
+            'preferences' => ['sometimes', 'nullable', 'array'],
         ];
     }
 }

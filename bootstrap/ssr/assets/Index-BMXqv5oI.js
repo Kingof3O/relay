@@ -1,11 +1,11 @@
-import { S as KanbanBoard, T as BoardHeader, a as useKanbanBoard, b as BulkActionBar, h as QuickCreateModal, i as useBoardFilters, t as Authenticated, v as QuickViewDrawer, w as BoardFilterBar, x as RequestListView } from "./AuthenticatedLayout-C9_Pb_Sd.js";
+import { S as KanbanBoard, T as BoardHeader, a as useKanbanBoard, b as BulkActionBar, h as QuickCreateModal, i as useBoardFilters, t as Authenticated, v as QuickViewDrawer, w as BoardFilterBar, x as RequestListView } from "./AuthenticatedLayout-Da8j2hUo.js";
 import { Head, router, usePage } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";
 //#region resources/js/Pages/Requests/Index.tsx
 function Index({ requests: initialRequests, projects, users, statuses, priorities, filters }) {
 	const authUser = usePage().props.auth?.user;
-	const { boardRequests, handleDragEnd, handleQuickStatus, handleCardUpdated, handleBulkUpdateStatus, handleBulkUpdatePriority, handleBulkUpdateAssignee } = useKanbanBoard({
+	const { boardRequests, viewMode, handleSetViewMode, collapsedColumns, toggleColumnCollapse, handleCardMoved, handleDragEnd, handleQuickStatus, handleCardUpdated, handleBulkUpdateStatus, handleBulkUpdatePriority, handleBulkUpdateAssignee } = useKanbanBoard({
 		initialRequests,
 		statuses,
 		priorities,
@@ -19,14 +19,6 @@ function Index({ requests: initialRequests, projects, users, statuses, prioritie
 	const [showCreateModal, setShowCreateModal] = useState(false);
 	const [drawerRequestId, setDrawerRequestId] = useState(null);
 	const [selectedIds, setSelectedIds] = useState(/* @__PURE__ */ new Set());
-	const [viewMode, setViewMode] = useState(() => {
-		if (typeof window !== "undefined") return localStorage.getItem("relay_board_view_mode") || "board";
-		return "board";
-	});
-	const handleSetViewMode = (mode) => {
-		setViewMode(mode);
-		if (typeof window !== "undefined") localStorage.setItem("relay_board_view_mode", mode);
-	};
 	const handleToggleSelect = (id) => {
 		setSelectedIds((prev) => {
 			const next = new Set(prev);
@@ -72,7 +64,10 @@ function Index({ requests: initialRequests, projects, users, statuses, prioritie
 					/* @__PURE__ */ jsx(BoardHeader, {
 						viewMode,
 						onViewModeChange: handleSetViewMode,
-						onAddRequest: () => setShowCreateModal(true)
+						onAddRequest: () => setShowCreateModal(true),
+						onOpenShortcuts: () => {
+							if (typeof window !== "undefined") window.dispatchEvent(new CustomEvent("open-shortcuts"));
+						}
 					}),
 					/* @__PURE__ */ jsx(BoardFilterBar, {
 						filters: filterState,
@@ -95,7 +90,10 @@ function Index({ requests: initialRequests, projects, users, statuses, prioritie
 						onQuickStatus: handleQuickStatus,
 						onOpenDrawer: (req) => setDrawerRequestId(req.id),
 						selectedIds,
-						onToggleSelect: handleToggleSelect
+						onToggleSelect: handleToggleSelect,
+						onCardMoved: handleCardMoved,
+						collapsedColumns,
+						onToggleColumnCollapse: toggleColumnCollapse
 					})
 				]
 			}),

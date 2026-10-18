@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Command } from 'cmdk';
-import { router } from '@inertiajs/react';
+import { router, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import {
@@ -18,6 +18,10 @@ import {
     Keyboard,
     CheckCheck,
     Loader2,
+    Calendar,
+    Copy,
+    UserCheck,
+    CheckCircle2,
 } from 'lucide-react';
 
 interface SearchResultItem {
@@ -53,6 +57,51 @@ export default function CommandPalette({
         projects: ProjectResultItem[];
     }>({ requests: [], projects: [] });
     const [loading, setLoading] = useState(false);
+
+    const pageProps = usePage().props as any;
+    const usersList = (pageProps.users as Array<{ id: number; name: string; username: string }>) || [];
+    const activeRequest = pageProps.request;
+    const pathTicketId = typeof window !== 'undefined' ? window.location.pathname.match(/\/requests\/(\d+)/)?.[1] : null;
+    const ticketId = activeRequest?.id ?? (pathTicketId ? parseInt(pathTicketId, 10) : null);
+
+    const robinUser = usersList.find((u) => u.username?.toLowerCase() === 'robin' || u.name?.toLowerCase().includes('robin'));
+    const hussienUser = usersList.find((u) => u.username?.toLowerCase() === 'hussien' || u.name?.toLowerCase().includes('hussien'));
+
+    const handleTicketAction = async (payload: Record<string, unknown>, successMsg: string) => {
+        setOpen(false);
+        if (!ticketId) {
+            toast.info('Open a ticket to execute ticket actions');
+            router.visit(route('requests.index'));
+            return;
+        }
+
+        try {
+            await axios.patch(route('requests.update', ticketId), payload);
+            toast.success(successMsg);
+            router.reload();
+        } catch {
+            toast.error(`Failed: ${successMsg}`);
+        }
+    };
+
+    const getTomorrowStr = () => {
+        const d = new Date();
+        d.setDate(d.getDate() + 1);
+        return d.toISOString().split('T')[0];
+    };
+
+    const getNextWeekStr = () => {
+        const d = new Date();
+        d.setDate(d.getDate() + 7);
+        return d.toISOString().split('T')[0];
+    };
+
+    const copyTicketLink = () => {
+        setOpen(false);
+        const url = ticketId ? `${window.location.origin}/requests/${ticketId}` : window.location.href;
+        navigator.clipboard.writeText(url);
+        toast.success('Ticket link copied to clipboard');
+    };
 
     useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -199,6 +248,180 @@ export default function CommandPalette({
                                 ))}
                             </Command.Group>
                         )}
+
+                        {/* Actionable Linear Command Group */}
+                        <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400">{ticketId ? `Ticket Actions (#REQ-${ticketId})` : 'Linear Ticket Actions'}</span>}>
+                            <Command.Item
+                                value="Assign to Robin"
+                                onSelect={() => handleTicketAction({ assignee_id: robinUser?.id || 1 }, 'Assigned to Robin')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                        <UserCheck className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Assign to Robin</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">A R</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Assign to Hussien"
+                                onSelect={() => handleTicketAction({ assignee_id: hussienUser?.id || 2 }, 'Assigned to Hussien')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                        <UserCheck className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Assign to Hussien</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">A H</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Set priority: Urgent"
+                                onSelect={() => handleTicketAction({ priority: 'urgent' }, 'Priority set to Urgent')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-rose-500/20 text-rose-300">
+                                        <Flame className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Set priority: Urgent</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 1</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Set priority: High"
+                                onSelect={() => handleTicketAction({ priority: 'high' }, 'Priority set to High')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
+                                        <Flame className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Set priority: High</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 2</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Set priority: Normal"
+                                onSelect={() => handleTicketAction({ priority: 'normal' }, 'Priority set to Normal')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300">
+                                        <Flame className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Set priority: Normal</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 3</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Change status: Doing"
+                                onSelect={() => handleTicketAction({ status: 'doing' }, 'Moved to Doing')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
+                                        <Clock className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Change status: Doing</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 1</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Change status: Review"
+                                onSelect={() => handleTicketAction({ status: 'review' }, 'Moved to Review')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300">
+                                        <CheckCircle2 className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Change status: Review</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 2</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Change status: Done"
+                                onSelect={() => handleTicketAction({ status: 'done' }, 'Moved to Done')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300">
+                                        <CheckCircle2 className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Change status: Done</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 3</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Set due date: Tomorrow"
+                                onSelect={() => handleTicketAction({ due_date: getTomorrowStr() }, 'Due date set to Tomorrow')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300">
+                                        <Calendar className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Set due date: Tomorrow</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">D T</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Set due date: Next week"
+                                onSelect={() => handleTicketAction({ due_date: getNextWeekStr() }, 'Due date set to Next week')}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-500/20 text-blue-300">
+                                        <Calendar className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Set due date: Next week</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">D W</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="Copy ticket link"
+                                onSelect={copyTicketLink}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300">
+                                        <Copy className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Copy ticket link</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">⌘ ⇧ C</kbd>
+                            </Command.Item>
+
+                            <Command.Item
+                                value="View Keyboard Shortcuts (?)"
+                                onSelect={() => {
+                                    setOpen(false);
+                                    onOpenShortcuts?.();
+                                }}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300">
+                                        <Keyboard className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">View Keyboard Shortcuts (?)</span>
+                                </div>
+                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">?</kbd>
+                            </Command.Item>
+                        </Command.Group>
 
                         {/* Actions */}
                         <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Actions</span>}>

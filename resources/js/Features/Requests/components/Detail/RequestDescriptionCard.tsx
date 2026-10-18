@@ -1,16 +1,19 @@
 import Card from '@/Components/Card';
 import MarkdownViewer from '@/Components/MarkdownViewer';
+import TipTapEditor from '@/Components/Editor/TipTapEditor';
 import { useState, useEffect } from 'react';
-import { Edit3 } from 'lucide-react';
+import { Edit3, Check } from 'lucide-react';
 
 interface RequestDescriptionCardProps {
     description?: string | null;
+    lockVersion?: number;
     canEdit: boolean;
     onUpdate: (changes: Record<string, unknown>) => Promise<void> | void;
 }
 
 export default function RequestDescriptionCard({
     description,
+    lockVersion,
     canEdit,
     onUpdate,
 }: RequestDescriptionCardProps) {
@@ -24,7 +27,10 @@ export default function RequestDescriptionCard({
     }, [description, isEditingDescription]);
 
     const handleSave = () => {
-        onUpdate({ description: descriptionDraft });
+        onUpdate({
+            description: descriptionDraft,
+            ...(lockVersion !== undefined ? { lock_version: lockVersion } : {}),
+        });
         setIsEditingDescription(false);
     };
 
@@ -36,7 +42,10 @@ export default function RequestDescriptionCard({
     const handleToggleEdit = () => {
         if (isEditingDescription) {
             if (descriptionDraft !== (description ?? '')) {
-                onUpdate({ description: descriptionDraft });
+                onUpdate({
+                    description: descriptionDraft,
+                    ...(lockVersion !== undefined ? { lock_version: lockVersion } : {}),
+                });
             }
             setIsEditingDescription(false);
         } else {
@@ -48,28 +57,34 @@ export default function RequestDescriptionCard({
     return (
         <Card className="p-5 sm:p-6">
             <div className="mb-3 flex items-center justify-between border-b border-white/[0.06] pb-3">
-                <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
-                    Description & Scope
-                </h2>
+                <div className="flex items-center gap-2">
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
+                        Description & Scope
+                    </h2>
+                    {lockVersion && (
+                        <span className="rounded border border-white/[0.08] bg-white/[0.03] px-1.5 py-0.5 font-mono text-[9px] text-zinc-500">
+                            v{lockVersion}
+                        </span>
+                    )}
+                </div>
                 {canEdit && (
                     <button
                         type="button"
                         onClick={handleToggleEdit}
-                        className="flex items-center gap-1 text-[11px] font-semibold text-violet-400 hover:text-violet-300 transition-colors"
+                        className="flex items-center gap-1.5 text-[11px] font-semibold text-violet-400 hover:text-violet-300 transition-colors"
                     >
                         <Edit3 className="h-3 w-3" />
-                        <span>{isEditingDescription ? 'Done Editing' : 'Edit Text'}</span>
+                        <span>{isEditingDescription ? 'Done Editing' : 'Edit with TipTap'}</span>
                     </button>
                 )}
             </div>
+
             {isEditingDescription && canEdit ? (
                 <div className="space-y-3">
-                    <textarea
-                        value={descriptionDraft}
-                        onChange={(event) => setDescriptionDraft(event.target.value)}
-                        rows={6}
-                        placeholder="Describe requirements, acceptance criteria, or use - [ ] for checklists…"
-                        className="w-full resize-y rounded-xl border border-white/[0.08] bg-[#07090e]/80 p-3.5 text-xs font-mono leading-relaxed text-zinc-200 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+                    <TipTapEditor
+                        content={descriptionDraft}
+                        onChange={(val) => setDescriptionDraft(val)}
+                        placeholder="Describe requirements, acceptance criteria, or type / for blocks..."
                     />
                     <div className="flex justify-end gap-2">
                         <button
@@ -82,9 +97,10 @@ export default function RequestDescriptionCard({
                         <button
                             type="button"
                             onClick={handleSave}
-                            className="rounded-lg bg-violet-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-500 transition-colors shadow-sm"
+                            className="flex items-center gap-1.5 rounded-lg bg-violet-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-500 transition-colors shadow-sm"
                         >
-                            Save Description
+                            <Check className="h-3.5 w-3.5" />
+                            <span>Save Description</span>
                         </button>
                     </div>
                 </div>
@@ -95,7 +111,10 @@ export default function RequestDescriptionCard({
                             content={description}
                             onToggleChecklist={(updated) => {
                                 setDescriptionDraft(updated);
-                                onUpdate({ description: updated });
+                                onUpdate({
+                                    description: updated,
+                                    ...(lockVersion !== undefined ? { lock_version: lockVersion } : {}),
+                                });
                             }}
                         />
                     ) : (
@@ -103,7 +122,7 @@ export default function RequestDescriptionCard({
                             onClick={() => canEdit && setIsEditingDescription(true)}
                             className="text-xs text-zinc-500 italic cursor-pointer hover:text-zinc-400"
                         >
-                            No description provided. Click to add details or interactive checklists...
+                            No description provided. Click to add details, code blocks, or interactive checklists...
                         </p>
                     )}
                 </div>

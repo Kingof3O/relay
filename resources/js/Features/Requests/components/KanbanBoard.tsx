@@ -1,7 +1,9 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { WorkRequestCard } from '@/types';
+import { ChevronLeft, ChevronRight, Inbox, Plus, Loader2 } from 'lucide-react';
+import { WorkRequestCard, PageProps } from '@/types';
+import { usePage } from '@inertiajs/react';
+import { toast } from 'sonner';
 import RequestCard from './RequestCard';
 
 interface KanbanBoardProps {
@@ -12,6 +14,10 @@ interface KanbanBoardProps {
     onOpenDrawer: (request: WorkRequestCard) => void;
     selectedIds: Set<number>;
     onToggleSelect: (id: number) => void;
+    onCardMoved?: (card: WorkRequestCard) => void;
+    collapsedColumns?: string[];
+    onToggleColumnCollapse?: (columnKey: string) => void;
+    isLoading?: boolean;
 }
 
 const columnHeaders: Record<string, { dot: string }> = {
@@ -30,9 +36,15 @@ export default function KanbanBoard({
     onOpenDrawer,
     selectedIds,
     onToggleSelect,
+    onCardMoved,
+    collapsedColumns: propCollapsedColumns,
+    onToggleColumnCollapse: propToggleColumnCollapse,
+    isLoading = false,
 }: KanbanBoardProps) {
-    // Collapsible Columns with LocalStorage Persistence
-    const [collapsedColumns, setCollapsedColumns] = useState<string[]>(() => {
+    const currentWorkspace = usePage<PageProps>().props.currentWorkspace;
+
+    // Internal fallback for collapsed columns if not passed down as prop
+    const [internalCollapsedColumns, setInternalCollapsedColumns] = useState<string[]>(() => {
         if (typeof window !== 'undefined') {
             try {
                 return JSON.parse(localStorage.getItem('relay_collapsed_columns') || '[]');
@@ -43,15 +55,71 @@ export default function KanbanBoard({
         return [];
     });
 
+    const activeCollapsed = propCollapsedColumns ?? internalCollapsedColumns;
+
     const toggleColumnCollapse = (columnKey: string) => {
-        setCollapsedColumns((prev) => {
-            const next = prev.includes(columnKey) ? prev.filter((k) => k !== columnKey) : [...prev, columnKey];
-            if (typeof window !== 'undefined') {
-                localStorage.setItem('relay_collapsed_columns', JSON.stringify(next));
-            }
-            return next;
-        });
+        if (propToggleColumnCollapse) {
+            propToggleColumnCollapse(columnKey);
+        } else {
+            setInternalCollapsedColumns((prev) => {
+                const next = prev.includes(columnKey) ? prev.filter((k) => k !== columnKey) : [...prev, columnKey];
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('relay_collapsed_columns', JSON.stringify(next));
+                }
+                return next;
+            });
+        }
     };
+
+    // Live WebSockets via Laravel Reverb & Multi-Tab BroadcastChannel
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        // 1. BroadcastChannel sync for instant same-origin browser tabs
+        let bc: BroadcastChannel | null = null;
+        try {
+            bc = new BroadcastChannel('relay_workspace_live_sync');
+            bc.onmessage = (event) => {
+                if (event.data?.type === 'CARD_MOVED' && event.data.card) {
+                    onCardMoved?.(event.data.card);
+                }
+            };
+        } catch {
+            // Ignore if BroadcastChannel unsupported
+        }
+
+        // 2. Laravel Echo private workspace channel
+        const echo = (window as unknown as { Echo?: any }).Echo;
+        if (echo && currentWorkspace?.id) {
+            try {
+                const channel = echo.private(`workspace.${currentWorkspace.id}`);
+
+                channel.listen('.WorkRequestMoved', (e: { request?: WorkRequestCard; actor_id?: number }) => {
+                    if (e?.request) {
+                        onCardMoved?.(e.request);
+                        toast.info(`Card #${e.request.id} moved`, {
+                            description: `Status changed to ${e.request.status_label || e.request.status}`,
+                        });
+                    }
+                });
+
+                channel.listen('.WorkRequestCommented', (e: { request_id: number; body?: string }) => {
+                    toast.info(`New comment on #REQ-${e.request_id}`);
+                });
+
+                return () => {
+                    bc?.close();
+                    echo.leave(`workspace.${currentWorkspace.id}`);
+                };
+            } catch {
+                // Graceful fallback
+            }
+        }
+
+        return () => {
+            bc?.close();
+        };
+    }, [currentWorkspace?.id, onCardMoved]);
 
     const columns = useMemo(
         () =>
@@ -172,13 +240,80 @@ export default function KanbanBoard({
         }
     }, [focusedCard]);
 
+    // Loading Skeleton state
+    if (isLoading) {
+        return (
+            <div className="flex min-w-0 gap-4 overflow-x-auto pb-4 animate-pulse">
+                {Object.entries(statuses).map(([key, label]) => (
+                    <div
+                        key={key}
+                        className="flex min-h-[580px] w-[310px] shrink-0 flex-col rounded-xl border border-white/[0.05] bg-[#111216] p-3 shadow-sm space-y-3"
+                    >
+                        <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
+                            <div className="flex items-center gap-2">
+                                <div className="h-2 w-2 rounded-full bg-zinc-700" />
+                                <div className="h-3 w-20 rounded bg-zinc-800" />
+                            </div>
+                            <div className="h-4 w-6 rounded bg-zinc-800" />
+                        </div>
+                        <div className="space-y-3 pt-2">
+                            {[1, 2, 3].map((n) => (
+                                <div
+                                    key={n}
+                                    className="h-28 w-full rounded-xl border border-white/[0.04] bg-white/[0.02] p-3.5 space-y-2.5"
+                                >
+                                    <div className="flex justify-between">
+                                        <div className="h-3 w-16 rounded bg-zinc-800" />
+                                        <div className="h-3 w-8 rounded bg-zinc-800" />
+                                    </div>
+                                    <div className="h-3.5 w-3/4 rounded bg-zinc-800" />
+                                    <div className="h-3 w-1/2 rounded bg-zinc-850" />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+    // Empty Pipeline State (0 tickets)
+    if (requests.length === 0) {
+        return (
+            <div className="flex min-h-[520px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.08] bg-[#0c0d12]/50 p-12 text-center backdrop-blur-sm animate-in fade-in duration-200">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.1] bg-[#121318] text-violet-400 shadow-2xl ring-1 ring-white/[0.04]">
+                    <Inbox className="h-7 w-7" />
+                </div>
+                <h3 className="mt-4 text-base font-bold text-white tracking-tight">No work requests in pipeline</h3>
+                <p className="mt-1.5 max-w-sm text-xs text-zinc-400 leading-relaxed">
+                    The pipeline is currently clear. Create a new work request or adjust your active board filters to inspect backlog items.
+                </p>
+                <div className="mt-6 flex items-center gap-3">
+                    <button
+                        type="button"
+                        onClick={() => {
+                            if (typeof window !== 'undefined') {
+                                window.dispatchEvent(new CustomEvent('open-quick-create'));
+                            }
+                        }}
+                        className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-zinc-950 shadow-md transition-all hover:bg-zinc-200 active:scale-[0.98]"
+                    >
+                        <Plus className="h-3.5 w-3.5" />
+                        <span>Create Work Request</span>
+                        <kbd className="rounded bg-zinc-200 px-1 py-0.5 text-[9px] font-mono text-zinc-800">C</kbd>
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-4">
             <DragDropContext onDragEnd={onDragEnd}>
                 <div className="flex min-w-0 gap-4 overflow-x-auto pb-4">
                     {columns.map((column, colIdx) => {
                         const style = columnHeaders[column.value] ?? { dot: 'bg-zinc-400' };
-                        const isCollapsed = collapsedColumns.includes(column.value);
+                        const isCollapsed = activeCollapsed.includes(column.value);
 
                         if (isCollapsed) {
                             return (

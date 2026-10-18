@@ -35,6 +35,11 @@ export default function Index({
 
     const {
         boardRequests,
+        viewMode,
+        handleSetViewMode,
+        collapsedColumns,
+        toggleColumnCollapse,
+        handleCardMoved,
         handleDragEnd,
         handleQuickStatus,
         handleCardUpdated,
@@ -48,20 +53,6 @@ export default function Index({
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [drawerRequestId, setDrawerRequestId] = useState<number | null>(null);
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-
-    const [viewMode, setViewMode] = useState<'board' | 'list'>(() => {
-        if (typeof window !== 'undefined') {
-            return (localStorage.getItem('relay_board_view_mode') as 'board' | 'list') || 'board';
-        }
-        return 'board';
-    });
-
-    const handleSetViewMode = (mode: 'board' | 'list') => {
-        setViewMode(mode);
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('relay_board_view_mode', mode);
-        }
-    };
 
     const handleToggleSelect = (id: number) => {
         setSelectedIds((prev) => {
@@ -100,6 +91,11 @@ export default function Index({
                     viewMode={viewMode}
                     onViewModeChange={handleSetViewMode}
                     onAddRequest={() => setShowCreateModal(true)}
+                    onOpenShortcuts={() => {
+                        if (typeof window !== 'undefined') {
+                            window.dispatchEvent(new CustomEvent('open-shortcuts'));
+                        }
+                    }}
                 />
 
                 <BoardFilterBar
@@ -128,6 +124,9 @@ export default function Index({
                         onOpenDrawer={(req) => setDrawerRequestId(req.id)}
                         selectedIds={selectedIds}
                         onToggleSelect={handleToggleSelect}
+                        onCardMoved={handleCardMoved}
+                        collapsedColumns={collapsedColumns}
+                        onToggleColumnCollapse={toggleColumnCollapse}
                     />
                 )}
             </div>

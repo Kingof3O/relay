@@ -61,10 +61,17 @@ final class WorkRequestService
             $oldPriority = $request->priority?->value ?? (string) $request->getRawOriginal('priority');
             $oldBlocked = (bool) $request->is_blocked;
 
+            $hasLockVersion = array_key_exists('lock_version', $attributes);
+            unset($attributes['lock_version']);
+
             $request->fill($attributes);
 
             if (array_key_exists('is_blocked', $attributes) && ! $request->is_blocked) {
                 $request->blocked_reason = null;
+            }
+
+            if ($request->isDirty('description') || $hasLockVersion) {
+                $request->lock_version = ((int) ($request->getOriginal('lock_version') ?: 1)) + 1;
             }
 
             $request->save();
@@ -134,6 +141,13 @@ final class WorkRequestService
                 $this->recordActivity($request, $actor, 'edited', 'Request details updated.');
             }
 
+            \App\Events\WorkRequestMoved::dispatch(
+                $request,
+                $actor->id,
+                $oldStatus,
+                $request->status?->value ?? (string) $request->getRawOriginal('status'),
+            );
+
             return $request;
         });
     }
@@ -142,6 +156,8 @@ final class WorkRequestService
     {
         $activity = $this->recordActivity($request, $actor, 'comment', $body);
         $this->notifyRelevantUsers($request, 'comment', "{$actor->name} commented on this request.", $actor);
+
+        \App\Events\WorkRequestCommented::dispatch($request, $activity, $actor->id);
 
         return $activity;
     }

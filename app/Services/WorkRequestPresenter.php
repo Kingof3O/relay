@@ -94,6 +94,7 @@ final class WorkRequestPresenter
             'project' => $request->area?->only(['id', 'name', 'color']),
             'requester' => $request->requester?->only(['id', 'name', 'username']),
             'assignee' => $request->assignee?->only(['id', 'name', 'username']),
+            'lock_version' => (int) ($request->lock_version ?? 1),
             'created_at' => $request->created_at?->toIso8601String(),
             'updated_at' => $request->updated_at?->toIso8601String(),
         ];

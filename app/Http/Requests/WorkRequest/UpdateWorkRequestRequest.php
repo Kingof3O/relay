@@ -56,6 +56,7 @@ final class UpdateWorkRequestRequest extends FormRequest
             'due_date' => ['sometimes', 'nullable', 'date'],
             'tags' => ['sometimes', 'nullable', 'array'],
             'tags.*' => ['string', 'max:30'],
+            'lock_version' => ['sometimes', 'integer', 'min:1'],
             'files' => ['sometimes', 'nullable', 'array'],
             'files.*' => ['file', 'max:65536'],
             'file' => ['sometimes', 'nullable', 'file', 'max:65536'],
