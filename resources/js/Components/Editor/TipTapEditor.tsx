@@ -226,9 +226,7 @@ export default function TipTapEditor({
 
     const editor = useEditor({
         extensions: [
-            StarterKit.configure({
-                codeBlock: false,
-            }),
+            StarterKit,
             TaskList.configure({
                 HTMLAttributes: {
                     class: 'custom-task-list space-y-1.5 my-2',

@@ -136,7 +136,13 @@ export default function Show({
     };
 
     const handleReloadFresh = () => {
-        router.reload();
+        setConflict(null);
+        router.reload({
+            onSuccess: (page) => {
+                const refreshed = (page.props as any).request;
+                if (refreshed) setRequest(refreshed);
+            },
+        });
     };
 
     useEffect(() => {
