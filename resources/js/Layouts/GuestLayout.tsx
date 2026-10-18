@@ -1,6 +1,5 @@
 import ApplicationLogo from '@/Components/ApplicationLogo';
 import { Link } from '@inertiajs/react';
-import { ShieldCheck } from 'lucide-react';
 import { PropsWithChildren } from 'react';
 
 export default function Guest({ children }: PropsWithChildren) {
@@ -34,10 +33,9 @@ export default function Guest({ children }: PropsWithChildren) {
                 {children}
             </div>
 
-            {/* Security Guarantee Footer */}
-            <div className="relative z-10 mt-6 flex items-center gap-2 text-[11px] text-zinc-500">
-                <ShieldCheck className="h-3.5 w-3.5 text-zinc-500" />
-                <span>Encrypted Studio Session · SOC2 Security Ready</span>
+            {/* Portal Footer */}
+            <div className="relative z-10 mt-6 text-xs text-zinc-500 font-mono">
+                Relay Studio
             </div>
         </div>
     );

@@ -3,7 +3,7 @@ import { t as ApplicationLogo } from "./ApplicationLogo-BVzx5-Vz.js";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";
-import { ArrowRight, Building2, Eye, EyeOff, Loader2, Lock, Mail, Shield, ShieldCheck, User } from "lucide-react";
+import { ArrowRight, Building2, Eye, EyeOff, Loader2, Lock, Mail, Shield, User } from "lucide-react";
 //#region resources/js/Layouts/GuestLayout.tsx
 function Guest({ children }) {
 	return /* @__PURE__ */ jsxs("div", {
@@ -33,9 +33,9 @@ function Guest({ children }) {
 				className: "relative z-10 mt-6 w-full max-w-md overflow-hidden rounded-2xl border border-white/[0.08] bg-[#111216] p-7 shadow-2xl shadow-black/80 backdrop-blur-xl sm:p-8",
 				children
 			}),
-			/* @__PURE__ */ jsxs("div", {
-				className: "relative z-10 mt-6 flex items-center gap-2 text-[11px] text-zinc-500",
-				children: [/* @__PURE__ */ jsx(ShieldCheck, { className: "h-3.5 w-3.5 text-zinc-500" }), /* @__PURE__ */ jsx("span", { children: "Encrypted Studio Session · SOC2 Security Ready" })]
+			/* @__PURE__ */ jsx("div", {
+				className: "relative z-10 mt-6 text-xs text-zinc-500 font-mono",
+				children: "Relay Studio"
 			})
 		]
 	});

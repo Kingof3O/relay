@@ -146,11 +146,11 @@ export function EmailTemplateCard({ config, onUpdated, canManage }: Props) {
                         Brand Logo Image URL
                     </label>
                     <div className="flex items-center gap-3">
-                        <div className="h-10 w-10 rounded-lg bg-[#090a0f] border border-zinc-800 p-1.5 flex items-center justify-center shrink-0">
+                        <div className="h-10 w-10 rounded-xl bg-[#111216] border border-white/10 p-2 flex items-center justify-center shrink-0 shadow-inner shadow-white/5">
                             <img
                                 src={logoUrl || '/img/logo.png'}
                                 alt="Logo Preview"
-                                className="h-full w-full object-contain rounded"
+                                className="h-full w-full object-contain"
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = '/img/logo.png';
                                 }}

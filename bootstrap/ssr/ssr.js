@@ -683,18 +683,18 @@ createServer((page) => createInertiaApp({
 	render: renderToString,
 	title: (title) => `${title} - ${appName}`,
 	resolve: (name) => resolvePageComponent(`./Pages/${name}.tsx`, /* #__PURE__ */ Object.assign({
-		"./Pages/Auth/AcceptInvitation.tsx": () => import("./assets/AcceptInvitation-CWKyI0Bu.js"),
+		"./Pages/Auth/AcceptInvitation.tsx": () => import("./assets/AcceptInvitation-Br8e305E.js"),
 		"./Pages/Auth/Login.tsx": () => import("./assets/Login-Dly2W7MP.js"),
 		"./Pages/Cycles/Index.tsx": () => import("./assets/Index-Bn6iJI5n.js"),
 		"./Pages/Dashboard.tsx": () => import("./assets/Dashboard-DPKEK3e3.js"),
 		"./Pages/Error.tsx": () => import("./assets/Error-BuVLPSOz.js"),
-		"./Pages/Integrations/Index.tsx": () => import("./assets/Index-BPAtMlVm.js"),
+		"./Pages/Integrations/Index.tsx": () => import("./assets/Index-gyqZQKVs.js"),
 		"./Pages/Notifications/Index.tsx": () => import("./assets/Index-CQsHRL9U.js"),
 		"./Pages/Profile/Edit.tsx": () => import("./assets/Edit-DaNmvW_M.js"),
 		"./Pages/Requests/Index.tsx": () => import("./assets/Index-BUPzDU_b.js"),
 		"./Pages/Requests/Show.tsx": () => import("./assets/Show-Dv7H35VB.js"),
 		"./Pages/Roadmap/Index.tsx": () => import("./assets/Index-BuvaJJO6.js"),
-		"./Pages/Settings/Index.tsx": () => import("./assets/Index-BnvMKCai.js")
+		"./Pages/Settings/Index.tsx": () => import("./assets/Index-0zmWCetl.js")
 	})),
 	setup: ({ App, props }) => {
 		const ziggy = page.props?.ziggy;

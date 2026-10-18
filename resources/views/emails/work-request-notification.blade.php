@@ -61,8 +61,14 @@
                                         <table border="0" cellpadding="0" cellspacing="0">
                                             <tr>
                                                 <td style="vertical-align: middle; padding-right: 12px;">
-                                                    <!-- Real Brand Logo Image -->
-                                                    <img src="{{ $logoSource }}" width="26" height="26" alt="{{ $brandName }}" style="display: block; width: 26px; height: 26px; border-radius: 6px; border: 0; outline: none; text-decoration: none;" />
+                                                    <!-- Real Brand Logo Badge (Zero White Background) -->
+                                                    <table border="0" cellpadding="0" cellspacing="0">
+                                                        <tr>
+                                                            <td width="30" height="30" align="center" valign="middle" style="width: 30px; height: 30px; background-color: #111216; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px;">
+                                                                <img src="{{ $logoSource }}" width="18" height="18" alt="{{ $brandName }}" style="display: block; width: 18px; height: 18px; border: 0; outline: none; text-decoration: none;" />
+                                                            </td>
+                                                        </tr>
+                                                    </table>
                                                 </td>
                                                 <td style="vertical-align: middle;">
                                                     <span style="font-weight: 700; font-size: 13px; color: #ffffff; letter-spacing: 0.03em;">{{ $brandName }}</span>

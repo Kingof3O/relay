@@ -94,25 +94,25 @@
     "/build/assets/Dashboard-DPKEK3e3.js"
   ],
   "resources/js/Features/Integrations/components/DeliveryLogTable.tsx": [
-    "/build/assets/Integrations-Bh0-NC0K.js"
+    "/build/assets/Integrations-vrenzl8m.js"
   ],
   "resources/js/Features/Integrations/components/DiscordLivePreview.tsx": [
-    "/build/assets/Integrations-Bh0-NC0K.js"
+    "/build/assets/Integrations-vrenzl8m.js"
   ],
   "resources/js/Features/Integrations/components/DiscordWebhookCard.tsx": [
-    "/build/assets/Integrations-Bh0-NC0K.js"
+    "/build/assets/Integrations-vrenzl8m.js"
   ],
   "resources/js/Features/Integrations/components/EmailLivePreview.tsx": [
-    "/build/assets/Integrations-Bh0-NC0K.js"
+    "/build/assets/Integrations-vrenzl8m.js"
   ],
   "resources/js/Features/Integrations/components/EmailTemplateCard.tsx": [
-    "/build/assets/Integrations-Bh0-NC0K.js"
+    "/build/assets/Integrations-vrenzl8m.js"
   ],
   "resources/js/Features/Integrations/components/IntegrationKpiTiles.tsx": [
-    "/build/assets/Integrations-Bh0-NC0K.js"
+    "/build/assets/Integrations-vrenzl8m.js"
   ],
   "resources/js/Features/Integrations/index.ts": [
-    "/build/assets/Integrations-Bh0-NC0K.js"
+    "/build/assets/Integrations-vrenzl8m.js"
   ],
   "resources/js/Features/Notifications/components/NotificationPopover.tsx": [
     "/build/assets/AuthenticatedLayout-BGgfVQov.js"
@@ -214,31 +214,31 @@
     "/build/assets/AuthenticatedLayout-BGgfVQov.js"
   ],
   "resources/js/Features/Settings/components/MemberFormModal.tsx": [
-    "/build/assets/Index-BnvMKCai.js"
+    "/build/assets/Index-0zmWCetl.js"
   ],
   "resources/js/Features/Settings/components/OAuthProvidersCard.tsx": [
-    "/build/assets/Index-BnvMKCai.js"
+    "/build/assets/Index-0zmWCetl.js"
   ],
   "resources/js/Features/Settings/components/ProjectsManagementCard.tsx": [
-    "/build/assets/Index-BnvMKCai.js"
+    "/build/assets/Index-0zmWCetl.js"
   ],
   "resources/js/Features/Settings/components/TeamManagementCard.tsx": [
     "/build/assets/TeamManagementCard-DhJIhOln.js"
   ],
   "resources/js/Features/Settings/components/WorkspaceSnapshotCard.tsx": [
-    "/build/assets/Index-BnvMKCai.js"
+    "/build/assets/Index-0zmWCetl.js"
   ],
   "resources/js/Features/Settings/index.ts": [
-    "/build/assets/Index-BnvMKCai.js"
+    "/build/assets/Index-0zmWCetl.js"
   ],
   "resources/js/Layouts/AuthenticatedLayout.tsx": [
     "/build/assets/AuthenticatedLayout-BGgfVQov.js"
   ],
   "resources/js/Layouts/GuestLayout.tsx": [
-    "/build/assets/AcceptInvitation-CWKyI0Bu.js"
+    "/build/assets/AcceptInvitation-Br8e305E.js"
   ],
   "resources/js/Pages/Auth/AcceptInvitation.tsx": [
-    "/build/assets/AcceptInvitation-CWKyI0Bu.js"
+    "/build/assets/AcceptInvitation-Br8e305E.js"
   ],
   "resources/js/Pages/Auth/Login.tsx": [
     "/build/assets/Login-Dly2W7MP.js"
@@ -253,7 +253,7 @@
     "/build/assets/Error-BuVLPSOz.js"
   ],
   "resources/js/Pages/Integrations/Index.tsx": [
-    "/build/assets/Index-BPAtMlVm.js"
+    "/build/assets/Index-gyqZQKVs.js"
   ],
   "resources/js/Pages/Notifications/Index.tsx": [
     "/build/assets/Index-CQsHRL9U.js"
@@ -271,7 +271,7 @@
     "/build/assets/Index-BuvaJJO6.js"
   ],
   "resources/js/Pages/Settings/Index.tsx": [
-    "/build/assets/Index-BnvMKCai.js"
+    "/build/assets/Index-0zmWCetl.js"
   ],
   "resources/js/Utils/confetti.ts": [
     "/build/assets/AuthenticatedLayout-BGgfVQov.js"
