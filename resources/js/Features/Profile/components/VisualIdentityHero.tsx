@@ -108,13 +108,13 @@ export default function VisualIdentityHero({ stats }: VisualIdentityHeroProps) {
 
                             <div className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400">
                                 <Sparkles className="h-3 w-3" />
-                                <span>Studio Contributor</span>
+                                <span>Team Member</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Work Stats Row & Velocity Progress Bar */}
+                {/* Work Stats Row & Completion Progress Bar */}
                 <div className="flex flex-col gap-3 rounded-xl border border-zinc-800 bg-[#121318]/90 p-4 sm:p-5 shadow-inner xl:min-w-[440px]">
                     {/* Metrics Row */}
                     <div className="grid grid-cols-3 gap-3">
@@ -127,7 +127,7 @@ export default function VisualIdentityHero({ stats }: VisualIdentityHeroProps) {
                             <p className="text-xl sm:text-2xl font-extrabold tabular-nums tracking-tight text-white">
                                 {assignedCount}
                             </p>
-                            <p className="text-[10px] text-zinc-500">{activeCount} in-flight</p>
+                            <p className="text-[10px] text-zinc-500">{activeCount} in progress</p>
                         </div>
 
                         {/* Completed */}
@@ -139,31 +139,31 @@ export default function VisualIdentityHero({ stats }: VisualIdentityHeroProps) {
                             <p className="text-xl sm:text-2xl font-extrabold tabular-nums tracking-tight text-emerald-300">
                                 {completedCount}
                             </p>
-                            <p className="text-[10px] text-zinc-500">Shipped done</p>
+                            <p className="text-[10px] text-zinc-500">Tasks done</p>
                         </div>
 
-                        {/* Velocity */}
+                        {/* Completion Rate */}
                         <div className="space-y-0.5 pl-1">
                             <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
                                 <TrendingUp className="h-3 w-3 text-violet-400" />
-                                <span>Velocity</span>
+                                <span>Completion</span>
                             </div>
                             <p className="text-xl sm:text-2xl font-extrabold tabular-nums tracking-tight text-violet-300">
                                 {completionRate}%
                             </p>
-                            <p className="text-[10px] text-zinc-500">Close rate</p>
+                            <p className="text-[10px] text-zinc-500">Rate</p>
                         </div>
                     </div>
 
-                    {/* Close Rate Velocity Progress Bar */}
+                    {/* Completion Rate Progress Bar */}
                     <div className="space-y-1.5 border-t border-zinc-800/80 pt-3">
                         <div className="flex items-center justify-between text-[11px]">
                             <span className="font-medium text-zinc-400 flex items-center gap-1.5">
                                 <Layers className="h-3 w-3 text-zinc-500" />
-                                <span>Throughput Velocity</span>
+                                <span>Completion Rate</span>
                             </span>
                             <span className="font-mono text-xs font-semibold text-zinc-300">
-                                {completedCount}/{assignedCount} closed ({completionRate}%)
+                                {completedCount}/{assignedCount} completed ({completionRate}%)
                             </span>
                         </div>
                         <div className="h-2 w-full overflow-hidden rounded-full bg-zinc-800 p-0.5 border border-zinc-750">

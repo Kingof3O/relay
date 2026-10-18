@@ -87,7 +87,7 @@ export default function Dashboard({
                 </div>
             }
         >
-            <Head title="Executive Command · Studio Pulse" />
+            <Head title="Dashboard · Overview" />
 
             <div className="mx-auto max-w-[1600px] space-y-6">
                 {/* Hero Mission Control Banner */}

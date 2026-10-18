@@ -1,4 +1,4 @@
-import { p as Card, t as Authenticated, w as Badge } from "./AuthenticatedLayout-BGgfVQov.js";
+import { p as Card, t as Authenticated, w as Badge } from "./AuthenticatedLayout-FgYr35T-.js";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";
@@ -70,7 +70,7 @@ function DashboardHero({ firstName, stats, statusBreakdown = {} }) {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "mt-1.5 max-w-xl text-xs sm:text-sm leading-relaxed text-zinc-400",
-						children: "Real-time studio throughput, active handoffs, triage queue, and initiative delivery metrics."
+						children: "Overview of your tasks, active projects, and team progress."
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "mt-5 max-w-xl",
@@ -180,28 +180,28 @@ function DashboardKpiTiles({ stats }) {
 			label: "New requests",
 			value: stats.new,
 			icon: Sparkles,
-			detail: "Needs triage",
+			detail: "Needs review",
 			href: route("requests.index", { status: "new" })
 		},
 		{
-			label: "My work queue",
+			label: "My tasks",
 			value: stats.my_work,
 			icon: CheckCircle2,
-			detail: "Active assignments",
+			detail: "Assigned to you",
 			href: route("requests.index", { my_work: "1" })
 		},
 		{
-			label: "Awaiting review",
+			label: "In review",
 			value: stats.review,
 			icon: Clock,
-			detail: "Quality sign-off",
+			detail: "Ready for review",
 			href: route("requests.index", { status: "review" })
 		},
 		{
-			label: "Roadblocks",
+			label: "Blocked tasks",
 			value: stats.blocked,
 			icon: AlertOctagon,
-			detail: stats.blocked > 0 ? "Requires attention" : "No blockers",
+			detail: stats.blocked > 0 ? "Needs attention" : "No blockers",
 			href: route("requests.index", { blocked: "1" }),
 			hasAlert: stats.blocked > 0
 		},
@@ -209,7 +209,7 @@ function DashboardKpiTiles({ stats }) {
 			label: "Completion rate",
 			value: `${stats.completion_rate ?? 0}%`,
 			icon: TrendingUp,
-			detail: `${stats.done ?? 0} of ${stats.total ?? 0} delivered`,
+			detail: `${stats.done ?? 0} of ${stats.total ?? 0} completed`,
 			href: route("requests.index", { status: "done" })
 		}
 	];
@@ -301,10 +301,10 @@ function DeliveryVelocityCard({ velocity = [], className = "p-5 lg:col-span-7" }
 					children: /* @__PURE__ */ jsx(BarChart3, { className: "h-4 w-4" })
 				}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 					className: "text-sm font-semibold text-zinc-100",
-					children: "7-Day Delivery Velocity"
+					children: "Weekly Activity"
 				}), /* @__PURE__ */ jsx("p", {
 					className: "text-xs text-zinc-500",
-					children: "Incoming work requests vs completed handoffs"
+					children: "Tasks created vs completed this week"
 				})] })]
 			}), /* @__PURE__ */ jsxs("div", {
 				className: "flex items-center gap-4 text-xs",
@@ -427,10 +427,10 @@ function InitiativesProgressCard({ projectStats = [], className = "p-5 lg:col-sp
 					children: /* @__PURE__ */ jsx(FolderKanban, { className: "h-4 w-4" })
 				}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 					className: "text-sm font-semibold text-zinc-100",
-					children: "Initiatives Progress"
+					children: "Project Progress"
 				}), /* @__PURE__ */ jsx("p", {
 					className: "text-xs text-zinc-500",
-					children: "Delivery status across projects"
+					children: "Task completion across projects"
 				})] })]
 			}), /* @__PURE__ */ jsxs(Link, {
 				href: route("settings.index"),
@@ -487,7 +487,7 @@ function InitiativesProgressCard({ projectStats = [], className = "p-5 lg:col-sp
 				})]
 			}, project.id)) : /* @__PURE__ */ jsx("div", {
 				className: "flex h-32 items-center justify-center text-xs text-zinc-500",
-				children: "No active initiatives found."
+				children: "No active projects found."
 			})
 		})]
 	});
@@ -513,7 +513,7 @@ function RoadblockAlertBanner({ blockedRequests, onUnblockLatest }) {
 						children: [
 							blockedRequests.length,
 							" Active ",
-							blockedRequests.length === 1 ? "Roadblock" : "Roadblocks"
+							blockedRequests.length === 1 ? "Blocked Task" : "Blocked Tasks"
 						]
 					}), /* @__PURE__ */ jsx("span", {
 						className: "rounded bg-rose-500/10 border border-rose-500/20 px-1.5 py-0.5 text-[10px] font-medium text-rose-400",
@@ -528,7 +528,7 @@ function RoadblockAlertBanner({ blockedRequests, onUnblockLatest }) {
 							children: latest.title
 						}),
 						" — ",
-						latest.blocked_reason || "Requires unblocking resolution"
+						latest.blocked_reason || "Needs attention"
 					]
 				})] })]
 			}), /* @__PURE__ */ jsxs("div", {
@@ -541,7 +541,7 @@ function RoadblockAlertBanner({ blockedRequests, onUnblockLatest }) {
 				}), /* @__PURE__ */ jsxs(Link, {
 					href: route("requests.index", { blocked: "1" }),
 					className: "flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-850 px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:border-zinc-700 hover:text-zinc-200",
-					children: [/* @__PURE__ */ jsx("span", { children: "View All Blockers" }), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3.5 w-3.5" })]
+					children: [/* @__PURE__ */ jsx("span", { children: "View All Blocked" }), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3.5 w-3.5" })]
 				})]
 			})]
 		})
@@ -810,13 +810,13 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 						type: "button",
 						onClick: () => setQueueFilter("all"),
 						className: `rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${queueFilter === "all" ? "bg-zinc-800 text-white shadow-sm border border-zinc-700/60" : "text-zinc-400 hover:text-zinc-200"}`,
-						children: "All Focus Areas"
+						children: "All Tasks"
 					}),
 					/* @__PURE__ */ jsxs("button", {
 						type: "button",
 						onClick: () => setQueueFilter("triage"),
 						className: `flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${queueFilter === "triage" ? "bg-zinc-800 text-white shadow-sm border border-zinc-700/60" : "text-zinc-400 hover:text-zinc-200"}`,
-						children: [/* @__PURE__ */ jsx("span", { children: "Triage" }), /* @__PURE__ */ jsx("span", {
+						children: [/* @__PURE__ */ jsx("span", { children: "New" }), /* @__PURE__ */ jsx("span", {
 							className: "rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300",
 							children: stats.new
 						})]
@@ -825,7 +825,7 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 						type: "button",
 						onClick: () => setQueueFilter("my_work"),
 						className: `flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${queueFilter === "my_work" ? "bg-zinc-800 text-white shadow-sm border border-zinc-700/60" : "text-zinc-400 hover:text-zinc-200"}`,
-						children: [/* @__PURE__ */ jsx("span", { children: "My Work" }), /* @__PURE__ */ jsx("span", {
+						children: [/* @__PURE__ */ jsx("span", { children: "My Tasks" }), /* @__PURE__ */ jsx("span", {
 							className: "rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300",
 							children: stats.my_work
 						})]
@@ -834,7 +834,7 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 						type: "button",
 						onClick: () => setQueueFilter("review"),
 						className: `flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${queueFilter === "review" ? "bg-zinc-800 text-white shadow-sm border border-zinc-700/60" : "text-zinc-400 hover:text-zinc-200"}`,
-						children: [/* @__PURE__ */ jsx("span", { children: "Review" }), /* @__PURE__ */ jsx("span", {
+						children: [/* @__PURE__ */ jsx("span", { children: "In Review" }), /* @__PURE__ */ jsx("span", {
 							className: "rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300",
 							children: stats.review
 						})]
@@ -843,7 +843,7 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 						type: "button",
 						onClick: () => setQueueFilter("blocked"),
 						className: `flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${queueFilter === "blocked" ? "bg-zinc-800 text-rose-300 shadow-sm border border-rose-900/40" : "text-zinc-400 hover:text-zinc-200"}`,
-						children: [/* @__PURE__ */ jsx("span", { children: "Roadblocks" }), /* @__PURE__ */ jsx("span", {
+						children: [/* @__PURE__ */ jsx("span", { children: "Blocked" }), /* @__PURE__ */ jsx("span", {
 							className: "rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300",
 							children: stats.blocked
 						})]
@@ -851,17 +851,17 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 				]
 			}), /* @__PURE__ */ jsxs("div", {
 				className: "flex items-center gap-1.5 text-xs text-zinc-500",
-				children: [/* @__PURE__ */ jsx(Zap, { className: "h-3.5 w-3.5 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Hover any request to trigger fast status advance" })]
+				children: [/* @__PURE__ */ jsx(Zap, { className: "h-3.5 w-3.5 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Hover a task for quick actions" })]
 			})]
 		}), /* @__PURE__ */ jsxs("div", {
 			className: "grid gap-4 xl:grid-cols-2",
 			children: [
 				(queueFilter === "all" || queueFilter === "triage") && /* @__PURE__ */ jsx(SectionQueue, {
-					eyebrow: "Triage",
-					title: "New Requests",
+					eyebrow: "New",
+					title: "New Tasks",
 					count: stats.new,
 					requests: newRequests,
-					empty: "No incoming requests waiting for triage.",
+					empty: "No new tasks waiting for review.",
 					href: route("requests.index", { status: "new" }),
 					icon: Sparkles,
 					actionLabel: "Pick Up",
@@ -870,7 +870,7 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 				}),
 				(queueFilter === "all" || queueFilter === "my_work") && /* @__PURE__ */ jsx(SectionQueue, {
 					eyebrow: "Assigned",
-					title: "My Work Queue",
+					title: "My Tasks",
 					count: stats.my_work,
 					requests: myAssignedWork,
 					empty: "Your active queue is clear.",
@@ -882,10 +882,10 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 				}),
 				(queueFilter === "all" || queueFilter === "review") && /* @__PURE__ */ jsx(SectionQueue, {
 					eyebrow: "Review",
-					title: "Requests in Review",
+					title: "Tasks in Review",
 					count: stats.review,
 					requests: reviewRequests,
-					empty: "No requests awaiting approval.",
+					empty: "No tasks awaiting approval.",
 					href: route("requests.index", { status: "review" }),
 					icon: Clock,
 					actionLabel: "Approve",
@@ -893,11 +893,11 @@ function DashboardQueuesGrid({ stats, newRequests, myAssignedWork, reviewRequest
 					onAdvance: (req) => onAdvanceRequest(req, "done")
 				}),
 				(queueFilter === "all" || queueFilter === "blocked") && /* @__PURE__ */ jsx(SectionQueue, {
-					eyebrow: "Roadblocks",
-					title: "Blocked Requests",
+					eyebrow: "Blocked",
+					title: "Blocked Tasks",
 					count: stats.blocked,
 					requests: blockedRequests,
-					empty: "No blocked work requests.",
+					empty: "No blocked tasks.",
 					href: route("requests.index", { blocked: "1" }),
 					icon: AlertOctagon,
 					actionLabel: "Unblock",
@@ -957,7 +957,7 @@ function Dashboard({ stats, velocity = [], projectStats = [], statusBreakdown = 
 				children: "Studio Dashboard"
 			})] })
 		}),
-		children: [/* @__PURE__ */ jsx(Head, { title: "Executive Command · Studio Pulse" }), /* @__PURE__ */ jsxs("div", {
+		children: [/* @__PURE__ */ jsx(Head, { title: "Dashboard · Overview" }), /* @__PURE__ */ jsxs("div", {
 			className: "mx-auto max-w-[1600px] space-y-6",
 			children: [
 				/* @__PURE__ */ jsx(DashboardHero, {

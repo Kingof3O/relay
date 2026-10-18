@@ -417,7 +417,7 @@ export default function KanbanBoard({
 
             {requests.some((request) => request.is_blocked) && (
                 <p className="text-center text-[11px] text-zinc-500">
-                    Blocked requests stay in their normal status column and carry a visible roadblock indicator.
+                    Blocked tasks stay in their status column with a red blocked indicator.
                 </p>
             )}
         </div>

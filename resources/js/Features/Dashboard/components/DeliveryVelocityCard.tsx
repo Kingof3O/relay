@@ -67,9 +67,9 @@ export default function DeliveryVelocityCard({
                         <BarChart3 className="h-4 w-4" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-semibold text-zinc-100">7-Day Delivery Velocity</h3>
+                        <h3 className="text-sm font-semibold text-zinc-100">Weekly Activity</h3>
                         <p className="text-xs text-zinc-500">
-                            Incoming work requests vs completed handoffs
+                            Tasks created vs completed this week
                         </p>
                     </div>
                 </div>

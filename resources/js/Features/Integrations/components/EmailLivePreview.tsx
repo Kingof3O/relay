@@ -7,10 +7,10 @@ interface Props {
 }
 
 const PREVIEW_EVENTS = [
-    { key: 'assignment', label: '⚡ Work Assigned' },
-    { key: 'review', label: '👀 Review Request' },
-    { key: 'done', label: '✅ Work Completed' },
-    { key: 'blocked', label: '🚧 Roadblock Flagged' },
+    { key: 'assignment', label: '⚡ Task Assigned' },
+    { key: 'review', label: '👀 Ready for Review' },
+    { key: 'done', label: '✅ Task Completed' },
+    { key: 'blocked', label: '🚧 Task Blocked' },
     { key: 'comment', label: '💬 New Comment' },
 ];
 
@@ -26,7 +26,7 @@ export function EmailLivePreview({ config }: Props) {
                 <div className="flex items-center gap-2">
                     <Eye className="h-4 w-4 text-violet-400" />
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                        Live HTML Email Template Preview
+                        Email Template Preview
                     </h3>
                 </div>
 

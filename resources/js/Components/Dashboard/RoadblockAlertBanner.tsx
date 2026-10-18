@@ -27,14 +27,14 @@ export default function RoadblockAlertBanner({
                     <div>
                         <div className="flex items-center gap-2">
                             <h4 className="text-xs sm:text-sm font-semibold text-rose-200">
-                                {blockedRequests.length} Active {blockedRequests.length === 1 ? 'Roadblock' : 'Roadblocks'}
+                                {blockedRequests.length} Active {blockedRequests.length === 1 ? 'Blocked Task' : 'Blocked Tasks'}
                             </h4>
                             <span className="rounded bg-rose-500/10 border border-rose-500/20 px-1.5 py-0.5 text-[10px] font-medium text-rose-400">
                                 Action Required
                             </span>
                         </div>
                         <p className="mt-0.5 text-xs text-zinc-400">
-                            Latest: <strong className="text-zinc-200">{latest.title}</strong> — {latest.blocked_reason || 'Requires unblocking resolution'}
+                            Latest: <strong className="text-zinc-200">{latest.title}</strong> — {latest.blocked_reason || 'Needs attention'}
                         </p>
                     </div>
                 </div>
@@ -53,7 +53,7 @@ export default function RoadblockAlertBanner({
                         href={route('requests.index', { blocked: '1' })}
                         className="flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-850 px-3 py-1.5 text-xs font-medium text-zinc-400 transition-colors hover:border-zinc-700 hover:text-zinc-200"
                     >
-                        <span>View All Blockers</span>
+                        <span>View All Blocked</span>
                         <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
                 </div>

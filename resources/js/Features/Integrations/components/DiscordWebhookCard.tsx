@@ -181,14 +181,14 @@ export function DiscordWebhookCard({ config, onUpdated, canManage }: Props) {
                 {/* Subscribed Events Toggles */}
                 <div>
                     <label className="block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2">
-                        Broadcast Triggers & Event Subscriptions
+                        Notification Triggers
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
                         {[
-                            { key: 'ticket_created', label: '🆕 Ticket Created' },
-                            { key: 'ticket_assigned', label: '⚡ Work Assigned' },
+                            { key: 'ticket_created', label: '🆕 Task Created' },
+                            { key: 'ticket_assigned', label: '⚡ Task Assigned' },
                             { key: 'ticket_status', label: '🔄 Status & Review' },
-                            { key: 'ticket_blocked', label: '🚧 Blockers & Roadblocks' },
+                            { key: 'ticket_blocked', label: '🚧 Blocked Tasks' },
                             { key: 'ticket_comment', label: '💬 Comments & Mentions' },
                         ].map((evt) => (
                             <label

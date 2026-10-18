@@ -1,5 +1,5 @@
-import { t as Authenticated } from "./AuthenticatedLayout-BGgfVQov.js";
-import { a as DiscordWebhookCard, i as DiscordLivePreview, n as EmailLivePreview, o as IntegrationKpiTiles, r as EmailTemplateCard, t as DeliveryLogTable } from "./Integrations-vrenzl8m.js";
+import { t as Authenticated } from "./AuthenticatedLayout-FgYr35T-.js";
+import { a as DiscordWebhookCard, i as DiscordLivePreview, n as EmailLivePreview, o as IntegrationKpiTiles, r as EmailTemplateCard, t as DeliveryLogTable } from "./Integrations-CXfteOG9.js";
 import { Head } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";
@@ -18,7 +18,7 @@ function IntegrationsIndex({ discord: initialDiscord, email: initialEmail, logs:
 				children: [
 					/* @__PURE__ */ jsx("span", {
 						className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-						children: "Controls"
+						children: "Settings"
 					}),
 					/* @__PURE__ */ jsx("span", {
 						className: "text-zinc-600",
@@ -26,21 +26,21 @@ function IntegrationsIndex({ discord: initialDiscord, email: initialEmail, logs:
 					}),
 					/* @__PURE__ */ jsx("span", {
 						className: "text-[11px] text-zinc-500",
-						children: "Dispatch & Telemetry"
+						children: "Notifications"
 					})
 				]
 			}), /* @__PURE__ */ jsxs("h1", {
 				className: "mt-1 text-lg font-semibold text-zinc-100 sm:text-xl flex items-center gap-2",
-				children: [/* @__PURE__ */ jsx(Radio, { className: "h-5 w-5 text-violet-400" }), /* @__PURE__ */ jsx("span", { children: "Integrations & Notification Dispatch" })]
+				children: [/* @__PURE__ */ jsx(Radio, { className: "h-5 w-5 text-violet-400" }), /* @__PURE__ */ jsx("span", { children: "Integrations & Notifications" })]
 			})] }), /* @__PURE__ */ jsx("div", {
 				className: "flex items-center gap-2 text-xs",
 				children: /* @__PURE__ */ jsxs("span", {
 					className: "inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#111216] px-3 py-1 font-medium text-emerald-400 shadow-sm",
-					children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" }), "Dual Pipeline Active"]
+					children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" }), "Notifications Active"]
 				})
 			})]
 		}),
-		children: [/* @__PURE__ */ jsx(Head, { title: "Integrations & Notifications · Workspace Studio" }), /* @__PURE__ */ jsxs("div", {
+		children: [/* @__PURE__ */ jsx(Head, { title: "Integrations & Notifications" }), /* @__PURE__ */ jsxs("div", {
 			className: "mx-auto max-w-[1600px] space-y-6",
 			children: [
 				/* @__PURE__ */ jsx(IntegrationKpiTiles, {
@@ -101,7 +101,7 @@ function IntegrationsIndex({ discord: initialDiscord, email: initialEmail, logs:
 						]
 					}), /* @__PURE__ */ jsx("span", {
 						className: "text-[11px] text-zinc-500 font-mono hidden md:inline",
-						children: "Dual Notification Pipeline · Asynchronous Queue"
+						children: "Email & Discord Notifications"
 					})]
 				}),
 				activeTab === "all" && /* @__PURE__ */ jsxs("div", {

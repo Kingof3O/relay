@@ -1,5 +1,5 @@
-import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-BGgfVQov.js";
-import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-vrenzl8m.js";
+import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-FgYr35T-.js";
+import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-CXfteOG9.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, router } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
@@ -176,7 +176,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 						children: [
 							/* @__PURE__ */ jsx("h2", {
 								className: "text-base font-semibold text-zinc-100",
-								children: "Projects & Initiatives"
+								children: "Projects"
 							}),
 							/* @__PURE__ */ jsxs("span", {
 								className: "rounded-full border border-violet-500/30 bg-violet-500/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-violet-300",
@@ -189,7 +189,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 						]
 					}), /* @__PURE__ */ jsx("p", {
 						className: "mt-0.5 text-xs text-zinc-400",
-						children: "Organize requests into dedicated initiative boards with color swatches, active telemetry, and ordering."
+						children: "Organize tasks into projects with custom colors, order, and status tracking."
 					})] })]
 				}), canManageAreas && /* @__PURE__ */ jsxs("div", {
 					className: "flex flex-wrap items-center gap-2",
@@ -213,7 +213,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 									addProject();
 								}
 							},
-							placeholder: "New initiative name…",
+							placeholder: "New project name…",
 							className: "w-48 sm:w-60 rounded-xl border border-zinc-800 bg-[#0c0d12] px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 transition-colors"
 						}),
 						/* @__PURE__ */ jsxs("button", {
@@ -221,7 +221,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 							onClick: addProject,
 							disabled: adding || !newProject.trim(),
 							className: "flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-xs font-semibold text-zinc-950 shadow-sm hover:bg-zinc-200 active:scale-[0.98] transition-all disabled:opacity-50",
-							children: [/* @__PURE__ */ jsx(Plus, { className: "h-4 w-4" }), /* @__PURE__ */ jsx("span", { children: adding ? "Adding…" : "Add Initiative" })]
+							children: [/* @__PURE__ */ jsx(Plus, { className: "h-4 w-4" }), /* @__PURE__ */ jsx("span", { children: adding ? "Adding…" : "Add Project" })]
 						})
 					]
 				})]
@@ -479,7 +479,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 							}),
 							/* @__PURE__ */ jsx("th", {
 								className: "px-4 py-3",
-								children: "Initiative"
+								children: "Project"
 							}),
 							/* @__PURE__ */ jsx("th", {
 								className: "px-4 py-3 hidden sm:table-cell",
@@ -487,7 +487,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 							}),
 							/* @__PURE__ */ jsx("th", {
 								className: "px-4 py-3",
-								children: "Telemetry"
+								children: "Tasks"
 							}),
 							/* @__PURE__ */ jsx("th", {
 								className: "px-4 py-3 hidden md:table-cell",
@@ -955,7 +955,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 								children: [
 									/* @__PURE__ */ jsx("p", {
 										className: "text-xs font-medium text-zinc-400",
-										children: "Active initiatives"
+										children: "Active projects"
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums",
@@ -963,7 +963,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 text-[11px] text-zinc-500",
-										children: archivedProjectsCount > 0 ? `${archivedProjectsCount} archived boards preserved` : "All project boards active"
+										children: archivedProjectsCount > 0 ? `${archivedProjectsCount} archived projects` : "All projects active"
 									})
 								]
 							}),
@@ -991,7 +991,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 									children: /* @__PURE__ */ jsx(Users, { className: "h-4 w-4" })
 								}), onSelectTab && /* @__PURE__ */ jsxs("span", {
 									className: "flex items-center gap-1 text-[11px] font-medium text-zinc-500 transition-colors group-hover:text-zinc-300",
-									children: ["Team Roster ", /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 transition-transform group-hover:translate-x-0.5" })]
+									children: ["Team Members ", /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 transition-transform group-hover:translate-x-0.5" })]
 								})]
 							}),
 							/* @__PURE__ */ jsxs("div", {
@@ -999,7 +999,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 								children: [
 									/* @__PURE__ */ jsx("p", {
 										className: "text-xs font-medium text-zinc-400",
-										children: "Team roster"
+										children: "Team members"
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums",
@@ -1011,7 +1011,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 											activeUsersCount,
 											" active · ",
 											inactiveUsersCount,
-											" paused"
+											" inactive"
 										]
 									})
 								]
@@ -1045,7 +1045,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 									children: /* @__PURE__ */ jsx(Activity, { className: "h-4 w-4" })
 								}), /* @__PURE__ */ jsxs("span", {
 									className: "flex items-center gap-1 text-[11px] font-medium text-emerald-400",
-									children: [/* @__PURE__ */ jsx(CheckCircle2, { className: "h-3 w-3" }), " Live Telemetry"]
+									children: [/* @__PURE__ */ jsx(CheckCircle2, { className: "h-3 w-3" }), " Active"]
 								})]
 							}),
 							/* @__PURE__ */ jsxs("div", {
@@ -1053,7 +1053,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 								children: [
 									/* @__PURE__ */ jsx("p", {
 										className: "text-xs font-medium text-zinc-400",
-										children: "Active workload"
+										children: "Active tasks"
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums",
@@ -1061,13 +1061,13 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 text-[11px] text-zinc-500",
-										children: activeProjectsCount > 0 ? `~${(totalActiveRequests / Math.max(1, activeProjectsCount)).toFixed(1)} requests / initiative` : "No open requests"
+										children: activeProjectsCount > 0 ? `~${(totalActiveRequests / Math.max(1, activeProjectsCount)).toFixed(1)} tasks / project` : "No open tasks"
 									})
 								]
 							}),
 							/* @__PURE__ */ jsxs("div", {
 								className: "mt-3 flex items-center gap-1.5 text-[10px] text-zinc-400 pt-2 border-t border-zinc-800/60",
-								children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400" }), /* @__PURE__ */ jsx("span", { children: "All priority queues operational" })]
+								children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400" }), /* @__PURE__ */ jsx("span", { children: "All systems normal" })]
 							})
 						]
 					}),
@@ -1081,7 +1081,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 									children: /* @__PURE__ */ jsx(ShieldCheck, { className: "h-4 w-4" })
 								}), /* @__PURE__ */ jsx("span", {
 									className: "rounded border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-300",
-									children: "RBAC Active"
+									children: "Security Active"
 								})]
 							}),
 							/* @__PURE__ */ jsxs("div", {
@@ -1089,7 +1089,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 								children: [
 									/* @__PURE__ */ jsx("p", {
 										className: "text-xs font-medium text-zinc-400",
-										children: "Studio engine"
+										children: "System status"
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums",
@@ -1097,13 +1097,13 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 text-[11px] text-zinc-500",
-										children: "Dual S3 / WebP Transcoder"
+										children: "Media processing active"
 									})
 								]
 							}),
 							/* @__PURE__ */ jsxs("div", {
 								className: "mt-3 flex items-center gap-1.5 text-[10px] text-zinc-400 pt-2 border-t border-zinc-800/60",
-								children: [/* @__PURE__ */ jsx(Cpu, { className: "h-3 w-3 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Transactional Email Engine Active" })]
+								children: [/* @__PURE__ */ jsx(Cpu, { className: "h-3 w-3 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Email notifications active" })]
 							})
 						]
 					})
@@ -1123,21 +1123,21 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 									className: "inline-flex items-center gap-2 rounded-full border border-zinc-700/60 bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-300",
 									children: [
 										/* @__PURE__ */ jsx(Sparkles, { className: "h-3.5 w-3.5 text-zinc-400" }),
-										/* @__PURE__ */ jsx("span", { children: "Workspace Operations & Intelligence" }),
+										/* @__PURE__ */ jsx("span", { children: "Workspace Overview" }),
 										/* @__PURE__ */ jsx("span", { className: "h-1 w-1 rounded-full bg-zinc-500" }),
 										/* @__PURE__ */ jsxs("span", {
 											className: "text-zinc-400",
-											children: [projects.length, " Total Initiatives"]
+											children: [projects.length, " Total Projects"]
 										})
 									]
 								}),
 								/* @__PURE__ */ jsx("h2", {
 									className: "text-2xl font-bold tracking-tight text-white sm:text-3xl",
-									children: "Projects, People, and Delivery Telemetry."
+									children: "Projects, Team, and Workspace Settings"
 								}),
 								/* @__PURE__ */ jsx("p", {
 									className: "text-xs leading-relaxed text-zinc-400 sm:text-sm",
-									children: "Expansive operational command for Relay Studio. Monitor project scopes, member access privileges, active throughput, and system deployment status in real time."
+									children: "Manage your projects, team members, roles, and workspace preferences."
 								})
 							]
 						}), onSelectTab && /* @__PURE__ */ jsxs("div", {
@@ -1157,7 +1157,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 								className: "group flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-xs font-semibold text-zinc-950 shadow-sm transition-all duration-150 hover:bg-zinc-200 active:scale-[0.98]",
 								children: [
 									/* @__PURE__ */ jsx(Users, { className: "h-4 w-4 text-zinc-950 transition-transform group-hover:scale-110" }),
-									/* @__PURE__ */ jsx("span", { children: "Team Roster" }),
+									/* @__PURE__ */ jsx("span", { children: "Team Members" }),
 									/* @__PURE__ */ jsx(ArrowUpRight, { className: "h-3.5 w-3.5 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" })
 								]
 							})]
@@ -1178,10 +1178,10 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 								children: /* @__PURE__ */ jsx(Layers, { className: "h-4 w-4" })
 							}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 								className: "text-sm font-semibold text-zinc-100",
-								children: "Initiative Distribution & Workload"
+								children: "Project Workload"
 							}), /* @__PURE__ */ jsx("p", {
 								className: "text-[11px] text-zinc-400",
-								children: "Real-time request capacity across active project workspaces."
+								children: "Active tasks across your projects."
 							})] })]
 						}), /* @__PURE__ */ jsxs("span", {
 							className: "font-mono text-xs text-zinc-400",
@@ -1772,7 +1772,7 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "projects" ? "border border-violet-500/40 bg-violet-500/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
 										/* @__PURE__ */ jsx(FolderKanban, { className: `h-3.5 w-3.5 ${activeTab === "projects" ? "text-violet-400" : "text-zinc-500"}` }),
-										/* @__PURE__ */ jsx("span", { children: "Projects & Initiatives" }),
+										/* @__PURE__ */ jsx("span", { children: "Projects" }),
 										/* @__PURE__ */ jsx("span", {
 											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "projects" ? "bg-violet-500/25 text-violet-200" : "bg-zinc-800 text-zinc-400"}`,
 											children: activeProjectsCount
@@ -1785,7 +1785,7 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "team" ? "border border-cyan-500/40 bg-cyan-500/10 text-white shadow-[0_0_15px_rgba(6,182,212,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
 										/* @__PURE__ */ jsx(Users, { className: `h-3.5 w-3.5 ${activeTab === "team" ? "text-cyan-400" : "text-zinc-500"}` }),
-										/* @__PURE__ */ jsx("span", { children: "Team & Access Control" }),
+										/* @__PURE__ */ jsx("span", { children: "Team & Roles" }),
 										/* @__PURE__ */ jsx("span", {
 											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "team" ? "bg-cyan-500/25 text-cyan-200" : "bg-zinc-800 text-zinc-400"}`,
 											children: teamCount
@@ -1798,10 +1798,10 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "auth" ? "border border-amber-500/40 bg-amber-500/10 text-white shadow-[0_0_15px_rgba(245,158,11,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
 										/* @__PURE__ */ jsx(ShieldCheck, { className: `h-3.5 w-3.5 ${activeTab === "auth" ? "text-amber-400" : "text-zinc-500"}` }),
-										/* @__PURE__ */ jsx("span", { children: "Authentication & OAuth" }),
+										/* @__PURE__ */ jsx("span", { children: "Authentication" }),
 										/* @__PURE__ */ jsx("span", {
 											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "auth" ? "bg-amber-500/25 text-amber-200" : "bg-zinc-800 text-zinc-400"}`,
-											children: "OAuth"
+											children: "Security"
 										})
 									]
 								}),

@@ -1,5 +1,5 @@
 import { i as InputError, n as PrimaryButton, r as InputLabel, t as TextInput_default } from "./TextInput-CMpMv42q.js";
-import { t as Authenticated } from "./AuthenticatedLayout-BGgfVQov.js";
+import { t as Authenticated } from "./AuthenticatedLayout-FgYr35T-.js";
 import { n as getAvatarGradient, r as getRoleBadgeStyle } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
@@ -560,7 +560,7 @@ function VisualIdentityHero({ stats }) {
 									}),
 									/* @__PURE__ */ jsxs("div", {
 										className: "inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400",
-										children: [/* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }), /* @__PURE__ */ jsx("span", { children: "Studio Contributor" })]
+										children: [/* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3" }), /* @__PURE__ */ jsx("span", { children: "Team Member" })]
 									})
 								]
 							})
@@ -584,7 +584,7 @@ function VisualIdentityHero({ stats }) {
 									}),
 									/* @__PURE__ */ jsxs("p", {
 										className: "text-[10px] text-zinc-500",
-										children: [activeCount, " in-flight"]
+										children: [activeCount, " in progress"]
 									})
 								]
 							}),
@@ -601,7 +601,7 @@ function VisualIdentityHero({ stats }) {
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "text-[10px] text-zinc-500",
-										children: "Shipped done"
+										children: "Tasks done"
 									})
 								]
 							}),
@@ -610,7 +610,7 @@ function VisualIdentityHero({ stats }) {
 								children: [
 									/* @__PURE__ */ jsxs("div", {
 										className: "flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400",
-										children: [/* @__PURE__ */ jsx(TrendingUp, { className: "h-3 w-3 text-violet-400" }), /* @__PURE__ */ jsx("span", { children: "Velocity" })]
+										children: [/* @__PURE__ */ jsx(TrendingUp, { className: "h-3 w-3 text-violet-400" }), /* @__PURE__ */ jsx("span", { children: "Completion" })]
 									}),
 									/* @__PURE__ */ jsxs("p", {
 										className: "text-xl sm:text-2xl font-extrabold tabular-nums tracking-tight text-violet-300",
@@ -618,7 +618,7 @@ function VisualIdentityHero({ stats }) {
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "text-[10px] text-zinc-500",
-										children: "Close rate"
+										children: "Rate"
 									})
 								]
 							})
@@ -629,14 +629,14 @@ function VisualIdentityHero({ stats }) {
 							className: "flex items-center justify-between text-[11px]",
 							children: [/* @__PURE__ */ jsxs("span", {
 								className: "font-medium text-zinc-400 flex items-center gap-1.5",
-								children: [/* @__PURE__ */ jsx(Layers, { className: "h-3 w-3 text-zinc-500" }), /* @__PURE__ */ jsx("span", { children: "Throughput Velocity" })]
+								children: [/* @__PURE__ */ jsx(Layers, { className: "h-3 w-3 text-zinc-500" }), /* @__PURE__ */ jsx("span", { children: "Completion Rate" })]
 							}), /* @__PURE__ */ jsxs("span", {
 								className: "font-mono text-xs font-semibold text-zinc-300",
 								children: [
 									completedCount,
 									"/",
 									assignedCount,
-									" closed (",
+									" completed (",
 									completionRate,
 									"%)"
 								]
@@ -670,10 +670,10 @@ function AccountTelemetryCard({ stats }) {
 	const roleBadge = getRoleBadgeStyle(role?.name || user.role?.name);
 	const assignedCount = stats?.assigned_count ?? 0;
 	const capabilities = permissions.length > 0 ? permissions : [
-		"Workspace Triage & Dispatch",
-		"Ticket Lifecycle Transitions",
-		"Media & Asset Attachments",
-		"Real-time Notifications"
+		"Create & manage tasks",
+		"Update task status",
+		"Upload file attachments",
+		"Receive notifications"
 	];
 	return /* @__PURE__ */ jsxs("div", {
 		className: "space-y-6",
@@ -689,10 +689,10 @@ function AccountTelemetryCard({ stats }) {
 							children: /* @__PURE__ */ jsx(ShieldCheck, { className: "h-4 w-4 text-emerald-400" })
 						}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 							className: "text-sm font-semibold text-zinc-100",
-							children: "Account Telemetry"
+							children: "Account Overview"
 						}), /* @__PURE__ */ jsx("p", {
 							className: "text-[11px] text-zinc-400",
-							children: "Identity attributes & security posture"
+							children: "Profile details & security"
 						})] })]
 					}), /* @__PURE__ */ jsxs("span", {
 						className: "inline-flex items-center gap-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-0.5 text-[11px] font-medium text-emerald-300",
@@ -757,7 +757,7 @@ function AccountTelemetryCard({ stats }) {
 							className: "flex items-center justify-between py-2.5",
 							children: [/* @__PURE__ */ jsxs("span", {
 								className: "flex items-center gap-2 text-zinc-400",
-								children: [/* @__PURE__ */ jsx(Radio, { className: "h-3.5 w-3.5 text-zinc-500" }), /* @__PURE__ */ jsx("span", { children: "Assigned Role" })]
+								children: [/* @__PURE__ */ jsx(Radio, { className: "h-3.5 w-3.5 text-zinc-500" }), /* @__PURE__ */ jsx("span", { children: "Role" })]
 							}), /* @__PURE__ */ jsxs("span", {
 								className: `inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${roleBadge.pillClass}`,
 								children: [/* @__PURE__ */ jsx("span", { className: `h-1.5 w-1.5 rounded-full ${roleBadge.dotClass}` }), roleBadge.label]
@@ -769,7 +769,7 @@ function AccountTelemetryCard({ stats }) {
 					className: "mt-5 border-t border-zinc-800/80 pt-4",
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-2 text-xs font-semibold text-zinc-200",
-						children: [/* @__PURE__ */ jsx(KeyRound, { className: "h-3.5 w-3.5 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Role Permissions & Access" })]
+						children: [/* @__PURE__ */ jsx(KeyRound, { className: "h-3.5 w-3.5 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Permissions" })]
 					}), /* @__PURE__ */ jsx("div", {
 						className: "mt-2.5 flex flex-wrap gap-1.5",
 						children: capabilities.map((perm, idx) => /* @__PURE__ */ jsxs("span", {
@@ -782,29 +782,29 @@ function AccountTelemetryCard({ stats }) {
 					className: "mt-5 rounded-lg border border-zinc-800 bg-[#090a0f] p-3.5",
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-2 text-xs font-semibold text-zinc-200",
-						children: [/* @__PURE__ */ jsx(Shield, { className: "h-3.5 w-3.5 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Active Session Security" })]
+						children: [/* @__PURE__ */ jsx(Shield, { className: "h-3.5 w-3.5 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Security & Connection" })]
 					}), /* @__PURE__ */ jsxs("div", {
 						className: "mt-2 space-y-1.5 text-[11px] text-zinc-400",
 						children: [
 							/* @__PURE__ */ jsxs("div", {
 								className: "flex items-center justify-between",
-								children: [/* @__PURE__ */ jsx("span", { children: "Transport Security" }), /* @__PURE__ */ jsx("span", {
+								children: [/* @__PURE__ */ jsx("span", { children: "Connection" }), /* @__PURE__ */ jsx("span", {
 									className: "font-mono text-emerald-400",
 									children: "TLS 1.3 / HTTPS"
 								})]
 							}),
 							/* @__PURE__ */ jsxs("div", {
 								className: "flex items-center justify-between",
-								children: [/* @__PURE__ */ jsx("span", { children: "Authentication Status" }), /* @__PURE__ */ jsx("span", {
+								children: [/* @__PURE__ */ jsx("span", { children: "Session" }), /* @__PURE__ */ jsx("span", {
 									className: "text-zinc-200",
-									children: "Session Verified"
+									children: "Active"
 								})]
 							}),
 							/* @__PURE__ */ jsxs("div", {
 								className: "flex items-center justify-between",
-								children: [/* @__PURE__ */ jsx("span", { children: "Credential Encryption" }), /* @__PURE__ */ jsx("span", {
+								children: [/* @__PURE__ */ jsx("span", { children: "Password Security" }), /* @__PURE__ */ jsx("span", {
 									className: "font-mono text-zinc-300",
-									children: "Argon2id Keyring"
+									children: "Argon2id Encrypted"
 								})]
 							})
 						]
@@ -833,7 +833,7 @@ function AccountTelemetryCard({ stats }) {
 						className: "group flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-850/60 px-3.5 py-2.5 text-xs text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-white",
 						children: [/* @__PURE__ */ jsxs("span", {
 							className: "flex items-center gap-2.5",
-							children: [/* @__PURE__ */ jsx(KanbanSquare, { className: "h-4 w-4 text-cyan-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "My Work Queue" })]
+							children: [/* @__PURE__ */ jsx(KanbanSquare, { className: "h-4 w-4 text-cyan-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "My Tasks" })]
 						}), /* @__PURE__ */ jsxs("div", {
 							className: "flex items-center gap-1.5",
 							children: [/* @__PURE__ */ jsx("span", {
@@ -847,7 +847,7 @@ function AccountTelemetryCard({ stats }) {
 						className: "group flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-850/60 px-3.5 py-2.5 text-xs text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-white",
 						children: [/* @__PURE__ */ jsxs("span", {
 							className: "flex items-center gap-2.5",
-							children: [/* @__PURE__ */ jsx(LayoutDashboard, { className: "h-4 w-4 text-violet-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "Studio Dashboard" })]
+							children: [/* @__PURE__ */ jsx(LayoutDashboard, { className: "h-4 w-4 text-violet-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "Dashboard" })]
 						}), /* @__PURE__ */ jsx(ExternalLink, { className: "h-3 w-3 text-zinc-500 group-hover:text-zinc-300" })]
 					}),
 					/* @__PURE__ */ jsxs(Link, {
@@ -855,7 +855,7 @@ function AccountTelemetryCard({ stats }) {
 						className: "group flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-850/60 px-3.5 py-2.5 text-xs text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-white",
 						children: [/* @__PURE__ */ jsxs("span", {
 							className: "flex items-center gap-2.5",
-							children: [/* @__PURE__ */ jsx(Activity, { className: "h-4 w-4 text-emerald-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "Workspace Triage" })]
+							children: [/* @__PURE__ */ jsx(Activity, { className: "h-4 w-4 text-emerald-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "Tasks Board" })]
 						}), /* @__PURE__ */ jsx(ExternalLink, { className: "h-3 w-3 text-zinc-500 group-hover:text-zinc-300" })]
 					})
 				]

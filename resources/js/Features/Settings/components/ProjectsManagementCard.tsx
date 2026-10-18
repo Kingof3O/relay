@@ -223,7 +223,7 @@ export default function ProjectsManagementCard({
                     </div>
                     <div>
                         <div className="flex items-center gap-2.5">
-                            <h2 className="text-base font-semibold text-zinc-100">Projects & Initiatives</h2>
+                            <h2 className="text-base font-semibold text-zinc-100">Projects</h2>
                             <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-violet-300">
                                 {activeCount} Active
                             </span>
@@ -234,7 +234,7 @@ export default function ProjectsManagementCard({
                             )}
                         </div>
                         <p className="mt-0.5 text-xs text-zinc-400">
-                            Organize requests into dedicated initiative boards with color swatches, active telemetry, and ordering.
+                            Organize tasks into projects with custom colors, order, and status tracking.
                         </p>
                     </div>
                 </div>
@@ -268,7 +268,7 @@ export default function ProjectsManagementCard({
                                     addProject();
                                 }
                             }}
-                            placeholder="New initiative name…"
+                            placeholder="New project name…"
                             className="w-48 sm:w-60 rounded-xl border border-zinc-800 bg-[#0c0d12] px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 transition-colors"
                         />
 
@@ -279,7 +279,7 @@ export default function ProjectsManagementCard({
                             className="flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-xs font-semibold text-zinc-950 shadow-sm hover:bg-zinc-200 active:scale-[0.98] transition-all disabled:opacity-50"
                         >
                             <Plus className="h-4 w-4" />
-                            <span>{adding ? 'Adding…' : 'Add Initiative'}</span>
+                            <span>{adding ? 'Adding…' : 'Add Project'}</span>
                         </button>
                     </div>
                 )}
@@ -622,9 +622,9 @@ export default function ProjectsManagementCard({
                         <thead className="border-b border-zinc-800 bg-zinc-900/40 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
                             <tr>
                                 <th className="px-4 py-3 w-16">#</th>
-                                <th className="px-4 py-3">Initiative</th>
+                                <th className="px-4 py-3">Project</th>
                                 <th className="px-4 py-3 hidden sm:table-cell">Slug</th>
-                                <th className="px-4 py-3">Telemetry</th>
+                                <th className="px-4 py-3">Tasks</th>
                                 <th className="px-4 py-3 hidden md:table-cell">Status</th>
                                 {canManageAreas && <th className="px-4 py-3 text-right">Actions</th>}
                             </tr>

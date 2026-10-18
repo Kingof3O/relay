@@ -15,9 +15,9 @@ export default function BoardHeader({
     return (
         <div className="flex flex-wrap items-center justify-between gap-4">
             <div>
-                <h2 className="text-xl font-bold tracking-tight text-white">Live Studio Board</h2>
+                <h2 className="text-xl font-bold tracking-tight text-white">Tasks Board</h2>
                 <p className="mt-0.5 text-xs text-zinc-400">
-                    Smooth drag-and-drop workflow across stages with fast-path status triage.
+                    Drag and drop tasks across stages to track your project workflow.
                 </p>
             </div>
 

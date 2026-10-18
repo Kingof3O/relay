@@ -95,7 +95,7 @@ export default function Settings({
                 {/* Modern Obsidian Tab Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-3">
                     <nav className="flex flex-wrap items-center gap-1.5 rounded-xl border border-zinc-800 bg-[#111216] p-1.5 shadow-sm">
-                        {/* 1. Projects & Initiatives Tab */}
+                        {/* 1. Projects Tab */}
                         <button
                             type="button"
                             onClick={() => setActiveTab('projects')}
@@ -110,7 +110,7 @@ export default function Settings({
                                     activeTab === 'projects' ? 'text-violet-400' : 'text-zinc-500'
                                 }`}
                             />
-                            <span>Projects & Initiatives</span>
+                            <span>Projects</span>
                             <span
                                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                     activeTab === 'projects'
@@ -122,7 +122,7 @@ export default function Settings({
                             </span>
                         </button>
 
-                        {/* 2. Team & Access Control Tab */}
+                        {/* 2. Team & Roles Tab */}
                         {canManageTeam && (
                             <button
                                 type="button"
@@ -138,7 +138,7 @@ export default function Settings({
                                         activeTab === 'team' ? 'text-cyan-400' : 'text-zinc-500'
                                     }`}
                                 />
-                                <span>Team & Access Control</span>
+                                <span>Team & Roles</span>
                                 <span
                                     className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                         activeTab === 'team'
@@ -151,7 +151,7 @@ export default function Settings({
                             </button>
                         )}
 
-                        {/* 3. Authentication & OAuth Tab */}
+                        {/* 3. Authentication Tab */}
                         <button
                             type="button"
                             onClick={() => setActiveTab('auth')}
@@ -166,7 +166,7 @@ export default function Settings({
                                     activeTab === 'auth' ? 'text-amber-400' : 'text-zinc-500'
                                 }`}
                             />
-                            <span>Authentication & OAuth</span>
+                            <span>Authentication</span>
                             <span
                                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                     activeTab === 'auth'
@@ -174,7 +174,7 @@ export default function Settings({
                                         : 'bg-zinc-800 text-zinc-400'
                                 }`}
                             >
-                                OAuth
+                                Security
                             </span>
                         </button>
 

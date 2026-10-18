@@ -41,27 +41,27 @@ export default function IntegrationsIndex({
                     <div>
                         <div className="flex items-center gap-2">
                             <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                                Controls
+                                Settings
                             </span>
                             <span className="text-zinc-600">/</span>
-                            <span className="text-[11px] text-zinc-500">Dispatch & Telemetry</span>
+                            <span className="text-[11px] text-zinc-500">Notifications</span>
                         </div>
                         <h1 className="mt-1 text-lg font-semibold text-zinc-100 sm:text-xl flex items-center gap-2">
                             <Radio className="h-5 w-5 text-violet-400" />
-                            <span>Integrations & Notification Dispatch</span>
+                            <span>Integrations & Notifications</span>
                         </h1>
                     </div>
 
                     <div className="flex items-center gap-2 text-xs">
                         <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#111216] px-3 py-1 font-medium text-emerald-400 shadow-sm">
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            Dual Pipeline Active
+                            Notifications Active
                         </span>
                     </div>
                 </div>
             }
         >
-            <Head title="Integrations & Notifications · Workspace Studio" />
+            <Head title="Integrations & Notifications" />
 
             <div className="mx-auto max-w-[1600px] space-y-6">
                 {/* 1. High-Density Metric Tiles */}
@@ -139,7 +139,7 @@ export default function IntegrationsIndex({
                     </nav>
 
                     <span className="text-[11px] text-zinc-500 font-mono hidden md:inline">
-                        Dual Notification Pipeline · Asynchronous Queue
+                        Email & Discord Notifications
                     </span>
                 </div>
 

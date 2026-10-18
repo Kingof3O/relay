@@ -97,7 +97,7 @@ export default function GanttTimeline({
             {/* Filter & Legend Bar */}
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] p-4 bg-[#0e0f16]/60">
                 <div className="flex items-center gap-2">
-                    <span className="text-xs font-semibold text-zinc-400">Initiative:</span>
+                    <span className="text-xs font-semibold text-zinc-400">Project:</span>
                     <select
                         value={selectedProject}
                         onChange={(e) =>
@@ -107,7 +107,7 @@ export default function GanttTimeline({
                         }
                         className="rounded-lg border border-zinc-800 bg-[#07090e] px-2.5 py-1 text-xs text-zinc-200 focus:border-violet-500 focus:outline-none"
                     >
-                        <option value="all">All Initiatives ({projects.length})</option>
+                        <option value="all">All Projects ({projects.length})</option>
                         {projects.map((p) => (
                             <option key={p.id} value={p.id}>
                                 {p.name}
@@ -119,7 +119,7 @@ export default function GanttTimeline({
                 <div className="flex items-center gap-4 text-xs text-zinc-400">
                     <div className="flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-violet-500" />
-                        <span>Work Ticket</span>
+                        <span>Task</span>
                     </div>
                     <div className="flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -127,7 +127,7 @@ export default function GanttTimeline({
                     </div>
                     <div className="flex items-center gap-1.5">
                         <span className="h-2 w-2 rounded-full bg-rose-500" />
-                        <span>Blocked / Dependency</span>
+                        <span>Blocked</span>
                     </div>
                 </div>
             </div>
@@ -138,7 +138,7 @@ export default function GanttTimeline({
                     {/* Header: Months & Calendar Days */}
                     <div className="flex border-b border-white/[0.06] bg-[#090a0f] text-xs font-semibold text-zinc-400 sticky top-0 z-10">
                         <div className="w-80 shrink-0 border-r border-white/[0.06] p-3 text-zinc-300">
-                            Item & Scope
+                            Project / Task
                         </div>
                         <div className="flex-1 grid grid-cols-3 divide-x divide-white/[0.06]">
                             {months.map((m) => (
@@ -190,7 +190,7 @@ export default function GanttTimeline({
                                             </span>
                                         </div>
                                         <span className="font-mono text-[11px] text-zinc-400 shrink-0">
-                                            {proj.completed_requests}/{proj.total_requests} done
+                                            {proj.completed_requests}/{proj.total_requests} completed
                                         </span>
                                     </div>
 

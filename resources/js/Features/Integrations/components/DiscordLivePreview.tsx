@@ -23,15 +23,15 @@ export function DiscordLivePreview({ config, selectedEvent = 'created' }: Props)
         : '#F59E0B';
 
     const eventLabel = selectedEvent === 'created'
-        ? '🆕 Ticket Created'
+        ? '🆕 Task Created'
         : selectedEvent === 'assignment'
-        ? '⚡ Work Assigned'
+        ? '⚡ Task Assigned'
         : selectedEvent === 'review'
         ? '👀 Ready for Review'
         : selectedEvent === 'done'
-        ? '✅ Ticket Completed'
+        ? '✅ Task Completed'
         : selectedEvent === 'blocked'
-        ? '🚧 Roadblock Flagged'
+        ? '🚧 Task Blocked'
         : '💬 New Comment';
 
     return (
@@ -40,7 +40,7 @@ export function DiscordLivePreview({ config, selectedEvent = 'created' }: Props)
                 <div className="flex items-center gap-2">
                     <span className="h-2 w-2 rounded-full bg-[#5865F2]" />
                     <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
-                        Live Discord Client Preview
+                        Discord Preview
                     </h3>
                 </div>
                 <span className="text-[11px] text-zinc-500 font-mono">
@@ -83,7 +83,7 @@ export function DiscordLivePreview({ config, selectedEvent = 'created' }: Props)
 
                     {/* Description */}
                     <p className="text-[#dbdee1] text-xs leading-relaxed">
-                        Alice Admin updated #REQ-101 in Core Platform. Automatic dispatch synced across Relay Studio.
+                        Alice Admin updated #REQ-101 in Core Platform.
                     </p>
 
                     {/* Fields Grid */}
@@ -128,7 +128,7 @@ export function DiscordLivePreview({ config, selectedEvent = 'created' }: Props)
 
                     {/* Footer */}
                     <div className="pt-1.5 text-[10px] text-[#949ba4] flex items-center justify-between border-t border-[#313338]">
-                        <span>Relay Studio Automation Subsystem</span>
+                        <span>Relay Studio</span>
                         <span>Today at 4:20 PM</span>
                     </div>
                 </div>

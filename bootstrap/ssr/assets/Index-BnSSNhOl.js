@@ -1,4 +1,4 @@
-import { n as formatRelativeTime, r as getNotificationBadge, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-BGgfVQov.js";
+import { n as formatRelativeTime, r as getNotificationBadge, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-FgYr35T-.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";
@@ -200,7 +200,7 @@ function Index({ notifications: initialNotifications = [] }) {
 					}),
 					/* @__PURE__ */ jsx("span", {
 						className: "text-[11px] text-zinc-500",
-						children: "Inbox Triage"
+						children: "Inbox"
 					})
 				]
 			}), /* @__PURE__ */ jsxs("div", {
@@ -269,7 +269,7 @@ function Index({ notifications: initialNotifications = [] }) {
 								className: "flex items-center justify-between px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-zinc-400",
 								children: [/* @__PURE__ */ jsxs("div", {
 									className: "flex items-center gap-1.5",
-									children: [/* @__PURE__ */ jsx(Filter, { className: "h-3.5 w-3.5 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Triage Filter" })]
+									children: [/* @__PURE__ */ jsx(Filter, { className: "h-3.5 w-3.5 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Filter Notifications" })]
 								}), /* @__PURE__ */ jsxs("span", {
 									className: "text-[10px] text-zinc-500 font-mono",
 									children: [filteredNotifications.length, " items"]
@@ -316,7 +316,7 @@ function Index({ notifications: initialNotifications = [] }) {
 								/* @__PURE__ */ jsxs(Link, {
 									href: route("requests.index", { my_work: "1" }),
 									className: "flex w-full items-center justify-between rounded-xl border border-white/[0.06] bg-white/[0.02] px-3.5 py-2 text-xs font-medium text-zinc-300 transition-colors hover:bg-white/[0.06] hover:text-white",
-									children: [/* @__PURE__ */ jsx("span", { children: "My Work Queue" }), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3.5 w-3.5 text-zinc-500" })]
+									children: [/* @__PURE__ */ jsx("span", { children: "My Tasks" }), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3.5 w-3.5 text-zinc-500" })]
 								})
 							]
 						}),
@@ -325,13 +325,13 @@ function Index({ notifications: initialNotifications = [] }) {
 							children: [
 								/* @__PURE__ */ jsxs("div", {
 									className: "flex items-center justify-between text-[11px] font-bold uppercase tracking-wider text-zinc-400",
-									children: [/* @__PURE__ */ jsx("span", { children: "Telemetry Summary" }), /* @__PURE__ */ jsx(Radio, { className: "h-3.5 w-3.5 text-emerald-400" })]
+									children: [/* @__PURE__ */ jsx("span", { children: "Activity Overview" }), /* @__PURE__ */ jsx(Radio, { className: "h-3.5 w-3.5 text-emerald-400" })]
 								}),
 								/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("div", {
 									className: "flex items-center justify-between text-xs mb-1.5",
 									children: [/* @__PURE__ */ jsx("span", {
 										className: "text-zinc-400 font-medium",
-										children: "Clearance Rate"
+										children: "Read Rate"
 									}), /* @__PURE__ */ jsxs("span", {
 										className: "font-mono font-bold text-zinc-200",
 										children: [clearanceRate, "%"]
@@ -350,7 +350,7 @@ function Index({ notifications: initialNotifications = [] }) {
 											className: "flex items-center justify-between text-zinc-400",
 											children: [/* @__PURE__ */ jsx("span", { children: "Sync Status" }), /* @__PURE__ */ jsxs("span", {
 												className: "flex items-center gap-1.5 font-medium text-emerald-400 font-mono text-[11px]",
-												children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" }), "Live Stream"]
+												children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" }), "Live"]
 											})]
 										}),
 										/* @__PURE__ */ jsxs("div", {
@@ -362,7 +362,7 @@ function Index({ notifications: initialNotifications = [] }) {
 										}),
 										/* @__PURE__ */ jsxs("div", {
 											className: "flex items-center justify-between text-zinc-400",
-											children: [/* @__PURE__ */ jsx("span", { children: "Pending Triage" }), /* @__PURE__ */ jsxs("span", {
+											children: [/* @__PURE__ */ jsx("span", { children: "Unread Items" }), /* @__PURE__ */ jsxs("span", {
 												className: "font-mono text-zinc-200 font-semibold text-[11px]",
 												children: [unreadCount, " items"]
 											})]
@@ -490,7 +490,7 @@ function Index({ notifications: initialNotifications = [] }) {
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "mt-1 max-w-sm text-xs text-zinc-400 leading-relaxed",
-										children: searchQuery ? `No notifications found matching "${searchQuery}".` : currentTab === "assignments" ? "No assignment updates requiring your attention right now." : currentTab === "reviews" ? "No pending review alerts or sign-off requests." : currentTab === "inbox" ? "No unread notifications in your triage inbox. You are completely up to date with your workspace." : "No activity items found in this stream."
+										children: searchQuery ? `No notifications found matching "${searchQuery}".` : currentTab === "assignments" ? "No assignment updates requiring your attention right now." : currentTab === "reviews" ? "No pending review alerts or sign-off requests." : currentTab === "inbox" ? "No unread notifications. You are all caught up!" : "No notifications found in this list."
 									}),
 									searchQuery ? /* @__PURE__ */ jsxs("button", {
 										type: "button",

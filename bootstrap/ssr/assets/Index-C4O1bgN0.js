@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-BGgfVQov.js";
+import { t as Authenticated } from "./AuthenticatedLayout-FgYr35T-.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";
@@ -387,7 +387,7 @@ function CyclesIndex({ currentCycle, cycles, burndown, tickets }) {
 							children: [
 								/* @__PURE__ */ jsx("span", {
 									className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-									children: "Tickets Done"
+									children: "Tasks Completed"
 								}),
 								/* @__PURE__ */ jsxs("div", {
 									className: "mt-2 flex items-baseline gap-2",
@@ -401,7 +401,7 @@ function CyclesIndex({ currentCycle, cycles, burndown, tickets }) {
 								}),
 								/* @__PURE__ */ jsxs("p", {
 									className: "mt-2 text-[11px] text-zinc-500",
-									children: [metrics.total_tickets - metrics.completed_tickets, " remaining in sprint"]
+									children: [metrics.total_tickets - metrics.completed_tickets, " remaining in cycle"]
 								})
 							]
 						}),
@@ -410,7 +410,7 @@ function CyclesIndex({ currentCycle, cycles, burndown, tickets }) {
 							children: [
 								/* @__PURE__ */ jsx("span", {
 									className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-									children: "Daily Velocity"
+									children: "Points Per Day"
 								}),
 								/* @__PURE__ */ jsxs("div", {
 									className: "mt-2 flex items-baseline gap-2",
@@ -424,7 +424,7 @@ function CyclesIndex({ currentCycle, cycles, burndown, tickets }) {
 								}),
 								/* @__PURE__ */ jsx("p", {
 									className: "mt-2 text-[11px] text-zinc-500",
-									children: "Burn velocity over calendar days"
+									children: "Average points completed per day"
 								})
 							]
 						}),
@@ -463,7 +463,7 @@ function CyclesIndex({ currentCycle, cycles, burndown, tickets }) {
 							children: /* @__PURE__ */ jsxs("h2", {
 								className: "text-sm font-bold text-white",
 								children: [
-									"Cycle Tickets (",
+									"Cycle Tasks (",
 									filteredTickets.length,
 									")"
 								]
@@ -543,7 +543,7 @@ function CyclesIndex({ currentCycle, cycles, burndown, tickets }) {
 							})]
 						}, ticket.id)) : /* @__PURE__ */ jsx("div", {
 							className: "py-8 text-center text-xs text-zinc-500",
-							children: "No tickets found for this cycle and filter."
+							children: "No tasks found for this cycle and filter."
 						})
 					})]
 				})

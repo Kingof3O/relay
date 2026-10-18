@@ -23,7 +23,7 @@ export default function RequestBlockerBanner({
                 </div>
                 <div>
                     <h3 className="text-xs font-bold text-amber-300 uppercase tracking-wider">
-                        Roadblock / Stalled Issue
+                        Blocked Task
                     </h3>
                     <p className="mt-0.5 text-xs text-zinc-200">
                         {blockedReason || 'This task is flagged as blocked waiting for dependencies or sign-off.'}
@@ -38,7 +38,7 @@ export default function RequestBlockerBanner({
                     className="flex items-center gap-1.5 rounded-xl border border-amber-400/40 bg-amber-500/20 px-3.5 py-1.5 text-xs font-bold text-amber-200 shadow-sm transition-all hover:bg-amber-500/30 active:scale-95"
                 >
                     <Check className="h-3.5 w-3.5" />
-                    <span>Resolve Blocker</span>
+                    <span>Unblock Task</span>
                 </button>
             )}
         </div>

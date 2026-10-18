@@ -329,7 +329,7 @@ export default function QuickViewDrawer({
                                     {/* Project Selector */}
                                     <div>
                                         <label className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500 block mb-1">
-                                            Initiative
+                                            Project
                                         </label>
                                         <select
                                             value={request.area_id ?? ''}
@@ -340,7 +340,7 @@ export default function QuickViewDrawer({
                                             }
                                             className="w-full rounded-lg border border-zinc-700 bg-zinc-850 px-2.5 py-1 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:ring-0"
                                         >
-                                            <option value="">No Initiative</option>
+                                            <option value="">No Project</option>
                                             {projects.map((p) => (
                                                 <option key={p.id} value={p.id}>
                                                     {p.name}
@@ -350,12 +350,12 @@ export default function QuickViewDrawer({
                                     </div>
                                 </div>
 
-                                {/* Roadblock Notice (if blocked) */}
+                                {/* Blocked Notice (if blocked) */}
                                 {request.is_blocked && (
                                     <div className="flex items-start gap-2.5 rounded-xl border border-rose-900/50 bg-rose-950/20 p-3 text-xs text-rose-300">
                                         <AlertTriangle className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
                                         <div>
-                                            <p className="font-semibold text-rose-200">Roadblock Flagged</p>
+                                            <p className="font-semibold text-rose-200">Task Blocked</p>
                                             <p className="mt-0.5 text-zinc-400">{request.blocked_reason || 'Work is blocked.'}</p>
                                         </div>
                                     </div>

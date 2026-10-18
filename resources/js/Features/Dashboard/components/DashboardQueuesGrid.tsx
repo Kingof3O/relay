@@ -219,7 +219,7 @@ export default function DashboardQueuesGrid({
                                 : 'text-zinc-400 hover:text-zinc-200'
                         }`}
                     >
-                        All Focus Areas
+                        All Tasks
                     </button>
                     <button
                         type="button"
@@ -230,7 +230,7 @@ export default function DashboardQueuesGrid({
                                 : 'text-zinc-400 hover:text-zinc-200'
                         }`}
                     >
-                        <span>Triage</span>
+                        <span>New</span>
                         <span className="rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300">{stats.new}</span>
                     </button>
                     <button
@@ -242,7 +242,7 @@ export default function DashboardQueuesGrid({
                                 : 'text-zinc-400 hover:text-zinc-200'
                         }`}
                     >
-                        <span>My Work</span>
+                        <span>My Tasks</span>
                         <span className="rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300">{stats.my_work}</span>
                     </button>
                     <button
@@ -254,7 +254,7 @@ export default function DashboardQueuesGrid({
                                 : 'text-zinc-400 hover:text-zinc-200'
                         }`}
                     >
-                        <span>Review</span>
+                        <span>In Review</span>
                         <span className="rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300">{stats.review}</span>
                     </button>
                     <button
@@ -266,14 +266,14 @@ export default function DashboardQueuesGrid({
                                 : 'text-zinc-400 hover:text-zinc-200'
                         }`}
                     >
-                        <span>Roadblocks</span>
+                        <span>Blocked</span>
                         <span className="rounded bg-zinc-700/60 px-1 text-[10px] text-zinc-300">{stats.blocked}</span>
                     </button>
                 </div>
 
                 <div className="flex items-center gap-1.5 text-xs text-zinc-500">
                     <Zap className="h-3.5 w-3.5 text-zinc-400" />
-                    <span>Hover any request to trigger fast status advance</span>
+                    <span>Hover a task for quick actions</span>
                 </div>
             </div>
 
@@ -281,11 +281,11 @@ export default function DashboardQueuesGrid({
             <div className="grid gap-4 xl:grid-cols-2">
                 {(queueFilter === 'all' || queueFilter === 'triage') && (
                     <SectionQueue
-                        eyebrow="Triage"
-                        title="New Requests"
+                        eyebrow="New"
+                        title="New Tasks"
                         count={stats.new}
                         requests={newRequests}
-                        empty="No incoming requests waiting for triage."
+                        empty="No new tasks waiting for review."
                         href={route('requests.index', { status: 'new' })}
                         icon={Sparkles}
                         actionLabel="Pick Up"
@@ -297,7 +297,7 @@ export default function DashboardQueuesGrid({
                 {(queueFilter === 'all' || queueFilter === 'my_work') && (
                     <SectionQueue
                         eyebrow="Assigned"
-                        title="My Work Queue"
+                        title="My Tasks"
                         count={stats.my_work}
                         requests={myAssignedWork}
                         empty="Your active queue is clear."
@@ -312,10 +312,10 @@ export default function DashboardQueuesGrid({
                 {(queueFilter === 'all' || queueFilter === 'review') && (
                     <SectionQueue
                         eyebrow="Review"
-                        title="Requests in Review"
+                        title="Tasks in Review"
                         count={stats.review}
                         requests={reviewRequests}
-                        empty="No requests awaiting approval."
+                        empty="No tasks awaiting approval."
                         href={route('requests.index', { status: 'review' })}
                         icon={Clock}
                         actionLabel="Approve"
@@ -326,11 +326,11 @@ export default function DashboardQueuesGrid({
 
                 {(queueFilter === 'all' || queueFilter === 'blocked') && (
                     <SectionQueue
-                        eyebrow="Roadblocks"
-                        title="Blocked Requests"
+                        eyebrow="Blocked"
+                        title="Blocked Tasks"
                         count={stats.blocked}
                         requests={blockedRequests}
-                        empty="No blocked work requests."
+                        empty="No blocked tasks."
                         href={route('requests.index', { blocked: '1' })}
                         icon={AlertOctagon}
                         actionLabel="Unblock"

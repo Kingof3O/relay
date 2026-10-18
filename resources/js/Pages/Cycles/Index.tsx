@@ -189,7 +189,7 @@ export default function CyclesIndex({
 
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                            Tickets Done
+                            Tasks Completed
                         </span>
                         <div className="mt-2 flex items-baseline gap-2">
                             <span className="font-mono text-2xl font-bold text-white">
@@ -200,13 +200,13 @@ export default function CyclesIndex({
                             </span>
                         </div>
                         <p className="mt-2 text-[11px] text-zinc-500">
-                            {metrics.total_tickets - metrics.completed_tickets} remaining in sprint
+                            {metrics.total_tickets - metrics.completed_tickets} remaining in cycle
                         </p>
                     </div>
 
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                            Daily Velocity
+                            Points Per Day
                         </span>
                         <div className="mt-2 flex items-baseline gap-2">
                             <span className="font-mono text-2xl font-bold text-emerald-400">
@@ -215,7 +215,7 @@ export default function CyclesIndex({
                             <span className="font-mono text-xs text-zinc-500">pts / day</span>
                         </div>
                         <p className="mt-2 text-[11px] text-zinc-500">
-                            Burn velocity over calendar days
+                            Average points completed per day
                         </p>
                     </div>
 
@@ -243,7 +243,7 @@ export default function CyclesIndex({
                     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
                         <div className="flex items-center gap-2">
                             <h2 className="text-sm font-bold text-white">
-                                Cycle Tickets ({filteredTickets.length})
+                                Cycle Tasks ({filteredTickets.length})
                             </h2>
                         </div>
 
@@ -327,7 +327,7 @@ export default function CyclesIndex({
                             ))
                         ) : (
                             <div className="py-8 text-center text-xs text-zinc-500">
-                                No tickets found for this cycle and filter.
+                                No tasks found for this cycle and filter.
                             </div>
                         )}
                     </div>

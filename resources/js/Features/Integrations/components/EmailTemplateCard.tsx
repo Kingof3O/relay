@@ -220,7 +220,7 @@ export function EmailTemplateCard({ config, onUpdated, canManage }: Props) {
                         disabled={!canManage}
                         value={footerNote}
                         onChange={(e) => setFooterNote(e.target.value)}
-                        placeholder="Relay Studio · Enterprise Engineering & Dispatch Automation"
+                        placeholder="Relay Studio · Project Updates & Notifications"
                         className="w-full rounded-lg border border-zinc-800 bg-[#090a0f] px-3.5 py-2 text-xs text-zinc-100 placeholder-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:opacity-50"
                     />
                 </div>
@@ -232,10 +232,10 @@ export function EmailTemplateCard({ config, onUpdated, canManage }: Props) {
                     </label>
                     <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
                         {[
-                            { key: 'ticket_created', label: '🆕 Ticket Created' },
-                            { key: 'ticket_assigned', label: '⚡ Work Assigned' },
+                            { key: 'ticket_created', label: '🆕 Task Created' },
+                            { key: 'ticket_assigned', label: '⚡ Task Assigned' },
                             { key: 'ticket_status', label: '🔄 Status & Review' },
-                            { key: 'ticket_blocked', label: '🚧 Blockers & Roadblocks' },
+                            { key: 'ticket_blocked', label: '🚧 Blocked Tasks' },
                             { key: 'ticket_comment', label: '💬 Comments & Mentions' },
                         ].map((evt) => (
                             <label

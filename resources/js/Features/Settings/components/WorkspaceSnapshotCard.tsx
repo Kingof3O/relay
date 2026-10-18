@@ -156,15 +156,15 @@ export default function WorkspaceSnapshotCard({
                     </div>
                     <div className="mt-4">
                         <p className="text-xs font-medium text-zinc-400">
-                            Active initiatives
+                            Active projects
                         </p>
                         <p className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums">
                             {activeProjectsCount}
                         </p>
                         <p className="mt-1 text-[11px] text-zinc-500">
                             {archivedProjectsCount > 0
-                                ? `${archivedProjectsCount} archived boards preserved`
-                                : 'All project boards active'}
+                                ? `${archivedProjectsCount} archived projects`
+                                : 'All projects active'}
                         </p>
                     </div>
                     {projects.length > 0 && (
@@ -197,19 +197,19 @@ export default function WorkspaceSnapshotCard({
                         </div>
                         {onSelectTab && (
                             <span className="flex items-center gap-1 text-[11px] font-medium text-zinc-500 transition-colors group-hover:text-zinc-300">
-                                Team Roster <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                                Team Members <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
                             </span>
                         )}
                     </div>
                     <div className="mt-4">
                         <p className="text-xs font-medium text-zinc-400">
-                            Team roster
+                            Team members
                         </p>
                         <p className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums">
                             {teamAccountsCount || '—'}
                         </p>
                         <p className="mt-1 text-[11px] text-zinc-500">
-                            {activeUsersCount} active · {inactiveUsersCount} paused
+                            {activeUsersCount} active · {inactiveUsersCount} inactive
                         </p>
                     </div>
                     <div className="mt-3 flex items-center gap-1.5 text-[10px] font-medium pt-2 border-t border-zinc-800/60">
@@ -232,52 +232,52 @@ export default function WorkspaceSnapshotCard({
                             <Activity className="h-4 w-4" />
                         </div>
                         <span className="flex items-center gap-1 text-[11px] font-medium text-emerald-400">
-                            <CheckCircle2 className="h-3 w-3" /> Live Telemetry
+                            <CheckCircle2 className="h-3 w-3" /> Active
                         </span>
                     </div>
                     <div className="mt-4">
                         <p className="text-xs font-medium text-zinc-400">
-                            Active workload
+                            Active tasks
                         </p>
                         <p className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums">
                             {totalActiveRequests}
                         </p>
                         <p className="mt-1 text-[11px] text-zinc-500">
                             {activeProjectsCount > 0
-                                ? `~${(totalActiveRequests / Math.max(1, activeProjectsCount)).toFixed(1)} requests / initiative`
-                                : 'No open requests'}
+                                ? `~${(totalActiveRequests / Math.max(1, activeProjectsCount)).toFixed(1)} tasks / project`
+                                : 'No open tasks'}
                         </p>
                     </div>
                     <div className="mt-3 flex items-center gap-1.5 text-[10px] text-zinc-400 pt-2 border-t border-zinc-800/60">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                        <span>All priority queues operational</span>
+                        <span>All systems normal</span>
                     </div>
                 </div>
 
-                {/* Tile 4: Studio Engine & RBAC */}
+                {/* Tile 4: System Status */}
                 <div className="group relative flex flex-col justify-between rounded-xl border border-zinc-800 bg-[#111216] p-4 transition-all duration-150 hover:border-zinc-700 hover:bg-[#14161c]">
                     <div className="flex items-center justify-between gap-3">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-amber-400">
                             <ShieldCheck className="h-4 w-4" />
                         </div>
                         <span className="rounded border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-300">
-                            RBAC Active
+                            Security Active
                         </span>
                     </div>
                     <div className="mt-4">
                         <p className="text-xs font-medium text-zinc-400">
-                            Studio engine
+                            System status
                         </p>
                         <p className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums">
                             Relay v2.4
                         </p>
                         <p className="mt-1 text-[11px] text-zinc-500">
-                            Dual S3 / WebP Transcoder
+                            Media processing active
                         </p>
                     </div>
                     <div className="mt-3 flex items-center gap-1.5 text-[10px] text-zinc-400 pt-2 border-t border-zinc-800/60">
                         <Cpu className="h-3 w-3 text-cyan-400" />
-                        <span>Transactional Email Engine Active</span>
+                        <span>Email notifications active</span>
                     </div>
                 </div>
             </section>
@@ -292,15 +292,15 @@ export default function WorkspaceSnapshotCard({
                     <div className="max-w-2xl space-y-3">
                         <div className="inline-flex items-center gap-2 rounded-full border border-zinc-700/60 bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-300">
                             <Sparkles className="h-3.5 w-3.5 text-zinc-400" />
-                            <span>Workspace Operations & Intelligence</span>
+                            <span>Workspace Overview</span>
                             <span className="h-1 w-1 rounded-full bg-zinc-500" />
-                            <span className="text-zinc-400">{projects.length} Total Initiatives</span>
+                            <span className="text-zinc-400">{projects.length} Total Projects</span>
                         </div>
                         <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
-                            Projects, People, and Delivery Telemetry.
+                            Projects, Team, and Workspace Settings
                         </h2>
                         <p className="text-xs leading-relaxed text-zinc-400 sm:text-sm">
-                            Expansive operational command for Relay Studio. Monitor project scopes, member access privileges, active throughput, and system deployment status in real time.
+                            Manage your projects, team members, roles, and workspace preferences.
                         </p>
                     </div>
 
@@ -321,7 +321,7 @@ export default function WorkspaceSnapshotCard({
                                 className="group flex items-center gap-2 rounded-lg bg-white px-4 py-2.5 text-xs font-semibold text-zinc-950 shadow-sm transition-all duration-150 hover:bg-zinc-200 active:scale-[0.98]"
                             >
                                 <Users className="h-4 w-4 text-zinc-950 transition-transform group-hover:scale-110" />
-                                <span>Team Roster</span>
+                                <span>Team Members</span>
                                 <ArrowUpRight className="h-3.5 w-3.5 opacity-60 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                             </button>
                         </div>
@@ -340,10 +340,10 @@ export default function WorkspaceSnapshotCard({
                             </div>
                             <div>
                                 <h3 className="text-sm font-semibold text-zinc-100">
-                                    Initiative Distribution & Workload
+                                    Project Workload
                                 </h3>
                                 <p className="text-[11px] text-zinc-400">
-                                    Real-time request capacity across active project workspaces.
+                                    Active tasks across your projects.
                                 </p>
                             </div>
                         </div>

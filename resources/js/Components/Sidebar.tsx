@@ -95,21 +95,21 @@ export default function Sidebar() {
 
     const workspaceLinks = [
         {
-            name: 'Inbox & Updates',
+            name: 'Inbox',
             href: route('notifications.index'),
             active: route().current('notifications.*'),
             icon: Bell,
             badge: unreadCount > 0 ? (unreadCount > 9 ? '9+' : unreadCount) : null,
         },
         {
-            name: 'Integrations & Alerts',
+            name: 'Integrations',
             href: route('integrations.index'),
             active: route().current('integrations.*'),
             icon: Radio,
             badge: null,
         },
         {
-            name: 'Settings & Team',
+            name: 'Settings',
             href: route('settings.index'),
             active: route().current('settings.*'),
             icon: Settings,
@@ -245,12 +245,12 @@ export default function Sidebar() {
                     </div>
                 )}
 
-                {/* Initiatives (Projects) Section */}
+                {/* Projects Section */}
                 <div className="mt-6 space-y-1">
                     {!collapsed && (
                         <div className="flex items-center justify-between px-3 pb-1.5">
                             <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                                Initiatives
+                                Projects
                             </p>
                             <Link
                                 href={route('requests.index')}

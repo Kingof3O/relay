@@ -92,14 +92,14 @@ export default function RoadmapIndex({
                         <div>
                             <div className="flex items-center gap-2">
                                 <h1 className="text-base font-bold text-white tracking-tight">
-                                    Roadmap & Visual Gantt
+                                    Roadmap & Timeline
                                 </h1>
                                 <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold text-violet-300">
                                     Q{quarter} {year}
                                 </span>
                             </div>
                             <p className="text-xs text-zinc-400">
-                                Quarterly cross-project execution timeline and dependency map
+                                Quarterly timeline of projects, tasks, and dependencies
                             </p>
                         </div>
                     </div>
@@ -153,22 +153,22 @@ export default function RoadmapIndex({
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                            Initiatives
+                            Projects
                         </span>
                         <div className="mt-1 font-mono text-2xl font-bold text-white">
                             {projects.length}
                         </div>
-                        <p className="mt-1 text-[11px] text-zinc-500">Active project tracks</p>
+                        <p className="mt-1 text-[11px] text-zinc-500">Active projects</p>
                     </div>
 
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                            Scheduled Work
+                            Scheduled Tasks
                         </span>
                         <div className="mt-1 font-mono text-2xl font-bold text-white">
                             {totalRequests}
                         </div>
-                        <p className="mt-1 text-[11px] text-zinc-500">Tickets in quarterly span</p>
+                        <p className="mt-1 text-[11px] text-zinc-500">Tasks scheduled this quarter</p>
                     </div>
 
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">
@@ -182,18 +182,18 @@ export default function RoadmapIndex({
                             {totalRequests > 0
                                 ? Math.round((completedRequests / totalRequests) * 100)
                                 : 0}
-                            % quarterly completion
+                            % completed this quarter
                         </p>
                     </div>
 
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">
                         <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                            Roadblocks
+                            Blocked Tasks
                         </span>
                         <div className="mt-1 font-mono text-2xl font-bold text-rose-400">
                             {blockedRequests}
                         </div>
-                        <p className="mt-1 text-[11px] text-zinc-500">Blocked or dependent tickets</p>
+                        <p className="mt-1 text-[11px] text-zinc-500">Tasks currently blocked</p>
                     </div>
                 </div>
 

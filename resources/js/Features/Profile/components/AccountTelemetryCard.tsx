@@ -50,15 +50,15 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
         permissions.length > 0
             ? permissions
             : [
-                  'Workspace Triage & Dispatch',
-                  'Ticket Lifecycle Transitions',
-                  'Media & Asset Attachments',
-                  'Real-time Notifications',
+                  'Create & manage tasks',
+                  'Update task status',
+                  'Upload file attachments',
+                  'Receive notifications',
               ];
 
     return (
         <div className="space-y-6">
-            {/* Identity & Account Telemetry Card */}
+            {/* Identity & Account Overview Card */}
             <div className="rounded-xl border border-zinc-800 bg-[#0c0d12] p-6 shadow-sm">
                 <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
                     <div className="flex items-center gap-3">
@@ -67,10 +67,10 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                         </div>
                         <div>
                             <h3 className="text-sm font-semibold text-zinc-100">
-                                Account Telemetry
+                                Account Overview
                             </h3>
                             <p className="text-[11px] text-zinc-400">
-                                Identity attributes & security posture
+                                Profile details & security
                             </p>
                         </div>
                     </div>
@@ -143,7 +143,7 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                     <div className="flex items-center justify-between py-2.5">
                         <span className="flex items-center gap-2 text-zinc-400">
                             <Radio className="h-3.5 w-3.5 text-zinc-500" />
-                            <span>Assigned Role</span>
+                            <span>Role</span>
                         </span>
                         <span
                             className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold ${roleBadge.pillClass}`}
@@ -158,7 +158,7 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                 <div className="mt-5 border-t border-zinc-800/80 pt-4">
                     <div className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
                         <KeyRound className="h-3.5 w-3.5 text-zinc-400" />
-                        <span>Role Permissions & Access</span>
+                        <span>Permissions</span>
                     </div>
                     <div className="mt-2.5 flex flex-wrap gap-1.5">
                         {capabilities.map((perm, idx) => (
@@ -177,20 +177,20 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                 <div className="mt-5 rounded-lg border border-zinc-800 bg-[#090a0f] p-3.5">
                     <div className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
                         <Shield className="h-3.5 w-3.5 text-cyan-400" />
-                        <span>Active Session Security</span>
+                        <span>Security & Connection</span>
                     </div>
                     <div className="mt-2 space-y-1.5 text-[11px] text-zinc-400">
                         <div className="flex items-center justify-between">
-                            <span>Transport Security</span>
+                            <span>Connection</span>
                             <span className="font-mono text-emerald-400">TLS 1.3 / HTTPS</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span>Authentication Status</span>
-                            <span className="text-zinc-200">Session Verified</span>
+                            <span>Session</span>
+                            <span className="text-zinc-200">Active</span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span>Credential Encryption</span>
-                            <span className="font-mono text-zinc-300">Argon2id Keyring</span>
+                            <span>Password Security</span>
+                            <span className="font-mono text-zinc-300">Argon2id Encrypted</span>
                         </div>
                     </div>
                 </div>
@@ -216,7 +216,7 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                     >
                         <span className="flex items-center gap-2.5">
                             <KanbanSquare className="h-4 w-4 text-cyan-400 transition-transform group-hover:scale-110" />
-                            <span>My Work Queue</span>
+                            <span>My Tasks</span>
                         </span>
                         <div className="flex items-center gap-1.5">
                             <span className="rounded-md border border-zinc-700 bg-zinc-800 px-1.5 py-0.5 font-mono text-[10px] text-zinc-300">
@@ -232,7 +232,7 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                     >
                         <span className="flex items-center gap-2.5">
                             <LayoutDashboard className="h-4 w-4 text-violet-400 transition-transform group-hover:scale-110" />
-                            <span>Studio Dashboard</span>
+                            <span>Dashboard</span>
                         </span>
                         <ExternalLink className="h-3 w-3 text-zinc-500 group-hover:text-zinc-300" />
                     </Link>
@@ -243,7 +243,7 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                     >
                         <span className="flex items-center gap-2.5">
                             <Activity className="h-4 w-4 text-emerald-400 transition-transform group-hover:scale-110" />
-                            <span>Workspace Triage</span>
+                            <span>Tasks Board</span>
                         </span>
                         <ExternalLink className="h-3 w-3 text-zinc-500 group-hover:text-zinc-300" />
                     </Link>

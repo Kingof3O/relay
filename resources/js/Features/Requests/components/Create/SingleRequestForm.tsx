@@ -169,7 +169,7 @@ export default function SingleRequestForm({
             {/* Project / Initiative Selection */}
             <div>
                 <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                    Project / Initiative <span className="text-rose-400">*</span>
+                    Project <span className="text-rose-400">*</span>
                 </label>
                 <div className="mt-1.5 grid grid-cols-2 gap-2 sm:grid-cols-3">
                     {projects.map((proj) => {

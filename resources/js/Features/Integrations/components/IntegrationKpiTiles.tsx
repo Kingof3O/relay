@@ -47,11 +47,11 @@ export function IntegrationKpiTiles({ discord, email, kpis }: Props) {
                 </p>
             </div>
 
-            {/* Tile 2: Email Dispatch Status */}
+            {/* Tile 2: Email Service Status */}
             <div className="rounded-xl border border-zinc-800 bg-[#0c0d12] p-4 shadow-sm relative overflow-hidden group hover:border-zinc-700 transition-all">
                 <div className="flex items-center justify-between">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                        Email Dispatch
+                        Email Service
                     </span>
                     <div className="h-8 w-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
                         <Mail className="h-4 w-4" />
@@ -70,11 +70,11 @@ export function IntegrationKpiTiles({ discord, email, kpis }: Props) {
                 </p>
             </div>
 
-            {/* Tile 3: Total Dispatches */}
+            {/* Tile 3: Total Notifications Sent */}
             <div className="rounded-xl border border-zinc-800 bg-[#0c0d12] p-4 shadow-sm relative overflow-hidden group hover:border-zinc-700 transition-all">
                 <div className="flex items-center justify-between">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                        Total Dispatches
+                        Total Notifications Sent
                     </span>
                     <div className="h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
                         <Send className="h-4 w-4" />
@@ -89,7 +89,7 @@ export function IntegrationKpiTiles({ discord, email, kpis }: Props) {
                     </span>
                 </div>
                 <p className="mt-1 text-xs text-zinc-500">
-                    Dual pipeline automated alerts
+                    Email & Discord alerts sent
                 </p>
             </div>
 
@@ -97,7 +97,7 @@ export function IntegrationKpiTiles({ discord, email, kpis }: Props) {
             <div className="rounded-xl border border-zinc-800 bg-[#0c0d12] p-4 shadow-sm relative overflow-hidden group hover:border-zinc-700 transition-all">
                 <div className="flex items-center justify-between">
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                        Success Velocity
+                        Delivery Rate
                     </span>
                     <div className="h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                         <CheckCircle2 className="h-4 w-4" />
@@ -115,7 +115,7 @@ export function IntegrationKpiTiles({ discord, email, kpis }: Props) {
                     )}
                 </div>
                 <p className="mt-1 text-xs text-zinc-500">
-                    {kpis.failed_count === 0 ? 'Zero delivery failures' : 'Check logs for failed payloads'}
+                    {kpis.failed_count === 0 ? 'All notifications delivered' : 'Check logs for failed notifications'}
                 </p>
             </div>
         </div>

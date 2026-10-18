@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-BGgfVQov.js";
+import { t as Authenticated } from "./AuthenticatedLayout-FgYr35T-.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";
@@ -50,7 +50,7 @@ function GanttTimeline({ projects, requests, quarter, year, quarterStart, quarte
 				className: "flex items-center gap-2",
 				children: [/* @__PURE__ */ jsx("span", {
 					className: "text-xs font-semibold text-zinc-400",
-					children: "Initiative:"
+					children: "Project:"
 				}), /* @__PURE__ */ jsxs("select", {
 					value: selectedProject,
 					onChange: (e) => setSelectedProject(e.target.value === "all" ? "all" : Number(e.target.value)),
@@ -58,7 +58,7 @@ function GanttTimeline({ projects, requests, quarter, year, quarterStart, quarte
 					children: [/* @__PURE__ */ jsxs("option", {
 						value: "all",
 						children: [
-							"All Initiatives (",
+							"All Projects (",
 							projects.length,
 							")"
 						]
@@ -72,7 +72,7 @@ function GanttTimeline({ projects, requests, quarter, year, quarterStart, quarte
 				children: [
 					/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-1.5",
-						children: [/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-violet-500" }), /* @__PURE__ */ jsx("span", { children: "Work Ticket" })]
+						children: [/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-violet-500" }), /* @__PURE__ */ jsx("span", { children: "Task" })]
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-1.5",
@@ -80,7 +80,7 @@ function GanttTimeline({ projects, requests, quarter, year, quarterStart, quarte
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-1.5",
-						children: [/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-rose-500" }), /* @__PURE__ */ jsx("span", { children: "Blocked / Dependency" })]
+						children: [/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-rose-500" }), /* @__PURE__ */ jsx("span", { children: "Blocked" })]
 					})
 				]
 			})]
@@ -92,7 +92,7 @@ function GanttTimeline({ projects, requests, quarter, year, quarterStart, quarte
 					className: "flex border-b border-white/[0.06] bg-[#090a0f] text-xs font-semibold text-zinc-400 sticky top-0 z-10",
 					children: [/* @__PURE__ */ jsx("div", {
 						className: "w-80 shrink-0 border-r border-white/[0.06] p-3 text-zinc-300",
-						children: "Item & Scope"
+						children: "Project / Task"
 					}), /* @__PURE__ */ jsx("div", {
 						className: "flex-1 grid grid-cols-3 divide-x divide-white/[0.06]",
 						children: months.map((m) => /* @__PURE__ */ jsxs("div", {
@@ -144,7 +144,7 @@ function GanttTimeline({ projects, requests, quarter, year, quarterStart, quarte
 											proj.completed_requests,
 											"/",
 											proj.total_requests,
-											" done"
+											" completed"
 										]
 									})]
 								}), /* @__PURE__ */ jsx("div", {
@@ -274,7 +274,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 					className: "flex items-center gap-2",
 					children: [/* @__PURE__ */ jsx("h1", {
 						className: "text-base font-bold text-white tracking-tight",
-						children: "Roadmap & Visual Gantt"
+						children: "Roadmap & Timeline"
 					}), /* @__PURE__ */ jsxs("span", {
 						className: "rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold text-violet-300",
 						children: [
@@ -286,7 +286,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 					})]
 				}), /* @__PURE__ */ jsx("p", {
 					className: "text-xs text-zinc-400",
-					children: "Quarterly cross-project execution timeline and dependency map"
+					children: "Quarterly timeline of projects, tasks, and dependencies"
 				})] })]
 			}), /* @__PURE__ */ jsxs("div", {
 				className: "flex items-center gap-2",
@@ -335,7 +335,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 						children: [
 							/* @__PURE__ */ jsx("span", {
 								className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-								children: "Initiatives"
+								children: "Projects"
 							}),
 							/* @__PURE__ */ jsx("div", {
 								className: "mt-1 font-mono text-2xl font-bold text-white",
@@ -343,7 +343,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 							}),
 							/* @__PURE__ */ jsx("p", {
 								className: "mt-1 text-[11px] text-zinc-500",
-								children: "Active project tracks"
+								children: "Active projects"
 							})
 						]
 					}),
@@ -352,7 +352,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 						children: [
 							/* @__PURE__ */ jsx("span", {
 								className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-								children: "Scheduled Work"
+								children: "Scheduled Tasks"
 							}),
 							/* @__PURE__ */ jsx("div", {
 								className: "mt-1 font-mono text-2xl font-bold text-white",
@@ -360,7 +360,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 							}),
 							/* @__PURE__ */ jsx("p", {
 								className: "mt-1 text-[11px] text-zinc-500",
-								children: "Tickets in quarterly span"
+								children: "Tasks scheduled this quarter"
 							})
 						]
 					}),
@@ -377,7 +377,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 							}),
 							/* @__PURE__ */ jsxs("p", {
 								className: "mt-1 text-[11px] text-zinc-500",
-								children: [totalRequests > 0 ? Math.round(completedRequests / totalRequests * 100) : 0, "% quarterly completion"]
+								children: [totalRequests > 0 ? Math.round(completedRequests / totalRequests * 100) : 0, "% completed this quarter"]
 							})
 						]
 					}),
@@ -386,7 +386,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 						children: [
 							/* @__PURE__ */ jsx("span", {
 								className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-								children: "Roadblocks"
+								children: "Blocked Tasks"
 							}),
 							/* @__PURE__ */ jsx("div", {
 								className: "mt-1 font-mono text-2xl font-bold text-rose-400",
@@ -394,7 +394,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 							}),
 							/* @__PURE__ */ jsx("p", {
 								className: "mt-1 text-[11px] text-zinc-500",
-								children: "Blocked or dependent tickets"
+								children: "Tasks currently blocked"
 							})
 						]
 					})

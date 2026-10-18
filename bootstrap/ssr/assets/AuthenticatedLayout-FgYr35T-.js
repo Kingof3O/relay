@@ -406,21 +406,21 @@ function Sidebar() {
 	const unreadCount = pageProps.unreadNotificationsCount ?? notifications.filter((n) => !n.read_at).length;
 	const workspaceLinks = [
 		{
-			name: "Inbox & Updates",
+			name: "Inbox",
 			href: route("notifications.index"),
 			active: route().current("notifications.*"),
 			icon: Bell,
 			badge: unreadCount > 0 ? unreadCount > 9 ? "9+" : unreadCount : null
 		},
 		{
-			name: "Integrations & Alerts",
+			name: "Integrations",
 			href: route("integrations.index"),
 			active: route().current("integrations.*"),
 			icon: Radio,
 			badge: null
 		},
 		{
-			name: "Settings & Team",
+			name: "Settings",
 			href: route("settings.index"),
 			active: route().current("settings.*"),
 			icon: Settings,
@@ -518,7 +518,7 @@ function Sidebar() {
 						className: "flex items-center justify-between px-3 pb-1.5",
 						children: [/* @__PURE__ */ jsx("p", {
 							className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-							children: "Initiatives"
+							children: "Projects"
 						}), /* @__PURE__ */ jsx(Link, {
 							href: route("requests.index"),
 							prefetch: "hover",
@@ -1316,10 +1316,10 @@ function BoardHeader({ viewMode, onViewModeChange, onAddRequest, onOpenShortcuts
 		className: "flex flex-wrap items-center justify-between gap-4",
 		children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
 			className: "text-xl font-bold tracking-tight text-white",
-			children: "Live Studio Board"
+			children: "Tasks Board"
 		}), /* @__PURE__ */ jsx("p", {
 			className: "mt-0.5 text-xs text-zinc-400",
-			children: "Smooth drag-and-drop workflow across stages with fast-path status triage."
+			children: "Drag and drop tasks across stages to track your project workflow."
 		})] }), /* @__PURE__ */ jsxs("div", {
 			className: "flex items-center gap-2.5",
 			children: [
@@ -2729,7 +2729,7 @@ function KanbanBoard({ requests, statuses, onDragEnd, onQuickStatus, onOpenDrawe
 			})
 		}), requests.some((request) => request.is_blocked) && /* @__PURE__ */ jsx("p", {
 			className: "text-center text-[11px] text-zinc-500",
-			children: "Blocked requests stay in their normal status column and carry a visible roadblock indicator."
+			children: "Blocked tasks stay in their status column with a red blocked indicator."
 		})]
 	});
 }
@@ -2777,7 +2777,7 @@ function RequestListView({ requests, onSelectRequest, onQuickStatus, selectedIds
 						}),
 						/* @__PURE__ */ jsx("th", {
 							className: "py-3 px-3 w-40",
-							children: "Initiative"
+							children: "Project"
 						}),
 						/* @__PURE__ */ jsx("th", {
 							className: "py-3 px-3 w-28",
@@ -2890,7 +2890,7 @@ function RequestListView({ requests, onSelectRequest, onQuickStatus, selectedIds
 										})]
 									}) : /* @__PURE__ */ jsx("span", {
 										className: "text-[11px] text-zinc-500",
-										children: "No initiative"
+										children: "No project"
 									})
 								}),
 								/* @__PURE__ */ jsx("td", {
@@ -3451,14 +3451,14 @@ function QuickViewDrawer({ requestId, onClose, onUpdated, projects, users, statu
 										})] }),
 										/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("label", {
 											className: "text-[10px] font-semibold uppercase tracking-wider text-zinc-500 block mb-1",
-											children: "Initiative"
+											children: "Project"
 										}), /* @__PURE__ */ jsxs("select", {
 											value: request.area_id ?? "",
 											onChange: (e) => handlePatch({ area_id: e.target.value ? Number(e.target.value) : null }),
 											className: "w-full rounded-lg border border-zinc-700 bg-zinc-850 px-2.5 py-1 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:ring-0",
 											children: [/* @__PURE__ */ jsx("option", {
 												value: "",
-												children: "No Initiative"
+												children: "No Project"
 											}), projects.map((p) => /* @__PURE__ */ jsx("option", {
 												value: p.id,
 												children: p.name
@@ -3470,7 +3470,7 @@ function QuickViewDrawer({ requestId, onClose, onUpdated, projects, users, statu
 									className: "flex items-start gap-2.5 rounded-xl border border-rose-900/50 bg-rose-950/20 p-3 text-xs text-rose-300",
 									children: [/* @__PURE__ */ jsx(AlertTriangle, { className: "h-4 w-4 shrink-0 text-rose-400 mt-0.5" }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("p", {
 										className: "font-semibold text-rose-200",
-										children: "Roadblock Flagged"
+										children: "Task Blocked"
 									}), /* @__PURE__ */ jsx("p", {
 										className: "mt-0.5 text-zinc-400",
 										children: request.blocked_reason || "Work is blocked."
@@ -3827,7 +3827,7 @@ function SingleRequestForm({ projects = [], users = [], onClose, onFinished, sho
 			})] }),
 			/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("label", {
 				className: "text-[11px] font-bold uppercase tracking-wider text-zinc-400",
-				children: ["Project / Initiative ", /* @__PURE__ */ jsx("span", {
+				children: ["Project ", /* @__PURE__ */ jsx("span", {
 					className: "text-rose-400",
 					children: "*"
 				})]
@@ -4541,7 +4541,7 @@ function RequestBlockerBanner({ isBlocked, blockedReason, canEdit, onResolve, re
 					children: /* @__PURE__ */ jsx(AlertTriangle, { className: "h-5 w-5" })
 				}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 					className: "text-xs font-bold text-amber-300 uppercase tracking-wider",
-					children: "Roadblock / Stalled Issue"
+					children: "Blocked Task"
 				}), /* @__PURE__ */ jsx("p", {
 					className: "mt-0.5 text-xs text-zinc-200",
 					children: blockedReason || "This task is flagged as blocked waiting for dependencies or sign-off."
@@ -4550,7 +4550,7 @@ function RequestBlockerBanner({ isBlocked, blockedReason, canEdit, onResolve, re
 				type: "button",
 				onClick: onResolve,
 				className: "flex items-center gap-1.5 rounded-xl border border-amber-400/40 bg-amber-500/20 px-3.5 py-1.5 text-xs font-bold text-amber-200 shadow-sm transition-all hover:bg-amber-500/30 active:scale-95",
-				children: [/* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Resolve Blocker" })]
+				children: [/* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Unblock Task" })]
 			})]
 		}), blockers.length > 0 && /* @__PURE__ */ jsxs("div", {
 			className: "flex flex-wrap items-center gap-2 border-t border-amber-500/20 pt-2.5",
@@ -5889,10 +5889,10 @@ function RequestSidebarProperties({ request, projects, users, statuses, prioriti
 						className: "mt-0.5 h-4 w-4 rounded border-white/10 bg-[#07090e] text-rose-600 focus:ring-0 disabled:opacity-50"
 					}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("span", {
 						className: "block text-xs font-bold text-white",
-						children: "Roadblock / Blocked"
+						children: "Blocked"
 					}), /* @__PURE__ */ jsx("span", {
 						className: "mt-0.5 block text-[11px] leading-relaxed text-zinc-500",
-						children: "Flag this request as blocked and document the blocker reason."
+						children: "Mark this task as blocked and enter the reason."
 					})] })]
 				}), request.is_blocked && canEdit && /* @__PURE__ */ jsx("textarea", {
 					defaultValue: request.blocked_reason ?? "",
@@ -5900,7 +5900,7 @@ function RequestSidebarProperties({ request, projects, users, statuses, prioriti
 						if (event.target.value !== (request.blocked_reason ?? "")) onUpdate({ blocked_reason: event.target.value });
 					},
 					rows: 3,
-					placeholder: "Explain why work is blocked…",
+					placeholder: "Explain why this task is blocked…",
 					className: "mt-3 w-full rounded-xl border border-rose-500/30 bg-[#07090e] p-2.5 text-xs text-rose-200 placeholder:text-zinc-600 focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
 				})]
 			})
@@ -6965,11 +6965,11 @@ function ShortcutsModal({ open, onClose }) {
 								},
 								{
 									keys: ["G", "B"],
-									desc: "Go to Studio Board"
+									desc: "Go to Tasks Board"
 								},
 								{
 									keys: ["G", "P"],
-									desc: "Go to Initiatives (Projects)"
+									desc: "Go to Projects"
 								},
 								{
 									keys: ["G", "N"],
@@ -6986,7 +6986,7 @@ function ShortcutsModal({ open, onClose }) {
 							shortcuts: [
 								{
 									keys: ["C"],
-									desc: "New Work Request modal"
+									desc: "Create new task"
 								},
 								{
 									keys: ["⌘", "K"],
@@ -6994,7 +6994,7 @@ function ShortcutsModal({ open, onClose }) {
 								},
 								{
 									keys: ["?"],
-									desc: "Open this Keyboard Shortcuts cheat-sheet"
+									desc: "Open keyboard shortcuts"
 								},
 								{
 									keys: ["/"],
@@ -7007,7 +7007,7 @@ function ShortcutsModal({ open, onClose }) {
 							]
 						},
 						{
-							title: "Studio Board & Kanban",
+							title: "Tasks Board & Kanban",
 							shortcuts: [
 								{
 									keys: ["Space"],
@@ -7015,7 +7015,7 @@ function ShortcutsModal({ open, onClose }) {
 								},
 								{
 									keys: ["⌘", "Enter"],
-									desc: "Submit active work request form"
+									desc: "Save task form"
 								},
 								{
 									keys: [
@@ -7023,7 +7023,7 @@ function ShortcutsModal({ open, onClose }) {
 										"⇧",
 										"C"
 									],
-									desc: "Copy direct request link"
+									desc: "Copy task link"
 								},
 								{
 									keys: ["⌘", "Z"],
@@ -7062,7 +7062,7 @@ function ShortcutsModal({ open, onClose }) {
 						" anywhere to summon"
 					] }), /* @__PURE__ */ jsx("span", {
 						className: "font-mono text-[11px] text-zinc-500",
-						children: "Relay Studio · Linear Ergonomics"
+						children: "Relay Studio · Shortcuts"
 					})]
 				})
 			]

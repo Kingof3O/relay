@@ -130,9 +130,9 @@ export default function RequestSidebarProperties({
                     >
                     </input>
                     <div>
-                        <span className="block text-xs font-bold text-white">Roadblock / Blocked</span>
+                        <span className="block text-xs font-bold text-white">Blocked</span>
                         <span className="mt-0.5 block text-[11px] leading-relaxed text-zinc-500">
-                            Flag this request as blocked and document the blocker reason.
+                            Mark this task as blocked and enter the reason.
                         </span>
                     </div>
                 </label>
@@ -146,7 +146,7 @@ export default function RequestSidebarProperties({
                             }
                         }}
                         rows={3}
-                        placeholder="Explain why work is blocked…"
+                        placeholder="Explain why this task is blocked…"
                         className="mt-3 w-full rounded-xl border border-rose-500/30 bg-[#07090e] p-2.5 text-xs text-rose-200 placeholder:text-zinc-600 focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
                     />
                 )}

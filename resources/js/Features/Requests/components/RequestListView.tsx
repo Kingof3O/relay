@@ -64,7 +64,7 @@ export default function RequestListView({
                             </th>
                             <th className="py-3 px-3 w-28">Status</th>
                             <th className="py-3 px-3">Title & Tasks</th>
-                            <th className="py-3 px-3 w-40">Initiative</th>
+                            <th className="py-3 px-3 w-40">Project</th>
                             <th className="py-3 px-3 w-28">Due Date</th>
                             <th className="py-3 px-3 w-36">Tags</th>
                             <th className="py-3 px-3 w-28">Priority</th>
@@ -166,7 +166,7 @@ export default function RequestListView({
                                                     <span className="truncate">{req.project.name}</span>
                                                 </span>
                                             ) : (
-                                                <span className="text-[11px] text-zinc-500">No initiative</span>
+                                                <span className="text-[11px] text-zinc-500">No project</span>
                                             )}
                                         </td>
 

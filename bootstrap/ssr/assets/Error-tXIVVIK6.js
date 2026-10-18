@@ -6,33 +6,33 @@ import { AlertTriangle, FileQuestion, Home, RotateCcw, Search, ShieldAlert, Term
 function ErrorPage({ status = 404 }) {
 	const config = {
 		404: {
-			title: "Initiative or Entity Not Found",
-			description: "The ticket, board, or workspace document you requested could not be located. It may have been archived, transferred, or deleted.",
-			badge: "404 · Routing Miss",
+			title: "Page Not Found",
+			description: "We couldn't find the page or task you're looking for. It may have been moved or deleted.",
+			badge: "404 · Not Found",
 			icon: FileQuestion
 		},
 		403: {
-			title: "Restricted Security Clearance",
-			description: "Access forbidden. Your account role lacks administrative RBAC privileges required to view or mutate this resource.",
-			badge: "403 · Access Forbidden",
+			title: "Access Restricted",
+			description: "You don't have permission to access this page. Please contact your workspace admin if you need access.",
+			badge: "403 · Forbidden",
 			icon: ShieldAlert
 		},
 		500: {
-			title: "Studio Engine Kernel Fault",
-			description: "An unhandled runtime exception occurred within Relay Studio. Incident telemetry has been captured and routed for investigation.",
-			badge: "500 · Server Fault",
+			title: "Server Error",
+			description: "Something went wrong on our end. We've logged this issue and are looking into it.",
+			badge: "500 · Server Error",
 			icon: AlertTriangle
 		},
 		419: {
-			title: "Security Token / Session Expired",
-			description: "Your CSRF session lifecycle has concluded due to inactivity. Re-authenticate or refresh your browser state to resume seamlessly.",
-			badge: "419 · Token Expired",
+			title: "Session Expired",
+			description: "Your session has timed out due to inactivity. Please refresh the page to log back in.",
+			badge: "419 · Session Expired",
 			icon: RotateCcw
 		}
 	}[status] || {
-		title: "Unexpected Platform Anomaly",
-		description: "Relay encountered an unexpected response condition. Please navigate back to your workspace dashboard or query the command center.",
-		badge: `${status} · Unknown Status`,
+		title: "Something Went Wrong",
+		description: "An unexpected error occurred. Please head back to your workspace dashboard or try again.",
+		badge: `${status} · Error`,
 		icon: AlertTriangle
 	};
 	const Icon = config.icon;
@@ -157,7 +157,7 @@ function ErrorPage({ status = 404 }) {
 									/* @__PURE__ */ jsx(Link, {
 										href: "/requests",
 										className: "font-medium text-violet-400 hover:underline",
-										children: "Live Studio Board"
+										children: "Tasks Board"
 									}),
 									" ",
 									"or review your",
@@ -178,7 +178,7 @@ function ErrorPage({ status = 404 }) {
 				className: "relative z-10 border-t border-zinc-800/80 bg-[#090a0f]/60 px-6 py-4 text-center text-xs text-zinc-500 font-mono",
 				children: /* @__PURE__ */ jsxs("div", {
 					className: "mx-auto flex max-w-[1600px] flex-col sm:flex-row items-center justify-between gap-2",
-					children: [/* @__PURE__ */ jsx("span", { children: "Relay Studio · Governance & Resilience Subsystem" }), /* @__PURE__ */ jsx("span", { children: "Obsidian Diagnostics · Kernel Node OK" })]
+					children: [/* @__PURE__ */ jsx("span", { children: "Relay Studio" }), /* @__PURE__ */ jsx("span", { children: "System Diagnostics · All Systems Operational" })]
 				})
 			})
 		]

@@ -26,40 +26,40 @@ export default function ErrorPage({ status = 404 }: ErrorProps) {
         }
     > = {
         404: {
-            title: 'Initiative or Entity Not Found',
+            title: 'Page Not Found',
             description:
-                'The ticket, board, or workspace document you requested could not be located. It may have been archived, transferred, or deleted.',
-            badge: '404 · Routing Miss',
+                "We couldn't find the page or task you're looking for. It may have been moved or deleted.",
+            badge: '404 · Not Found',
             icon: FileQuestion,
         },
         403: {
-            title: 'Restricted Security Clearance',
+            title: 'Access Restricted',
             description:
-                'Access forbidden. Your account role lacks administrative RBAC privileges required to view or mutate this resource.',
-            badge: '403 · Access Forbidden',
+                "You don't have permission to access this page. Please contact your workspace admin if you need access.",
+            badge: '403 · Forbidden',
             icon: ShieldAlert,
         },
         500: {
-            title: 'Studio Engine Kernel Fault',
+            title: 'Server Error',
             description:
-                'An unhandled runtime exception occurred within Relay Studio. Incident telemetry has been captured and routed for investigation.',
-            badge: '500 · Server Fault',
+                "Something went wrong on our end. We've logged this issue and are looking into it.",
+            badge: '500 · Server Error',
             icon: AlertTriangle,
         },
         419: {
-            title: 'Security Token / Session Expired',
+            title: 'Session Expired',
             description:
-                'Your CSRF session lifecycle has concluded due to inactivity. Re-authenticate or refresh your browser state to resume seamlessly.',
-            badge: '419 · Token Expired',
+                'Your session has timed out due to inactivity. Please refresh the page to log back in.',
+            badge: '419 · Session Expired',
             icon: RotateCcw,
         },
     };
 
     const config = errorConfigs[status] || {
-        title: 'Unexpected Platform Anomaly',
+        title: 'Something Went Wrong',
         description:
-            'Relay encountered an unexpected response condition. Please navigate back to your workspace dashboard or query the command center.',
-        badge: `${status} · Unknown Status`,
+            'An unexpected error occurred. Please head back to your workspace dashboard or try again.',
+        badge: `${status} · Error`,
         icon: AlertTriangle,
     };
 
@@ -192,7 +192,7 @@ export default function ErrorPage({ status = 404 }: ErrorProps) {
                                 href="/requests"
                                 className="font-medium text-violet-400 hover:underline"
                             >
-                                Live Studio Board
+                                Tasks Board
                             </Link>{' '}
                             or review your{' '}
                             <Link
@@ -210,8 +210,8 @@ export default function ErrorPage({ status = 404 }: ErrorProps) {
             {/* Obsidian Footer */}
             <footer className="relative z-10 border-t border-zinc-800/80 bg-[#090a0f]/60 px-6 py-4 text-center text-xs text-zinc-500 font-mono">
                 <div className="mx-auto flex max-w-[1600px] flex-col sm:flex-row items-center justify-between gap-2">
-                    <span>Relay Studio · Governance & Resilience Subsystem</span>
-                    <span>Obsidian Diagnostics · Kernel Node OK</span>
+                    <span>Relay Studio</span>
+                    <span>System Diagnostics · All Systems Operational</span>
                 </div>
             </footer>
         </div>

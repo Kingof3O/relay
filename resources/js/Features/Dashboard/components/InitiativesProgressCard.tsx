@@ -20,8 +20,8 @@ export default function InitiativesProgressCard({
                         <FolderKanban className="h-4 w-4" />
                     </div>
                     <div>
-                        <h3 className="text-sm font-semibold text-zinc-100">Initiatives Progress</h3>
-                        <p className="text-xs text-zinc-500">Delivery status across projects</p>
+                        <h3 className="text-sm font-semibold text-zinc-100">Project Progress</h3>
+                        <p className="text-xs text-zinc-500">Task completion across projects</p>
                     </div>
                 </div>
                 <Link
@@ -76,7 +76,7 @@ export default function InitiativesProgressCard({
                     ))
                 ) : (
                     <div className="flex h-32 items-center justify-center text-xs text-zinc-500">
-                        No active initiatives found.
+                        No active projects found.
                     </div>
                 )}
             </div>

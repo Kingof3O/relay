@@ -24,8 +24,8 @@ export default function ShortcutsModal({ open, onClose }: ShortcutsModalProps) {
             title: 'Global Navigation',
             shortcuts: [
                 { keys: ['G', 'D'], desc: 'Go to Dashboard' },
-                { keys: ['G', 'B'], desc: 'Go to Studio Board' },
-                { keys: ['G', 'P'], desc: 'Go to Initiatives (Projects)' },
+                { keys: ['G', 'B'], desc: 'Go to Tasks Board' },
+                { keys: ['G', 'P'], desc: 'Go to Projects' },
                 { keys: ['G', 'N'], desc: 'Go to Notifications Inbox' },
                 { keys: ['G', 'S'], desc: 'Go to Workspace Settings' },
             ],
@@ -33,19 +33,19 @@ export default function ShortcutsModal({ open, onClose }: ShortcutsModalProps) {
         {
             title: 'Quick Actions',
             shortcuts: [
-                { keys: ['C'], desc: 'New Work Request modal' },
+                { keys: ['C'], desc: 'Create new task' },
                 { keys: ['⌘', 'K'], desc: 'Open Command Palette' },
-                { keys: ['?'], desc: 'Open this Keyboard Shortcuts cheat-sheet' },
+                { keys: ['?'], desc: 'Open keyboard shortcuts' },
                 { keys: ['/'], desc: 'Focus Board Filter Search' },
                 { keys: ['Esc'], desc: 'Close open drawers, modals, or flyouts' },
             ],
         },
         {
-            title: 'Studio Board & Kanban',
+            title: 'Tasks Board & Kanban',
             shortcuts: [
                 { keys: ['Space'], desc: 'Open Quick View Drawer for selected card' },
-                { keys: ['⌘', 'Enter'], desc: 'Submit active work request form' },
-                { keys: ['⌘', '⇧', 'C'], desc: 'Copy direct request link' },
+                { keys: ['⌘', 'Enter'], desc: 'Save task form' },
+                { keys: ['⌘', '⇧', 'C'], desc: 'Copy task link' },
                 { keys: ['⌘', 'Z'], desc: 'Undo last card transition' },
             ],
         },
@@ -135,7 +135,7 @@ export default function ShortcutsModal({ open, onClose }: ShortcutsModalProps) {
                     <span>
                         Press <kbd className="px-1.5 py-0.5 rounded border border-white/[0.1] bg-white/[0.04] text-zinc-300 font-mono text-[10px]">?</kbd> anywhere to summon
                     </span>
-                    <span className="font-mono text-[11px] text-zinc-500">Relay Studio · Linear Ergonomics</span>
+                    <span className="font-mono text-[11px] text-zinc-500">Relay Studio · Shortcuts</span>
                 </div>
             </div>
         </div>

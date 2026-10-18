@@ -48,7 +48,7 @@ function IntegrationKpiTiles({ discord, email, kpis }) {
 						className: "flex items-center justify-between",
 						children: [/* @__PURE__ */ jsx("span", {
 							className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-							children: "Email Dispatch"
+							children: "Email Service"
 						}), /* @__PURE__ */ jsx("div", {
 							className: "h-8 w-8 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400",
 							children: /* @__PURE__ */ jsx(Mail, { className: "h-4 w-4" })
@@ -77,7 +77,7 @@ function IntegrationKpiTiles({ discord, email, kpis }) {
 						className: "flex items-center justify-between",
 						children: [/* @__PURE__ */ jsx("span", {
 							className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-							children: "Total Dispatches"
+							children: "Total Notifications Sent"
 						}), /* @__PURE__ */ jsx("div", {
 							className: "h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400",
 							children: /* @__PURE__ */ jsx(Send, { className: "h-4 w-4" })
@@ -101,7 +101,7 @@ function IntegrationKpiTiles({ discord, email, kpis }) {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "mt-1 text-xs text-zinc-500",
-						children: "Dual pipeline automated alerts"
+						children: "Email & Discord alerts sent"
 					})
 				]
 			}),
@@ -112,7 +112,7 @@ function IntegrationKpiTiles({ discord, email, kpis }) {
 						className: "flex items-center justify-between",
 						children: [/* @__PURE__ */ jsx("span", {
 							className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
-							children: "Success Velocity"
+							children: "Delivery Rate"
 						}), /* @__PURE__ */ jsx("div", {
 							className: "h-8 w-8 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400",
 							children: /* @__PURE__ */ jsx(CheckCircle2, { className: "h-4 w-4" })
@@ -134,7 +134,7 @@ function IntegrationKpiTiles({ discord, email, kpis }) {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "mt-1 text-xs text-zinc-500",
-						children: kpis.failed_count === 0 ? "Zero delivery failures" : "Check logs for failed payloads"
+						children: kpis.failed_count === 0 ? "All notifications delivered" : "Check logs for failed notifications"
 					})
 				]
 			})
@@ -293,17 +293,17 @@ function DiscordWebhookCard({ config, onUpdated, canManage }) {
 					}),
 					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("label", {
 						className: "block text-xs font-semibold text-zinc-300 uppercase tracking-wider mb-2",
-						children: "Broadcast Triggers & Event Subscriptions"
+						children: "Notification Triggers"
 					}), /* @__PURE__ */ jsx("div", {
 						className: "grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs",
 						children: [
 							{
 								key: "ticket_created",
-								label: "🆕 Ticket Created"
+								label: "🆕 Task Created"
 							},
 							{
 								key: "ticket_assigned",
-								label: "⚡ Work Assigned"
+								label: "⚡ Task Assigned"
 							},
 							{
 								key: "ticket_status",
@@ -311,7 +311,7 @@ function DiscordWebhookCard({ config, onUpdated, canManage }) {
 							},
 							{
 								key: "ticket_blocked",
-								label: "🚧 Blockers & Roadblocks"
+								label: "🚧 Blocked Tasks"
 							},
 							{
 								key: "ticket_comment",
@@ -357,7 +357,7 @@ function DiscordLivePreview({ config, selectedEvent = "created" }) {
 	const botName = config.bot_name || "Relay Studio";
 	const avatar = config.avatar_url;
 	const borderColor = selectedEvent === "urgent" || selectedEvent === "blocked" ? "#E11D48" : selectedEvent === "done" ? "#10B981" : selectedEvent === "review" ? "#8B5CF6" : selectedEvent === "assignment" ? "#0284C7" : "#F59E0B";
-	const eventLabel = selectedEvent === "created" ? "🆕 Ticket Created" : selectedEvent === "assignment" ? "⚡ Work Assigned" : selectedEvent === "review" ? "👀 Ready for Review" : selectedEvent === "done" ? "✅ Ticket Completed" : selectedEvent === "blocked" ? "🚧 Roadblock Flagged" : "💬 New Comment";
+	const eventLabel = selectedEvent === "created" ? "🆕 Task Created" : selectedEvent === "assignment" ? "⚡ Task Assigned" : selectedEvent === "review" ? "👀 Ready for Review" : selectedEvent === "done" ? "✅ Task Completed" : selectedEvent === "blocked" ? "🚧 Task Blocked" : "💬 New Comment";
 	return /* @__PURE__ */ jsxs("div", {
 		className: "rounded-xl border border-zinc-800 bg-[#090a0f] p-5 shadow-sm space-y-3",
 		children: [/* @__PURE__ */ jsxs("div", {
@@ -366,7 +366,7 @@ function DiscordLivePreview({ config, selectedEvent = "created" }) {
 				className: "flex items-center gap-2",
 				children: [/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-[#5865F2]" }), /* @__PURE__ */ jsx("h3", {
 					className: "text-xs font-semibold uppercase tracking-wider text-zinc-300",
-					children: "Live Discord Client Preview"
+					children: "Discord Preview"
 				})]
 			}), /* @__PURE__ */ jsx("span", {
 				className: "text-[11px] text-zinc-500 font-mono",
@@ -410,7 +410,7 @@ function DiscordLivePreview({ config, selectedEvent = "created" }) {
 					}),
 					/* @__PURE__ */ jsx("p", {
 						className: "text-[#dbdee1] text-xs leading-relaxed",
-						children: "Alice Admin updated #REQ-101 in Core Platform. Automatic dispatch synced across Relay Studio."
+						children: "Alice Admin updated #REQ-101 in Core Platform."
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "grid grid-cols-2 gap-2 pt-1 border-t border-[#313338]",
@@ -461,7 +461,7 @@ function DiscordLivePreview({ config, selectedEvent = "created" }) {
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "pt-1.5 text-[10px] text-[#949ba4] flex items-center justify-between border-t border-[#313338]",
-						children: [/* @__PURE__ */ jsx("span", { children: "Relay Studio Automation Subsystem" }), /* @__PURE__ */ jsx("span", { children: "Today at 4:20 PM" })]
+						children: [/* @__PURE__ */ jsx("span", { children: "Relay Studio" }), /* @__PURE__ */ jsx("span", { children: "Today at 4:20 PM" })]
 					})
 				]
 			})]
@@ -688,7 +688,7 @@ function EmailTemplateCard({ config, onUpdated, canManage }) {
 						disabled: !canManage,
 						value: footerNote,
 						onChange: (e) => setFooterNote(e.target.value),
-						placeholder: "Relay Studio · Enterprise Engineering & Dispatch Automation",
+						placeholder: "Relay Studio · Project Updates & Notifications",
 						className: "w-full rounded-lg border border-zinc-800 bg-[#090a0f] px-3.5 py-2 text-xs text-zinc-100 placeholder-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 disabled:opacity-50"
 					})] }),
 					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("label", {
@@ -699,11 +699,11 @@ function EmailTemplateCard({ config, onUpdated, canManage }) {
 						children: [
 							{
 								key: "ticket_created",
-								label: "🆕 Ticket Created"
+								label: "🆕 Task Created"
 							},
 							{
 								key: "ticket_assigned",
-								label: "⚡ Work Assigned"
+								label: "⚡ Task Assigned"
 							},
 							{
 								key: "ticket_status",
@@ -711,7 +711,7 @@ function EmailTemplateCard({ config, onUpdated, canManage }) {
 							},
 							{
 								key: "ticket_blocked",
-								label: "🚧 Blockers & Roadblocks"
+								label: "🚧 Blocked Tasks"
 							},
 							{
 								key: "ticket_comment",
@@ -756,19 +756,19 @@ function EmailTemplateCard({ config, onUpdated, canManage }) {
 var PREVIEW_EVENTS = [
 	{
 		key: "assignment",
-		label: "⚡ Work Assigned"
+		label: "⚡ Task Assigned"
 	},
 	{
 		key: "review",
-		label: "👀 Review Request"
+		label: "👀 Ready for Review"
 	},
 	{
 		key: "done",
-		label: "✅ Work Completed"
+		label: "✅ Task Completed"
 	},
 	{
 		key: "blocked",
-		label: "🚧 Roadblock Flagged"
+		label: "🚧 Task Blocked"
 	},
 	{
 		key: "comment",
@@ -788,7 +788,7 @@ function EmailLivePreview({ config }) {
 					className: "flex items-center gap-2",
 					children: [/* @__PURE__ */ jsx(Eye, { className: "h-4 w-4 text-violet-400" }), /* @__PURE__ */ jsx("h3", {
 						className: "text-xs font-semibold uppercase tracking-wider text-zinc-300",
-						children: "Live HTML Email Template Preview"
+						children: "Email Template Preview"
 					})]
 				}), /* @__PURE__ */ jsxs("div", {
 					className: "flex flex-wrap items-center gap-1.5",

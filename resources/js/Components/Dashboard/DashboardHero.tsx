@@ -72,7 +72,7 @@ export default function DashboardHero({
                         Command Center
                     </h2>
                     <p className="mt-1.5 max-w-xl text-xs sm:text-sm leading-relaxed text-zinc-400">
-                        Real-time studio throughput, active handoffs, triage queue, and initiative delivery metrics.
+                        Overview of your tasks, active projects, and team progress.
                     </p>
 
                     {/* Status Pipeline Flow */}
