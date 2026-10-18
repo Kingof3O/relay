@@ -93,26 +93,34 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
 
     return (
         <div className="relative w-full" ref={dropdownRef}>
-            {/* Trigger Button */}
+            {/* Trigger Button (Workspace Card) */}
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`group flex items-center rounded-xl border border-white/[0.06] bg-[#12131a] p-1.5 transition-all hover:border-zinc-700/80 hover:bg-[#181924] ${
+                className={`group flex items-center rounded-xl border border-zinc-800/80 bg-[#090a0f] p-2 transition-all hover:border-zinc-700 hover:bg-[#121318] shadow-sm ${
                     collapsed ? 'justify-center w-10 h-10 p-0' : 'w-full justify-between'
                 }`}
                 title={collapsed ? activeWorkspaceName : undefined}
                 aria-expanded={isOpen}
             >
                 <div className="flex min-w-0 items-center gap-2.5">
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan-500/30 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 text-xs font-bold font-mono tracking-tight text-cyan-300 shadow-sm">
-                        {activeInitials}
-                    </div>
+                    {currentWorkspace?.logo_url ? (
+                        <img
+                            src={currentWorkspace.logo_url}
+                            alt={activeWorkspaceName}
+                            className="h-8 w-8 shrink-0 rounded-lg object-cover border border-zinc-750"
+                        />
+                    ) : (
+                        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-750 bg-zinc-850 text-xs font-bold font-mono tracking-tight text-zinc-200 shadow-sm transition-colors group-hover:border-zinc-650 group-hover:text-white">
+                            {activeInitials}
+                        </div>
+                    )}
                     {!collapsed && (
                         <div className="min-w-0 text-left">
-                            <div className="truncate text-xs font-bold text-zinc-100 group-hover:text-white">
+                            <div className="truncate text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors">
                                 {activeWorkspaceName}
                             </div>
-                            <div className="truncate text-[10px] font-mono text-zinc-400">
+                            <div className="truncate text-[10px] font-mono text-zinc-500">
                                 {currentWorkspace?.slug ? `@${currentWorkspace.slug}` : 'workspace'}
                             </div>
                         </div>
@@ -120,14 +128,14 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                 </div>
 
                 {!collapsed && (
-                    <ChevronsUpDown className="h-4 w-4 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300" />
+                    <ChevronsUpDown className="h-3.5 w-3.5 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300" />
                 )}
             </button>
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-zinc-800 bg-[#0e0f15] p-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100">
-                    <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                <div className="absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-zinc-800 bg-[#0c0d12] p-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100">
+                    <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                         Workspaces
                     </div>
 
@@ -150,16 +158,16 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                                         onClick={() => handleSwitch(ws)}
                                         className={`flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs transition-colors ${
                                             isActive
-                                                ? 'bg-zinc-800/80 text-white font-medium'
-                                                : 'text-zinc-300 hover:bg-zinc-850 hover:text-white'
+                                                ? 'bg-zinc-800 text-white font-medium shadow-sm'
+                                                : 'text-zinc-300 hover:bg-zinc-850/70 hover:text-white'
                                         }`}
                                     >
                                         <div className="flex min-w-0 items-center gap-2.5">
                                             <div
                                                 className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md border text-[10px] font-mono font-bold ${
                                                     isActive
-                                                        ? 'border-cyan-500/40 bg-cyan-500/20 text-cyan-300'
-                                                        : 'border-zinc-700 bg-zinc-800 text-zinc-400'
+                                                        ? 'border-zinc-650 bg-zinc-700 text-white'
+                                                        : 'border-zinc-800 bg-zinc-850 text-zinc-400'
                                                 }`}
                                             >
                                                 {wsInitials}
@@ -168,19 +176,19 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                                         </div>
 
                                         {isActive && (
-                                            <Check className="h-3.5 w-3.5 shrink-0 text-cyan-400" />
+                                            <Check className="h-3.5 w-3.5 shrink-0 text-zinc-200" />
                                         )}
                                     </button>
                                 );
                             })
                         ) : (
-                            <div className="px-2.5 py-2 text-xs text-zinc-400">
+                            <div className="px-2.5 py-2 text-xs text-zinc-500">
                                 {activeWorkspaceName}
                             </div>
                         )}
                     </div>
 
-                    <div className="my-1 border-t border-zinc-800" />
+                    <div className="my-1 border-t border-zinc-800/80" />
 
                     <button
                         type="button"
@@ -188,9 +196,9 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                             setIsOpen(false);
                             setIsCreateModalOpen(true);
                         }}
-                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-cyan-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-300"
+                        className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-zinc-300 transition-colors hover:bg-zinc-850 hover:text-white"
                     >
-                        <Plus className="h-4 w-4" />
+                        <Plus className="h-4 w-4 text-zinc-400" />
                         <span>Create Workspace</span>
                     </button>
                 </div>
@@ -198,10 +206,10 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
 
             {/* Create Workspace Modal */}
             <Modal show={isCreateModalOpen} onClose={() => setIsCreateModalOpen(false)} maxWidth="md">
-                <div className="p-6">
-                    <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
+                <div className="rounded-2xl border border-zinc-800 bg-[#0c0d12] p-6 shadow-2xl">
+                    <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
                         <div className="flex items-center gap-3">
-                            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-sm">
+                            <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-750 bg-zinc-850 text-zinc-200 shadow-sm">
                                 <Building2 className="h-4 w-4" />
                             </div>
                             <div>
@@ -214,7 +222,7 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                         <button
                             type="button"
                             onClick={() => setIsCreateModalOpen(false)}
-                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.04] text-zinc-400 transition-colors hover:bg-white/[0.08] hover:text-white"
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850/60 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
                         >
                             <X className="h-4 w-4" />
                         </button>
@@ -238,11 +246,11 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                                 placeholder="e.g. Acme Engineering"
                                 value={newWorkspaceName}
                                 onChange={(e) => setNewWorkspaceName(e.target.value)}
-                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-sm transition-all"
+                                className="mt-1.5 w-full rounded-xl border border-zinc-800 bg-[#090a0f] px-3.5 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600 shadow-sm transition-all"
                             />
                         </div>
 
-                        <div className="flex items-center justify-end gap-3 border-t border-white/[0.08] pt-4">
+                        <div className="flex items-center justify-end gap-3 border-t border-zinc-800/80 pt-4">
                             <button
                                 type="button"
                                 onClick={() => setIsCreateModalOpen(false)}
@@ -253,7 +261,7 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                             <button
                                 disabled={creating}
                                 type="submit"
-                                className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:from-cyan-400 hover:to-blue-500 active:scale-[0.98] disabled:opacity-50 transition-all"
+                                className="rounded-xl bg-white px-5 py-2.5 text-xs font-semibold text-zinc-950 shadow-sm hover:bg-zinc-200 active:scale-[0.98] disabled:opacity-50 transition-all"
                             >
                                 {creating ? 'Creating...' : 'Create Workspace'}
                             </button>

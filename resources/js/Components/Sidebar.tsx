@@ -124,15 +124,31 @@ export default function Sidebar() {
             }`}
         >
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar">
-                {/* Brand / Workspace Switcher Header */}
+                {/* Brand Logo Header */}
                 <div
-                    className={`flex items-center gap-2 border-b border-zinc-800/80 pb-3.5 ${
+                    className={`flex items-center border-b border-zinc-800/80 pb-3 ${
                         collapsed ? 'justify-center px-0 flex-col gap-2' : 'justify-between px-1'
                     }`}
                 >
-                    <div className="flex-1 min-w-0 w-full">
-                        <WorkspaceSwitcher collapsed={collapsed} />
-                    </div>
+                    <Link
+                        href={route('dashboard')}
+                        prefetch="hover"
+                        cacheFor="30s"
+                        className="group flex items-center gap-2.5 rounded-xl p-1 transition-colors hover:bg-zinc-850/60"
+                        title="Relay Studio"
+                    >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-750 bg-[#121318] text-white shadow-sm transition-all group-hover:border-zinc-650 group-hover:bg-[#181920]">
+                            <ApplicationLogo className="h-5 w-5 text-white" />
+                        </div>
+                        {!collapsed && (
+                            <div className="flex items-center gap-2">
+                                <span className="text-[15px] font-bold tracking-tight text-white">Relay</span>
+                                <span className="rounded-md border border-zinc-800 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400">
+                                    Studio
+                                </span>
+                            </div>
+                        )}
+                    </Link>
 
                     {!collapsed && (
                         <button
@@ -147,7 +163,7 @@ export default function Sidebar() {
                 </div>
 
                 {collapsed && (
-                    <div className="flex justify-center pt-2.5">
+                    <div className="flex justify-center pt-2">
                         <button
                             type="button"
                             onClick={toggleCollapsed}
@@ -158,6 +174,11 @@ export default function Sidebar() {
                         </button>
                     </div>
                 )}
+
+                {/* Workspace Switcher Card */}
+                <div className="mt-3">
+                    <WorkspaceSwitcher collapsed={collapsed} />
+                </div>
 
                 {/* Primary Navigation Group */}
                 <div className="mt-5 space-y-1">

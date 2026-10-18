@@ -1,3 +1,4 @@
+import { t as ApplicationLogo } from "./ApplicationLogo-BVzx5-Vz.js";
 import { Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
@@ -207,31 +208,35 @@ function WorkspaceSwitcher({ collapsed = false }) {
 			/* @__PURE__ */ jsxs("button", {
 				type: "button",
 				onClick: () => setIsOpen(!isOpen),
-				className: `group flex items-center rounded-xl border border-white/[0.06] bg-[#12131a] p-1.5 transition-all hover:border-zinc-700/80 hover:bg-[#181924] ${collapsed ? "justify-center w-10 h-10 p-0" : "w-full justify-between"}`,
+				className: `group flex items-center rounded-xl border border-zinc-800/80 bg-[#090a0f] p-2 transition-all hover:border-zinc-700 hover:bg-[#121318] shadow-sm ${collapsed ? "justify-center w-10 h-10 p-0" : "w-full justify-between"}`,
 				title: collapsed ? activeWorkspaceName : void 0,
 				"aria-expanded": isOpen,
 				children: [/* @__PURE__ */ jsxs("div", {
 					className: "flex min-w-0 items-center gap-2.5",
-					children: [/* @__PURE__ */ jsx("div", {
-						className: "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan-500/30 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 text-xs font-bold font-mono tracking-tight text-cyan-300 shadow-sm",
+					children: [currentWorkspace?.logo_url ? /* @__PURE__ */ jsx("img", {
+						src: currentWorkspace.logo_url,
+						alt: activeWorkspaceName,
+						className: "h-8 w-8 shrink-0 rounded-lg object-cover border border-zinc-750"
+					}) : /* @__PURE__ */ jsx("div", {
+						className: "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-750 bg-zinc-850 text-xs font-bold font-mono tracking-tight text-zinc-200 shadow-sm transition-colors group-hover:border-zinc-650 group-hover:text-white",
 						children: activeInitials
 					}), !collapsed && /* @__PURE__ */ jsxs("div", {
 						className: "min-w-0 text-left",
 						children: [/* @__PURE__ */ jsx("div", {
-							className: "truncate text-xs font-bold text-zinc-100 group-hover:text-white",
+							className: "truncate text-xs font-semibold text-zinc-200 group-hover:text-white transition-colors",
 							children: activeWorkspaceName
 						}), /* @__PURE__ */ jsx("div", {
-							className: "truncate text-[10px] font-mono text-zinc-400",
+							className: "truncate text-[10px] font-mono text-zinc-500",
 							children: currentWorkspace?.slug ? `@${currentWorkspace.slug}` : "workspace"
 						})]
 					})]
-				}), !collapsed && /* @__PURE__ */ jsx(ChevronsUpDown, { className: "h-4 w-4 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300" })]
+				}), !collapsed && /* @__PURE__ */ jsx(ChevronsUpDown, { className: "h-3.5 w-3.5 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300" })]
 			}),
 			isOpen && /* @__PURE__ */ jsxs("div", {
-				className: "absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-zinc-800 bg-[#0e0f15] p-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100",
+				className: "absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-zinc-800 bg-[#0c0d12] p-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100",
 				children: [
 					/* @__PURE__ */ jsx("div", {
-						className: "px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400",
+						className: "px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-500",
 						children: "Workspaces"
 					}),
 					/* @__PURE__ */ jsx("div", {
@@ -242,32 +247,32 @@ function WorkspaceSwitcher({ collapsed = false }) {
 							return /* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => handleSwitch(ws),
-								className: `flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs transition-colors ${isActive ? "bg-zinc-800/80 text-white font-medium" : "text-zinc-300 hover:bg-zinc-850 hover:text-white"}`,
+								className: `flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs transition-colors ${isActive ? "bg-zinc-800 text-white font-medium shadow-sm" : "text-zinc-300 hover:bg-zinc-850/70 hover:text-white"}`,
 								children: [/* @__PURE__ */ jsxs("div", {
 									className: "flex min-w-0 items-center gap-2.5",
 									children: [/* @__PURE__ */ jsx("div", {
-										className: `flex h-6 w-6 shrink-0 items-center justify-center rounded-md border text-[10px] font-mono font-bold ${isActive ? "border-cyan-500/40 bg-cyan-500/20 text-cyan-300" : "border-zinc-700 bg-zinc-800 text-zinc-400"}`,
+										className: `flex h-6 w-6 shrink-0 items-center justify-center rounded-md border text-[10px] font-mono font-bold ${isActive ? "border-zinc-650 bg-zinc-700 text-white" : "border-zinc-800 bg-zinc-850 text-zinc-400"}`,
 										children: wsInitials
 									}), /* @__PURE__ */ jsx("span", {
 										className: "truncate",
 										children: ws.name
 									})]
-								}), isActive && /* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5 shrink-0 text-cyan-400" })]
+								}), isActive && /* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5 shrink-0 text-zinc-200" })]
 							}, ws.id);
 						}) : /* @__PURE__ */ jsx("div", {
-							className: "px-2.5 py-2 text-xs text-zinc-400",
+							className: "px-2.5 py-2 text-xs text-zinc-500",
 							children: activeWorkspaceName
 						})
 					}),
-					/* @__PURE__ */ jsx("div", { className: "my-1 border-t border-zinc-800" }),
+					/* @__PURE__ */ jsx("div", { className: "my-1 border-t border-zinc-800/80" }),
 					/* @__PURE__ */ jsxs("button", {
 						type: "button",
 						onClick: () => {
 							setIsOpen(false);
 							setIsCreateModalOpen(true);
 						},
-						className: "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-cyan-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-300",
-						children: [/* @__PURE__ */ jsx(Plus, { className: "h-4 w-4" }), /* @__PURE__ */ jsx("span", { children: "Create Workspace" })]
+						className: "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-zinc-300 transition-colors hover:bg-zinc-850 hover:text-white",
+						children: [/* @__PURE__ */ jsx(Plus, { className: "h-4 w-4 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Create Workspace" })]
 					})
 				]
 			}),
@@ -276,14 +281,14 @@ function WorkspaceSwitcher({ collapsed = false }) {
 				onClose: () => setIsCreateModalOpen(false),
 				maxWidth: "md",
 				children: /* @__PURE__ */ jsxs("div", {
-					className: "p-6",
+					className: "rounded-2xl border border-zinc-800 bg-[#0c0d12] p-6 shadow-2xl",
 					children: [
 						/* @__PURE__ */ jsxs("div", {
-							className: "flex items-center justify-between border-b border-white/[0.08] pb-4",
+							className: "flex items-center justify-between border-b border-zinc-800/80 pb-4",
 							children: [/* @__PURE__ */ jsxs("div", {
 								className: "flex items-center gap-3",
 								children: [/* @__PURE__ */ jsx("div", {
-									className: "flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-sm",
+									className: "flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-750 bg-zinc-850 text-zinc-200 shadow-sm",
 									children: /* @__PURE__ */ jsx(Building2, { className: "h-4 w-4" })
 								}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 									className: "text-sm font-bold text-white tracking-tight",
@@ -295,7 +300,7 @@ function WorkspaceSwitcher({ collapsed = false }) {
 							}), /* @__PURE__ */ jsx("button", {
 								type: "button",
 								onClick: () => setIsCreateModalOpen(false),
-								className: "flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.04] text-zinc-400 transition-colors hover:bg-white/[0.08] hover:text-white",
+								className: "flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850/60 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white",
 								children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
 							})]
 						}),
@@ -319,9 +324,9 @@ function WorkspaceSwitcher({ collapsed = false }) {
 								placeholder: "e.g. Acme Engineering",
 								value: newWorkspaceName,
 								onChange: (e) => setNewWorkspaceName(e.target.value),
-								className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-sm transition-all"
+								className: "mt-1.5 w-full rounded-xl border border-zinc-800 bg-[#090a0f] px-3.5 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600 shadow-sm transition-all"
 							})] }), /* @__PURE__ */ jsxs("div", {
-								className: "flex items-center justify-end gap-3 border-t border-white/[0.08] pt-4",
+								className: "flex items-center justify-end gap-3 border-t border-zinc-800/80 pt-4",
 								children: [/* @__PURE__ */ jsx("button", {
 									type: "button",
 									onClick: () => setIsCreateModalOpen(false),
@@ -330,7 +335,7 @@ function WorkspaceSwitcher({ collapsed = false }) {
 								}), /* @__PURE__ */ jsx("button", {
 									disabled: creating,
 									type: "submit",
-									className: "rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:from-cyan-400 hover:to-blue-500 active:scale-[0.98] disabled:opacity-50 transition-all",
+									className: "rounded-xl bg-white px-5 py-2.5 text-xs font-semibold text-zinc-950 shadow-sm hover:bg-zinc-200 active:scale-[0.98] disabled:opacity-50 transition-all",
 									children: creating ? "Creating..." : "Create Workspace"
 								})]
 							})]
@@ -433,10 +438,26 @@ function Sidebar() {
 			className: "flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar",
 			children: [
 				/* @__PURE__ */ jsxs("div", {
-					className: `flex items-center gap-2 border-b border-zinc-800/80 pb-3.5 ${collapsed ? "justify-center px-0 flex-col gap-2" : "justify-between px-1"}`,
-					children: [/* @__PURE__ */ jsx("div", {
-						className: "flex-1 min-w-0 w-full",
-						children: /* @__PURE__ */ jsx(WorkspaceSwitcher, { collapsed })
+					className: `flex items-center border-b border-zinc-800/80 pb-3 ${collapsed ? "justify-center px-0 flex-col gap-2" : "justify-between px-1"}`,
+					children: [/* @__PURE__ */ jsxs(Link, {
+						href: route("dashboard"),
+						prefetch: "hover",
+						cacheFor: "30s",
+						className: "group flex items-center gap-2.5 rounded-xl p-1 transition-colors hover:bg-zinc-850/60",
+						title: "Relay Studio",
+						children: [/* @__PURE__ */ jsx("div", {
+							className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-750 bg-[#121318] text-white shadow-sm transition-all group-hover:border-zinc-650 group-hover:bg-[#181920]",
+							children: /* @__PURE__ */ jsx(ApplicationLogo, { className: "h-5 w-5 text-white" })
+						}), !collapsed && /* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-2",
+							children: [/* @__PURE__ */ jsx("span", {
+								className: "text-[15px] font-bold tracking-tight text-white",
+								children: "Relay"
+							}), /* @__PURE__ */ jsx("span", {
+								className: "rounded-md border border-zinc-800 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400",
+								children: "Studio"
+							})]
+						})]
 					}), !collapsed && /* @__PURE__ */ jsx("button", {
 						type: "button",
 						onClick: toggleCollapsed,
@@ -446,7 +467,7 @@ function Sidebar() {
 					})]
 				}),
 				collapsed && /* @__PURE__ */ jsx("div", {
-					className: "flex justify-center pt-2.5",
+					className: "flex justify-center pt-2",
 					children: /* @__PURE__ */ jsx("button", {
 						type: "button",
 						onClick: toggleCollapsed,
@@ -454,6 +475,10 @@ function Sidebar() {
 						title: "Expand sidebar (⌘[)",
 						children: /* @__PURE__ */ jsx(ChevronRight, { className: "h-4 w-4" })
 					})
+				}),
+				/* @__PURE__ */ jsx("div", {
+					className: "mt-3",
+					children: /* @__PURE__ */ jsx(WorkspaceSwitcher, { collapsed })
 				}),
 				/* @__PURE__ */ jsxs("div", {
 					className: "mt-5 space-y-1",
