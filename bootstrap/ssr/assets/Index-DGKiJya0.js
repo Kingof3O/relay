@@ -1,9 +1,10 @@
-import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-BkM7vaW1.js";
+import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-BGgfVQov.js";
+import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-B-LOWpFJ.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, router } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
-import { Activity, AlertCircle, Archive, ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Check, CheckCircle2, ChevronLeft, ChevronRight, Clock, Cpu, Edit2, Filter, FolderKanban, KeyRound, Layers, LayoutGrid, List, Loader2, Lock, Mail, Plus, RotateCcw, Search, Shield, ShieldCheck, Sparkles, User, Users, X } from "lucide-react";
+import { Activity, AlertCircle, Archive, ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Check, CheckCircle2, ChevronLeft, ChevronRight, Clock, Cpu, Edit2, Filter, FolderKanban, KeyRound, Layers, LayoutGrid, List, Loader2, Lock, Mail, Plus, Radio, RotateCcw, Search, Shield, ShieldCheck, Sparkles, User, Users, X } from "lucide-react";
 import axios, { isAxiosError } from "axios";
 import { toast } from "sonner";
 //#region resources/js/Features/Settings/components/ProjectsManagementCard.tsx
@@ -1712,9 +1713,11 @@ function OAuthProvidersCard({ initialProviders = {
 }
 //#endregion
 //#region resources/js/Pages/Settings/Index.tsx
-function Settings({ projects: initialProjects, users: initialUsers, roles, canManageAreas, canManageTeam, oauthProviders, audits = [], auditMeta, auditEvents = [] }) {
+function Settings({ projects: initialProjects, users: initialUsers, roles, canManageAreas, canManageTeam, oauthProviders, discord: initialDiscord, email: initialEmail, audits = [], auditMeta, auditEvents = [] }) {
 	const [projects, setProjects] = useState(initialProjects);
 	const [users, setUsers] = useState(initialUsers);
+	const [discord, setDiscord] = useState(initialDiscord);
+	const [email, setEmail] = useState(initialEmail);
 	const [activeTab, setActiveTab] = useState("projects");
 	const [showMemberModal, setShowMemberModal] = useState(false);
 	const [editingMember, setEditingMember] = useState(null);
@@ -1804,6 +1807,19 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 								}),
 								/* @__PURE__ */ jsxs("button", {
 									type: "button",
+									onClick: () => setActiveTab("integrations"),
+									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "integrations" ? "border border-[#5865F2]/40 bg-[#5865F2]/10 text-white shadow-[0_0_15px_rgba(88,101,242,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
+									children: [
+										/* @__PURE__ */ jsx(Radio, { className: `h-3.5 w-3.5 ${activeTab === "integrations" ? "text-[#5865F2]" : "text-zinc-500"}` }),
+										/* @__PURE__ */ jsx("span", { children: "Integrations & Alerts" }),
+										/* @__PURE__ */ jsx("span", {
+											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "integrations" ? "bg-[#5865F2]/25 text-white" : "bg-zinc-800 text-zinc-400"}`,
+											children: "Discord + Mail"
+										})
+									]
+								}),
+								/* @__PURE__ */ jsxs("button", {
+									type: "button",
 									onClick: () => setActiveTab("snapshot"),
 									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "snapshot" ? "border border-emerald-500/40 bg-emerald-500/10 text-white shadow-[0_0_15px_rgba(16,185,129,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
@@ -1846,6 +1862,40 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 						}
 					}),
 					activeTab === "auth" && /* @__PURE__ */ jsx(OAuthProvidersCard, { initialProviders: oauthProviders }),
+					activeTab === "integrations" && /* @__PURE__ */ jsxs("div", {
+						className: "space-y-6",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "rounded-xl border border-zinc-800 bg-[#090a0f] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "flex items-center gap-3",
+								children: [/* @__PURE__ */ jsx("div", {
+									className: "h-9 w-9 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400",
+									children: /* @__PURE__ */ jsx(Radio, { className: "h-4 w-4" })
+								}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
+									className: "text-xs font-semibold text-zinc-200",
+									children: "Advanced Integrations & Real-Time Delivery Dashboard"
+								}), /* @__PURE__ */ jsx("p", {
+									className: "text-[11px] text-zinc-400",
+									children: "Monitor delivery logs, test email rendering live, and inspect dual-channel webhook statuses."
+								})] })]
+							}), /* @__PURE__ */ jsx("a", {
+								href: route("integrations.index"),
+								className: "inline-flex items-center gap-2 rounded-lg bg-violet-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-500 transition-colors shadow-sm",
+								children: /* @__PURE__ */ jsx("span", { children: "Open Full Integrations Studio →" })
+							})]
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "grid grid-cols-1 lg:grid-cols-2 gap-6",
+							children: [discord && /* @__PURE__ */ jsx(DiscordWebhookCard, {
+								config: discord,
+								onUpdated: (newCfg) => setDiscord(newCfg),
+								canManage: canManageTeam
+							}), email && /* @__PURE__ */ jsx(EmailTemplateCard, {
+								config: email,
+								onUpdated: (newCfg) => setEmail(newCfg),
+								canManage: canManageTeam
+							})]
+						})]
+					}),
 					activeTab === "snapshot" && /* @__PURE__ */ jsx(WorkspaceSnapshotCard, {
 						activeProjectsCount,
 						teamAccountsCount: teamCount,

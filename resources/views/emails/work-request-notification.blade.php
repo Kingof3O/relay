@@ -1,14 +1,15 @@
 @php
     $priority = strtolower($priority ?? 'normal');
+    $baseAccent = $customAccentColor ?? '#8b5cf6';
     $accentGradient = match($priority) {
         'urgent' => 'linear-gradient(90deg, #f43f5e 0%, #e11d48 100%)',
         'high' => 'linear-gradient(90deg, #f59e0b 0%, #d97706 100%)',
-        default => 'linear-gradient(90deg, #8b5cf6 0%, #6366f1 100%)',
+        default => "linear-gradient(90deg, {$baseAccent} 0%, #6366f1 100%)",
     };
     $accentColor = match($priority) {
         'urgent' => '#f43f5e',
         'high' => '#f59e0b',
-        default => '#8b5cf6',
+        default => $baseAccent,
     };
     $priorityTextColor = match($priority) {
         'urgent' => '#fda4af',
@@ -67,7 +68,7 @@
                                                     </table>
                                                 </td>
                                                 <td style="vertical-align: middle;">
-                                                    <span style="font-weight: 800; font-size: 13px; color: #ffffff; letter-spacing: 0.02em;">RELAY STUDIO</span>
+                                                    <span style="font-weight: 800; font-size: 13px; color: #ffffff; letter-spacing: 0.02em;">{{ strtoupper($senderName ?? 'RELAY STUDIO') }}</span>
                                                     <span style="color: #52525b; margin: 0 4px;">/</span>
                                                     <span style="font-size: 11px; color: #a1a1aa; font-weight: 500;">Work Dispatch</span>
                                                 </td>
@@ -194,7 +195,7 @@
                     <!-- Footer -->
                     <tr>
                         <td style="padding: 20px 28px; background-color: #06070a; border-top: 1px solid rgba(255, 255, 255, 0.05); text-align: center; font-size: 11px; color: #71717a; line-height: 1.6;">
-                            <div>This transactional notification was generated automatically by Relay Studio.</div>
+                            <div>{{ $footerNote ?? 'This transactional notification was generated automatically by Relay Studio.' }}</div>
                             <div style="margin-top: 4px;">
                                 Manage preferences in <a href="{{ $settingsUrl }}" style="color: #a78bfa; text-decoration: underline;">Notification Settings</a>.
                             </div>

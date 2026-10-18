@@ -10,6 +10,8 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\WorkspaceAudit;
 use App\Services\AuditService;
+use App\Services\DiscordNotificationService;
+use App\Services\EmailNotificationService;
 use App\Services\SocialAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -93,6 +95,8 @@ final class SettingsController extends Controller
             'canManageAreas' => $user->hasPermission('manage_areas'),
             'canManageTeam' => $user->hasPermission('manage_team'),
             'oauthProviders' => SocialAuthService::providersStatus(),
+            'discord' => DiscordNotificationService::getStatus(),
+            'email' => EmailNotificationService::getStatus(),
             'audits' => $audits,
             'auditMeta' => $auditMeta,
             'auditEvents' => $auditEvents,

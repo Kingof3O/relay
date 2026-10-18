@@ -22,6 +22,7 @@ import {
     Copy,
     UserCheck,
     CheckCircle2,
+    Radio,
 } from 'lucide-react';
 
 interface SearchResultItem {
@@ -557,6 +558,17 @@ export default function CommandPalette({
                                 <div className="flex items-center gap-2.5">
                                     <Settings className="h-4 w-4 text-zinc-400" />
                                     <span>Settings & Workspaces</span>
+                                </div>
+                                <ArrowRight className="h-3 w-3 text-zinc-600" />
+                            </Command.Item>
+
+                            <Command.Item
+                                onSelect={() => navigate(route('integrations.index'))}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <Radio className="h-4 w-4 text-zinc-400" />
+                                    <span>Integrations & Webhooks (Discord · Mail)</span>
                                 </div>
                                 <ArrowRight className="h-3 w-3 text-zinc-600" />
                             </Command.Item>

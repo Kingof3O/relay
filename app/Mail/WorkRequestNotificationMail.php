@@ -5,12 +5,14 @@ namespace App\Mail;
 use App\Enums\RequestPriority;
 use App\Models\User;
 use App\Models\WorkRequest;
+use App\Services\EmailNotificationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 
 final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
 {
@@ -33,8 +35,12 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
             ? $this->workRequest->priority->label()
             : ucfirst($priorityValue);
 
+        $tag = Cache::has(EmailNotificationService::CACHE_KEY_SENDER_NAME)
+            ? EmailNotificationService::getSenderName()
+            : 'Relay';
+
         return new Envelope(
-            subject: "[Relay] #REQ-{$this->workRequest->id} - {$this->workRequest->title} ({$priorityLabel})",
+            subject: "[{$tag}] #REQ-{$this->workRequest->id} - {$this->workRequest->title} ({$priorityLabel})",
         );
     }
 
@@ -74,6 +80,9 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
                 'eventTag' => $eventTag,
                 'messageText' => $messageText,
                 'url' => $url,
+                'senderName' => EmailNotificationService::getSenderName(),
+                'customAccentColor' => EmailNotificationService::getAccentColor(),
+                'footerNote' => EmailNotificationService::getFooterNote(),
             ],
         );
     }

@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { WorkspaceProject, WorkspaceUser } from '@/types/workspace';
 import { Head } from '@inertiajs/react';
-import { FolderKanban, Users, Sparkles, Activity, ShieldCheck } from 'lucide-react';
+import { FolderKanban, Users, Sparkles, Activity, ShieldCheck, Radio } from 'lucide-react';
 import {
     ProjectsManagementCard,
     TeamManagementCard,
@@ -11,6 +11,12 @@ import {
     WorkspaceSnapshotCard,
     OAuthProvidersCard,
 } from '@/Features/Settings';
+import {
+    DiscordWebhookCard,
+    EmailTemplateCard,
+    type DiscordConfig,
+    type EmailConfig,
+} from '@/Features/Integrations';
 import type { RoleOption } from '@/Features/Settings/components/MemberFormModal';
 
 export default function Settings({
@@ -20,6 +26,8 @@ export default function Settings({
     canManageAreas,
     canManageTeam,
     oauthProviders,
+    discord: initialDiscord,
+    email: initialEmail,
     audits = [],
     auditMeta,
     auditEvents = [],
@@ -30,13 +38,17 @@ export default function Settings({
     canManageAreas: boolean;
     canManageTeam: boolean;
     oauthProviders?: Record<string, any>;
+    discord?: DiscordConfig;
+    email?: EmailConfig;
     audits?: any[];
     auditMeta?: any;
     auditEvents?: string[];
 }>) {
     const [projects, setProjects] = useState<WorkspaceProject[]>(initialProjects);
     const [users, setUsers] = useState<WorkspaceUser[]>(initialUsers);
-    const [activeTab, setActiveTab] = useState<'projects' | 'team' | 'auth' | 'snapshot'>('projects');
+    const [discord, setDiscord] = useState<DiscordConfig | undefined>(initialDiscord);
+    const [email, setEmail] = useState<EmailConfig | undefined>(initialEmail);
+    const [activeTab, setActiveTab] = useState<'projects' | 'team' | 'auth' | 'integrations' | 'snapshot'>('projects');
     const [showMemberModal, setShowMemberModal] = useState(false);
     const [editingMember, setEditingMember] = useState<WorkspaceUser | null>(null);
 
@@ -166,7 +178,34 @@ export default function Settings({
                             </span>
                         </button>
 
-                        {/* 4. Workspace Snapshot Tab */}
+                        {/* 4. Integrations & Alerts Tab */}
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('integrations')}
+                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
+                                activeTab === 'integrations'
+                                    ? 'border border-[#5865F2]/40 bg-[#5865F2]/10 text-white shadow-[0_0_15px_rgba(88,101,242,0.15)]'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200'
+                            }`}
+                        >
+                            <Radio
+                                className={`h-3.5 w-3.5 ${
+                                    activeTab === 'integrations' ? 'text-[#5865F2]' : 'text-zinc-500'
+                                }`}
+                            />
+                            <span>Integrations & Alerts</span>
+                            <span
+                                className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
+                                    activeTab === 'integrations'
+                                        ? 'bg-[#5865F2]/25 text-white'
+                                        : 'bg-zinc-800 text-zinc-400'
+                                }`}
+                            >
+                                Discord + Mail
+                            </span>
+                        </button>
+
+                        {/* 5. Workspace Snapshot Tab */}
                         <button
                             type="button"
                             onClick={() => setActiveTab('snapshot')}
@@ -227,6 +266,49 @@ export default function Settings({
 
                 {activeTab === 'auth' && (
                     <OAuthProvidersCard initialProviders={oauthProviders} />
+                )}
+
+                {activeTab === 'integrations' && (
+                    <div className="space-y-6">
+                        <div className="rounded-xl border border-zinc-800 bg-[#090a0f] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-sm">
+                            <div className="flex items-center gap-3">
+                                <div className="h-9 w-9 rounded-lg bg-violet-500/10 border border-violet-500/20 flex items-center justify-center text-violet-400">
+                                    <Radio className="h-4 w-4" />
+                                </div>
+                                <div>
+                                    <h3 className="text-xs font-semibold text-zinc-200">
+                                        Advanced Integrations & Real-Time Delivery Dashboard
+                                    </h3>
+                                    <p className="text-[11px] text-zinc-400">
+                                        Monitor delivery logs, test email rendering live, and inspect dual-channel webhook statuses.
+                                    </p>
+                                </div>
+                            </div>
+                            <a
+                                href={route('integrations.index')}
+                                className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-violet-500 transition-colors shadow-sm"
+                            >
+                                <span>Open Full Integrations Studio &rarr;</span>
+                            </a>
+                        </div>
+
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            {discord && (
+                                <DiscordWebhookCard
+                                    config={discord}
+                                    onUpdated={(newCfg) => setDiscord(newCfg)}
+                                    canManage={canManageTeam}
+                                />
+                            )}
+                            {email && (
+                                <EmailTemplateCard
+                                    config={email}
+                                    onUpdated={(newCfg) => setEmail(newCfg)}
+                                    canManage={canManageTeam}
+                                />
+                            )}
+                        </div>
+                    </div>
                 )}
 
                 {activeTab === 'snapshot' && (

@@ -4,6 +4,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CycleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
+use App\Http\Controllers\IntegrationController;
 use App\Http\Controllers\InvitationAcceptController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PersonalAccessTokenController;
@@ -78,6 +79,14 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::patch('/settings/team/{user}', [TeamMemberController::class, 'update'])->name('settings.team.update');
         Route::delete('/settings/team/{user}', [TeamMemberController::class, 'destroy'])->name('settings.team.destroy');
         Route::post('/settings/oauth-providers', [SettingsController::class, 'toggleOAuthProvider'])->name('settings.oauth.toggle');
+
+        // Integrations & Notification Templates
+        Route::get('/integrations', [IntegrationController::class, 'index'])->name('integrations.index');
+        Route::post('/integrations/discord', [IntegrationController::class, 'updateDiscord'])->name('integrations.discord.update');
+        Route::post('/integrations/discord/test', [IntegrationController::class, 'testDiscord'])->name('integrations.discord.test');
+        Route::post('/integrations/email', [IntegrationController::class, 'updateEmail'])->name('integrations.email.update');
+        Route::post('/integrations/email/test', [IntegrationController::class, 'testEmail'])->name('integrations.email.test');
+        Route::get('/integrations/email/preview', [IntegrationController::class, 'previewEmail'])->name('integrations.email.preview');
     });
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

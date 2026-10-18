@@ -1,7 +1,7 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, GitMerge, GitPullRequest, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, Quote, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
+import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, GitMerge, GitPullRequest, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, Quote, Radio, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Command } from "cmdk";
 import axios, { isAxiosError } from "axios";
@@ -404,19 +404,29 @@ function Sidebar() {
 		}
 	];
 	const unreadCount = pageProps.unreadNotificationsCount ?? notifications.filter((n) => !n.read_at).length;
-	const workspaceLinks = [{
-		name: "Inbox & Updates",
-		href: route("notifications.index"),
-		active: route().current("notifications.*"),
-		icon: Bell,
-		badge: unreadCount > 0 ? unreadCount > 9 ? "9+" : unreadCount : null
-	}, {
-		name: "Settings & Team",
-		href: route("settings.index"),
-		active: route().current("settings.*"),
-		icon: Settings,
-		badge: null
-	}];
+	const workspaceLinks = [
+		{
+			name: "Inbox & Updates",
+			href: route("notifications.index"),
+			active: route().current("notifications.*"),
+			icon: Bell,
+			badge: unreadCount > 0 ? unreadCount > 9 ? "9+" : unreadCount : null
+		},
+		{
+			name: "Integrations & Alerts",
+			href: route("integrations.index"),
+			active: route().current("integrations.*"),
+			icon: Radio,
+			badge: null
+		},
+		{
+			name: "Settings & Team",
+			href: route("settings.index"),
+			active: route().current("settings.*"),
+			icon: Settings,
+			badge: null
+		}
+	];
 	return /* @__PURE__ */ jsxs("aside", {
 		className: `sticky top-0 z-30 flex h-screen shrink-0 flex-col justify-between border-r border-zinc-800/80 bg-[#0c0d12] transition-all duration-200 ease-in-out select-none ${collapsed ? "w-[76px] p-3" : "w-[280px] p-4"}`,
 		children: [/* @__PURE__ */ jsxs("div", {
@@ -1216,6 +1226,14 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										children: [/* @__PURE__ */ jsxs("div", {
 											className: "flex items-center gap-2.5",
 											children: [/* @__PURE__ */ jsx(Settings, { className: "h-4 w-4 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Settings & Workspaces" })]
+										}), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 text-zinc-600" })]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										onSelect: () => navigate(route("integrations.index")),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx(Radio, { className: "h-4 w-4 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Integrations & Webhooks (Discord · Mail)" })]
 										}), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 text-zinc-600" })]
 									}),
 									/* @__PURE__ */ jsxs(Command.Item, {

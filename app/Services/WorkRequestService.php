@@ -6,6 +6,7 @@ use App\Events\WorkRequestCommented;
 use App\Events\WorkRequestMoved;
 use App\Http\Requests\WorkRequest\BulkWorkRequestRequest;
 use App\Jobs\DispatchOutgoingWebhook;
+use App\Jobs\SendDiscordNotification;
 use App\Jobs\SendRequestEmail;
 use App\Models\RequestActivity;
 use App\Models\RequestRelation;
@@ -50,6 +51,15 @@ final class WorkRequestService
                     "{$actor->name} assigned this work request to you.",
                     $actor
                 );
+            } else {
+                $createPayload = [
+                    'event' => 'created',
+                    'request_id' => $request->id,
+                    'request_title' => $request->title,
+                    'message' => "{$actor->name} created #REQ-{$request->id}: {$request->title}",
+                    'url' => route('requests.show', $request),
+                ];
+                SendDiscordNotification::dispatch($request->id, $createPayload)->afterCommit();
             }
 
             if (($request->priority?->value ?? (string) $request->priority) === 'urgent' || $request->is_blocked) {
@@ -213,6 +223,9 @@ final class WorkRequestService
             $user->notify(new RequestDatabaseNotification($payload));
             SendRequestEmail::dispatch($user->id, $payload)->afterCommit();
         }
+
+        // Dual dispatch: Deliver rich embed to Discord channel via webhook
+        SendDiscordNotification::dispatch($request->id, $payload)->afterCommit();
     }
 
     public function delete(WorkRequest $request, RequestFileService $fileService): void

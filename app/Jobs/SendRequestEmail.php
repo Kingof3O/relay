@@ -3,6 +3,7 @@
 namespace App\Jobs;
 
 use App\Mail\WorkRequestNotificationMail;
+use App\Models\IntegrationDeliveryLog;
 use App\Models\User;
 use App\Models\WorkRequest;
 use Illuminate\Bus\Queueable;
@@ -58,6 +59,31 @@ final class SendRequestEmail implements ShouldQueue
             return;
         }
 
-        Mail::to($user->email)->send(new WorkRequestNotificationMail($user, $request, $this->payload));
+        try {
+            Mail::to($user->email)->send(new WorkRequestNotificationMail($user, $request, $this->payload));
+
+            IntegrationDeliveryLog::query()->create([
+                'workspace_id' => $request->workspace_id,
+                'channel' => 'email',
+                'event' => $event ?: 'notification',
+                'status' => 'success',
+                'target' => $user->email,
+                'summary' => "#REQ-{$request->id}: {$request->title} ({$event}) delivered to {$user->name}",
+                'payload' => $this->payload,
+            ]);
+        } catch (\Throwable $e) {
+            IntegrationDeliveryLog::query()->create([
+                'workspace_id' => $request->workspace_id,
+                'channel' => 'email',
+                'event' => $event ?: 'notification',
+                'status' => 'failed',
+                'target' => $user->email,
+                'summary' => "#REQ-{$request->id}: {$request->title} ({$event}) failed for {$user->name}",
+                'payload' => $this->payload,
+                'error_message' => $e->getMessage(),
+            ]);
+
+            throw $e;
+        }
     }
 }

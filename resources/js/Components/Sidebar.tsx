@@ -17,6 +17,7 @@ import {
     Repeat,
     CalendarRange,
     Bookmark,
+    Radio,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { PageProps, WorkspaceProject, WorkspaceNotification } from '@/types';
@@ -99,6 +100,13 @@ export default function Sidebar() {
             active: route().current('notifications.*'),
             icon: Bell,
             badge: unreadCount > 0 ? (unreadCount > 9 ? '9+' : unreadCount) : null,
+        },
+        {
+            name: 'Integrations & Alerts',
+            href: route('integrations.index'),
+            active: route().current('integrations.*'),
+            icon: Radio,
+            badge: null,
         },
         {
             name: 'Settings & Team',

@@ -46,4 +46,11 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
     ],
 
+    'discord' => [
+        'enabled' => env('DISCORD_NOTIFICATIONS_ENABLED', false),
+        'webhook_url' => env('DISCORD_WEBHOOK_URL'),
+        'username' => env('DISCORD_BOT_USERNAME', 'Relay Studio'),
+        'avatar_url' => env('DISCORD_BOT_AVATAR_URL'),
+    ],
+
 ];
