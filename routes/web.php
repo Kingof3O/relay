@@ -38,7 +38,24 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::post('/requests/{workRequest}/clone', [\App\Http\Controllers\RequestCloneController::class, 'store'])->name('requests.clone');
     Route::post('/requests/{request}/relations', [\App\Http\Controllers\RequestRelationController::class, 'store'])->name('requests.relations.store');
     Route::delete('/requests/{request}/relations/{relation}', [\App\Http\Controllers\RequestRelationController::class, 'destroy'])->name('requests.relations.destroy');
+    Route::post('/requests/{workRequest}/subtasks', [\App\Http\Controllers\SubtaskController::class, 'store'])->name('requests.subtasks.store');
+    Route::post('/requests/{workRequest}/subtasks/{subtask}/toggle', [\App\Http\Controllers\SubtaskController::class, 'toggle'])->name('requests.subtasks.toggle');
+    Route::delete('/requests/{workRequest}/subtasks/{subtask}', [\App\Http\Controllers\SubtaskController::class, 'destroy'])->name('requests.subtasks.destroy');
     Route::get('/requests/{request}', [WorkRequestController::class, 'show'])->name('requests.show');
+
+    // Cycles
+    Route::get('/cycles', [\App\Http\Controllers\CycleController::class, 'index'])->name('cycles.index');
+    Route::post('/cycles', [\App\Http\Controllers\CycleController::class, 'store'])->name('cycles.store');
+    Route::post('/cycles/{cycle}/rollover', [\App\Http\Controllers\CycleController::class, 'rollover'])->name('cycles.rollover');
+
+    // Saved Views
+    Route::get('/saved-views', [\App\Http\Controllers\SavedViewController::class, 'index'])->name('saved-views.index');
+    Route::post('/saved-views', [\App\Http\Controllers\SavedViewController::class, 'store'])->name('saved-views.store');
+    Route::delete('/saved-views/{savedView}', [\App\Http\Controllers\SavedViewController::class, 'destroy'])->name('saved-views.destroy');
+    Route::patch('/saved-views/{savedView}/pin', [\App\Http\Controllers\SavedViewController::class, 'togglePin'])->name('saved-views.pin');
+
+    // Roadmap
+    Route::get('/roadmap', [\App\Http\Controllers\RoadmapController::class, 'index'])->name('roadmap.index');
 
     Route::middleware('permission:manage_workspace')->group(function (): void {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

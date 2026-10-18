@@ -12,6 +12,7 @@ export type PageProps<
     userWorkspaces?: Workspace[];
     workspaceNotifications?: WorkspaceNotification[];
     unreadNotificationsCount?: number;
+    savedViews?: import('./workspace').SavedViewItem[];
     flash?: {
         alert?: string | null;
         message?: string | null;

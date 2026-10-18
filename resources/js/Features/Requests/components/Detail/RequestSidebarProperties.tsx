@@ -201,6 +201,55 @@ export default function RequestSidebarProperties({
                     </select>
                 </label>
 
+                {/* Story Points & Fibonacci / T-Shirt Estimation */}
+                <div className="border-t border-white/[0.06] pt-3">
+                    <div className="flex items-center justify-between mb-1.5">
+                        <span className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-400">
+                            <span>Story Points</span>
+                            <span className="text-[10px] text-zinc-500 font-mono">Fibonacci</span>
+                        </span>
+                        {request.story_points !== null && request.story_points !== undefined && (
+                            <button
+                                type="button"
+                                disabled={!canEdit}
+                                onClick={() => onUpdate({ story_points: null })}
+                                className="text-[10px] text-zinc-500 hover:text-rose-400 transition-colors"
+                            >
+                                Clear
+                            </button>
+                        )}
+                    </div>
+                    <div className="grid grid-cols-6 gap-1">
+                        {[
+                            { pts: 1, label: 'XS', full: '1 pt · XS' },
+                            { pts: 2, label: 'S', full: '2 pts · S' },
+                            { pts: 3, label: 'M', full: '3 pts · M' },
+                            { pts: 5, label: 'L', full: '5 pts · L' },
+                            { pts: 8, label: 'XL', full: '8 pts · XL' },
+                            { pts: 13, label: 'XXL', full: '13 pts · XXL' },
+                        ].map((item) => {
+                            const isSelected = request.story_points === item.pts;
+                            return (
+                                <button
+                                    key={item.pts}
+                                    type="button"
+                                    disabled={!canEdit}
+                                    onClick={() => onUpdate({ story_points: isSelected ? null : item.pts })}
+                                    className={`flex flex-col items-center justify-center rounded-lg border py-1.5 text-center transition-all ${
+                                        isSelected
+                                            ? 'border-violet-500 bg-violet-600/20 text-white font-bold ring-1 ring-violet-500/50'
+                                            : 'border-white/[0.08] bg-[#07090e] text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
+                                    } disabled:opacity-50`}
+                                    title={item.full}
+                                >
+                                    <span className="text-[11px] font-mono leading-none">{item.pts}</span>
+                                    <span className="text-[9px] uppercase tracking-wider text-zinc-500 font-semibold">{item.label}</span>
+                                </button>
+                            );
+                        })}
+                    </div>
+                </div>
+
                 {/* Due Date Picker Field */}
                 <div className="border-t border-white/[0.06] pt-3">
                     <div className="flex items-center justify-between mb-1.5">

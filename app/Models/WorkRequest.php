@@ -20,10 +20,14 @@ class WorkRequest extends Model
     protected $fillable = [
         'workspace_id',
         'area_id',
+        'cycle_id',
+        'rolled_over_from_cycle_id',
+        'parent_id',
         'title',
         'description',
         'status',
         'priority',
+        'story_points',
         'requester_id',
         'assignee_id',
         'is_blocked',
@@ -37,6 +41,10 @@ class WorkRequest extends Model
         return [
             'status' => RequestStatus::class,
             'priority' => RequestPriority::class,
+            'story_points' => 'integer',
+            'parent_id' => 'integer',
+            'cycle_id' => 'integer',
+            'rolled_over_from_cycle_id' => 'integer',
             'is_blocked' => 'boolean',
             'due_date' => 'date',
             'tags' => 'array',
@@ -94,6 +102,26 @@ class WorkRequest extends Model
             ->withTimestamps();
     }
 
+    public function cycle(): BelongsTo
+    {
+        return $this->belongsTo(Cycle::class, 'cycle_id');
+    }
+
+    public function rolledOverFromCycle(): BelongsTo
+    {
+        return $this->belongsTo(Cycle::class, 'rolled_over_from_cycle_id');
+    }
+
+    public function parent(): BelongsTo
+    {
+        return $this->belongsTo(WorkRequest::class, 'parent_id');
+    }
+
+    public function subtasks(): HasMany
+    {
+        return $this->hasMany(WorkRequest::class, 'parent_id')->orderBy('id');
+    }
+
     public function scopeDueSoon(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
     {
         return $query->whereNotNull('due_date')
@@ -120,6 +148,7 @@ class WorkRequest extends Model
             ->when(!empty($filters['requester']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('requester_id', (int) $filters['requester']))
             ->when(!empty($filters['status']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('status', (string) $filters['status']))
             ->when(!empty($filters['priority']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('priority', (string) $filters['priority']))
+            ->when(!empty($filters['cycle']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('cycle_id', (int) $filters['cycle']))
             ->when(!empty($filters['my_work']) && $user, fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where(function (\Illuminate\Database\Eloquent\Builder $query) use ($user): void {
                 $query->where('assignee_id', $user->id)->orWhere('requester_id', $user->id);
             }))

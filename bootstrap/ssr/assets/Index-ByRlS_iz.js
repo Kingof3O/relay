@@ -1,4 +1,4 @@
-import { g as notifySuccess, n as formatRelativeTime, r as getNotificationBadge, t as Authenticated } from "./AuthenticatedLayout-gP6DEd9M.js";
+import { _ as notifySuccess, n as formatRelativeTime, r as getNotificationBadge, t as Authenticated } from "./AuthenticatedLayout-C9_Pb_Sd.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";

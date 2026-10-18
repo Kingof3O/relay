@@ -92,6 +92,23 @@ export interface WorkRequestCard {
     due_date: string | null;
     due_human: string | null;
     is_overdue: boolean;
+    story_points?: number | null;
+    parent_id?: number | null;
+    cycle_id?: number | null;
+    rolled_over_from_cycle_id?: number | null;
+    cycle?: {
+        id: number;
+        number: number;
+        name: string;
+        start_date?: string;
+        end_date?: string;
+        is_active?: boolean;
+    } | null;
+    subtasks_progress?: {
+        total: number;
+        completed: number;
+        percentage: number;
+    } | null;
     tags: string[];
     deleted_at: string | null;
     relations?: RequestRelationItem[];
@@ -107,6 +124,27 @@ export interface WorkRequestCard {
 export interface WorkRequestDetail extends WorkRequestCard {
     files: RequestFileItem[];
     activities: RequestActivityItem[];
+    subtasks?: WorkRequestCard[];
+}
+
+export interface CycleItem {
+    id: number;
+    number: number;
+    name: string;
+    start_date: string;
+    end_date: string;
+    is_active: boolean;
+    completed_at?: string | null;
+}
+
+export interface SavedViewItem {
+    id: number;
+    name: string;
+    icon: string;
+    filters: Record<string, unknown>;
+    group_by?: string | null;
+    is_pinned: boolean;
 }
 
 export type WorkRequest = WorkRequestCard;
+

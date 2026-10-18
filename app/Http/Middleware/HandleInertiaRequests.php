@@ -92,6 +92,14 @@ class HandleInertiaRequests extends Middleware
                     ])
                     ->all();
             }),
+            'savedViews' => fn (): array => $user === null
+                ? []
+                : \App\Models\SavedView::query()
+                    ->where('user_id', $user->id)
+                    ->orderByDesc('is_pinned')
+                    ->orderBy('name')
+                    ->get(['id', 'name', 'icon', 'filters', 'group_by', 'is_pinned'])
+                    ->all(),
         ];
     }
 }

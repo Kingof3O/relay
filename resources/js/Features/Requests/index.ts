@@ -12,6 +12,7 @@ export { default as RequestDescriptionCard } from './components/Detail/RequestDe
 export { default as RequestMediaGallery } from './components/Detail/RequestMediaGallery';
 export { default as RequestDiscussionSection } from './components/Detail/RequestDiscussionSection';
 export { default as RequestSidebarProperties } from './components/Detail/RequestSidebarProperties';
+export { default as RequestSubtasksSection } from './components/Detail/RequestSubtasksSection';
 
 // Hooks
 export * from './hooks/useKanbanBoard';

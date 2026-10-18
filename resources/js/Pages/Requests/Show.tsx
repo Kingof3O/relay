@@ -4,6 +4,7 @@ import {
     RequestHeroHeader,
     RequestBlockerBanner,
     RequestDescriptionCard,
+    RequestSubtasksSection,
     RequestMediaGallery,
     RequestDiscussionSection,
     RequestSidebarProperties,
@@ -158,6 +159,11 @@ export default function Show({
                 <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div className="space-y-6">
                         <RequestDescriptionCard description={request.description} canEdit={canEdit} onUpdate={update} />
+                        <RequestSubtasksSection
+                            request={request}
+                            canEdit={canEdit}
+                            onSubtasksChange={(updated: WorkRequestDetail) => setRequest(updated)}
+                        />
                         <RequestMediaGallery
                             files={request.files} canUpload={canUpload} uploading={uploading}
                             onUploadFiles={uploadFiles} onRetry={retry} onOpenLightbox={(src: string) => setLightboxSrc(src)}

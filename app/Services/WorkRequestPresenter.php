@@ -23,7 +23,7 @@ final class WorkRequestPresenter
     /** @return array<string, mixed> */
     private function base(WorkRequest $request, bool $includeDetail): array
     {
-        $request->loadMissing(['area', 'requester', 'assignee']);
+        $request->loadMissing(['area', 'requester', 'assignee', 'cycle']);
 
         $isOverdue = false;
         $dueHuman = null;
@@ -49,6 +49,16 @@ final class WorkRequestPresenter
             }
         }
 
+        $subtasks = $request->relationLoaded('subtasks')
+            ? $request->subtasks
+            : $request->subtasks()->get();
+
+        $totalSubtasks = $subtasks->count();
+        $completedSubtasks = $subtasks->filter(function ($sub) {
+            $st = $sub->status?->value ?? (string) $sub->getRawOriginal('status');
+            return $st === 'done';
+        })->count();
+
         $payload = [
             'id' => $request->id,
             'title' => $request->title,
@@ -57,6 +67,23 @@ final class WorkRequestPresenter
             'status_label' => $request->status?->label() ?? ucfirst((string) $request->getRawOriginal('status')),
             'priority' => $request->priority?->value ?? (string) $request->getRawOriginal('priority'),
             'priority_label' => $request->priority?->label() ?? ucfirst((string) $request->getRawOriginal('priority')),
+            'story_points' => $request->story_points !== null ? (int) $request->story_points : null,
+            'parent_id' => $request->parent_id !== null ? (int) $request->parent_id : null,
+            'cycle_id' => $request->cycle_id !== null ? (int) $request->cycle_id : null,
+            'rolled_over_from_cycle_id' => $request->rolled_over_from_cycle_id !== null ? (int) $request->rolled_over_from_cycle_id : null,
+            'cycle' => $request->cycle ? [
+                'id' => $request->cycle->id,
+                'number' => $request->cycle->number,
+                'name' => $request->cycle->name,
+                'start_date' => $request->cycle->start_date?->format('Y-m-d'),
+                'end_date' => $request->cycle->end_date?->format('Y-m-d'),
+                'is_active' => (bool) $request->cycle->is_active,
+            ] : null,
+            'subtasks_progress' => [
+                'total' => $totalSubtasks,
+                'completed' => $completedSubtasks,
+                'percentage' => $totalSubtasks > 0 ? (int) round(($completedSubtasks / $totalSubtasks) * 100) : 0,
+            ],
             'is_blocked' => (bool) $request->is_blocked,
             'blocked_reason' => $request->blocked_reason,
             'due_date' => $request->due_date?->format('Y-m-d'),
@@ -76,7 +103,23 @@ final class WorkRequestPresenter
                 'files' => fn ($query) => $query->oldest('id'),
                 'activities.user',
                 'relations.related',
+                'subtasks.assignee',
             ]);
+
+            $payload['subtasks'] = $request->subtasks
+                ->map(fn (WorkRequest $subtask): array => [
+                    'id' => $subtask->id,
+                    'title' => $subtask->title,
+                    'status' => $subtask->status?->value ?? (string) $subtask->getRawOriginal('status'),
+                    'status_label' => $subtask->status?->label() ?? ucfirst((string) $subtask->getRawOriginal('status')),
+                    'priority' => $subtask->priority?->value ?? (string) $subtask->getRawOriginal('priority'),
+                    'priority_label' => $subtask->priority?->label() ?? ucfirst((string) $subtask->getRawOriginal('priority')),
+                    'story_points' => $subtask->story_points !== null ? (int) $subtask->story_points : null,
+                    'assignee' => $subtask->assignee?->only(['id', 'name', 'username']),
+                    'created_at' => $subtask->created_at?->toIso8601String(),
+                ])
+                ->values()
+                ->all();
 
             $payload['files'] = $request->files->map(fn (RequestFile $file): array => $this->file($request, $file))->values()->all();
             $payload['activities'] = $request->activities

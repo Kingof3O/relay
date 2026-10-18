@@ -142,17 +142,35 @@ export default function RequestCard({
                             >
                                 {request.title}
                             </p>
-                            <Badge
-                                variant={
-                                    request.priority === 'urgent'
-                                        ? 'rose'
-                                        : statusTone[request.status] ?? 'zinc'
-                                }
-                                dot={request.priority === 'urgent'}
-                                className="shrink-0"
-                            >
-                                {request.priority === 'urgent' ? 'Urgent' : request.priority_label}
-                            </Badge>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                                {request.story_points !== null && request.story_points !== undefined && (
+                                    <span
+                                        className="rounded border border-violet-500/30 bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-violet-300 shadow-sm"
+                                        title={`${request.story_points} Story Points`}
+                                    >
+                                        {request.story_points} pts
+                                    </span>
+                                )}
+                                {request.rolled_over_from_cycle_id && (
+                                    <span
+                                        className="rounded border border-amber-500/30 bg-amber-500/10 px-1 py-0.5 text-[9px] font-semibold text-amber-300"
+                                        title="Rolled over from previous cycle"
+                                    >
+                                        Rolled
+                                    </span>
+                                )}
+                                <Badge
+                                    variant={
+                                        request.priority === 'urgent'
+                                            ? 'rose'
+                                            : statusTone[request.status] ?? 'zinc'
+                                    }
+                                    dot={request.priority === 'urgent'}
+                                    className="shrink-0"
+                                >
+                                    {request.priority === 'urgent' ? 'Urgent' : request.priority_label}
+                                </Badge>
+                            </div>
                         </div>
 
                         {request.description && (
@@ -161,8 +179,43 @@ export default function RequestCard({
                             </p>
                         )}
 
+                        {/* Hierarchical Subtasks Micro Completion Ring */}
+                        {request.subtasks_progress && request.subtasks_progress.total > 0 && (
+                            <div className="mt-2.5 flex items-center gap-1.5 text-[10px] text-zinc-400">
+                                <div className="relative flex h-3.5 w-3.5 shrink-0 items-center justify-center">
+                                    <svg className="h-3.5 w-3.5 -rotate-90 transform" viewBox="0 0 32 32">
+                                        <circle
+                                            cx="16"
+                                            cy="16"
+                                            r="12"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            className="text-zinc-800"
+                                            fill="transparent"
+                                        />
+                                        <circle
+                                            cx="16"
+                                            cy="16"
+                                            r="12"
+                                            stroke="currentColor"
+                                            strokeWidth="4"
+                                            strokeDasharray={2 * Math.PI * 12}
+                                            strokeDashoffset={2 * Math.PI * 12 * (1 - (request.subtasks_progress.percentage / 100))}
+                                            strokeLinecap="round"
+                                            className="text-violet-400 transition-all duration-300"
+                                            fill="transparent"
+                                        />
+                                    </svg>
+                                </div>
+                                <span className="font-mono text-zinc-300">
+                                    {request.subtasks_progress.completed}/{request.subtasks_progress.total}
+                                </span>
+                                <span className="text-zinc-500">done</span>
+                            </div>
+                        )}
+
                         {/* Checklist Micro Progress Pill */}
-                        {checklist && (
+                        {checklist && !request.subtasks_progress?.total && (
                             <div className="mt-2.5 flex items-center gap-2 text-[10px] text-zinc-400">
                                 <div className="h-1.5 w-16 rounded-full bg-zinc-800 overflow-hidden">
                                     <div

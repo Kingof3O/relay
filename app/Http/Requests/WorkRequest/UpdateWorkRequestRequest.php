@@ -28,7 +28,7 @@ final class UpdateWorkRequestRequest extends FormRequest
             return false;
         }
 
-        $editableKeys = ['title', 'description', 'area_id', 'priority', 'is_blocked', 'blocked_reason', 'due_date', 'tags'];
+        $editableKeys = ['title', 'description', 'area_id', 'priority', 'is_blocked', 'blocked_reason', 'due_date', 'tags', 'story_points', 'cycle_id', 'parent_id'];
         $hasEditableFields = collect($this->keys())->intersect($editableKeys)->isNotEmpty();
 
         if ($hasEditableFields && ! $this->user()?->can('update', $request)) {
@@ -47,6 +47,9 @@ final class UpdateWorkRequestRequest extends FormRequest
             'area_id' => ['sometimes', 'required', 'integer', Rule::exists('areas', 'id')->where(fn ($query) => $query->whereNull('archived_at'))],
             'priority' => ['sometimes', Rule::in(array_keys(RequestPriority::options()))],
             'status' => ['sometimes', Rule::in(array_keys(RequestStatus::options()))],
+            'story_points' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:100'],
+            'cycle_id' => ['sometimes', 'nullable', 'integer', 'exists:cycles,id'],
+            'parent_id' => ['sometimes', 'nullable', 'integer', 'exists:requests,id'],
             'assignee_id' => ['sometimes', 'nullable', 'integer', Rule::exists('users', 'id')->where(fn ($query) => $query->where('active', true))],
             'is_blocked' => ['sometimes', 'boolean'],
             'blocked_reason' => ['sometimes', 'nullable', 'string', 'max:2000'],

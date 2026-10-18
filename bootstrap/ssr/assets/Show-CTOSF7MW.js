@@ -1,4 +1,4 @@
-import { c as RequestDiscussionSection, f as RequestBlockerBanner, l as RequestMediaGallery, o as triggerConfetti, p as RequestHeroHeader, s as RequestSidebarProperties, t as Authenticated, u as RequestDescriptionCard, v as ImageLightbox } from "./AuthenticatedLayout-gP6DEd9M.js";
+import { c as RequestSidebarProperties, d as RequestDescriptionCard, l as RequestDiscussionSection, m as RequestHeroHeader, o as triggerConfetti, p as RequestBlockerBanner, s as RequestSubtasksSection, t as Authenticated, u as RequestMediaGallery, y as ImageLightbox } from "./AuthenticatedLayout-C9_Pb_Sd.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from "react";
@@ -143,6 +143,11 @@ function Show({ request: initialRequest, projects, users, statuses, priorities, 
 									description: request.description,
 									canEdit,
 									onUpdate: update
+								}),
+								/* @__PURE__ */ jsx(RequestSubtasksSection, {
+									request,
+									canEdit,
+									onSubtasksChange: (updated) => setRequest(updated)
 								}),
 								/* @__PURE__ */ jsx(RequestMediaGallery, {
 									files: request.files,

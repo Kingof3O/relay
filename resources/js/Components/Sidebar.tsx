@@ -14,6 +14,9 @@ import {
     ChevronLeft,
     ChevronRight,
     Shield,
+    Repeat,
+    CalendarRange,
+    Bookmark,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { PageProps, WorkspaceProject, WorkspaceNotification } from '@/types';
@@ -24,6 +27,8 @@ export default function Sidebar() {
     const roleName = pageProps.auth?.role?.name ?? 'Member';
     const notifications: WorkspaceNotification[] = pageProps.workspaceNotifications ?? [];
     const projects: WorkspaceProject[] = pageProps.workspaceProjects ?? [];
+    const savedViews: Array<{ id: number; name: string; icon: string; filters: Record<string, unknown>; is_pinned: boolean }> =
+        (pageProps as any).savedViews ?? [];
 
     const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
     const isMyWorkActive = route().current('requests.index') && searchParams?.get('my_work') === '1';
@@ -68,6 +73,20 @@ export default function Sidebar() {
             active: isBoardActive,
             icon: KanbanSquare,
             shortcut: '⌘B',
+        },
+        {
+            name: 'Cycles',
+            href: route('cycles.index'),
+            active: route().current('cycles.*'),
+            icon: Repeat,
+            shortcut: '⌘C',
+        },
+        {
+            name: 'Roadmap',
+            href: route('roadmap.index'),
+            active: route().current('roadmap.*'),
+            icon: CalendarRange,
+            shortcut: '⌘R',
         },
     ];
 
@@ -173,6 +192,50 @@ export default function Sidebar() {
                         );
                     })}
                 </div>
+ 
+                {/* Custom Saved Views Section */}
+                {savedViews.length > 0 && (
+                    <div className="mt-5 space-y-1">
+                        {!collapsed && (
+                            <div className="flex items-center justify-between px-3 pb-1.5">
+                                <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+                                    Views
+                                </p>
+                                <span className="text-[10px] text-zinc-500 font-mono">
+                                    {savedViews.length}
+                                </span>
+                            </div>
+                        )}
+                        {savedViews.map((view) => {
+                            const queryParams: Record<string, any> = {};
+                            if (view.filters) {
+                                Object.entries(view.filters).forEach(([k, v]) => {
+                                    if (v !== '' && v !== null && v !== undefined) {
+                                        queryParams[k] = v;
+                                    }
+                                });
+                            }
+                            const href = route('requests.index', queryParams);
+                            return (
+                                <Link
+                                    key={view.id}
+                                    href={href}
+                                    title={collapsed ? view.name : undefined}
+                                    className={`group flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-850/50 border border-transparent ${
+                                        collapsed ? 'justify-center px-0 h-10 w-full' : ''
+                                    }`}
+                                >
+                                    <Bookmark className="h-3.5 w-3.5 text-violet-400 shrink-0" />
+                                    {!collapsed && (
+                                        <div className="flex flex-1 items-center justify-between overflow-hidden">
+                                            <span className="truncate">{view.name}</span>
+                                        </div>
+                                    )}
+                                </Link>
+                            );
+                        })}
+                    </div>
+                )}
 
                 {/* Initiatives (Projects) Section */}
                 <div className="mt-6 space-y-1">

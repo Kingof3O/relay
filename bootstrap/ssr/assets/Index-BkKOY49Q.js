@@ -1,4 +1,4 @@
-import { T as Modal, g as notifySuccess, h as notifyError, t as Authenticated } from "./AuthenticatedLayout-gP6DEd9M.js";
+import { E as Modal, _ as notifySuccess, g as notifyError, t as Authenticated } from "./AuthenticatedLayout-C9_Pb_Sd.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DhJIhOln.js";
 import { Head } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";

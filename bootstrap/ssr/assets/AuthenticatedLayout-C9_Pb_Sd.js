@@ -1,7 +1,7 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Building2, Calendar, Check, CheckCheck, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Clock, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, Inbox, KanbanSquare, Keyboard, LayoutDashboard, Link2, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, RefreshCw, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
+import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, Inbox, KanbanSquare, Keyboard, LayoutDashboard, Link2, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Command } from "cmdk";
 import axios, { isAxiosError } from "axios";
@@ -341,6 +341,7 @@ function Sidebar() {
 	const roleName = pageProps.auth?.role?.name ?? "Member";
 	const notifications = pageProps.workspaceNotifications ?? [];
 	const projects = pageProps.workspaceProjects ?? [];
+	const savedViews = pageProps.savedViews ?? [];
 	const searchParams = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : null;
 	const isMyWorkActive = route().current("requests.index") && searchParams?.get("my_work") === "1";
 	const isBoardActive = route().current("requests.*") && !isMyWorkActive && !searchParams?.get("project");
@@ -378,6 +379,20 @@ function Sidebar() {
 			active: isBoardActive,
 			icon: KanbanSquare,
 			shortcut: "⌘B"
+		},
+		{
+			name: "Cycles",
+			href: route("cycles.index"),
+			active: route().current("cycles.*"),
+			icon: Repeat,
+			shortcut: "⌘C"
+		},
+		{
+			name: "Roadmap",
+			href: route("roadmap.index"),
+			active: route().current("roadmap.*"),
+			icon: CalendarRange,
+			shortcut: "⌘R"
 		}
 	];
 	const unreadCount = pageProps.unreadNotificationsCount ?? notifications.filter((n) => !n.read_at).length;
@@ -446,6 +461,37 @@ function Sidebar() {
 								})]
 							})]
 						}, link.name);
+					})]
+				}),
+				savedViews.length > 0 && /* @__PURE__ */ jsxs("div", {
+					className: "mt-5 space-y-1",
+					children: [!collapsed && /* @__PURE__ */ jsxs("div", {
+						className: "flex items-center justify-between px-3 pb-1.5",
+						children: [/* @__PURE__ */ jsx("p", {
+							className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
+							children: "Views"
+						}), /* @__PURE__ */ jsx("span", {
+							className: "text-[10px] text-zinc-500 font-mono",
+							children: savedViews.length
+						})]
+					}), savedViews.map((view) => {
+						const queryParams = {};
+						if (view.filters) Object.entries(view.filters).forEach(([k, v]) => {
+							if (v !== "" && v !== null && v !== void 0) queryParams[k] = v;
+						});
+						const href = route("requests.index", queryParams);
+						return /* @__PURE__ */ jsxs(Link, {
+							href,
+							title: collapsed ? view.name : void 0,
+							className: `group flex items-center gap-2.5 rounded-xl px-3 py-2 text-[13px] font-medium transition-all text-zinc-400 hover:text-zinc-200 hover:bg-zinc-850/50 border border-transparent ${collapsed ? "justify-center px-0 h-10 w-full" : ""}`,
+							children: [/* @__PURE__ */ jsx(Bookmark, { className: "h-3.5 w-3.5 text-violet-400 shrink-0" }), !collapsed && /* @__PURE__ */ jsx("div", {
+								className: "flex flex-1 items-center justify-between overflow-hidden",
+								children: /* @__PURE__ */ jsx("span", {
+									className: "truncate",
+									children: view.name
+								})
+							})]
+						}, view.id);
 					})]
 				}),
 				/* @__PURE__ */ jsxs("div", {
@@ -1087,6 +1133,40 @@ function BoardHeader({ viewMode, onViewModeChange, onAddRequest }) {
 //#region resources/js/Features/Requests/components/BoardFilterBar.tsx
 function BoardFilterBar({ filters, projects, users, statuses, priorities }) {
 	const { preset, setPreset, counts, search, setSearch, showAdvancedFilters, setShowAdvancedFilters, isFiltered, resetFilters, selectedProject, setSelectedProject, owner, setOwner, requester, setRequester, statusFilter, setStatusFilter, priorityFilter, setPriorityFilter } = filters;
+	const [showSaveModal, setShowSaveModal] = useState(false);
+	const [viewName, setViewName] = useState("");
+	const [savingView, setSavingView] = useState(false);
+	const handleSaveView = async (e) => {
+		e.preventDefault();
+		const trimmed = viewName.trim();
+		if (!trimmed) return;
+		setSavingView(true);
+		try {
+			await axios.post(route("saved-views.store"), {
+				name: trimmed,
+				icon: "filter",
+				filters: {
+					project: selectedProject || void 0,
+					owner: owner || void 0,
+					requester: requester || void 0,
+					status: statusFilter || void 0,
+					priority: priorityFilter || void 0,
+					search: search || void 0,
+					preset: preset !== "all" ? preset : void 0
+				},
+				is_pinned: true
+			}, { headers: { Accept: "application/json" } });
+			toast.success(`View "${trimmed}" saved and pinned to sidebar.`);
+			setViewName("");
+			setShowSaveModal(false);
+			router.reload();
+		} catch (err) {
+			const msg = isAxiosError(err) ? err.response?.data?.message ?? "Could not save view." : "Could not save view.";
+			toast.error(msg);
+		} finally {
+			setSavingView(false);
+		}
+	};
 	return /* @__PURE__ */ jsxs("div", {
 		className: "space-y-3",
 		children: [
@@ -1185,6 +1265,57 @@ function BoardFilterBar({ filters, projects, users, statuses, priorities }) {
 							children: [/* @__PURE__ */ jsx(SlidersHorizontal, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", {
 								className: "hidden md:inline",
 								children: "Filters"
+							})]
+						}),
+						/* @__PURE__ */ jsxs("div", {
+							className: "relative",
+							children: [/* @__PURE__ */ jsxs("button", {
+								type: "button",
+								onClick: () => setShowSaveModal(!showSaveModal),
+								className: "flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-850 px-2.5 py-1.5 text-xs font-medium text-zinc-400 hover:border-violet-500/50 hover:bg-violet-950/20 hover:text-violet-200 transition-colors",
+								title: "Save current filters as a custom view",
+								children: [/* @__PURE__ */ jsx(BookmarkPlus, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", {
+									className: "hidden sm:inline",
+									children: "Save View"
+								})]
+							}), showSaveModal && /* @__PURE__ */ jsxs("div", {
+								className: "absolute right-0 top-full mt-2 z-50 w-72 rounded-xl border border-zinc-700/80 bg-[#12131a] p-3 shadow-2xl ring-1 ring-black/50",
+								children: [/* @__PURE__ */ jsxs("div", {
+									className: "flex items-center justify-between pb-2 border-b border-zinc-800",
+									children: [/* @__PURE__ */ jsx("span", {
+										className: "text-xs font-semibold text-zinc-200",
+										children: "Save Custom View"
+									}), /* @__PURE__ */ jsx("button", {
+										type: "button",
+										onClick: () => setShowSaveModal(false),
+										className: "text-zinc-500 hover:text-zinc-300",
+										children: /* @__PURE__ */ jsx(X, { className: "h-3.5 w-3.5" })
+									})]
+								}), /* @__PURE__ */ jsxs("form", {
+									onSubmit: handleSaveView,
+									className: "mt-2.5 space-y-2.5",
+									children: [/* @__PURE__ */ jsx("input", {
+										type: "text",
+										placeholder: "View name (e.g. Mobile Bugs)...",
+										autoFocus: true,
+										value: viewName,
+										onChange: (e) => setViewName(e.target.value),
+										className: "w-full rounded-lg border border-zinc-750 bg-[#08090d] px-2.5 py-1.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+									}), /* @__PURE__ */ jsxs("div", {
+										className: "flex items-center justify-end gap-2 pt-1",
+										children: [/* @__PURE__ */ jsx("button", {
+											type: "button",
+											onClick: () => setShowSaveModal(false),
+											className: "rounded-lg px-2.5 py-1 text-xs text-zinc-400 hover:text-zinc-200",
+											children: "Cancel"
+										}), /* @__PURE__ */ jsx("button", {
+											type: "submit",
+											disabled: savingView || !viewName.trim(),
+											className: "rounded-lg border border-violet-500/50 bg-violet-600 px-3 py-1 text-xs font-semibold text-white hover:bg-violet-500 disabled:opacity-40 transition-colors",
+											children: savingView ? "Saving..." : "Save & Pin"
+										})]
+									})]
+								})]
 							})]
 						}),
 						isFiltered && /* @__PURE__ */ jsxs("button", {
@@ -1815,18 +1946,77 @@ function RequestCard({ request, index, onQuickStatus, onOpenDrawer, isSelected =
 							},
 							className: "line-clamp-2 text-xs font-semibold leading-snug text-zinc-100 transition-colors group-hover:text-white",
 							children: request.title
-						}), /* @__PURE__ */ jsx(Badge, {
-							variant: request.priority === "urgent" ? "rose" : statusTone$1[request.status] ?? "zinc",
-							dot: request.priority === "urgent",
-							className: "shrink-0",
-							children: request.priority === "urgent" ? "Urgent" : request.priority_label
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-1.5 shrink-0",
+							children: [
+								request.story_points !== null && request.story_points !== void 0 && /* @__PURE__ */ jsxs("span", {
+									className: "rounded border border-violet-500/30 bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-mono font-semibold text-violet-300 shadow-sm",
+									title: `${request.story_points} Story Points`,
+									children: [request.story_points, " pts"]
+								}),
+								request.rolled_over_from_cycle_id && /* @__PURE__ */ jsx("span", {
+									className: "rounded border border-amber-500/30 bg-amber-500/10 px-1 py-0.5 text-[9px] font-semibold text-amber-300",
+									title: "Rolled over from previous cycle",
+									children: "Rolled"
+								}),
+								/* @__PURE__ */ jsx(Badge, {
+									variant: request.priority === "urgent" ? "rose" : statusTone$1[request.status] ?? "zinc",
+									dot: request.priority === "urgent",
+									className: "shrink-0",
+									children: request.priority === "urgent" ? "Urgent" : request.priority_label
+								})
+							]
 						})]
 					}),
 					request.description && /* @__PURE__ */ jsx("p", {
 						className: "mt-2 line-clamp-2 text-[11px] leading-relaxed text-zinc-400",
 						children: request.description
 					}),
-					checklist && /* @__PURE__ */ jsxs("div", {
+					request.subtasks_progress && request.subtasks_progress.total > 0 && /* @__PURE__ */ jsxs("div", {
+						className: "mt-2.5 flex items-center gap-1.5 text-[10px] text-zinc-400",
+						children: [
+							/* @__PURE__ */ jsx("div", {
+								className: "relative flex h-3.5 w-3.5 shrink-0 items-center justify-center",
+								children: /* @__PURE__ */ jsxs("svg", {
+									className: "h-3.5 w-3.5 -rotate-90 transform",
+									viewBox: "0 0 32 32",
+									children: [/* @__PURE__ */ jsx("circle", {
+										cx: "16",
+										cy: "16",
+										r: "12",
+										stroke: "currentColor",
+										strokeWidth: "4",
+										className: "text-zinc-800",
+										fill: "transparent"
+									}), /* @__PURE__ */ jsx("circle", {
+										cx: "16",
+										cy: "16",
+										r: "12",
+										stroke: "currentColor",
+										strokeWidth: "4",
+										strokeDasharray: 2 * Math.PI * 12,
+										strokeDashoffset: 2 * Math.PI * 12 * (1 - request.subtasks_progress.percentage / 100),
+										strokeLinecap: "round",
+										className: "text-violet-400 transition-all duration-300",
+										fill: "transparent"
+									})]
+								})
+							}),
+							/* @__PURE__ */ jsxs("span", {
+								className: "font-mono text-zinc-300",
+								children: [
+									request.subtasks_progress.completed,
+									"/",
+									request.subtasks_progress.total
+								]
+							}),
+							/* @__PURE__ */ jsx("span", {
+								className: "text-zinc-500",
+								children: "done"
+							})
+						]
+					}),
+					checklist && !request.subtasks_progress?.total && /* @__PURE__ */ jsxs("div", {
 						className: "mt-2.5 flex items-center gap-2 text-[10px] text-zinc-400",
 						children: [/* @__PURE__ */ jsx("div", {
 							className: "h-1.5 w-16 rounded-full bg-zinc-800 overflow-hidden",
@@ -4579,6 +4769,75 @@ function RequestSidebarProperties({ request, projects, users, statuses, prioriti
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "border-t border-white/[0.06] pt-3",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "flex items-center justify-between mb-1.5",
+							children: [/* @__PURE__ */ jsxs("span", {
+								className: "flex items-center gap-1.5 text-[11px] font-semibold text-zinc-400",
+								children: [/* @__PURE__ */ jsx("span", { children: "Story Points" }), /* @__PURE__ */ jsx("span", {
+									className: "text-[10px] text-zinc-500 font-mono",
+									children: "Fibonacci"
+								})]
+							}), request.story_points !== null && request.story_points !== void 0 && /* @__PURE__ */ jsx("button", {
+								type: "button",
+								disabled: !canEdit,
+								onClick: () => onUpdate({ story_points: null }),
+								className: "text-[10px] text-zinc-500 hover:text-rose-400 transition-colors",
+								children: "Clear"
+							})]
+						}), /* @__PURE__ */ jsx("div", {
+							className: "grid grid-cols-6 gap-1",
+							children: [
+								{
+									pts: 1,
+									label: "XS",
+									full: "1 pt · XS"
+								},
+								{
+									pts: 2,
+									label: "S",
+									full: "2 pts · S"
+								},
+								{
+									pts: 3,
+									label: "M",
+									full: "3 pts · M"
+								},
+								{
+									pts: 5,
+									label: "L",
+									full: "5 pts · L"
+								},
+								{
+									pts: 8,
+									label: "XL",
+									full: "8 pts · XL"
+								},
+								{
+									pts: 13,
+									label: "XXL",
+									full: "13 pts · XXL"
+								}
+							].map((item) => {
+								const isSelected = request.story_points === item.pts;
+								return /* @__PURE__ */ jsxs("button", {
+									type: "button",
+									disabled: !canEdit,
+									onClick: () => onUpdate({ story_points: isSelected ? null : item.pts }),
+									className: `flex flex-col items-center justify-center rounded-lg border py-1.5 text-center transition-all ${isSelected ? "border-violet-500 bg-violet-600/20 text-white font-bold ring-1 ring-violet-500/50" : "border-white/[0.08] bg-[#07090e] text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"} disabled:opacity-50`,
+									title: item.full,
+									children: [/* @__PURE__ */ jsx("span", {
+										className: "text-[11px] font-mono leading-none",
+										children: item.pts
+									}), /* @__PURE__ */ jsx("span", {
+										className: "text-[9px] uppercase tracking-wider text-zinc-500 font-semibold",
+										children: item.label
+									})]
+								}, item.pts);
+							})
+						})]
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "border-t border-white/[0.06] pt-3",
 						children: [
 							/* @__PURE__ */ jsxs("div", {
 								className: "flex items-center justify-between mb-1.5",
@@ -4783,6 +5042,158 @@ function RequestSidebarProperties({ request, projects, users, statuses, prioriti
 					rows: 3,
 					placeholder: "Explain why work is blocked…",
 					className: "mt-3 w-full rounded-xl border border-rose-500/30 bg-[#07090e] p-2.5 text-xs text-rose-200 placeholder:text-zinc-600 focus:border-rose-400 focus:outline-none focus:ring-1 focus:ring-rose-400"
+				})]
+			})
+		]
+	});
+}
+//#endregion
+//#region resources/js/Features/Requests/components/Detail/RequestSubtasksSection.tsx
+function RequestSubtasksSection({ request, canEdit, onSubtasksChange }) {
+	const [subtaskTitle, setSubtaskTitle] = useState("");
+	const [creating, setCreating] = useState(false);
+	const [togglingId, setTogglingId] = useState(null);
+	const subtasks = request.subtasks ?? [];
+	const totalCount = subtasks.length;
+	const completedCount = subtasks.filter((s) => s.status === "done").length;
+	const percentage = totalCount > 0 ? Math.round(completedCount / totalCount * 100) : 0;
+	const handleCreateSubtask = async (e) => {
+		e.preventDefault();
+		const trimmed = subtaskTitle.trim();
+		if (!trimmed) return;
+		setCreating(true);
+		try {
+			const { data } = await axios.post(route("requests.subtasks.store", request.id), { title: trimmed }, { headers: { Accept: "application/json" } });
+			setSubtaskTitle("");
+			toast.success("Sub-task created");
+			if (data.request) onSubtasksChange(data.request);
+		} catch (err) {
+			const msg = isAxiosError(err) ? err.response?.data?.message ?? "Could not create sub-task." : "Could not create sub-task.";
+			toast.error(msg);
+		} finally {
+			setCreating(false);
+		}
+	};
+	const handleToggleSubtask = async (subtaskId) => {
+		setTogglingId(subtaskId);
+		try {
+			const { data } = await axios.post(route("requests.subtasks.toggle", [request.id, subtaskId]), {}, { headers: { Accept: "application/json" } });
+			if (data.request) onSubtasksChange(data.request);
+		} catch (err) {
+			const msg = isAxiosError(err) ? err.response?.data?.message ?? "Could not toggle sub-task." : "Could not toggle sub-task.";
+			toast.error(msg);
+		} finally {
+			setTogglingId(null);
+		}
+	};
+	const handleDeleteSubtask = async (subtaskId) => {
+		try {
+			const { data } = await axios.delete(route("requests.subtasks.destroy", [request.id, subtaskId]), { headers: { Accept: "application/json" } });
+			toast.success("Sub-task deleted");
+			if (data.request) onSubtasksChange(data.request);
+		} catch (err) {
+			const msg = isAxiosError(err) ? err.response?.data?.message ?? "Could not delete sub-task." : "Could not delete sub-task.";
+			toast.error(msg);
+		}
+	};
+	return /* @__PURE__ */ jsxs(Card, {
+		className: "p-5 space-y-4",
+		children: [
+			/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center justify-between border-b border-white/[0.06] pb-3",
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "flex items-center gap-2",
+					children: [
+						/* @__PURE__ */ jsx(CheckSquare, { className: "h-4 w-4 text-violet-400" }),
+						/* @__PURE__ */ jsx("h2", {
+							className: "text-xs font-bold uppercase tracking-wider text-zinc-300",
+							children: "Sub-tasks"
+						}),
+						totalCount > 0 && /* @__PURE__ */ jsxs("span", {
+							className: "rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 font-mono text-[11px] text-zinc-300",
+							children: [
+								completedCount,
+								"/",
+								totalCount
+							]
+						})
+					]
+				}), totalCount > 0 && /* @__PURE__ */ jsxs("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "h-1.5 w-24 rounded-full bg-zinc-800 overflow-hidden",
+						children: /* @__PURE__ */ jsx("div", {
+							className: "h-full bg-violet-500 rounded-full transition-all duration-300",
+							style: { width: `${percentage}%` }
+						})
+					}), /* @__PURE__ */ jsxs("span", {
+						className: "font-mono text-[11px] text-zinc-400",
+						children: [percentage, "%"]
+					})]
+				})]
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "space-y-1.5",
+				children: subtasks.length > 0 ? subtasks.map((subtask) => {
+					const isDone = subtask.status === "done";
+					const isToggling = togglingId === subtask.id;
+					return /* @__PURE__ */ jsxs("div", {
+						className: `group flex items-center justify-between gap-3 rounded-xl border px-3 py-2 transition-all ${isDone ? "border-white/[0.04] bg-white/[0.01] text-zinc-500" : "border-white/[0.07] bg-[#0c0d12] hover:border-zinc-700 text-zinc-200"}`,
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-2.5 min-w-0 flex-1",
+							children: [/* @__PURE__ */ jsx("button", {
+								type: "button",
+								disabled: !canEdit || isToggling,
+								onClick: () => handleToggleSubtask(subtask.id),
+								className: "shrink-0 transition-transform active:scale-95",
+								title: isDone ? "Mark incomplete" : "Mark complete",
+								children: isDone ? /* @__PURE__ */ jsx(CheckCircle2, { className: "h-4 w-4 text-emerald-400" }) : /* @__PURE__ */ jsx(Circle, { className: "h-4 w-4 text-zinc-500 group-hover:text-zinc-300" })
+							}), /* @__PURE__ */ jsx(Link, {
+								href: route("requests.show", subtask.id),
+								className: `truncate text-xs font-medium hover:underline ${isDone ? "line-through text-zinc-500" : "text-zinc-200 hover:text-white"}`,
+								children: subtask.title
+							})]
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-2 shrink-0",
+							children: [
+								subtask.story_points !== null && subtask.story_points !== void 0 && /* @__PURE__ */ jsxs("span", {
+									className: "rounded border border-violet-500/30 bg-violet-500/10 px-1.5 py-0.5 text-[10px] font-mono text-violet-300",
+									children: [subtask.story_points, " pts"]
+								}),
+								subtask.assignee && /* @__PURE__ */ jsx("div", {
+									className: "flex h-5 w-5 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-[9px] font-semibold text-zinc-200",
+									title: subtask.assignee.name,
+									children: subtask.assignee.name.charAt(0)
+								}),
+								canEdit && /* @__PURE__ */ jsx("button", {
+									type: "button",
+									onClick: () => handleDeleteSubtask(subtask.id),
+									className: "opacity-0 group-hover:opacity-100 p-1 text-zinc-500 hover:text-rose-400 transition-all",
+									title: "Delete sub-task",
+									children: /* @__PURE__ */ jsx(Trash2, { className: "h-3 w-3" })
+								})
+							]
+						})]
+					}, subtask.id);
+				}) : /* @__PURE__ */ jsx("p", {
+					className: "text-[11px] text-zinc-500 py-1",
+					children: "No sub-tasks yet. Decompose this issue into small, focused checklist items below."
+				})
+			}),
+			canEdit && /* @__PURE__ */ jsxs("form", {
+				onSubmit: handleCreateSubtask,
+				className: "flex items-center gap-2 pt-1",
+				children: [/* @__PURE__ */ jsx("input", {
+					type: "text",
+					placeholder: "Add a sub-task (press Enter to save)...",
+					value: subtaskTitle,
+					onChange: (e) => setSubtaskTitle(e.target.value),
+					className: "min-w-0 flex-1 rounded-xl border border-white/[0.08] bg-[#07090e] px-3 py-2 text-xs text-zinc-200 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500"
+				}), /* @__PURE__ */ jsxs("button", {
+					type: "submit",
+					disabled: creating || !subtaskTitle.trim(),
+					className: "flex h-8 items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-3 text-xs font-semibold text-zinc-200 hover:border-violet-400 hover:bg-violet-500/10 hover:text-white disabled:opacity-40 transition-colors shrink-0",
+					children: [/* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Add" })]
 				})]
 			})
 		]
@@ -5799,4 +6210,4 @@ function Authenticated({ header, children }) {
 	});
 }
 //#endregion
-export { BoardFilterBar as C, Badge as S, Modal as T, QuickViewDrawer as _, useKanbanBoard as a, RequestListView as b, RequestDiscussionSection as c, Card as d, RequestBlockerBanner as f, notifySuccess as g, notifyError as h, useBoardFilters as i, RequestMediaGallery as l, QuickCreateModal as m, formatRelativeTime as n, triggerConfetti as o, RequestHeroHeader as p, getNotificationBadge as r, RequestSidebarProperties as s, Authenticated as t, RequestDescriptionCard as u, ImageLightbox as v, BoardHeader as w, KanbanBoard as x, BulkActionBar as y };
+export { Badge as C, Modal as E, KanbanBoard as S, BoardHeader as T, notifySuccess as _, useKanbanBoard as a, BulkActionBar as b, RequestSidebarProperties as c, RequestDescriptionCard as d, Card as f, notifyError as g, QuickCreateModal as h, useBoardFilters as i, RequestDiscussionSection as l, RequestHeroHeader as m, formatRelativeTime as n, triggerConfetti as o, RequestBlockerBanner as p, getNotificationBadge as r, RequestSubtasksSection as s, Authenticated as t, RequestMediaGallery as u, QuickViewDrawer as v, BoardFilterBar as w, RequestListView as x, ImageLightbox as y };
