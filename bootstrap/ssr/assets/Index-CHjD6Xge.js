@@ -1,4 +1,4 @@
-import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-CaX_Mqm0.js";
+import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-BkM7vaW1.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, router } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";

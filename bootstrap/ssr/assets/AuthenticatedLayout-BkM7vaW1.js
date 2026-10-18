@@ -3,7 +3,7 @@ import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, GitMerge, GitPullRequest, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, Quote, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
-import { Command as Command$1 } from "cmdk";
+import { Command } from "cmdk";
 import axios, { isAxiosError } from "axios";
 import { Toaster, toast, toast as toast$1 } from "sonner";
 import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
@@ -733,7 +733,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 		children: /* @__PURE__ */ jsx("div", {
 			className: "w-full max-w-xl overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0d1322]/95 shadow-2xl backdrop-blur-2xl shadow-specular animate-in zoom-in-95 duration-150",
 			onClick: (e) => e.stopPropagation(),
-			children: /* @__PURE__ */ jsxs(Command$1, {
+			children: /* @__PURE__ */ jsxs(Command, {
 				label: "Command Menu",
 				className: "flex flex-col",
 				shouldFilter: false,
@@ -742,7 +742,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 						className: "flex items-center gap-3 border-b border-white/[0.08] px-4 py-3.5",
 						children: [
 							/* @__PURE__ */ jsx(Search, { className: "h-4 w-4 shrink-0 text-violet-400" }),
-							/* @__PURE__ */ jsx(Command$1.Input, {
+							/* @__PURE__ */ jsx(Command.Input, {
 								value: search,
 								onValueChange: setSearch,
 								placeholder: "Type to search tickets or jump to page...",
@@ -756,10 +756,10 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 							})
 						]
 					}),
-					/* @__PURE__ */ jsxs(Command$1.List, {
+					/* @__PURE__ */ jsxs(Command.List, {
 						className: "custom-scroll max-h-[360px] overflow-y-auto p-2 text-xs",
 						children: [
-							searchResults.requests.length > 0 && /* @__PURE__ */ jsx(Command$1.Group, {
+							searchResults.requests.length > 0 && /* @__PURE__ */ jsx(Command.Group, {
 								heading: /* @__PURE__ */ jsxs("span", {
 									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400",
 									children: [
@@ -768,7 +768,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										")"
 									]
 								}),
-								children: searchResults.requests.map((req) => /* @__PURE__ */ jsxs(Command$1.Item, {
+								children: searchResults.requests.map((req) => /* @__PURE__ */ jsxs(Command.Item, {
 									value: `REQ-${req.id} ${req.title}`,
 									onSelect: () => navigate(`/requests/${req.id}`),
 									className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -800,7 +800,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 									})]
 								}, `req-${req.id}`))
 							}),
-							searchResults.projects.length > 0 && /* @__PURE__ */ jsx(Command$1.Group, {
+							searchResults.projects.length > 0 && /* @__PURE__ */ jsx(Command.Group, {
 								heading: /* @__PURE__ */ jsxs("span", {
 									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-400",
 									children: [
@@ -809,7 +809,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										")"
 									]
 								}),
-								children: searchResults.projects.map((proj) => /* @__PURE__ */ jsxs(Command$1.Item, {
+								children: searchResults.projects.map((proj) => /* @__PURE__ */ jsxs(Command.Item, {
 									value: `project ${proj.name}`,
 									onSelect: () => navigate(route("requests.index", { project: String(proj.id) })),
 									className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -828,13 +828,13 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 									})]
 								}, `search-proj-${proj.id}`))
 							}),
-							/* @__PURE__ */ jsxs(Command$1.Group, {
+							/* @__PURE__ */ jsxs(Command.Group, {
 								heading: /* @__PURE__ */ jsx("span", {
 									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400",
 									children: ticketId ? `Ticket Actions (#REQ-${ticketId})` : "Linear Ticket Actions"
 								}),
 								children: [
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Assign to Robin",
 										onSelect: () => handleTicketAction({ assignee_id: robinUser?.id || 1 }, "Assigned to Robin"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -852,7 +852,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "A R"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Assign to Hussien",
 										onSelect: () => handleTicketAction({ assignee_id: hussienUser?.id || 2 }, "Assigned to Hussien"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -870,7 +870,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "A H"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Set priority: Urgent",
 										onSelect: () => handleTicketAction({ priority: "urgent" }, "Priority set to Urgent"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -888,7 +888,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "P 1"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Set priority: High",
 										onSelect: () => handleTicketAction({ priority: "high" }, "Priority set to High"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -906,7 +906,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "P 2"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Set priority: Normal",
 										onSelect: () => handleTicketAction({ priority: "normal" }, "Priority set to Normal"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -924,7 +924,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "P 3"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Change status: Doing",
 										onSelect: () => handleTicketAction({ status: "doing" }, "Moved to Doing"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -942,7 +942,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "S 1"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Change status: Review",
 										onSelect: () => handleTicketAction({ status: "review" }, "Moved to Review"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -960,7 +960,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "S 2"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Change status: Done",
 										onSelect: () => handleTicketAction({ status: "done" }, "Moved to Done"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -978,7 +978,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "S 3"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Set due date: Tomorrow",
 										onSelect: () => handleTicketAction({ due_date: getTomorrowStr() }, "Due date set to Tomorrow"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -996,7 +996,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "D T"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Set due date: Next week",
 										onSelect: () => handleTicketAction({ due_date: getNextWeekStr() }, "Due date set to Next week"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -1014,7 +1014,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "D W"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "Copy ticket link",
 										onSelect: copyTicketLink,
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
@@ -1032,7 +1032,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "⌘ ⇧ C"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										value: "View Keyboard Shortcuts (?)",
 										onSelect: () => {
 											setOpen(false);
@@ -1055,13 +1055,13 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 									})
 								]
 							}),
-							/* @__PURE__ */ jsxs(Command$1.Group, {
+							/* @__PURE__ */ jsxs(Command.Group, {
 								heading: /* @__PURE__ */ jsx("span", {
 									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500",
 									children: "Actions"
 								}),
 								children: [
-									onOpenCreate && /* @__PURE__ */ jsxs(Command$1.Item, {
+									onOpenCreate && /* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => {
 											setOpen(false);
 											onOpenCreate();
@@ -1081,7 +1081,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "C"
 										})]
 									}),
-									onOpenShortcuts && /* @__PURE__ */ jsxs(Command$1.Item, {
+									onOpenShortcuts && /* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => {
 											setOpen(false);
 											onOpenShortcuts();
@@ -1101,7 +1101,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "?"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: async () => {
 											setOpen(false);
 											try {
@@ -1129,13 +1129,13 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 									})
 								]
 							}),
-							/* @__PURE__ */ jsxs(Command$1.Group, {
+							/* @__PURE__ */ jsxs(Command.Group, {
 								heading: /* @__PURE__ */ jsx("span", {
 									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500",
 									children: "Quick Filters"
 								}),
 								children: [
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("requests.index", { my_work: "1" })),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1152,7 +1152,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "Filter work"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("requests.index", { status: "review" })),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1169,7 +1169,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: "Pending sign-off"
 										})]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("requests.index", { priority: "urgent" })),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1188,13 +1188,13 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 									})
 								]
 							}),
-							/* @__PURE__ */ jsxs(Command$1.Group, {
+							/* @__PURE__ */ jsxs(Command.Group, {
 								heading: /* @__PURE__ */ jsx("span", {
 									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500",
 									children: "Navigation"
 								}),
 								children: [
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("dashboard")),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1202,7 +1202,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: [/* @__PURE__ */ jsx(LayoutDashboard, { className: "h-4 w-4 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Dashboard / Overview" })]
 										}), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 text-zinc-600" })]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("requests.index")),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1210,7 +1210,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: [/* @__PURE__ */ jsx(KanbanSquare, { className: "h-4 w-4 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Live Kanban Board" })]
 										}), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 text-zinc-600" })]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("settings.index")),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1218,7 +1218,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: [/* @__PURE__ */ jsx(Settings, { className: "h-4 w-4 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Settings & Workspaces" })]
 										}), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 text-zinc-600" })]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("notifications.index")),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1226,7 +1226,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 											children: [/* @__PURE__ */ jsx(Bell, { className: "h-4 w-4 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Notifications" })]
 										}), /* @__PURE__ */ jsx(ArrowRight, { className: "h-3 w-3 text-zinc-600" })]
 									}),
-									/* @__PURE__ */ jsxs(Command$1.Item, {
+									/* @__PURE__ */ jsxs(Command.Item, {
 										onSelect: () => navigate(route("profile.edit")),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
@@ -1236,12 +1236,12 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 									})
 								]
 							}),
-							projects.length > 0 && searchResults.projects.length === 0 && /* @__PURE__ */ jsx(Command$1.Group, {
+							projects.length > 0 && searchResults.projects.length === 0 && /* @__PURE__ */ jsx(Command.Group, {
 								heading: /* @__PURE__ */ jsx("span", {
 									className: "px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500",
 									children: "Jump to Project"
 								}),
-								children: projects.map((proj) => /* @__PURE__ */ jsxs(Command$1.Item, {
+								children: projects.map((proj) => /* @__PURE__ */ jsxs(Command.Item, {
 									onSelect: () => navigate(route("requests.index", { project: String(proj.id) })),
 									className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 									children: [/* @__PURE__ */ jsxs("div", {

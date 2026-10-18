@@ -3,7 +3,7 @@ import { t as ApplicationLogo } from "./ApplicationLogo-BVzx5-Vz.js";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";
-import { ArrowRight, Check, CheckCircle2, Clock, Command, Eye, EyeOff, Loader2, Lock, ShieldCheck, Sparkles, User } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Loader2, Lock, ShieldCheck, User } from "lucide-react";
 //#region resources/js/Components/Checkbox.tsx
 function Checkbox({ className = "", ...props }) {
 	return /* @__PURE__ */ jsx("input", {
@@ -18,26 +18,22 @@ var DEMO_PERSONAS = [
 	{
 		username: "robin",
 		name: "Robin",
-		role: "Owner",
-		initials: "R"
+		role: "Owner"
 	},
 	{
 		username: "hussien",
 		name: "Hussien",
-		role: "Lead Dev",
-		initials: "H"
+		role: "Lead Dev"
 	},
 	{
 		username: "brother",
 		name: "Brother",
-		role: "Developer",
-		initials: "B"
+		role: "Developer"
 	},
 	{
 		username: "designer-1",
 		name: "Maya",
-		role: "UI/UX Lead",
-		initials: "M"
+		role: "UI/UX"
 	}
 ];
 function Login({ socialProviders = {
@@ -96,171 +92,281 @@ function Login({ socialProviders = {
 			/* @__PURE__ */ jsxs("div", {
 				className: "relative hidden w-full flex-col justify-between overflow-hidden border-r border-white/[0.06] bg-[#07090e] p-10 lg:flex lg:w-1/2 xl:w-7/12 xl:p-16",
 				children: [
-					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -left-36 -top-36 h-[560px] w-[560px] rounded-full bg-gradient-to-br from-indigo-500/[0.07] via-purple-500/[0.03] to-transparent blur-[130px]" }),
-					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-40 right-0 h-[480px] w-[480px] rounded-full bg-gradient-to-tl from-cyan-500/[0.05] via-blue-500/[0.02] to-transparent blur-[140px]" }),
-					/* @__PURE__ */ jsx("div", { className: "relay-grid pointer-events-none absolute inset-0 opacity-25" }),
+					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -left-36 -top-36 h-[640px] w-[640px] rounded-full bg-gradient-to-br from-indigo-500/[0.07] via-violet-500/[0.03] to-transparent blur-[140px]" }),
+					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-40 right-0 h-[520px] w-[520px] rounded-full bg-gradient-to-tl from-cyan-500/[0.05] via-blue-500/[0.02] to-transparent blur-[140px]" }),
+					/* @__PURE__ */ jsx("div", { className: "relay-grid pointer-events-none absolute inset-0 opacity-20" }),
 					/* @__PURE__ */ jsxs("div", {
 						className: "relative z-10 flex items-center justify-between",
 						children: [/* @__PURE__ */ jsxs(Link, {
 							href: "/",
 							className: "group inline-flex items-center gap-3",
 							children: [/* @__PURE__ */ jsx("div", {
-								className: "flex h-11 w-11 items-center justify-center rounded-xl border border-zinc-700/80 bg-[#13141a] p-2.5 shadow-lg shadow-black/50 transition-all duration-200 group-hover:scale-105 group-hover:border-zinc-500 group-hover:bg-[#181a22]",
+								className: "flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-[#111216] p-2 shadow-xl shadow-black/40 transition-all duration-200 group-hover:scale-105 group-hover:border-white/[0.15]",
 								children: /* @__PURE__ */ jsx(ApplicationLogo, { className: "h-full w-full text-white" })
 							}), /* @__PURE__ */ jsxs("div", {
 								className: "flex items-center gap-2.5",
 								children: [/* @__PURE__ */ jsx("span", {
-									className: "text-base font-bold tracking-[0.25em] text-white",
+									className: "text-sm font-bold tracking-[0.25em] text-white",
 									children: "RELAY"
 								}), /* @__PURE__ */ jsx("span", {
-									className: "rounded-full border border-zinc-800 bg-zinc-900/80 px-2 py-0.5 text-[10px] font-medium tracking-normal text-zinc-400",
+									className: "rounded-full border border-zinc-800 bg-zinc-900/90 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-zinc-400",
 									children: "Studio"
 								})]
 							})]
 						}), /* @__PURE__ */ jsxs("div", {
-							className: "flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 text-[11px] font-medium text-zinc-400 backdrop-blur-md",
-							children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" }), /* @__PURE__ */ jsx("span", { children: "Workspace Active" })]
+							className: "flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 font-mono text-[11px] text-zinc-400 backdrop-blur-md",
+							children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" }), /* @__PURE__ */ jsx("span", { children: "v2.0 · Open Source" })]
 						})]
 					}),
 					/* @__PURE__ */ jsxs("div", {
-						className: "relative z-10 my-auto max-w-xl py-8 space-y-8",
+						className: "relative z-10 my-auto max-w-xl py-6 space-y-8",
 						children: [/* @__PURE__ */ jsxs("div", {
-							className: "space-y-3",
+							className: "relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090a0f]/80 p-6 shadow-2xl backdrop-blur-xl",
+							children: [/* @__PURE__ */ jsxs("svg", {
+								viewBox: "0 0 540 220",
+								fill: "none",
+								xmlns: "http://www.w3.org/2000/svg",
+								className: "w-full h-auto text-zinc-500",
+								children: [
+									/* @__PURE__ */ jsxs("defs", { children: [/* @__PURE__ */ jsxs("linearGradient", {
+										id: "relayGlow",
+										x1: "0%",
+										y1: "0%",
+										x2: "100%",
+										y2: "100%",
+										children: [
+											/* @__PURE__ */ jsx("stop", {
+												offset: "0%",
+												stopColor: "#6366f1",
+												stopOpacity: "0.4"
+											}),
+											/* @__PURE__ */ jsx("stop", {
+												offset: "50%",
+												stopColor: "#8b5cf6",
+												stopOpacity: "0.2"
+											}),
+											/* @__PURE__ */ jsx("stop", {
+												offset: "100%",
+												stopColor: "#06b6d4",
+												stopOpacity: "0.4"
+											})
+										]
+									}), /* @__PURE__ */ jsxs("radialGradient", {
+										id: "centerPulse",
+										cx: "50%",
+										cy: "50%",
+										r: "50%",
+										children: [/* @__PURE__ */ jsx("stop", {
+											offset: "0%",
+											stopColor: "#6366f1",
+											stopOpacity: "0.35"
+										}), /* @__PURE__ */ jsx("stop", {
+											offset: "100%",
+											stopColor: "#6366f1",
+											stopOpacity: "0"
+										})]
+									})] }),
+									/* @__PURE__ */ jsxs("g", {
+										stroke: "rgba(255,255,255,0.04)",
+										strokeWidth: "1",
+										children: [
+											/* @__PURE__ */ jsx("line", {
+												x1: "40",
+												y1: "20",
+												x2: "500",
+												y2: "20"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "40",
+												y1: "70",
+												x2: "500",
+												y2: "70"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "40",
+												y1: "120",
+												x2: "500",
+												y2: "120"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "40",
+												y1: "170",
+												x2: "500",
+												y2: "170"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "40",
+												y1: "20",
+												x2: "40",
+												y2: "200"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "155",
+												y1: "20",
+												x2: "155",
+												y2: "200"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "270",
+												y1: "20",
+												x2: "270",
+												y2: "200"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "385",
+												y1: "20",
+												x2: "385",
+												y2: "200"
+											}),
+											/* @__PURE__ */ jsx("line", {
+												x1: "500",
+												y1: "20",
+												x2: "500",
+												y2: "200"
+											})
+										]
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "270",
+										cy: "110",
+										r: "90",
+										stroke: "url(#relayGlow)",
+										strokeWidth: "1.5",
+										strokeDasharray: "4 4"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "270",
+										cy: "110",
+										r: "55",
+										stroke: "rgba(255,255,255,0.12)",
+										strokeWidth: "1"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "270",
+										cy: "110",
+										r: "28",
+										fill: "url(#centerPulse)",
+										stroke: "rgba(99,102,241,0.5)",
+										strokeWidth: "1.5"
+									}),
+									/* @__PURE__ */ jsx("path", {
+										d: "M70 160 L155 120 L270 110 L385 70 L470 40",
+										stroke: "url(#relayGlow)",
+										strokeWidth: "2",
+										strokeLinecap: "round"
+									}),
+									/* @__PURE__ */ jsx("path", {
+										d: "M70 60 L155 90 L270 110 L385 140 L470 180",
+										stroke: "rgba(255,255,255,0.08)",
+										strokeWidth: "1.2",
+										strokeLinecap: "round"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "70",
+										cy: "160",
+										r: "3.5",
+										fill: "#6366f1"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "155",
+										cy: "120",
+										r: "3",
+										fill: "#818cf8"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "270",
+										cy: "110",
+										r: "5",
+										fill: "#ffffff"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "385",
+										cy: "70",
+										r: "3",
+										fill: "#38bdf8"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "470",
+										cy: "40",
+										r: "3.5",
+										fill: "#2dd4bf"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "70",
+										cy: "60",
+										r: "2.5",
+										fill: "#71717a"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "155",
+										cy: "90",
+										r: "2.5",
+										fill: "#71717a"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "385",
+										cy: "140",
+										r: "2.5",
+										fill: "#71717a"
+									}),
+									/* @__PURE__ */ jsx("circle", {
+										cx: "470",
+										cy: "180",
+										r: "2.5",
+										fill: "#71717a"
+									}),
+									/* @__PURE__ */ jsx("text", {
+										x: "50",
+										y: "195",
+										fill: "#71717a",
+										fontSize: "9",
+										fontFamily: "monospace",
+										children: "NODE:IAD-1"
+									}),
+									/* @__PURE__ */ jsx("text", {
+										x: "248",
+										y: "138",
+										fill: "#a1a1aa",
+										fontSize: "10",
+										fontFamily: "monospace",
+										fontWeight: "600",
+										children: "RELAY CORE"
+									}),
+									/* @__PURE__ */ jsx("text", {
+										x: "430",
+										y: "25",
+										fill: "#2dd4bf",
+										fontSize: "9",
+										fontFamily: "monospace",
+										children: "SYNC:0.1ms"
+									})
+								]
+							}), /* @__PURE__ */ jsxs("div", {
+								className: "mt-4 flex items-center justify-between border-t border-white/[0.06] pt-3 text-[11px] font-mono text-zinc-400",
+								children: [/* @__PURE__ */ jsxs("span", {
+									className: "flex items-center gap-1.5",
+									children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-indigo-400" }), "HIGH-VELOCITY WORKSPACE"]
+								}), /* @__PURE__ */ jsx("span", {
+									className: "text-zinc-500",
+									children: "LATENCY < 12MS"
+								})]
+							})]
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "space-y-4 max-w-lg",
 							children: [
-								/* @__PURE__ */ jsxs("div", {
-									className: "inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300",
-									children: [/* @__PURE__ */ jsx(Sparkles, { className: "h-3.5 w-3.5 text-indigo-400" }), /* @__PURE__ */ jsx("span", { children: "Your daily mission control" })]
-								}),
 								/* @__PURE__ */ jsx("h1", {
-									className: "text-3xl font-extrabold tracking-tight text-white xl:text-4xl",
-									children: "Where your team builds with clarity."
+									className: "text-2xl font-bold tracking-tight text-white xl:text-3xl",
+									children: "The issue tracker for engineering teams that ship."
 								}),
 								/* @__PURE__ */ jsx("p", {
 									className: "text-sm leading-relaxed text-zinc-400",
-									children: "Pick up where you left off. Plan your week, track active sprint cycles, and collaborate with your teammates in real time."
-								})
-							]
-						}), /* @__PURE__ */ jsxs("div", {
-							className: "rounded-2xl border border-white/[0.08] bg-[#0c0d13]/80 p-5 shadow-2xl shadow-black/70 backdrop-blur-md transition-all duration-200 hover:border-white/[0.12]",
-							children: [
-								/* @__PURE__ */ jsxs("div", {
-									className: "flex items-center justify-between pb-3.5 border-b border-white/[0.06]",
-									children: [/* @__PURE__ */ jsxs("div", {
-										className: "flex items-center gap-2.5",
-										children: [/* @__PURE__ */ jsx("span", {
-											className: "flex h-6 items-center rounded-md border border-indigo-500/30 bg-indigo-500/10 px-2 text-[11px] font-semibold text-indigo-300",
-											children: "Cycle 14"
-										}), /* @__PURE__ */ jsxs("div", {
-											className: "flex items-center gap-1.5 text-xs text-zinc-400",
-											children: [/* @__PURE__ */ jsx(Clock, { className: "h-3.5 w-3.5 text-zinc-500" }), /* @__PURE__ */ jsx("span", { children: "4 days remaining" })]
-										})]
-									}), /* @__PURE__ */ jsx("span", {
-										className: "font-mono text-xs font-semibold text-emerald-400",
-										children: "78% on track"
-									})]
+									children: "Linear-grade sprint cadence, live WebSockets collaboration, and sub-second keyboard navigation — built with modern open-source transparency."
 								}),
-								/* @__PURE__ */ jsx("div", {
-									className: "my-3.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800/80",
-									children: /* @__PURE__ */ jsx("div", { className: "h-full w-[78%] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400" })
-								}),
-								/* @__PURE__ */ jsxs("div", {
-									className: "space-y-2 pt-1",
-									children: [
-										/* @__PURE__ */ jsxs("div", {
-											className: "flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]",
-											children: [/* @__PURE__ */ jsxs("div", {
-												className: "flex items-center gap-2.5 min-w-0",
-												children: [
-													/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-amber-400 shrink-0" }),
-													/* @__PURE__ */ jsx("span", {
-														className: "font-mono text-[11px] text-zinc-500 shrink-0",
-														children: "#REQ-104"
-													}),
-													/* @__PURE__ */ jsx("span", {
-														className: "truncate text-zinc-200",
-														children: "Refine notification preferences & digest"
-													})
-												]
-											}), /* @__PURE__ */ jsxs("div", {
-												className: "flex items-center gap-2 shrink-0 ml-3",
-												children: [/* @__PURE__ */ jsx("span", {
-													className: "rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400",
-													children: "#settings"
-												}), /* @__PURE__ */ jsx("div", {
-													className: "flex h-5 w-5 items-center justify-center rounded-full bg-purple-500/20 text-[10px] font-bold text-purple-300",
-													children: "M"
-												})]
-											})]
-										}),
-										/* @__PURE__ */ jsxs("div", {
-											className: "flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]",
-											children: [/* @__PURE__ */ jsxs("div", {
-												className: "flex items-center gap-2.5 min-w-0",
-												children: [
-													/* @__PURE__ */ jsx(CheckCircle2, { className: "h-3.5 w-3.5 text-emerald-400 shrink-0" }),
-													/* @__PURE__ */ jsx("span", {
-														className: "font-mono text-[11px] text-zinc-500 shrink-0",
-														children: "#REQ-102"
-													}),
-													/* @__PURE__ */ jsx("span", {
-														className: "truncate text-zinc-200",
-														children: "Deliver 1-click social authentication"
-													})
-												]
-											}), /* @__PURE__ */ jsxs("div", {
-												className: "flex items-center gap-2 shrink-0 ml-3",
-												children: [/* @__PURE__ */ jsx("span", {
-													className: "rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400",
-													children: "#auth"
-												}), /* @__PURE__ */ jsx("div", {
-													className: "flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/20 text-[10px] font-bold text-cyan-300",
-													children: "H"
-												})]
-											})]
-										}),
-										/* @__PURE__ */ jsxs("div", {
-											className: "flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]",
-											children: [/* @__PURE__ */ jsxs("div", {
-												className: "flex items-center gap-2.5 min-w-0",
-												children: [
-													/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-cyan-400 shrink-0" }),
-													/* @__PURE__ */ jsx("span", {
-														className: "font-mono text-[11px] text-zinc-500 shrink-0",
-														children: "#REQ-98"
-													}),
-													/* @__PURE__ */ jsx("span", {
-														className: "truncate text-zinc-200",
-														children: "Automate sprint burndown velocity"
-													})
-												]
-											}), /* @__PURE__ */ jsxs("div", {
-												className: "flex items-center gap-2 shrink-0 ml-3",
-												children: [/* @__PURE__ */ jsx("span", {
-													className: "rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400",
-													children: "#agile"
-												}), /* @__PURE__ */ jsx("div", {
-													className: "flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-300",
-													children: "R"
-												})]
-											})]
-										})
-									]
-								}),
-								/* @__PURE__ */ jsxs("div", {
-									className: "mt-3.5 flex items-center justify-between rounded-lg bg-zinc-900/60 px-3 py-2 text-[11px] text-zinc-400 border border-zinc-800/60",
-									children: [/* @__PURE__ */ jsxs("div", {
-										className: "flex items-center gap-1.5",
-										children: [/* @__PURE__ */ jsx(Command, { className: "h-3 w-3 text-zinc-400" }), /* @__PURE__ */ jsxs("span", { children: [
-											"Press ",
-											/* @__PURE__ */ jsx("kbd", {
-												className: "rounded bg-zinc-800 px-1 py-0.5 font-mono text-[10px] text-zinc-200",
-												children: "⌘K"
-											}),
-											" to jump anywhere"
-										] })]
-									}), /* @__PURE__ */ jsx("span", {
-										className: "font-mono text-zinc-500 text-[10px]",
-										children: "C: New task"
+								/* @__PURE__ */ jsxs("blockquote", {
+									className: "border-l-2 border-indigo-500/50 pl-4 py-1 text-xs text-zinc-300 italic",
+									children: ["“Relay Studio eliminated our sprint overhead. The sub-second keyboard ergonomics and obsidian interface keep our developers entirely in the flow.”", /* @__PURE__ */ jsx("footer", {
+										className: "mt-1 text-[11px] font-mono text-zinc-500 not-italic",
+										children: "— Engineering Lead · Relay Studio Platform"
 									})]
 								})
 							]
@@ -269,36 +375,17 @@ function Login({ socialProviders = {
 					/* @__PURE__ */ jsxs("div", {
 						className: "relative z-10 flex items-center justify-between border-t border-white/[0.04] pt-6 text-xs text-zinc-500",
 						children: [/* @__PURE__ */ jsxs("div", {
-							className: "flex items-center gap-3",
-							children: [/* @__PURE__ */ jsxs("div", {
-								className: "flex -space-x-1.5",
-								children: [
-									/* @__PURE__ */ jsx("div", {
-										className: "flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-indigo-600 text-[10px] font-bold text-white",
-										children: "R"
-									}),
-									/* @__PURE__ */ jsx("div", {
-										className: "flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-cyan-600 text-[10px] font-bold text-white",
-										children: "H"
-									}),
-									/* @__PURE__ */ jsx("div", {
-										className: "flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-purple-600 text-[10px] font-bold text-white",
-										children: "M"
-									})
-								]
-							}), /* @__PURE__ */ jsx("span", {
-								className: "text-zinc-400 text-xs font-medium",
-								children: "Your team is active and in sync"
-							})]
-						}), /* @__PURE__ */ jsxs("div", {
 							className: "flex items-center gap-2",
 							children: [/* @__PURE__ */ jsxs("span", {
 								className: "relative flex h-2 w-2",
 								children: [/* @__PURE__ */ jsx("span", { className: "absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" }), /* @__PURE__ */ jsx("span", { className: "relative inline-flex h-2 w-2 rounded-full bg-emerald-500" })]
 							}), /* @__PURE__ */ jsx("span", {
-								className: "text-zinc-400 font-medium",
-								children: "Ready"
+								className: "font-medium text-zinc-400",
+								children: "All systems operational"
 							})]
+						}), /* @__PURE__ */ jsx("span", {
+							className: "font-mono text-[11px] text-zinc-500",
+							children: "SOC2 Ready · Apache 2.0"
 						})]
 					})
 				]
@@ -306,7 +393,7 @@ function Login({ socialProviders = {
 			/* @__PURE__ */ jsxs("div", {
 				className: "relative flex min-h-screen w-full flex-col justify-center items-center overflow-y-auto bg-[#090a0f] p-6 sm:p-10 lg:w-1/2 lg:p-12 xl:w-5/12 xl:p-16",
 				children: [/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-gradient-to-b from-white/[0.03] to-transparent blur-[120px]" }), /* @__PURE__ */ jsxs("div", {
-					className: "relative z-10 w-full max-w-[420px] space-y-6",
+					className: "relative z-10 w-full max-w-[400px] space-y-6",
 					children: [
 						/* @__PURE__ */ jsxs("div", {
 							className: "mb-6 flex flex-col items-center gap-3 text-center lg:hidden",
@@ -329,7 +416,7 @@ function Login({ socialProviders = {
 								children: "Sign In"
 							}), /* @__PURE__ */ jsx("p", {
 								className: "text-xs text-zinc-400",
-								children: "Welcome back! Enter your details or select a demo persona"
+								children: "Enter your workspace credentials to continue"
 							})]
 						}),
 						status && /* @__PURE__ */ jsx("div", {
@@ -490,18 +577,15 @@ function Login({ socialProviders = {
 									})
 								}),
 								/* @__PURE__ */ jsxs("div", {
-									className: "mt-6 border-t border-zinc-800/80 pt-5",
+									className: "mt-6 border-t border-zinc-800/80 pt-4",
 									children: [/* @__PURE__ */ jsxs("div", {
-										className: "mb-3 flex items-center justify-between",
-										children: [/* @__PURE__ */ jsxs("div", {
-											className: "flex items-center gap-1.5",
-											children: [/* @__PURE__ */ jsx(Sparkles, { className: "h-3 w-3 text-indigo-400" }), /* @__PURE__ */ jsx("p", {
-												className: "text-[10px] font-semibold uppercase tracking-wider text-zinc-400",
-												children: "1-Click Demo Personas"
-											})]
+										className: "mb-2.5 flex items-center justify-between text-xs text-zinc-500",
+										children: [/* @__PURE__ */ jsx("span", {
+											className: "font-medium text-zinc-400",
+											children: "Quick demo access:"
 										}), /* @__PURE__ */ jsx("span", {
 											className: "font-mono text-[10px] text-zinc-500",
-											children: "pwd: password"
+											children: "password: password"
 										})]
 									}), /* @__PURE__ */ jsx("div", {
 										className: "grid grid-cols-2 gap-2",
@@ -510,23 +594,14 @@ function Login({ socialProviders = {
 											return /* @__PURE__ */ jsxs("button", {
 												type: "button",
 												onClick: () => selectPersona(persona),
-												className: `group flex items-center justify-between rounded-xl border p-2.5 text-left transition-all duration-150 active:scale-[0.98] ${isSelected ? "border-indigo-500/40 bg-indigo-500/10 shadow-sm" : "border-zinc-800/80 bg-[#121318] hover:border-zinc-700 hover:bg-[#161820]"}`,
-												children: [/* @__PURE__ */ jsxs("div", {
-													className: "flex items-center gap-2 min-w-0",
-													children: [/* @__PURE__ */ jsx("div", {
-														className: `flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[10px] font-semibold transition-colors ${isSelected ? "bg-indigo-500 text-white font-bold" : "border border-zinc-700/80 bg-zinc-800 text-zinc-300"}`,
-														children: persona.initials
-													}), /* @__PURE__ */ jsxs("div", {
-														className: "min-w-0",
-														children: [/* @__PURE__ */ jsx("p", {
-															className: "truncate text-xs font-medium text-zinc-200 group-hover:text-white",
-															children: persona.name
-														}), /* @__PURE__ */ jsx("p", {
-															className: "truncate text-[10px] text-zinc-500",
-															children: persona.role
-														})]
-													})]
-												}), isSelected && /* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5 shrink-0 text-emerald-400" })]
+												className: `flex items-center justify-between rounded-lg border px-3 py-2 text-xs transition-all duration-150 ${isSelected ? "border-indigo-500/50 bg-indigo-500/10 text-white shadow-sm" : "border-zinc-800/80 bg-[#121318] text-zinc-300 hover:border-zinc-700 hover:text-white"}`,
+												children: [/* @__PURE__ */ jsx("span", {
+													className: "truncate font-medium",
+													children: persona.name
+												}), /* @__PURE__ */ jsx("span", {
+													className: "font-mono text-[10px] text-zinc-500 ml-1.5 shrink-0",
+													children: persona.role
+												})]
 											}, persona.username);
 										})
 									})]

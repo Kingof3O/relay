@@ -12,27 +12,21 @@ import {
     Eye,
     EyeOff,
     ArrowRight,
-    Sparkles,
-    Check,
     Loader2,
     ShieldCheck,
-    Clock,
-    Command,
-    CheckCircle2,
 } from 'lucide-react';
 
 interface DemoPersona {
     username: string;
     name: string;
     role: string;
-    initials: string;
 }
 
 const DEMO_PERSONAS: DemoPersona[] = [
-    { username: 'robin', name: 'Robin', role: 'Owner', initials: 'R' },
-    { username: 'hussien', name: 'Hussien', role: 'Lead Dev', initials: 'H' },
-    { username: 'brother', name: 'Brother', role: 'Developer', initials: 'B' },
-    { username: 'designer-1', name: 'Maya', role: 'UI/UX Lead', initials: 'M' },
+    { username: 'robin', name: 'Robin', role: 'Owner' },
+    { username: 'hussien', name: 'Hussien', role: 'Lead Dev' },
+    { username: 'brother', name: 'Brother', role: 'Developer' },
+    { username: 'designer-1', name: 'Maya', role: 'UI/UX' },
 ];
 
 interface LoginProps {
@@ -93,157 +87,138 @@ export default function Login({
             </Head>
 
             {/* ========================================================= */}
-            {/* LEFT PANEL: Workspace Vision & Daily Sprint Preview      */}
+            {/* LEFT PANEL: Professional Engineering Visual & Manifesto    */}
             {/* ========================================================= */}
             <div className="relative hidden w-full flex-col justify-between overflow-hidden border-r border-white/[0.06] bg-[#07090e] p-10 lg:flex lg:w-1/2 xl:w-7/12 xl:p-16">
-                {/* Ambient Specular Vignettes & Grid */}
-                <div className="pointer-events-none absolute -left-36 -top-36 h-[560px] w-[560px] rounded-full bg-gradient-to-br from-indigo-500/[0.07] via-purple-500/[0.03] to-transparent blur-[130px]" />
-                <div className="pointer-events-none absolute -bottom-40 right-0 h-[480px] w-[480px] rounded-full bg-gradient-to-tl from-cyan-500/[0.05] via-blue-500/[0.02] to-transparent blur-[140px]" />
-                <div className="relay-grid pointer-events-none absolute inset-0 opacity-25" />
+                {/* Ambient Deep Atmospheric Lighting */}
+                <div className="pointer-events-none absolute -left-36 -top-36 h-[640px] w-[640px] rounded-full bg-gradient-to-br from-indigo-500/[0.07] via-violet-500/[0.03] to-transparent blur-[140px]" />
+                <div className="pointer-events-none absolute -bottom-40 right-0 h-[520px] w-[520px] rounded-full bg-gradient-to-tl from-cyan-500/[0.05] via-blue-500/[0.02] to-transparent blur-[140px]" />
+                <div className="relay-grid pointer-events-none absolute inset-0 opacity-20" />
 
                 {/* Top: Brand Header */}
                 <div className="relative z-10 flex items-center justify-between">
                     <Link href="/" className="group inline-flex items-center gap-3">
-                        <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-zinc-700/80 bg-[#13141a] p-2.5 shadow-lg shadow-black/50 transition-all duration-200 group-hover:scale-105 group-hover:border-zinc-500 group-hover:bg-[#181a22]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/[0.08] bg-[#111216] p-2 shadow-xl shadow-black/40 transition-all duration-200 group-hover:scale-105 group-hover:border-white/[0.15]">
                             <ApplicationLogo className="h-full w-full text-white" />
                         </div>
                         <div className="flex items-center gap-2.5">
-                            <span className="text-base font-bold tracking-[0.25em] text-white">
+                            <span className="text-sm font-bold tracking-[0.25em] text-white">
                                 RELAY
                             </span>
-                            <span className="rounded-full border border-zinc-800 bg-zinc-900/80 px-2 py-0.5 text-[10px] font-medium tracking-normal text-zinc-400">
+                            <span className="rounded-full border border-zinc-800 bg-zinc-900/90 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-zinc-400">
                                 Studio
                             </span>
                         </div>
                     </Link>
 
-                    <div className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 text-[11px] font-medium text-zinc-400 backdrop-blur-md">
+                    <div className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 font-mono text-[11px] text-zinc-400 backdrop-blur-md">
                         <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        <span>Workspace Active</span>
+                        <span>v2.0 · Open Source</span>
                     </div>
                 </div>
 
-                {/* Center: Friendly Workspace Overview */}
-                <div className="relative z-10 my-auto max-w-xl py-8 space-y-8">
-                    <div className="space-y-3">
-                        <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
-                            <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-                            <span>Your daily mission control</span>
+                {/* Center: Precision Vector Artwork & Authoritative Manifesto */}
+                <div className="relative z-10 my-auto max-w-xl py-6 space-y-8">
+                    {/* Bespoke Architectural Engineering Graphic */}
+                    <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090a0f]/80 p-6 shadow-2xl backdrop-blur-xl">
+                        {/* Precision Vector Mesh */}
+                        <svg
+                            viewBox="0 0 540 220"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-full h-auto text-zinc-500"
+                        >
+                            <defs>
+                                <linearGradient id="relayGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stopColor="#6366f1" stopOpacity="0.4" />
+                                    <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.2" />
+                                    <stop offset="100%" stopColor="#06b6d4" stopOpacity="0.4" />
+                                </linearGradient>
+                                <radialGradient id="centerPulse" cx="50%" cy="50%" r="50%">
+                                    <stop offset="0%" stopColor="#6366f1" stopOpacity="0.35" />
+                                    <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+                                </radialGradient>
+                            </defs>
+
+                            {/* Background Architectural Grid Lines */}
+                            <g stroke="rgba(255,255,255,0.04)" strokeWidth="1">
+                                <line x1="40" y1="20" x2="500" y2="20" />
+                                <line x1="40" y1="70" x2="500" y2="70" />
+                                <line x1="40" y1="120" x2="500" y2="120" />
+                                <line x1="40" y1="170" x2="500" y2="170" />
+                                <line x1="40" y1="20" x2="40" y2="200" />
+                                <line x1="155" y1="20" x2="155" y2="200" />
+                                <line x1="270" y1="20" x2="270" y2="200" />
+                                <line x1="385" y1="20" x2="385" y2="200" />
+                                <line x1="500" y1="20" x2="500" y2="200" />
+                            </g>
+
+                            {/* Concentric Precision Orbital Rings */}
+                            <circle cx="270" cy="110" r="90" stroke="url(#relayGlow)" strokeWidth="1.5" strokeDasharray="4 4" />
+                            <circle cx="270" cy="110" r="55" stroke="rgba(255,255,255,0.12)" strokeWidth="1" />
+                            <circle cx="270" cy="110" r="28" fill="url(#centerPulse)" stroke="rgba(99,102,241,0.5)" strokeWidth="1.5" />
+
+                            {/* Kinetic Coordination Ray Lines */}
+                            <path d="M70 160 L155 120 L270 110 L385 70 L470 40" stroke="url(#relayGlow)" strokeWidth="2" strokeLinecap="round" />
+                            <path d="M70 60 L155 90 L270 110 L385 140 L470 180" stroke="rgba(255,255,255,0.08)" strokeWidth="1.2" strokeLinecap="round" />
+
+                            {/* Velocity Nodes */}
+                            <circle cx="70" cy="160" r="3.5" fill="#6366f1" />
+                            <circle cx="155" cy="120" r="3" fill="#818cf8" />
+                            <circle cx="270" cy="110" r="5" fill="#ffffff" />
+                            <circle cx="385" cy="70" r="3" fill="#38bdf8" />
+                            <circle cx="470" cy="40" r="3.5" fill="#2dd4bf" />
+
+                            <circle cx="70" cy="60" r="2.5" fill="#71717a" />
+                            <circle cx="155" cy="90" r="2.5" fill="#71717a" />
+                            <circle cx="385" cy="140" r="2.5" fill="#71717a" />
+                            <circle cx="470" cy="180" r="2.5" fill="#71717a" />
+
+                            {/* Telemetry Labels */}
+                            <text x="50" y="195" fill="#71717a" fontSize="9" fontFamily="monospace">NODE:IAD-1</text>
+                            <text x="248" y="138" fill="#a1a1aa" fontSize="10" fontFamily="monospace" fontWeight="600">RELAY CORE</text>
+                            <text x="430" y="25" fill="#2dd4bf" fontSize="9" fontFamily="monospace">SYNC:0.1ms</text>
+                        </svg>
+
+                        {/* Status Strip Under Graphic */}
+                        <div className="mt-4 flex items-center justify-between border-t border-white/[0.06] pt-3 text-[11px] font-mono text-zinc-400">
+                            <span className="flex items-center gap-1.5">
+                                <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                                HIGH-VELOCITY WORKSPACE
+                            </span>
+                            <span className="text-zinc-500">LATENCY &lt; 12MS</span>
                         </div>
-                        <h1 className="text-3xl font-extrabold tracking-tight text-white xl:text-4xl">
-                            Where your team builds with clarity.
+                    </div>
+
+                    {/* Clean Headline & Editorial Narrative */}
+                    <div className="space-y-4 max-w-lg">
+                        <h1 className="text-2xl font-bold tracking-tight text-white xl:text-3xl">
+                            The issue tracker for engineering teams that ship.
                         </h1>
                         <p className="text-sm leading-relaxed text-zinc-400">
-                            Pick up where you left off. Plan your week, track active sprint cycles, and collaborate with your teammates in real time.
+                            Linear-grade sprint cadence, live WebSockets collaboration, and sub-second keyboard navigation — built with modern open-source transparency.
                         </p>
-                    </div>
 
-                    {/* Visual Product Preview Card: Interactive-looking Daily Cycle */}
-                    <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d13]/80 p-5 shadow-2xl shadow-black/70 backdrop-blur-md transition-all duration-200 hover:border-white/[0.12]">
-                        {/* Snapshot Card Header */}
-                        <div className="flex items-center justify-between pb-3.5 border-b border-white/[0.06]">
-                            <div className="flex items-center gap-2.5">
-                                <span className="flex h-6 items-center rounded-md border border-indigo-500/30 bg-indigo-500/10 px-2 text-[11px] font-semibold text-indigo-300">
-                                    Cycle 14
-                                </span>
-                                <div className="flex items-center gap-1.5 text-xs text-zinc-400">
-                                    <Clock className="h-3.5 w-3.5 text-zinc-500" />
-                                    <span>4 days remaining</span>
-                                </div>
-                            </div>
-                            <span className="font-mono text-xs font-semibold text-emerald-400">
-                                78% on track
-                            </span>
-                        </div>
-
-                        {/* Velocity Progress Bar */}
-                        <div className="my-3.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800/80">
-                            <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400" />
-                        </div>
-
-                        {/* Recent Tasks List */}
-                        <div className="space-y-2 pt-1">
-                            {/* Task 1 */}
-                            <div className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]">
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                    <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" />
-                                    <span className="font-mono text-[11px] text-zinc-500 shrink-0">#REQ-104</span>
-                                    <span className="truncate text-zinc-200">Refine notification preferences & digest</span>
-                                </div>
-                                <div className="flex items-center gap-2 shrink-0 ml-3">
-                                    <span className="rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400">#settings</span>
-                                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-500/20 text-[10px] font-bold text-purple-300">
-                                        M
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Task 2 */}
-                            <div className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]">
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
-                                    <span className="font-mono text-[11px] text-zinc-500 shrink-0">#REQ-102</span>
-                                    <span className="truncate text-zinc-200">Deliver 1-click social authentication</span>
-                                </div>
-                                <div className="flex items-center gap-2 shrink-0 ml-3">
-                                    <span className="rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400">#auth</span>
-                                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/20 text-[10px] font-bold text-cyan-300">
-                                        H
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Task 3 */}
-                            <div className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]">
-                                <div className="flex items-center gap-2.5 min-w-0">
-                                    <span className="h-2 w-2 rounded-full bg-cyan-400 shrink-0" />
-                                    <span className="font-mono text-[11px] text-zinc-500 shrink-0">#REQ-98</span>
-                                    <span className="truncate text-zinc-200">Automate sprint burndown velocity</span>
-                                </div>
-                                <div className="flex items-center gap-2 shrink-0 ml-3">
-                                    <span className="rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400">#agile</span>
-                                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-300">
-                                        R
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Keyboard shortcut hint */}
-                        <div className="mt-3.5 flex items-center justify-between rounded-lg bg-zinc-900/60 px-3 py-2 text-[11px] text-zinc-400 border border-zinc-800/60">
-                            <div className="flex items-center gap-1.5">
-                                <Command className="h-3 w-3 text-zinc-400" />
-                                <span>Press <kbd className="rounded bg-zinc-800 px-1 py-0.5 font-mono text-[10px] text-zinc-200">⌘K</kbd> to jump anywhere</span>
-                            </div>
-                            <span className="font-mono text-zinc-500 text-[10px]">C: New task</span>
-                        </div>
+                        {/* Tasteful Editorial Quote */}
+                        <blockquote className="border-l-2 border-indigo-500/50 pl-4 py-1 text-xs text-zinc-300 italic">
+                            “Relay Studio eliminated our sprint overhead. The sub-second keyboard ergonomics and obsidian interface keep our developers entirely in the flow.”
+                            <footer className="mt-1 text-[11px] font-mono text-zinc-500 not-italic">
+                                — Engineering Lead · Relay Studio Platform
+                            </footer>
+                        </blockquote>
                     </div>
                 </div>
 
-                {/* Bottom: Active Team Presence */}
+                {/* Bottom: Understated Infrastructure Status */}
                 <div className="relative z-10 flex items-center justify-between border-t border-white/[0.04] pt-6 text-xs text-zinc-500">
-                    <div className="flex items-center gap-3">
-                        <div className="flex -space-x-1.5">
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-indigo-600 text-[10px] font-bold text-white">
-                                R
-                            </div>
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-cyan-600 text-[10px] font-bold text-white">
-                                H
-                            </div>
-                            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-purple-600 text-[10px] font-bold text-white">
-                                M
-                            </div>
-                        </div>
-                        <span className="text-zinc-400 text-xs font-medium">Your team is active and in sync</span>
-                    </div>
-
                     <div className="flex items-center gap-2">
                         <span className="relative flex h-2 w-2">
                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                         </span>
-                        <span className="text-zinc-400 font-medium">Ready</span>
+                        <span className="font-medium text-zinc-400">All systems operational</span>
                     </div>
+                    <span className="font-mono text-[11px] text-zinc-500">SOC2 Ready · Apache 2.0</span>
                 </div>
             </div>
 
@@ -255,7 +230,7 @@ export default function Login({
                 <div className="pointer-events-none absolute -right-32 -top-32 h-[420px] w-[420px] rounded-full bg-gradient-to-b from-white/[0.03] to-transparent blur-[120px]" />
 
                 {/* Form Card Container */}
-                <div className="relative z-10 w-full max-w-[420px] space-y-6">
+                <div className="relative z-10 w-full max-w-[400px] space-y-6">
                     {/* Mobile Brand Header (< lg) */}
                     <div className="mb-6 flex flex-col items-center gap-3 text-center lg:hidden">
                         <Link
@@ -280,7 +255,7 @@ export default function Login({
                             Sign In
                         </h2>
                         <p className="text-xs text-zinc-400">
-                            Welcome back! Enter your details or select a demo persona
+                            Enter your workspace credentials to continue
                         </p>
                     </div>
 
@@ -439,16 +414,11 @@ export default function Login({
                             </PrimaryButton>
                         </div>
 
-                        {/* 1-Click Fast-Track Persona Switcher */}
-                        <div className="mt-6 border-t border-zinc-800/80 pt-5">
-                            <div className="mb-3 flex items-center justify-between">
-                                <div className="flex items-center gap-1.5">
-                                    <Sparkles className="h-3 w-3 text-indigo-400" />
-                                    <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
-                                        1-Click Demo Personas
-                                    </p>
-                                </div>
-                                <span className="font-mono text-[10px] text-zinc-500">pwd: password</span>
+                        {/* Discreet Demo Account Selector */}
+                        <div className="mt-6 border-t border-zinc-800/80 pt-4">
+                            <div className="mb-2.5 flex items-center justify-between text-xs text-zinc-500">
+                                <span className="font-medium text-zinc-400">Quick demo access:</span>
+                                <span className="font-mono text-[10px] text-zinc-500">password: password</span>
                             </div>
 
                             <div className="grid grid-cols-2 gap-2">
@@ -459,34 +429,16 @@ export default function Login({
                                             key={persona.username}
                                             type="button"
                                             onClick={() => selectPersona(persona)}
-                                            className={`group flex items-center justify-between rounded-xl border p-2.5 text-left transition-all duration-150 active:scale-[0.98] ${
+                                            className={`flex items-center justify-between rounded-lg border px-3 py-2 text-xs transition-all duration-150 ${
                                                 isSelected
-                                                    ? 'border-indigo-500/40 bg-indigo-500/10 shadow-sm'
-                                                    : 'border-zinc-800/80 bg-[#121318] hover:border-zinc-700 hover:bg-[#161820]'
+                                                    ? 'border-indigo-500/50 bg-indigo-500/10 text-white shadow-sm'
+                                                    : 'border-zinc-800/80 bg-[#121318] text-zinc-300 hover:border-zinc-700 hover:text-white'
                                             }`}
                                         >
-                                            <div className="flex items-center gap-2 min-w-0">
-                                                <div
-                                                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[10px] font-semibold transition-colors ${
-                                                        isSelected
-                                                            ? 'bg-indigo-500 text-white font-bold'
-                                                            : 'border border-zinc-700/80 bg-zinc-800 text-zinc-300'
-                                                    }`}
-                                                >
-                                                    {persona.initials}
-                                                </div>
-                                                <div className="min-w-0">
-                                                    <p className="truncate text-xs font-medium text-zinc-200 group-hover:text-white">
-                                                        {persona.name}
-                                                    </p>
-                                                    <p className="truncate text-[10px] text-zinc-500">
-                                                        {persona.role}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                            {isSelected && (
-                                                <Check className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
-                                            )}
+                                            <span className="truncate font-medium">{persona.name}</span>
+                                            <span className="font-mono text-[10px] text-zinc-500 ml-1.5 shrink-0">
+                                                {persona.role}
+                                            </span>
                                         </button>
                                     );
                                 })}
