@@ -10,7 +10,7 @@
     "/build/assets/AuthenticatedLayout-BkM7vaW1.js"
   ],
   "resources/js/Components/Checkbox.tsx": [
-    "/build/assets/Login-BJy2OxIE.js"
+    "/build/assets/Login-CnzYFXhA.js"
   ],
   "resources/js/Components/CommandPalette.tsx": [
     "/build/assets/AuthenticatedLayout-BkM7vaW1.js"
@@ -193,19 +193,22 @@
     "/build/assets/AuthenticatedLayout-BkM7vaW1.js"
   ],
   "resources/js/Features/Settings/components/MemberFormModal.tsx": [
-    "/build/assets/Index-BQJHc8Bn.js"
+    "/build/assets/Index-CHjD6Xge.js"
+  ],
+  "resources/js/Features/Settings/components/OAuthProvidersCard.tsx": [
+    "/build/assets/Index-CHjD6Xge.js"
   ],
   "resources/js/Features/Settings/components/ProjectsManagementCard.tsx": [
-    "/build/assets/Index-BQJHc8Bn.js"
+    "/build/assets/Index-CHjD6Xge.js"
   ],
   "resources/js/Features/Settings/components/TeamManagementCard.tsx": [
     "/build/assets/TeamManagementCard-DhJIhOln.js"
   ],
   "resources/js/Features/Settings/components/WorkspaceSnapshotCard.tsx": [
-    "/build/assets/Index-BQJHc8Bn.js"
+    "/build/assets/Index-CHjD6Xge.js"
   ],
   "resources/js/Features/Settings/index.ts": [
-    "/build/assets/Index-BQJHc8Bn.js"
+    "/build/assets/Index-CHjD6Xge.js"
   ],
   "resources/js/Layouts/AuthenticatedLayout.tsx": [
     "/build/assets/AuthenticatedLayout-BkM7vaW1.js"
@@ -217,7 +220,7 @@
     "/build/assets/AcceptInvitation-CAH6LeRX.js"
   ],
   "resources/js/Pages/Auth/Login.tsx": [
-    "/build/assets/Login-BJy2OxIE.js"
+    "/build/assets/Login-CnzYFXhA.js"
   ],
   "resources/js/Pages/Cycles/Index.tsx": [
     "/build/assets/Index-Bxso9eYk.js"
@@ -244,7 +247,7 @@
     "/build/assets/Index-B_u-O-hL.js"
   ],
   "resources/js/Pages/Settings/Index.tsx": [
-    "/build/assets/Index-BQJHc8Bn.js"
+    "/build/assets/Index-CHjD6Xge.js"
   ],
   "resources/js/Utils/confetti.ts": [
     "/build/assets/AuthenticatedLayout-BkM7vaW1.js"

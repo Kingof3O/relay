@@ -9,6 +9,7 @@ import {
     TeamManagementCard,
     MemberFormModal,
     WorkspaceSnapshotCard,
+    OAuthProvidersCard,
 } from '@/Features/Settings';
 import type { RoleOption } from '@/Features/Settings/components/MemberFormModal';
 
@@ -18,6 +19,7 @@ export default function Settings({
     roles,
     canManageAreas,
     canManageTeam,
+    oauthProviders,
     audits = [],
     auditMeta,
     auditEvents = [],
@@ -27,13 +29,14 @@ export default function Settings({
     roles: RoleOption[];
     canManageAreas: boolean;
     canManageTeam: boolean;
+    oauthProviders?: Record<string, any>;
     audits?: any[];
     auditMeta?: any;
     auditEvents?: string[];
 }>) {
     const [projects, setProjects] = useState<WorkspaceProject[]>(initialProjects);
     const [users, setUsers] = useState<WorkspaceUser[]>(initialUsers);
-    const [activeTab, setActiveTab] = useState<'projects' | 'team' | 'snapshot'>('projects');
+    const [activeTab, setActiveTab] = useState<'projects' | 'team' | 'auth' | 'snapshot'>('projects');
     const [showMemberModal, setShowMemberModal] = useState(false);
     const [editingMember, setEditingMember] = useState<WorkspaceUser | null>(null);
 
@@ -136,7 +139,34 @@ export default function Settings({
                             </button>
                         )}
 
-                        {/* 3. Workspace Snapshot Tab */}
+                        {/* 3. Authentication & OAuth Tab */}
+                        <button
+                            type="button"
+                            onClick={() => setActiveTab('auth')}
+                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
+                                activeTab === 'auth'
+                                    ? 'border border-amber-500/40 bg-amber-500/10 text-white shadow-[0_0_15px_rgba(245,158,11,0.15)]'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200'
+                            }`}
+                        >
+                            <ShieldCheck
+                                className={`h-3.5 w-3.5 ${
+                                    activeTab === 'auth' ? 'text-amber-400' : 'text-zinc-500'
+                                }`}
+                            />
+                            <span>Authentication & OAuth</span>
+                            <span
+                                className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
+                                    activeTab === 'auth'
+                                        ? 'bg-amber-500/25 text-amber-200'
+                                        : 'bg-zinc-800 text-zinc-400'
+                                }`}
+                            >
+                                OAuth
+                            </span>
+                        </button>
+
+                        {/* 4. Workspace Snapshot Tab */}
                         <button
                             type="button"
                             onClick={() => setActiveTab('snapshot')}
@@ -193,6 +223,10 @@ export default function Settings({
                             setShowMemberModal(true);
                         }}
                     />
+                )}
+
+                {activeTab === 'auth' && (
+                    <OAuthProvidersCard initialProviders={oauthProviders} />
                 )}
 
                 {activeTab === 'snapshot' && (

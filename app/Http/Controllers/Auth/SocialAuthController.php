@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
+use App\Services\SocialAuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -93,6 +94,10 @@ final class SocialAuthController extends Controller
     {
         if (! in_array($provider, self::SUPPORTED_PROVIDERS, true)) {
             abort(404, 'Provider not supported.');
+        }
+
+        if (! SocialAuthService::isEnabled($provider)) {
+            abort(404, ucfirst($provider).' authentication is currently disabled.');
         }
     }
 }

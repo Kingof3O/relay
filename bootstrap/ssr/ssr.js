@@ -684,7 +684,7 @@ createServer((page) => createInertiaApp({
 	title: (title) => `${title} - ${appName}`,
 	resolve: (name) => resolvePageComponent(`./Pages/${name}.tsx`, /* #__PURE__ */ Object.assign({
 		"./Pages/Auth/AcceptInvitation.tsx": () => import("./assets/AcceptInvitation-CAH6LeRX.js"),
-		"./Pages/Auth/Login.tsx": () => import("./assets/Login-BJy2OxIE.js"),
+		"./Pages/Auth/Login.tsx": () => import("./assets/Login-CnzYFXhA.js"),
 		"./Pages/Cycles/Index.tsx": () => import("./assets/Index-Bxso9eYk.js"),
 		"./Pages/Dashboard.tsx": () => import("./assets/Dashboard-BPD134FD.js"),
 		"./Pages/Error.tsx": () => import("./assets/Error-BuVLPSOz.js"),
@@ -693,7 +693,7 @@ createServer((page) => createInertiaApp({
 		"./Pages/Requests/Index.tsx": () => import("./assets/Index-B6fpcvUs.js"),
 		"./Pages/Requests/Show.tsx": () => import("./assets/Show-_Zx3kps-.js"),
 		"./Pages/Roadmap/Index.tsx": () => import("./assets/Index-B_u-O-hL.js"),
-		"./Pages/Settings/Index.tsx": () => import("./assets/Index-BQJHc8Bn.js")
+		"./Pages/Settings/Index.tsx": () => import("./assets/Index-CHjD6Xge.js")
 	})),
 	setup: ({ App, props }) => {
 		const ziggy = page.props?.ziggy;

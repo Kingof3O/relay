@@ -9,6 +9,8 @@ use App\Models\Area;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\WorkspaceAudit;
+use App\Services\AuditService;
+use App\Services\SocialAuthService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -90,9 +92,41 @@ final class SettingsController extends Controller
                 : [],
             'canManageAreas' => $user->hasPermission('manage_areas'),
             'canManageTeam' => $user->hasPermission('manage_team'),
+            'oauthProviders' => SocialAuthService::providersStatus(),
             'audits' => $audits,
             'auditMeta' => $auditMeta,
             'auditEvents' => $auditEvents,
+        ]);
+    }
+
+    public function toggleOAuthProvider(Request $request): JsonResponse
+    {
+        $user = $request->user();
+        if (! $user || ! $user->hasPermission('manage_workspace')) {
+            abort(403, 'Unauthorized.');
+        }
+
+        $validated = $request->validate([
+            'provider' => ['required', 'string', 'in:github,google'],
+            'enabled' => ['required', 'boolean'],
+        ]);
+
+        $provider = $validated['provider'];
+        $enabled = (bool) $validated['enabled'];
+
+        SocialAuthService::setEnabled($provider, $enabled);
+
+        app(AuditService::class)->log(
+            $user,
+            'oauth_provider.'.($enabled ? 'enabled' : 'disabled'),
+            null,
+            ['provider' => $provider],
+            ['provider' => $provider, 'enabled' => $enabled]
+        );
+
+        return response()->json([
+            'message' => ucfirst($provider).' authentication '.($enabled ? 'enabled' : 'disabled').'.',
+            'oauthProviders' => SocialAuthService::providersStatus(),
         ]);
     }
 }

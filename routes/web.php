@@ -77,6 +77,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::post('/settings/team/invite', [TeamMemberController::class, 'invite'])->name('settings.team.invite');
         Route::patch('/settings/team/{user}', [TeamMemberController::class, 'update'])->name('settings.team.update');
         Route::delete('/settings/team/{user}', [TeamMemberController::class, 'destroy'])->name('settings.team.destroy');
+        Route::post('/settings/oauth-providers', [SettingsController::class, 'toggleOAuthProvider'])->name('settings.oauth.toggle');
     });
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');

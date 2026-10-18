@@ -32,6 +32,7 @@ return [
     ],
 
     'github' => [
+        'enabled' => env('GITHUB_AUTH_ENABLED', env('AUTH_GITHUB_ENABLED', null)),
         'client_id' => env('GITHUB_CLIENT_ID'),
         'client_secret' => env('GITHUB_CLIENT_SECRET'),
         'redirect' => env('GITHUB_REDIRECT_URI', '/auth/github/callback'),
@@ -39,6 +40,7 @@ return [
     ],
 
     'google' => [
+        'enabled' => env('GOOGLE_AUTH_ENABLED', env('AUTH_GOOGLE_ENABLED', null)),
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI', '/auth/google/callback'),
