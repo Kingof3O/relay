@@ -104,6 +104,7 @@ final class WorkRequestApiController extends Controller
             'blocked_reason' => ['nullable', 'string'],
             'due_date' => ['nullable', 'date'],
             'tags' => ['nullable', 'array'],
+            'lock_version' => ['nullable', 'integer'],
         ]);
 
         $updated = $this->service->update($workRequest, $user, $validated);

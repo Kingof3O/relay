@@ -6242,6 +6242,10 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 	const authUser = usePage().props.auth?.user;
 	const initialPreferences = authUser?.preferences;
 	const [boardRequests, setBoardRequests] = useState(initialRequests);
+	const boardRequestsRef = useRef(boardRequests);
+	useEffect(() => {
+		boardRequestsRef.current = boardRequests;
+	}, [boardRequests]);
 	const [viewMode, setViewMode] = useState(() => {
 		if (initialPreferences?.board_view_mode) return initialPreferences.board_view_mode;
 		if (typeof window !== "undefined") {
@@ -6342,9 +6346,13 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 			return list;
 		});
 		if (destinationStatus === "done") triggerCelebration();
+		const lockVersion = boardRequestsRef.current.find((r) => r.id === cardId)?.lock_version;
 		notifyUndo(cardId, sourceStatus, sourceStatusLabel, statusLabel);
 		try {
-			const response = await axios.patch(route("requests.update", cardId), { status: destinationStatus });
+			const response = await axios.patch(route("requests.update", cardId), {
+				status: destinationStatus,
+				lock_version: lockVersion
+			});
 			if (response.data?.request) handleCardUpdated(response.data.request);
 		} catch (error) {
 			setBoardRequests((prev) => prev.map((r) => r.id === cardId ? {
@@ -6365,8 +6373,12 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 					status: previousStatus,
 					status_label: previousStatusLabel
 				} : r));
+				const currentCard = boardRequestsRef.current.find((r) => r.id === cardId);
 				try {
-					const response = await axios.patch(route("requests.update", cardId), { status: previousStatus });
+					const response = await axios.patch(route("requests.update", cardId), {
+						status: previousStatus,
+						lock_version: currentCard?.lock_version
+					});
 					if (response.data?.request) handleCardUpdated(response.data.request);
 					toast.info(`Reverted to ${previousStatusLabel}`);
 				} catch (err) {
@@ -6388,7 +6400,10 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 		if (nextStatus === "done") triggerCelebration();
 		notifyUndo(request.id, previousStatus, previousStatusLabel, statusLabel);
 		try {
-			const response = await axios.patch(route("requests.update", request.id), { status: nextStatus });
+			const response = await axios.patch(route("requests.update", request.id), {
+				status: nextStatus,
+				lock_version: request.lock_version
+			});
 			if (response.data?.request) handleCardUpdated(response.data.request);
 		} catch (error) {
 			setBoardRequests((prev) => prev.map((r) => r.id === request.id ? {

@@ -86,6 +86,14 @@ final class InboundEmailWebhookController extends Controller
             return response()->json(['error' => "User with email '{$senderEmail}' not found."], 422);
         }
 
+        if (! $author->active) {
+            return response()->json(['error' => "User account is inactive."], 403);
+        }
+
+        if ($ticket->workspace_id !== null && ! $author->belongsToWorkspace($ticket->workspace_id)) {
+            return response()->json(['error' => "User does not belong to this workspace."], 403);
+        }
+
         // 5. Extract Comment Body
         $body = (string) (
             $request->input('StrippedTextReply')

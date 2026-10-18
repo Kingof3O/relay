@@ -113,6 +113,14 @@ class User extends Authenticatable
         return $this->currentWorkspace();
     }
 
+    public function belongsToWorkspace(int|Workspace $workspace): bool
+    {
+        $id = $workspace instanceof Workspace ? $workspace->id : $workspace;
+
+        return $this->workspaces()->where('workspaces.id', $id)->exists()
+            || $this->ownedWorkspaces()->where('id', $id)->exists();
+    }
+
     public function requestedWork(): HasMany
     {
         return $this->hasMany(WorkRequest::class, 'requester_id');

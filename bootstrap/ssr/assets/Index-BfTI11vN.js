@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-FgYr35T-.js";
+import { t as Authenticated } from "./AuthenticatedLayout-C_R1UHeH.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";
@@ -25,11 +25,14 @@ function GanttTimeline({ projects, requests, quarter, year, quarterStart, quarte
 		});
 	}, [quarter, year]);
 	const getPosition = (dateStr) => {
+		if (!dateStr || totalMs <= 0) return 0;
 		const d = new Date(dateStr);
+		if (isNaN(d.getTime())) return 0;
 		const clamped = Math.max(qStart.getTime(), Math.min(qEnd.getTime(), d.getTime()));
 		return Math.max(0, Math.min(100, (clamped - qStart.getTime()) / totalMs * 100));
 	};
 	const todayPos = useMemo(() => {
+		if (totalMs <= 0) return null;
 		const now = /* @__PURE__ */ new Date();
 		if (now < qStart || now > qEnd) return null;
 		return (now.getTime() - qStart.getTime()) / totalMs * 100;

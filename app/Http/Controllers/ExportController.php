@@ -13,8 +13,11 @@ class ExportController extends Controller
     public function export(Request $request): StreamedResponse
     {
         $format = strtolower((string) $request->query('format', 'csv'));
+        $user = $request->user();
+        $activeWorkspace = $user?->currentWorkspace();
 
         $query = WorkRequest::query()
+            ->when($activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
             ->with(['area', 'assignee', 'requester'])
             ->filter($request->all(), $request->user())
             ->orderBy('id', 'desc');

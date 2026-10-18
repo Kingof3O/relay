@@ -19,13 +19,19 @@ class RequestCloneController extends Controller
 
         $user = $request->user();
 
+        $this->authorize('view', $workRequest);
+        $this->authorize('create', WorkRequest::class);
+
         $newRequest = DB::transaction(function () use ($workRequest, $user): WorkRequest {
             $data = [
+                'workspace_id' => $workRequest->workspace_id,
                 'title' => "[Copy] {$workRequest->title}",
                 'description' => $workRequest->description,
                 'area_id' => $workRequest->area_id,
                 'priority' => $workRequest->priority,
                 'status' => 'new',
+                'story_points' => $workRequest->story_points,
+                'cycle_id' => $workRequest->cycle_id,
                 'requester_id' => $user->id,
                 'assignee_id' => $workRequest->assignee_id,
                 'is_blocked' => false,

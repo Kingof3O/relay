@@ -9,6 +9,7 @@ use App\Services\WorkRequestPresenter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 final class SubtaskController extends Controller
 {
@@ -20,24 +21,31 @@ final class SubtaskController extends Controller
     {
         $this->authorize('update', $workRequest);
 
+        // Prevent nesting subtasks under subtasks
+        if ($workRequest->parent_id !== null) {
+            abort(422, 'Cannot nest subtasks under another subtask.');
+        }
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'assignee_id' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
             'story_points' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:100'],
         ]);
 
-        $subtask = WorkRequest::query()->create([
-            'workspace_id' => $workRequest->workspace_id,
-            'area_id' => $workRequest->area_id,
-            'parent_id' => $workRequest->id,
-            'cycle_id' => $workRequest->cycle_id,
-            'title' => $validated['title'],
-            'status' => 'new',
-            'priority' => 'normal',
-            'story_points' => $validated['story_points'] ?? null,
-            'requester_id' => $request->user()->id,
-            'assignee_id' => $validated['assignee_id'] ?? null,
-        ]);
+        $subtask = DB::transaction(function () use ($request, $workRequest, $validated): WorkRequest {
+            return WorkRequest::query()->create([
+                'workspace_id' => $workRequest->workspace_id,
+                'area_id' => $workRequest->area_id,
+                'parent_id' => $workRequest->id,
+                'cycle_id' => $workRequest->cycle_id,
+                'title' => $validated['title'],
+                'status' => 'new',
+                'priority' => 'normal',
+                'story_points' => $validated['story_points'] ?? null,
+                'requester_id' => $request->user()->id,
+                'assignee_id' => $validated['assignee_id'] ?? null,
+            ]);
+        });
 
         if ($request->expectsJson()) {
             return response()->json([

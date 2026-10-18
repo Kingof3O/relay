@@ -8,6 +8,7 @@ use App\Services\WorkRequestPresenter;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
 class RequestRelationController extends Controller
@@ -34,18 +35,52 @@ class RequestRelationController extends Controller
 
         $type = $validated['type'] ?? 'blocks';
 
-        $relation = RequestRelation::query()->firstOrCreate([
-            'request_id' => $target->id,
-            'related_id' => $validated['related_id'],
-            'type' => $type,
-        ]);
-
-        if ($type === 'blocks') {
-            $target->update([
-                'is_blocked' => true,
-                'blocked_reason' => $target->blocked_reason ?: "Blocked by #REQ-{$validated['related_id']}",
-            ]);
+        $related = WorkRequest::findOrFail($validated['related_id']);
+        if ($target->workspace_id !== null && $related->workspace_id !== null && $target->workspace_id !== $related->workspace_id) {
+            if ($httpRequest->expectsJson()) {
+                return response()->json([
+                    'message' => 'Cannot link requests from different workspaces.',
+                    'error' => 'Cannot link requests from different workspaces.',
+                ], 422);
+            }
+            return back()->withErrors(['related_id' => 'Cannot link requests from different workspaces.']);
         }
+
+        // Circular blocking dependency prevention
+        if ($type === 'blocks') {
+            $isReverseBlocker = RequestRelation::query()
+                ->where('request_id', $validated['related_id'])
+                ->where('related_id', $target->id)
+                ->where('type', 'blocks')
+                ->exists();
+
+            if ($isReverseBlocker) {
+                if ($httpRequest->expectsJson()) {
+                    return response()->json([
+                        'message' => "Circular dependency detected: #REQ-{$target->id} already blocks #REQ-{$validated['related_id']}.",
+                        'error' => "Circular dependency detected: #REQ-{$target->id} already blocks #REQ-{$validated['related_id']}.",
+                    ], 422);
+                }
+                return back()->withErrors(['related_id' => "Circular dependency detected: #REQ-{$target->id} already blocks #REQ-{$validated['related_id']}."]);
+            }
+        }
+
+        $relation = DB::transaction(function () use ($target, $validated, $type): RequestRelation {
+            $relation = RequestRelation::query()->firstOrCreate([
+                'request_id' => $target->id,
+                'related_id' => $validated['related_id'],
+                'type' => $type,
+            ]);
+
+            if ($type === 'blocks') {
+                $target->update([
+                    'is_blocked' => true,
+                    'blocked_reason' => $target->blocked_reason ?: "Blocked by #REQ-{$validated['related_id']}",
+                ]);
+            }
+
+            return $relation;
+        });
 
         if ($httpRequest->expectsJson()) {
             return response()->json([
@@ -84,25 +119,27 @@ class RequestRelationController extends Controller
         }
 
         if ($rel) {
-            $wasBlocking = $rel->type === 'blocks';
-            $rel->delete();
+            DB::transaction(function () use ($target, $rel): void {
+                $wasBlocking = $rel->type === 'blocks';
+                $rel->delete();
 
-            if ($wasBlocking) {
-                $remainingBlockers = RequestRelation::query()
-                    ->where('request_id', $target->id)
-                    ->where('type', 'blocks')
-                    ->whereHas('related', function ($query) {
-                        $query->where('status', '!=', 'done');
-                    })
-                    ->count();
+                if ($wasBlocking) {
+                    $remainingBlockers = RequestRelation::query()
+                        ->where('request_id', $target->id)
+                        ->where('type', 'blocks')
+                        ->whereHas('related', function ($query) {
+                            $query->where('status', '!=', 'done');
+                        })
+                        ->count();
 
-                if ($remainingBlockers === 0) {
-                    $target->update([
-                        'is_blocked' => false,
-                        'blocked_reason' => null,
-                    ]);
+                    if ($remainingBlockers === 0) {
+                        $target->update([
+                            'is_blocked' => false,
+                            'blocked_reason' => null,
+                        ]);
+                    }
                 }
-            }
+            });
         }
 
         if ($httpRequest->expectsJson()) {

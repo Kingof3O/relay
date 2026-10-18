@@ -76,12 +76,15 @@ export default function GanttTimeline({
 
     // Position calculator (% from left: 0% to 100%)
     const getPosition = (dateStr: string) => {
+        if (!dateStr || totalMs <= 0) return 0;
         const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return 0;
         const clamped = Math.max(qStart.getTime(), Math.min(qEnd.getTime(), d.getTime()));
         return Math.max(0, Math.min(100, ((clamped - qStart.getTime()) / totalMs) * 100));
     };
 
     const todayPos = useMemo(() => {
+        if (totalMs <= 0) return null;
         const now = new Date();
         if (now < qStart || now > qEnd) return null;
         return ((now.getTime() - qStart.getTime()) / totalMs) * 100;

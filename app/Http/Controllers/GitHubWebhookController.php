@@ -109,6 +109,8 @@ class GitHubWebhookController extends Controller
                                 null
                             );
 
+                            $service->resolveBlockedDependencies($workRequest, null);
+
                             WorkRequestMoved::dispatch($workRequest, null, $oldStatus, 'done');
                         }
                     } elseif ($prRecord->wasRecentlyCreated) {

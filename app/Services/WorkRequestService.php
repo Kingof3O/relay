@@ -81,7 +81,17 @@ final class WorkRequestService
             $oldBlocked = (bool) $request->is_blocked;
 
             $hasLockVersion = array_key_exists('lock_version', $attributes);
+            $submittedLockVersion = $hasLockVersion ? (int) $attributes['lock_version'] : null;
             unset($attributes['lock_version']);
+
+            // Atomic row lock to protect concurrent updates against race conditions
+            $locked = WorkRequest::query()->lockForUpdate()->find($request->id);
+            if ($locked && $hasLockVersion) {
+                $currentLockVersion = (int) ($locked->lock_version ?: 1);
+                if ($submittedLockVersion !== $currentLockVersion) {
+                    abort(409, 'This request has been updated by another teammate.');
+                }
+            }
 
             $request->fill($attributes);
 
@@ -90,7 +100,8 @@ final class WorkRequestService
             }
 
             if ($request->isDirty('description') || $hasLockVersion) {
-                $request->lock_version = ((int) ($request->getOriginal('lock_version') ?: 1)) + 1;
+                $baseVersion = (int) ($locked?->lock_version ?: ($request->getOriginal('lock_version') ?: 1));
+                $request->lock_version = $baseVersion + 1;
             }
 
             $request->save();

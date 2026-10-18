@@ -144,20 +144,35 @@ final class CycleService
     public function rollover(Cycle $cycle): Cycle
     {
         return DB::transaction(function () use ($cycle): Cycle {
+            // Pessimistic lock on cycle row to prevent concurrent rollover race conditions
+            $lockedCycle = Cycle::query()->lockForUpdate()->findOrFail($cycle->id);
+
+            // If already completed (e.g. concurrent rollover), return existing next cycle idempotently
+            if (! $lockedCycle->is_active) {
+                $existingNext = Cycle::query()
+                    ->where('workspace_id', $lockedCycle->workspace_id)
+                    ->where('number', $lockedCycle->number + 1)
+                    ->first();
+
+                if ($existingNext) {
+                    return $existingNext;
+                }
+            }
+
             // 1. Mark existing cycle completed
-            $cycle->update([
+            $lockedCycle->update([
                 'is_active' => false,
                 'completed_at' => now(),
             ]);
 
             // 2. Compute next 2-week date range
-            $nextNumber = $cycle->number + 1;
-            $newStartDate = $cycle->end_date ? Carbon::parse($cycle->end_date)->addDay()->startOfDay() : now()->startOfDay();
+            $nextNumber = $lockedCycle->number + 1;
+            $newStartDate = $lockedCycle->end_date ? Carbon::parse($lockedCycle->end_date)->addDay()->startOfDay() : now()->startOfDay();
             $newEndDate = $newStartDate->copy()->addDays(13)->startOfDay();
 
             // 3. Create next cycle
             $nextCycle = Cycle::query()->create([
-                'workspace_id' => $cycle->workspace_id,
+                'workspace_id' => $lockedCycle->workspace_id,
                 'number' => $nextNumber,
                 'name' => "Cycle {$nextNumber}",
                 'start_date' => $newStartDate->toDateString(),

@@ -24,6 +24,11 @@ export function useKanbanBoard({
     const initialPreferences = authUser?.preferences;
 
     const [boardRequests, setBoardRequests] = useState<WorkRequestCard[]>(initialRequests);
+    const boardRequestsRef = useRef<WorkRequestCard[]>(boardRequests);
+
+    useEffect(() => {
+        boardRequestsRef.current = boardRequests;
+    }, [boardRequests]);
 
     // Roaming view mode ('board' vs 'list')
     const [viewMode, setViewMode] = useState<'board' | 'list'>(() => {
@@ -173,10 +178,16 @@ export function useKanbanBoard({
             triggerCelebration();
         }
 
+        const movedCard = boardRequestsRef.current.find((r) => r.id === cardId);
+        const lockVersion = movedCard?.lock_version;
+
         notifyUndo(cardId, sourceStatus, sourceStatusLabel, statusLabel);
 
         try {
-            const response = await axios.patch(route('requests.update', cardId), { status: destinationStatus });
+            const response = await axios.patch(route('requests.update', cardId), {
+                status: destinationStatus,
+                lock_version: lockVersion,
+            });
             if (response.data?.request) {
                 handleCardUpdated(response.data.request);
             }
@@ -218,9 +229,11 @@ export function useKanbanBoard({
                                     : r
                             )
                         );
+                        const currentCard = boardRequestsRef.current.find((r) => r.id === cardId);
                         try {
                             const response = await axios.patch(route('requests.update', cardId), {
                                 status: previousStatus,
+                                lock_version: currentCard?.lock_version,
                             });
                             if (response.data?.request) {
                                 handleCardUpdated(response.data.request);
@@ -264,7 +277,10 @@ export function useKanbanBoard({
         notifyUndo(request.id, previousStatus, previousStatusLabel, statusLabel);
 
         try {
-            const response = await axios.patch(route('requests.update', request.id), { status: nextStatus });
+            const response = await axios.patch(route('requests.update', request.id), {
+                status: nextStatus,
+                lock_version: request.lock_version,
+            });
             if (response.data?.request) {
                 handleCardUpdated(response.data.request);
             }

@@ -4,31 +4,31 @@
     "/build/assets/ApplicationLogo-BVzx5-Vz.js"
   ],
   "resources/js/Components/Badge.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/Card.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/Checkbox.tsx": [
     "/build/assets/Login-Dly2W7MP.js"
   ],
   "resources/js/Components/CommandPalette.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/Cycles/CycleBurndownChart.tsx": [
-    "/build/assets/Index-C4O1bgN0.js"
+    "/build/assets/Index-DqcnjQeo.js"
   ],
   "resources/js/Components/Dropdown.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/Editor/SlashCommandMenu.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/Editor/TipTapEditor.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/ImageLightbox.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/InputError.tsx": [
     "/build/assets/TextInput-CMpMv42q.js"
@@ -37,61 +37,61 @@
     "/build/assets/TextInput-CMpMv42q.js"
   ],
   "resources/js/Components/LivePresenceAvatars.tsx": [
-    "/build/assets/Show-BYIU_IDx.js"
+    "/build/assets/Show-YnomZ0u_.js"
   ],
   "resources/js/Components/MarkdownViewer.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/Modal.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/PrimaryButton.tsx": [
     "/build/assets/TextInput-CMpMv42q.js"
   ],
   "resources/js/Components/Roadmap/GanttTimeline.tsx": [
-    "/build/assets/Index-BhIyQ65X.js"
+    "/build/assets/Index-BfTI11vN.js"
   ],
   "resources/js/Components/SecondaryButton.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Components/ShortcutsModal.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/Sidebar.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Components/TextInput.tsx": [
     "/build/assets/TextInput-CMpMv42q.js"
   ],
   "resources/js/Components/WorkspaceSwitcher.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Dashboard/components/DashboardActivityFeed.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/components/DashboardHero.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/components/DashboardKpiTiles.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/components/DashboardQueuesGrid.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/components/DeliveryVelocityCard.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/components/InitiativesProgressCard.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/components/RoadblockAlertBanner.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/components/TeamWorkloadCard.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Dashboard/index.ts": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Features/Integrations/components/DeliveryLogTable.tsx": [
     "/build/assets/Integrations-CXfteOG9.js"
@@ -115,124 +115,124 @@
     "/build/assets/Integrations-CXfteOG9.js"
   ],
   "resources/js/Features/Notifications/components/NotificationPopover.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Notifications/index.ts": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Notifications/types.ts": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Profile/components/AccountTelemetryCard.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Profile/components/NotificationPreferencesCard.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Profile/components/PersonalAccessTokensCard.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Profile/components/TwoFactorSecurityCard.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Profile/components/UpdatePasswordForm.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Profile/components/UpdateProfileInformationForm.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Profile/components/VisualIdentityHero.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Profile/index.ts": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Features/Requests/components/BoardFilterBar.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/BoardHeader.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/BulkActionBar.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Create/BulkSpreadsheetForm.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Create/SingleRequestForm.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestBlockerBanner.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestDescriptionCard.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestDiscussionSection.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestHeroHeader.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestMediaGallery.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestPullRequestsSection.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestSidebarProperties.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/Detail/RequestSubtasksSection.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/FileDropZone.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/KanbanBoard.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/QuickCreateModal.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/QuickViewDrawer.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/RequestCard.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/components/RequestListView.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/hooks/useBoardFilters.ts": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/hooks/useKanbanBoard.ts": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Requests/index.ts": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Features/Settings/components/MemberFormModal.tsx": [
-    "/build/assets/Index-DCsfcRh6.js"
+    "/build/assets/Index-D8SLwl1P.js"
   ],
   "resources/js/Features/Settings/components/OAuthProvidersCard.tsx": [
-    "/build/assets/Index-DCsfcRh6.js"
+    "/build/assets/Index-D8SLwl1P.js"
   ],
   "resources/js/Features/Settings/components/ProjectsManagementCard.tsx": [
-    "/build/assets/Index-DCsfcRh6.js"
+    "/build/assets/Index-D8SLwl1P.js"
   ],
   "resources/js/Features/Settings/components/TeamManagementCard.tsx": [
     "/build/assets/TeamManagementCard-DhJIhOln.js"
   ],
   "resources/js/Features/Settings/components/WorkspaceSnapshotCard.tsx": [
-    "/build/assets/Index-DCsfcRh6.js"
+    "/build/assets/Index-D8SLwl1P.js"
   ],
   "resources/js/Features/Settings/index.ts": [
-    "/build/assets/Index-DCsfcRh6.js"
+    "/build/assets/Index-D8SLwl1P.js"
   ],
   "resources/js/Layouts/AuthenticatedLayout.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/Layouts/GuestLayout.tsx": [
     "/build/assets/AcceptInvitation-Br8e305E.js"
@@ -244,40 +244,40 @@
     "/build/assets/Login-Dly2W7MP.js"
   ],
   "resources/js/Pages/Cycles/Index.tsx": [
-    "/build/assets/Index-C4O1bgN0.js"
+    "/build/assets/Index-DqcnjQeo.js"
   ],
   "resources/js/Pages/Dashboard.tsx": [
-    "/build/assets/Dashboard-DF6FwwC5.js"
+    "/build/assets/Dashboard-BDVF0eTW.js"
   ],
   "resources/js/Pages/Error.tsx": [
     "/build/assets/Error-tXIVVIK6.js"
   ],
   "resources/js/Pages/Integrations/Index.tsx": [
-    "/build/assets/Index-Wh-s3_pw.js"
+    "/build/assets/Index-BoT3ClNB.js"
   ],
   "resources/js/Pages/Notifications/Index.tsx": [
-    "/build/assets/Index-BnSSNhOl.js"
+    "/build/assets/Index-rzrA-nsf.js"
   ],
   "resources/js/Pages/Profile/Edit.tsx": [
-    "/build/assets/Edit-D2k87LWL.js"
+    "/build/assets/Edit-BPwM1mn-.js"
   ],
   "resources/js/Pages/Requests/Index.tsx": [
-    "/build/assets/Index-NHPgLxDZ.js"
+    "/build/assets/Index-DcOFli88.js"
   ],
   "resources/js/Pages/Requests/Show.tsx": [
-    "/build/assets/Show-BYIU_IDx.js"
+    "/build/assets/Show-YnomZ0u_.js"
   ],
   "resources/js/Pages/Roadmap/Index.tsx": [
-    "/build/assets/Index-BhIyQ65X.js"
+    "/build/assets/Index-BfTI11vN.js"
   ],
   "resources/js/Pages/Settings/Index.tsx": [
-    "/build/assets/Index-DCsfcRh6.js"
+    "/build/assets/Index-D8SLwl1P.js"
   ],
   "resources/js/Utils/confetti.ts": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/lib/toast.tsx": [
-    "/build/assets/AuthenticatedLayout-FgYr35T-.js"
+    "/build/assets/AuthenticatedLayout-C_R1UHeH.js"
   ],
   "resources/js/ssr.tsx": [],
   "vendor/tightenco/ziggy/dist/index.esm.js": []

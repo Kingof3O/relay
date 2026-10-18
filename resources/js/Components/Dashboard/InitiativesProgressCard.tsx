@@ -60,14 +60,14 @@ export default function InitiativesProgressCard({
                                     <span>
                                         {project.done}/{project.total}
                                     </span>
-                                    <span className="font-semibold text-zinc-200">{project.percentage}%</span>
+                                    <span className="font-semibold text-zinc-200">{Math.round(project.percentage || 0)}%</span>
                                 </div>
                             </div>
                             <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
                                 <div
                                     className="h-full rounded-full transition-all duration-300"
                                     style={{
-                                        width: `${project.percentage}%`,
+                                        width: `${Math.max(0, Math.min(100, project.percentage || 0))}%`,
                                         backgroundColor: project.color,
                                     }}
                                 />

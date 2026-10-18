@@ -1,4 +1,4 @@
-import { p as Card, t as Authenticated, w as Badge } from "./AuthenticatedLayout-FgYr35T-.js";
+import { p as Card, t as Authenticated, w as Badge } from "./AuthenticatedLayout-C_R1UHeH.js";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";
@@ -472,7 +472,7 @@ function InitiativesProgressCard({ projectStats = [], className = "p-5 lg:col-sp
 							project.total
 						] }), /* @__PURE__ */ jsxs("span", {
 							className: "font-semibold text-zinc-200",
-							children: [project.percentage, "%"]
+							children: [Math.round(project.percentage || 0), "%"]
 						})]
 					})]
 				}), /* @__PURE__ */ jsx("div", {
@@ -480,7 +480,7 @@ function InitiativesProgressCard({ projectStats = [], className = "p-5 lg:col-sp
 					children: /* @__PURE__ */ jsx("div", {
 						className: "h-full rounded-full transition-all duration-300",
 						style: {
-							width: `${project.percentage}%`,
+							width: `${Math.max(0, Math.min(100, project.percentage || 0))}%`,
 							backgroundColor: project.color
 						}
 					})
