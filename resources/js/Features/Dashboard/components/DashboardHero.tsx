@@ -13,20 +13,56 @@ export default function DashboardHero({
     stats,
     statusBreakdown = {},
 }: DashboardHeroProps) {
-    const totalPipeline = Math.max(1, stats.total || 1);
+    const totalPipeline = Math.max(0, stats.total || 0);
+
     const pipelineSegments = [
-        { label: 'New', count: statusBreakdown.new ?? 0, color: 'bg-zinc-600' },
-        { label: 'Ready', count: statusBreakdown.ready ?? 0, color: 'bg-zinc-400' },
-        { label: 'In Progress', count: statusBreakdown.doing ?? 0, color: 'bg-indigo-500' },
-        { label: 'Review', count: statusBreakdown.review ?? 0, color: 'bg-amber-400' },
-        { label: 'Done', count: statusBreakdown.done ?? 0, color: 'bg-emerald-400' },
+        {
+            statusKey: 'new',
+            label: 'New',
+            count: statusBreakdown.new ?? 0,
+            barColor: 'bg-zinc-400',
+            dotColor: 'bg-zinc-400',
+        },
+        {
+            statusKey: 'ready',
+            label: 'Ready',
+            count: statusBreakdown.ready ?? 0,
+            barColor: 'bg-sky-400',
+            dotColor: 'bg-sky-400',
+        },
+        {
+            statusKey: 'doing',
+            label: 'In Progress',
+            count: statusBreakdown.doing ?? 0,
+            barColor: 'bg-indigo-400',
+            dotColor: 'bg-indigo-400',
+        },
+        {
+            statusKey: 'review',
+            label: 'Review',
+            count: statusBreakdown.review ?? 0,
+            barColor: 'bg-amber-400',
+            dotColor: 'bg-amber-400',
+        },
+        {
+            statusKey: 'done',
+            label: 'Done',
+            count: statusBreakdown.done ?? 0,
+            barColor: 'bg-emerald-400',
+            dotColor: 'bg-emerald-400',
+        },
     ];
+
+    const activeSegments = pipelineSegments.filter((s) => s.count > 0);
 
     return (
         <section className="relative overflow-hidden rounded-xl border border-white/[0.08] bg-[#111216] p-6 shadow-sm sm:p-7">
+            {/* Ambient specular glow */}
+            <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-violet-500/5 blur-3xl" />
+
             <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
                 <div className="max-w-2xl">
-                    <div className="inline-flex items-center gap-2 rounded-full border border-zinc-700/60 bg-zinc-800/50 px-3 py-1 text-xs font-medium text-zinc-300">
+                    <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1 text-xs font-medium text-zinc-300">
                         <Sparkles className="h-3.5 w-3.5 text-zinc-400" />
                         <span>Overview · {firstName}</span>
                         <span className="h-1 w-1 rounded-full bg-zinc-500" />
@@ -40,34 +76,61 @@ export default function DashboardHero({
                     </p>
 
                     {/* Status Pipeline Flow */}
-                    <div className="mt-5 max-w-lg">
-                        <div className="flex items-center justify-between text-[11px] text-zinc-400 mb-1.5 font-medium">
-                            <span>Pipeline Flow</span>
-                            <span className="text-zinc-500">
-                                {stats.done} completed ({stats.completion_rate}%)
-                            </span>
+                    <div className="mt-5 max-w-xl">
+                        <div className="mb-2 flex items-center justify-between text-xs">
+                            <div className="flex items-center gap-2">
+                                <span className="font-medium text-zinc-300">Delivery Pipeline</span>
+                                <span className="text-zinc-600">·</span>
+                                <span className="font-mono text-[11px] text-zinc-400">
+                                    {stats.total} total {stats.total === 1 ? 'task' : 'tasks'}
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 font-mono text-[11px] text-zinc-400">
+                                <span className="font-semibold text-emerald-400">
+                                    {stats.done} completed
+                                </span>
+                                <span className="text-zinc-600">({stats.completion_rate}%)</span>
+                            </div>
                         </div>
-                        <div className="flex h-2 w-full overflow-hidden rounded-full bg-zinc-800/80 p-0.5 border border-zinc-750">
-                            {pipelineSegments.map((segment) => {
-                                const widthPct = Math.max(3, (segment.count / totalPipeline) * 100);
-                                return (
-                                    <div
-                                        key={segment.label}
-                                        className={`h-full ${segment.color} first:rounded-l-full last:rounded-r-full transition-all duration-300`}
-                                        style={{ width: `${widthPct}%` }}
-                                        title={`${segment.label}: ${segment.count}`}
+
+                        {/* Segmented Precision Progress Bar */}
+                        <div className="flex h-2 w-full gap-1 overflow-hidden rounded-full bg-zinc-800/50">
+                            {activeSegments.length === 0 ? (
+                                <div className="h-full w-full bg-zinc-800/40" />
+                            ) : (
+                                activeSegments.map((segment) => {
+                                    const pct = totalPipeline > 0 ? Math.round((segment.count / totalPipeline) * 100) : 0;
+                                    return (
+                                        <div
+                                            key={segment.statusKey}
+                                            style={{ flex: segment.count }}
+                                            className={`h-full ${segment.barColor} transition-all duration-300 hover:brightness-125`}
+                                            title={`${segment.label}: ${segment.count} (${pct}%)`}
+                                        />
+                                    );
+                                })
+                            )}
+                        </div>
+
+                        {/* Interactive Status Filter Pills */}
+                        <div className="mt-3 flex flex-wrap items-center gap-2">
+                            {pipelineSegments.map((segment) => (
+                                <Link
+                                    key={segment.statusKey}
+                                    href={route('requests.index', { status: segment.statusKey })}
+                                    className="group flex items-center gap-2 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-1 text-xs transition-all duration-150 hover:border-white/[0.14] hover:bg-white/[0.06] active:scale-[0.98]"
+                                    title={`Filter ${segment.label} in Kanban`}
+                                >
+                                    <span
+                                        className={`h-1.5 w-1.5 rounded-full ${segment.dotColor} transition-transform group-hover:scale-125`}
                                     />
-                                );
-                            })}
-                        </div>
-                        <div className="mt-2.5 flex flex-wrap items-center gap-4 text-[10px] text-zinc-400">
-                            {pipelineSegments.map((s) => (
-                                <div key={s.label} className="flex items-center gap-1.5">
-                                    <span className={`h-1.5 w-1.5 rounded-full ${s.color}`} />
-                                    <span>
-                                        {s.label}: <strong className="font-semibold text-zinc-200">{s.count}</strong>
+                                    <span className="font-medium text-zinc-400 transition-colors group-hover:text-zinc-200">
+                                        {segment.label}
                                     </span>
-                                </div>
+                                    <span className="font-mono text-[11px] font-semibold text-zinc-300 group-hover:text-white">
+                                        {segment.count}
+                                    </span>
+                                </Link>
                             ))}
                         </div>
                     </div>
