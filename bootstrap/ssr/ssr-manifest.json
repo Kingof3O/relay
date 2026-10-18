@@ -37,7 +37,7 @@
     "/build/assets/TextInput-CMpMv42q.js"
   ],
   "resources/js/Components/LivePresenceAvatars.tsx": [
-    "/build/assets/Show-CQuHRqOE.js"
+    "/build/assets/Show-E_Bcjgg6.js"
   ],
   "resources/js/Components/MarkdownViewer.tsx": [
     "/build/assets/AuthenticatedLayout-CmuF4Gg9.js"
@@ -52,7 +52,7 @@
     "/build/assets/Index-rLvMB0nZ.js"
   ],
   "resources/js/Components/SecondaryButton.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Components/ShortcutsModal.tsx": [
     "/build/assets/AuthenticatedLayout-CmuF4Gg9.js"
@@ -124,28 +124,28 @@
     "/build/assets/AuthenticatedLayout-CmuF4Gg9.js"
   ],
   "resources/js/Features/Profile/components/AccountTelemetryCard.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Profile/components/NotificationPreferencesCard.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Profile/components/PersonalAccessTokensCard.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Profile/components/TwoFactorSecurityCard.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Profile/components/UpdatePasswordForm.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Profile/components/UpdateProfileInformationForm.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Profile/components/VisualIdentityHero.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Profile/index.ts": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Features/Requests/components/BoardFilterBar.tsx": [
     "/build/assets/AuthenticatedLayout-CmuF4Gg9.js"
@@ -214,22 +214,22 @@
     "/build/assets/AuthenticatedLayout-CmuF4Gg9.js"
   ],
   "resources/js/Features/Settings/components/MemberFormModal.tsx": [
-    "/build/assets/Index-CI23tFvi.js"
+    "/build/assets/Index-F_Ymb7da.js"
   ],
   "resources/js/Features/Settings/components/OAuthProvidersCard.tsx": [
-    "/build/assets/Index-CI23tFvi.js"
+    "/build/assets/Index-F_Ymb7da.js"
   ],
   "resources/js/Features/Settings/components/ProjectsManagementCard.tsx": [
-    "/build/assets/Index-CI23tFvi.js"
+    "/build/assets/Index-F_Ymb7da.js"
   ],
   "resources/js/Features/Settings/components/TeamManagementCard.tsx": [
-    "/build/assets/TeamManagementCard-DYzHc2r-.js"
+    "/build/assets/TeamManagementCard-DpiBL_MV.js"
   ],
   "resources/js/Features/Settings/components/WorkspaceSnapshotCard.tsx": [
-    "/build/assets/Index-CI23tFvi.js"
+    "/build/assets/Index-F_Ymb7da.js"
   ],
   "resources/js/Features/Settings/index.ts": [
-    "/build/assets/Index-CI23tFvi.js"
+    "/build/assets/Index-F_Ymb7da.js"
   ],
   "resources/js/Layouts/AuthenticatedLayout.tsx": [
     "/build/assets/AuthenticatedLayout-CmuF4Gg9.js"
@@ -259,19 +259,19 @@
     "/build/assets/Index-B5V8Jx1T.js"
   ],
   "resources/js/Pages/Profile/Edit.tsx": [
-    "/build/assets/Edit-Bq2JK4JF.js"
+    "/build/assets/Edit-BkCu_Pfy.js"
   ],
   "resources/js/Pages/Requests/Index.tsx": [
     "/build/assets/Index-qDl4BrAf.js"
   ],
   "resources/js/Pages/Requests/Show.tsx": [
-    "/build/assets/Show-CQuHRqOE.js"
+    "/build/assets/Show-E_Bcjgg6.js"
   ],
   "resources/js/Pages/Roadmap/Index.tsx": [
     "/build/assets/Index-rLvMB0nZ.js"
   ],
   "resources/js/Pages/Settings/Index.tsx": [
-    "/build/assets/Index-CI23tFvi.js"
+    "/build/assets/Index-F_Ymb7da.js"
   ],
   "resources/js/Utils/confetti.ts": [
     "/build/assets/AuthenticatedLayout-CmuF4Gg9.js"

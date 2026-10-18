@@ -1,4 +1,4 @@
-import { getAvatarGradient, getRoleBadgeStyle } from '@/Features/Settings/components/TeamManagementCard';
+import { getAvatarPalette, getRoleBadgeStyle } from '@/Features/Settings/components/TeamManagementCard';
 import { usePage } from '@inertiajs/react';
 import {
     Activity,
@@ -46,7 +46,7 @@ export default function VisualIdentityHero({ stats }: VisualIdentityHeroProps) {
     const completionRate =
         assignedCount > 0 ? Math.round((completedCount / assignedCount) * 100) : 100;
 
-    const gradient = getAvatarGradient(user.username || user.name);
+    const avatar = getAvatarPalette(user.username || user.name);
     const roleBadge = getRoleBadgeStyle(role?.name || user.role?.name);
     const joinedText = formatJoined(user.created_at);
 
@@ -62,7 +62,7 @@ export default function VisualIdentityHero({ stats }: VisualIdentityHeroProps) {
                 <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
                     <div className="relative shrink-0">
                         <div
-                            className={`flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-2xl sm:text-3xl font-extrabold text-white shadow-xl ring-2 ring-white/10`}
+                            className={`flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-2xl border bg-gradient-to-br ${avatar.bg} ${avatar.border} ${avatar.text} text-2xl sm:text-3xl font-extrabold shadow-xl ring-2 ring-white/[0.06]`}
                         >
                             {getInitials(user.name)}
                         </div>

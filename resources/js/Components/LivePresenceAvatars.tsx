@@ -18,11 +18,11 @@ interface LivePresenceAvatarsProps {
 }
 
 const AVATAR_COLORS = [
-    'from-violet-500 to-indigo-600',
-    'from-emerald-500 to-teal-600',
-    'from-cyan-500 to-blue-600',
-    'from-amber-500 to-orange-600',
-    'from-pink-500 to-rose-600',
+    'from-violet-950/80 to-zinc-900 border border-violet-500/40 text-violet-200',
+    'from-emerald-950/80 to-zinc-900 border border-emerald-500/40 text-emerald-200',
+    'from-sky-950/80 to-zinc-900 border border-sky-500/40 text-sky-200',
+    'from-amber-950/80 to-zinc-900 border border-amber-500/40 text-amber-200',
+    'from-rose-950/80 to-zinc-900 border border-rose-500/40 text-rose-200',
 ];
 
 export default function LivePresenceAvatars({ requestId, className = '' }: LivePresenceAvatarsProps) {

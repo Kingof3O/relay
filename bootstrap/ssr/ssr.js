@@ -690,11 +690,11 @@ createServer((page) => createInertiaApp({
 		"./Pages/Error.tsx": () => import("./assets/Error-CW-pSf2a.js"),
 		"./Pages/Integrations/Index.tsx": () => import("./assets/Index-Cjt7DiTe.js"),
 		"./Pages/Notifications/Index.tsx": () => import("./assets/Index-B5V8Jx1T.js"),
-		"./Pages/Profile/Edit.tsx": () => import("./assets/Edit-Bq2JK4JF.js"),
+		"./Pages/Profile/Edit.tsx": () => import("./assets/Edit-BkCu_Pfy.js"),
 		"./Pages/Requests/Index.tsx": () => import("./assets/Index-qDl4BrAf.js"),
-		"./Pages/Requests/Show.tsx": () => import("./assets/Show-CQuHRqOE.js"),
+		"./Pages/Requests/Show.tsx": () => import("./assets/Show-E_Bcjgg6.js"),
 		"./Pages/Roadmap/Index.tsx": () => import("./assets/Index-rLvMB0nZ.js"),
-		"./Pages/Settings/Index.tsx": () => import("./assets/Index-CI23tFvi.js")
+		"./Pages/Settings/Index.tsx": () => import("./assets/Index-F_Ymb7da.js")
 	})),
 	setup: ({ App, props }) => {
 		const ziggy = page.props?.ziggy;

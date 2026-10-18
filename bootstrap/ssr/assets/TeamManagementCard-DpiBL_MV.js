@@ -3,20 +3,47 @@ import { useMemo, useState } from "react";
 import { AlertCircle, Edit3, KeyRound, Mail, Search, UserPlus, Users, X } from "lucide-react";
 import axios, { isAxiosError } from "axios";
 //#region resources/js/Features/Settings/components/TeamManagementCard.tsx
-var AVATAR_GRADIENTS = [
-	"from-violet-500 via-indigo-600 to-purple-600",
-	"from-cyan-500 via-teal-600 to-blue-600",
-	"from-emerald-500 via-teal-600 to-green-600",
-	"from-amber-500 via-orange-600 to-yellow-600",
-	"from-rose-500 via-pink-600 to-red-600",
-	"from-fuchsia-500 via-purple-600 to-pink-600",
-	"from-blue-500 via-indigo-600 to-sky-600",
-	"from-teal-500 via-emerald-600 to-cyan-600"
+var AVATAR_PALETTES = [
+	{
+		bg: "from-violet-950/70 via-[#13141f] to-[#0c0d12]",
+		border: "border-violet-500/30",
+		text: "text-violet-200"
+	},
+	{
+		bg: "from-sky-950/70 via-[#101522] to-[#0c0d12]",
+		border: "border-sky-500/30",
+		text: "text-sky-200"
+	},
+	{
+		bg: "from-emerald-950/70 via-[#101c18] to-[#0c0d12]",
+		border: "border-emerald-500/30",
+		text: "text-emerald-200"
+	},
+	{
+		bg: "from-indigo-950/70 via-[#121422] to-[#0c0d12]",
+		border: "border-indigo-500/30",
+		text: "text-indigo-200"
+	},
+	{
+		bg: "from-amber-950/70 via-[#1a1712] to-[#0c0d12]",
+		border: "border-amber-500/30",
+		text: "text-amber-200"
+	},
+	{
+		bg: "from-rose-950/70 via-[#1a1215] to-[#0c0d12]",
+		border: "border-rose-500/30",
+		text: "text-rose-200"
+	},
+	{
+		bg: "from-zinc-850 via-[#14151b] to-[#0c0d12]",
+		border: "border-zinc-700",
+		text: "text-zinc-200"
+	}
 ];
-function getAvatarGradient(key) {
+function getAvatarPalette(key) {
 	let hash = 0;
 	for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
-	return AVATAR_GRADIENTS[Math.abs(hash) % AVATAR_GRADIENTS.length];
+	return AVATAR_PALETTES[Math.abs(hash) % AVATAR_PALETTES.length];
 }
 function getRoleBadgeStyle(roleName) {
 	const name = (roleName ?? "Stakeholder").toLowerCase();
@@ -276,7 +303,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 						})
 					]
 				}) : filteredUsers.map((user) => {
-					const gradient = getAvatarGradient(user.username || user.name);
+					const avatar = getAvatarPalette(user.username || user.name);
 					const roleBadge = getRoleBadgeStyle(user.role?.name);
 					return /* @__PURE__ */ jsxs("div", {
 						className: `group relative flex flex-col justify-between rounded-xl border p-4.5 transition-all duration-150 ${user.active !== false ? "border-zinc-800 bg-[#0c0d12] hover:border-zinc-700 hover:bg-[#0f1017]" : "border-zinc-850 bg-[#090a0f]/60 opacity-70 hover:opacity-100 hover:border-zinc-800 hover:bg-[#0c0d12]"}`,
@@ -287,7 +314,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 								children: [/* @__PURE__ */ jsxs("div", {
 									className: "relative shrink-0",
 									children: [/* @__PURE__ */ jsx("div", {
-										className: `flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br ${gradient} text-sm font-black text-white shadow-md ring-1 ring-white/10`,
+										className: `flex h-11 w-11 items-center justify-center rounded-xl border bg-gradient-to-br ${avatar.bg} ${avatar.border} ${avatar.text} text-sm font-bold shadow-inner ring-1 ring-white/[0.04]`,
 										children: user.name.charAt(0).toUpperCase()
 									}), /* @__PURE__ */ jsx("span", {
 										className: `absolute -bottom-0.5 -right-0.5 h-3 w-3 rounded-full ring-2 ring-[#0c0d12] transition-colors ${user.active !== false ? "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]" : "bg-zinc-600"}`,
@@ -367,4 +394,4 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 	});
 }
 //#endregion
-export { getAvatarGradient as n, getRoleBadgeStyle as r, TeamManagementCard as t };
+export { getAvatarPalette as n, getRoleBadgeStyle as r, TeamManagementCard as t };

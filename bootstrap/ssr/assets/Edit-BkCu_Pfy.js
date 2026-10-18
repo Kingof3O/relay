@@ -1,6 +1,6 @@
 import { i as InputError, n as PrimaryButton, r as InputLabel, t as TextInput_default } from "./TextInput-CMpMv42q.js";
 import { t as Authenticated } from "./AuthenticatedLayout-CmuF4Gg9.js";
-import { n as getAvatarGradient, r as getRoleBadgeStyle } from "./TeamManagementCard-DYzHc2r-.js";
+import { n as getAvatarPalette, r as getRoleBadgeStyle } from "./TeamManagementCard-DpiBL_MV.js";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useRef, useState } from "react";
@@ -498,7 +498,7 @@ function VisualIdentityHero({ stats }) {
 	const completedCount = stats?.completed_count ?? 0;
 	const activeCount = Math.max(0, assignedCount - completedCount);
 	const completionRate = assignedCount > 0 ? Math.round(completedCount / assignedCount * 100) : 100;
-	const gradient = getAvatarGradient(user.username || user.name);
+	const avatar = getAvatarPalette(user.username || user.name);
 	const roleBadge = getRoleBadgeStyle(role?.name || user.role?.name);
 	const joinedText = formatJoined(user.created_at);
 	return /* @__PURE__ */ jsxs("section", {
@@ -514,7 +514,7 @@ function VisualIdentityHero({ stats }) {
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "relative shrink-0",
 						children: [/* @__PURE__ */ jsx("div", {
-							className: `flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-2xl bg-gradient-to-br ${gradient} text-2xl sm:text-3xl font-extrabold text-white shadow-xl ring-2 ring-white/10`,
+							className: `flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-2xl border bg-gradient-to-br ${avatar.bg} ${avatar.border} ${avatar.text} text-2xl sm:text-3xl font-extrabold shadow-xl ring-2 ring-white/[0.06]`,
 							children: getInitials(user.name)
 						}), /* @__PURE__ */ jsx("span", {
 							className: "absolute -bottom-1 -right-1 h-4 w-4 rounded-full bg-emerald-400 ring-4 ring-[#0c0d12] shadow-[0_0_10px_rgba(52,211,153,0.8)]",
