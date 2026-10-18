@@ -24,11 +24,9 @@ final class WorkRequestApiController extends Controller
 
     public function index(Request $request): AnonymousResourceCollection
     {
-        $user = $request->user();
-        if ($user && $user->role_id !== null) {
-            $this->authorize('viewAny', WorkRequest::class);
-        }
+        $this->authorize('viewAny', WorkRequest::class);
 
+        $user = $request->user();
         $activeWorkspace = $user?->currentWorkspace();
 
         $query = WorkRequest::query()
@@ -47,17 +45,16 @@ final class WorkRequestApiController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $this->authorize('create', WorkRequest::class);
+
         $user = $request->user();
-        if ($user && $user->role_id !== null) {
-            $this->authorize('create', WorkRequest::class);
-        }
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'area_id' => ['required', 'integer', 'exists:areas,id'],
-            'priority' => ['nullable', 'string', Rule::in(['urgent', 'normal', 'low', 'high'])],
+            'priority' => ['nullable', 'string', Rule::enum(RequestPriority::class)],
             'description' => ['nullable', 'string'],
-            'status' => ['nullable', 'string', Rule::in(['new', 'ready', 'doing', 'review', 'done'])],
+            'status' => ['nullable', 'string', Rule::enum(RequestStatus::class)],
             'assignee_id' => ['nullable', 'integer', 'exists:users,id'],
             'story_points' => ['nullable', 'integer', 'min:0'],
             'parent_id' => ['nullable', 'integer', 'exists:requests,id'],
@@ -81,10 +78,7 @@ final class WorkRequestApiController extends Controller
             ->with(['area', 'requester', 'assignee', 'subtasks.assignee', 'pullRequests', 'relations.related'])
             ->findOrFail($id);
 
-        $user = $request->user();
-        if ($user && $user->role_id !== null) {
-            $this->authorize('view', $workRequest);
-        }
+        $this->authorize('view', $workRequest);
 
         return new WorkRequestResource($workRequest);
     }
@@ -93,17 +87,16 @@ final class WorkRequestApiController extends Controller
     {
         $workRequest = WorkRequest::findOrFail($id);
 
+        $this->authorize('update', $workRequest);
+
         $user = $request->user();
-        if ($user && $user->role_id !== null) {
-            $this->authorize('update', $workRequest);
-        }
 
         $validated = $request->validate([
             'title' => ['sometimes', 'string', 'max:255'],
             'area_id' => ['sometimes', 'integer', 'exists:areas,id'],
-            'priority' => ['sometimes', 'string', Rule::in(['urgent', 'normal', 'low', 'high'])],
+            'priority' => ['sometimes', 'string', Rule::enum(RequestPriority::class)],
             'description' => ['nullable', 'string'],
-            'status' => ['sometimes', 'string', Rule::in(['new', 'ready', 'doing', 'review', 'done'])],
+            'status' => ['sometimes', 'string', Rule::enum(RequestStatus::class)],
             'assignee_id' => ['nullable', 'integer', 'exists:users,id'],
             'story_points' => ['nullable', 'integer', 'min:0'],
             'parent_id' => ['nullable', 'integer', 'exists:requests,id'],
@@ -123,10 +116,7 @@ final class WorkRequestApiController extends Controller
     {
         $workRequest = WorkRequest::findOrFail($id);
 
-        $user = $request->user();
-        if ($user && $user->role_id !== null) {
-            $this->authorize('delete', $workRequest);
-        }
+        $this->authorize('delete', $workRequest);
 
         $workRequest->delete();
 

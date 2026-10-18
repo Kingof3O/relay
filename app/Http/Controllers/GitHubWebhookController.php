@@ -86,28 +86,30 @@ class GitHubWebhookController extends Controller
                             ? $workRequest->status->value
                             : (string) $workRequest->status;
 
-                        $workRequest->update(['status' => 'done']);
+                        if ($oldStatus !== 'done') {
+                            $workRequest->update(['status' => 'done']);
 
-                        $workRequest->activities()->create([
-                            'user_id' => null,
-                            'type' => 'github_pr_merged',
-                            'body' => "GitHub: Pull Request #{$prNumber} ({$title}) merged into {$baseRef}. Request marked as done.",
-                            'metadata' => [
-                                'pr_number' => $prNumber,
-                                'title' => $title,
-                                'url' => $url,
-                                'base_ref' => $baseRef,
-                            ],
-                        ]);
+                            $workRequest->activities()->create([
+                                'user_id' => null,
+                                'type' => 'github_pr_merged',
+                                'body' => "GitHub: Pull Request #{$prNumber} ({$title}) merged into {$baseRef}. Request marked as done.",
+                                'metadata' => [
+                                    'pr_number' => $prNumber,
+                                    'title' => $title,
+                                    'url' => $url,
+                                    'base_ref' => $baseRef,
+                                ],
+                            ]);
 
-                        $service->notifyRelevantUsers(
-                            $workRequest,
-                            'done',
-                            "GitHub PR #{$prNumber} merged into {$baseRef}. Work request marked as done.",
-                            null
-                        );
+                            $service->notifyRelevantUsers(
+                                $workRequest,
+                                'done',
+                                "GitHub PR #{$prNumber} merged into {$baseRef}. Work request marked as done.",
+                                null
+                            );
 
-                        \App\Events\WorkRequestMoved::dispatch($workRequest, null, $oldStatus, 'done');
+                            \App\Events\WorkRequestMoved::dispatch($workRequest, null, $oldStatus, 'done');
+                        }
                     } elseif ($prRecord->wasRecentlyCreated) {
                         $workRequest->activities()->create([
                             'user_id' => null,

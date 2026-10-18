@@ -53,6 +53,20 @@ final class WorkRequestResource extends JsonResource
                 ] : null;
             }),
             'subtasks' => WorkRequestResource::collection($this->whenLoaded('subtasks')),
+            'relations' => $this->whenLoaded('relations', function () {
+                return $this->relations->map(fn ($rel): array => [
+                    'id' => $rel->id,
+                    'type' => $rel->type,
+                    'related_id' => $rel->related_id,
+                    'created_at' => $rel->created_at?->toIso8601String(),
+                    'related' => $rel->related ? [
+                        'id' => $rel->related->id,
+                        'title' => $rel->related->title,
+                        'status' => $rel->related->status instanceof \BackedEnum ? $rel->related->status->value : (string) $rel->related->status,
+                        'priority' => $rel->related->priority instanceof \BackedEnum ? $rel->related->priority->value : (string) $rel->related->priority,
+                    ] : null,
+                ]);
+            }),
             'pull_requests' => $this->whenLoaded('pullRequests', function () {
                 return $this->pullRequests->map(fn ($pr): array => [
                     'id' => $pr->id,

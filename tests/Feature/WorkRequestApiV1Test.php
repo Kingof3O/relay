@@ -170,6 +170,20 @@ final class WorkRequestApiV1Test extends TestCase
             'priority' => 'normal',
         ]);
 
+        $relatedTicket = WorkRequest::query()->create([
+            'area_id' => $this->area->id,
+            'title' => 'Related Blocker Ticket',
+            'requester_id' => $this->user->id,
+            'status' => 'doing',
+            'priority' => 'urgent',
+        ]);
+
+        \App\Models\RequestRelation::query()->create([
+            'request_id' => $parent->id,
+            'related_id' => $relatedTicket->id,
+            'type' => 'blocks',
+        ]);
+
         $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
             ->getJson("/api/v1/work-requests/{$parent->id}");
 
@@ -178,7 +192,24 @@ final class WorkRequestApiV1Test extends TestCase
             ->assertJsonPath('data.title', 'Parent Ticket')
             ->assertJsonCount(1, 'data.subtasks')
             ->assertJsonPath('data.subtasks.0.id', $subtask->id)
-            ->assertJsonPath('data.subtasks.0.title', 'Child Subtask Ticket');
+            ->assertJsonPath('data.subtasks.0.title', 'Child Subtask Ticket')
+            ->assertJsonCount(1, 'data.relations')
+            ->assertJsonPath('data.relations.0.type', 'blocks')
+            ->assertJsonPath('data.relations.0.related_id', $relatedTicket->id)
+            ->assertJsonPath('data.relations.0.related.title', 'Related Blocker Ticket');
+    }
+
+    public function test_creating_work_request_rejects_invalid_priority(): void
+    {
+        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+            ->postJson('/api/v1/work-requests', [
+                'title' => 'Invalid Priority Ticket',
+                'area_id' => $this->area->id,
+                'priority' => 'high', // not an allowed RequestPriority enum value (urgent, normal, low)
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['priority']);
     }
 
     public function test_updating_work_request_via_patch(): void
