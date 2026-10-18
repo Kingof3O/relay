@@ -16,9 +16,9 @@ import {
     Check,
     Loader2,
     ShieldCheck,
-    Layers,
-    Activity,
-    Terminal,
+    Clock,
+    Command,
+    CheckCircle2,
 } from 'lucide-react';
 
 interface DemoPersona {
@@ -93,13 +93,13 @@ export default function Login({
             </Head>
 
             {/* ========================================================= */}
-            {/* LEFT PANEL: Brand, Vision & Engineering Showcase (Desktop) */}
+            {/* LEFT PANEL: Workspace Vision & Daily Sprint Preview      */}
             {/* ========================================================= */}
             <div className="relative hidden w-full flex-col justify-between overflow-hidden border-r border-white/[0.06] bg-[#07090e] p-10 lg:flex lg:w-1/2 xl:w-7/12 xl:p-16">
                 {/* Ambient Specular Vignettes & Grid */}
-                <div className="pointer-events-none absolute -left-36 -top-36 h-[560px] w-[560px] rounded-full bg-gradient-to-br from-indigo-500/[0.08] via-purple-500/[0.03] to-transparent blur-[130px]" />
-                <div className="pointer-events-none absolute -bottom-40 right-0 h-[480px] w-[480px] rounded-full bg-gradient-to-tl from-cyan-500/[0.06] via-blue-500/[0.03] to-transparent blur-[140px]" />
-                <div className="relay-grid pointer-events-none absolute inset-0 opacity-30" />
+                <div className="pointer-events-none absolute -left-36 -top-36 h-[560px] w-[560px] rounded-full bg-gradient-to-br from-indigo-500/[0.07] via-purple-500/[0.03] to-transparent blur-[130px]" />
+                <div className="pointer-events-none absolute -bottom-40 right-0 h-[480px] w-[480px] rounded-full bg-gradient-to-tl from-cyan-500/[0.05] via-blue-500/[0.02] to-transparent blur-[140px]" />
+                <div className="relay-grid pointer-events-none absolute inset-0 opacity-25" />
 
                 {/* Top: Brand Header */}
                 <div className="relative z-10 flex items-center justify-between">
@@ -112,91 +112,138 @@ export default function Login({
                                 RELAY
                             </span>
                             <span className="rounded-full border border-zinc-800 bg-zinc-900/80 px-2 py-0.5 text-[10px] font-medium tracking-normal text-zinc-400">
-                                v2.0
+                                Studio
                             </span>
                         </div>
                     </Link>
 
                     <div className="flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 text-[11px] font-medium text-zinc-400 backdrop-blur-md">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-                        <span>Enterprise Linear Platform</span>
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>Workspace Active</span>
                     </div>
                 </div>
 
-                {/* Center: Mission & Value Proposition */}
-                <div className="relative z-10 my-auto max-w-xl py-10 space-y-8">
-                    <div className="space-y-4">
+                {/* Center: Friendly Workspace Overview */}
+                <div className="relative z-10 my-auto max-w-xl py-8 space-y-8">
+                    <div className="space-y-3">
                         <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300">
                             <Sparkles className="h-3.5 w-3.5 text-indigo-400" />
-                            <span>Purpose-built for high-velocity teams</span>
+                            <span>Your daily mission control</span>
                         </div>
                         <h1 className="text-3xl font-extrabold tracking-tight text-white xl:text-4xl">
-                            Issue tracking with the speed and clarity of Linear.
+                            Where your team builds with clarity.
                         </h1>
                         <p className="text-sm leading-relaxed text-zinc-400">
-                            Streamline sprint cycles, automate workflows, and synchronize engineering delivery with sub-second responsiveness and pure dark obsidian aesthetic.
+                            Pick up where you left off. Plan your week, track active sprint cycles, and collaborate with your teammates in real time.
                         </p>
                     </div>
 
-                    {/* Feature Highlights Grid */}
-                    <div className="space-y-3 pt-1">
-                        <div className="flex items-start gap-3.5 rounded-xl border border-white/[0.06] bg-[#0c0d13]/70 p-4 backdrop-blur-sm transition-colors hover:border-white/[0.1] hover:bg-[#0e1017]/80">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-400">
-                                <Layers className="h-4 w-4" />
+                    {/* Visual Product Preview Card: Interactive-looking Daily Cycle */}
+                    <div className="rounded-2xl border border-white/[0.08] bg-[#0c0d13]/80 p-5 shadow-2xl shadow-black/70 backdrop-blur-md transition-all duration-200 hover:border-white/[0.12]">
+                        {/* Snapshot Card Header */}
+                        <div className="flex items-center justify-between pb-3.5 border-b border-white/[0.06]">
+                            <div className="flex items-center gap-2.5">
+                                <span className="flex h-6 items-center rounded-md border border-indigo-500/30 bg-indigo-500/10 px-2 text-[11px] font-semibold text-indigo-300">
+                                    Cycle 14
+                                </span>
+                                <div className="flex items-center gap-1.5 text-xs text-zinc-400">
+                                    <Clock className="h-3.5 w-3.5 text-zinc-500" />
+                                    <span>4 days remaining</span>
+                                </div>
                             </div>
-                            <div>
-                                <h4 className="text-xs font-semibold text-zinc-200">Linear Cycles & Burndown</h4>
-                                <p className="mt-0.5 text-xs text-zinc-400">
-                                    Fixed-cadence sprint delivery, automatic ticket rollover, and real-time velocity metrics.
-                                </p>
+                            <span className="font-mono text-xs font-semibold text-emerald-400">
+                                78% on track
+                            </span>
+                        </div>
+
+                        {/* Velocity Progress Bar */}
+                        <div className="my-3.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800/80">
+                            <div className="h-full w-[78%] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400" />
+                        </div>
+
+                        {/* Recent Tasks List */}
+                        <div className="space-y-2 pt-1">
+                            {/* Task 1 */}
+                            <div className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" />
+                                    <span className="font-mono text-[11px] text-zinc-500 shrink-0">#REQ-104</span>
+                                    <span className="truncate text-zinc-200">Refine notification preferences & digest</span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0 ml-3">
+                                    <span className="rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400">#settings</span>
+                                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-purple-500/20 text-[10px] font-bold text-purple-300">
+                                        M
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Task 2 */}
+                            <div className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                                    <span className="font-mono text-[11px] text-zinc-500 shrink-0">#REQ-102</span>
+                                    <span className="truncate text-zinc-200">Deliver 1-click social authentication</span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0 ml-3">
+                                    <span className="rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400">#auth</span>
+                                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/20 text-[10px] font-bold text-cyan-300">
+                                        H
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Task 3 */}
+                            <div className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]">
+                                <div className="flex items-center gap-2.5 min-w-0">
+                                    <span className="h-2 w-2 rounded-full bg-cyan-400 shrink-0" />
+                                    <span className="font-mono text-[11px] text-zinc-500 shrink-0">#REQ-98</span>
+                                    <span className="truncate text-zinc-200">Automate sprint burndown velocity</span>
+                                </div>
+                                <div className="flex items-center gap-2 shrink-0 ml-3">
+                                    <span className="rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400">#agile</span>
+                                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-300">
+                                        R
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="flex items-start gap-3.5 rounded-xl border border-white/[0.06] bg-[#0c0d13]/70 p-4 backdrop-blur-sm transition-colors hover:border-white/[0.1] hover:bg-[#0e1017]/80">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-400">
-                                <Activity className="h-4 w-4" />
+                        {/* Keyboard shortcut hint */}
+                        <div className="mt-3.5 flex items-center justify-between rounded-lg bg-zinc-900/60 px-3 py-2 text-[11px] text-zinc-400 border border-zinc-800/60">
+                            <div className="flex items-center gap-1.5">
+                                <Command className="h-3 w-3 text-zinc-400" />
+                                <span>Press <kbd className="rounded bg-zinc-800 px-1 py-0.5 font-mono text-[10px] text-zinc-200">⌘K</kbd> to jump anywhere</span>
                             </div>
-                            <div>
-                                <h4 className="text-xs font-semibold text-zinc-200">Live WebSockets & TipTap Block Editor</h4>
-                                <p className="mt-0.5 text-xs text-zinc-400">
-                                    Real-time collaboration with Laravel Reverb, active presence avatars, and conflict resolution.
-                                </p>
-                            </div>
-                        </div>
-
-                        <div className="flex items-start gap-3.5 rounded-xl border border-white/[0.06] bg-[#0c0d13]/70 p-4 backdrop-blur-sm transition-colors hover:border-white/[0.1] hover:bg-[#0e1017]/80">
-                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
-                                <Terminal className="h-4 w-4" />
-                            </div>
-                            <div>
-                                <h4 className="text-xs font-semibold text-zinc-200">Developer Platform & GitHub Sync</h4>
-                                <p className="mt-0.5 text-xs text-zinc-400">
-                                    Full REST API v1, Personal Access Tokens, bidirectional PR sync, and ⌘K command palette.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Testimonial Quote */}
-                    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-xs italic text-zinc-300">
-                        “Relay Studio eliminated our sprint overhead. The sub-second keyboard navigation and obsidian interface keep our engineers entirely in the flow.”
-                        <div className="mt-2.5 flex items-center justify-between not-italic text-[11px] text-zinc-500">
-                            <span className="font-medium text-zinc-400">Open-source issue tracker</span>
-                            <span className="font-mono text-zinc-500">100% Data Ownership</span>
+                            <span className="font-mono text-zinc-500 text-[10px]">C: New task</span>
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom: Operational Status & Security */}
+                {/* Bottom: Active Team Presence */}
                 <div className="relative z-10 flex items-center justify-between border-t border-white/[0.04] pt-6 text-xs text-zinc-500">
+                    <div className="flex items-center gap-3">
+                        <div className="flex -space-x-1.5">
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-indigo-600 text-[10px] font-bold text-white">
+                                R
+                            </div>
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-cyan-600 text-[10px] font-bold text-white">
+                                H
+                            </div>
+                            <div className="flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-purple-600 text-[10px] font-bold text-white">
+                                M
+                            </div>
+                        </div>
+                        <span className="text-zinc-400 text-xs font-medium">Your team is active and in sync</span>
+                    </div>
+
                     <div className="flex items-center gap-2">
                         <span className="relative flex h-2 w-2">
                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
                             <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
                         </span>
-                        <span className="font-medium text-zinc-400">All systems operational</span>
+                        <span className="text-zinc-400 font-medium">Ready</span>
                     </div>
-                    <span className="font-mono text-[11px] text-zinc-500">Apache 2.0 · Self-Hostable</span>
                 </div>
             </div>
 
@@ -233,7 +280,7 @@ export default function Login({
                             Sign In
                         </h2>
                         <p className="text-xs text-zinc-400">
-                            Enter your credentials or pick a demo persona below
+                            Welcome back! Enter your details or select a demo persona
                         </p>
                     </div>
 

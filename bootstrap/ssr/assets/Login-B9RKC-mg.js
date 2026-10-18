@@ -3,7 +3,7 @@ import { t as ApplicationLogo } from "./ApplicationLogo-BVzx5-Vz.js";
 import { Head, Link, useForm } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";
-import { Activity, ArrowRight, Check, Eye, EyeOff, Layers, Loader2, Lock, ShieldCheck, Sparkles, Terminal, User } from "lucide-react";
+import { ArrowRight, Check, CheckCircle2, Clock, Command, Eye, EyeOff, Loader2, Lock, ShieldCheck, Sparkles, User } from "lucide-react";
 //#region resources/js/Components/Checkbox.tsx
 function Checkbox({ className = "", ...props }) {
 	return /* @__PURE__ */ jsx("input", {
@@ -96,9 +96,9 @@ function Login({ socialProviders = {
 			/* @__PURE__ */ jsxs("div", {
 				className: "relative hidden w-full flex-col justify-between overflow-hidden border-r border-white/[0.06] bg-[#07090e] p-10 lg:flex lg:w-1/2 xl:w-7/12 xl:p-16",
 				children: [
-					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -left-36 -top-36 h-[560px] w-[560px] rounded-full bg-gradient-to-br from-indigo-500/[0.08] via-purple-500/[0.03] to-transparent blur-[130px]" }),
-					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-40 right-0 h-[480px] w-[480px] rounded-full bg-gradient-to-tl from-cyan-500/[0.06] via-blue-500/[0.03] to-transparent blur-[140px]" }),
-					/* @__PURE__ */ jsx("div", { className: "relay-grid pointer-events-none absolute inset-0 opacity-30" }),
+					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -left-36 -top-36 h-[560px] w-[560px] rounded-full bg-gradient-to-br from-indigo-500/[0.07] via-purple-500/[0.03] to-transparent blur-[130px]" }),
+					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-40 right-0 h-[480px] w-[480px] rounded-full bg-gradient-to-tl from-cyan-500/[0.05] via-blue-500/[0.02] to-transparent blur-[140px]" }),
+					/* @__PURE__ */ jsx("div", { className: "relay-grid pointer-events-none absolute inset-0 opacity-25" }),
 					/* @__PURE__ */ jsxs("div", {
 						className: "relative z-10 flex items-center justify-between",
 						children: [/* @__PURE__ */ jsxs(Link, {
@@ -114,107 +114,191 @@ function Login({ socialProviders = {
 									children: "RELAY"
 								}), /* @__PURE__ */ jsx("span", {
 									className: "rounded-full border border-zinc-800 bg-zinc-900/80 px-2 py-0.5 text-[10px] font-medium tracking-normal text-zinc-400",
-									children: "v2.0"
+									children: "Studio"
 								})]
 							})]
 						}), /* @__PURE__ */ jsxs("div", {
 							className: "flex items-center gap-2 rounded-full border border-white/[0.06] bg-white/[0.02] px-3 py-1 text-[11px] font-medium text-zinc-400 backdrop-blur-md",
-							children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400" }), /* @__PURE__ */ jsx("span", { children: "Enterprise Linear Platform" })]
+							children: [/* @__PURE__ */ jsx("span", { className: "h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" }), /* @__PURE__ */ jsx("span", { children: "Workspace Active" })]
 						})]
 					}),
 					/* @__PURE__ */ jsxs("div", {
-						className: "relative z-10 my-auto max-w-xl py-10 space-y-8",
-						children: [
-							/* @__PURE__ */ jsxs("div", {
-								className: "space-y-4",
-								children: [
-									/* @__PURE__ */ jsxs("div", {
-										className: "inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300",
-										children: [/* @__PURE__ */ jsx(Sparkles, { className: "h-3.5 w-3.5 text-indigo-400" }), /* @__PURE__ */ jsx("span", { children: "Purpose-built for high-velocity teams" })]
-									}),
-									/* @__PURE__ */ jsx("h1", {
-										className: "text-3xl font-extrabold tracking-tight text-white xl:text-4xl",
-										children: "Issue tracking with the speed and clarity of Linear."
-									}),
-									/* @__PURE__ */ jsx("p", {
-										className: "text-sm leading-relaxed text-zinc-400",
-										children: "Streamline sprint cycles, automate workflows, and synchronize engineering delivery with sub-second responsiveness and pure dark obsidian aesthetic."
-									})
-								]
-							}),
-							/* @__PURE__ */ jsxs("div", {
-								className: "space-y-3 pt-1",
-								children: [
-									/* @__PURE__ */ jsxs("div", {
-										className: "flex items-start gap-3.5 rounded-xl border border-white/[0.06] bg-[#0c0d13]/70 p-4 backdrop-blur-sm transition-colors hover:border-white/[0.1] hover:bg-[#0e1017]/80",
-										children: [/* @__PURE__ */ jsx("div", {
-											className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/10 text-indigo-400",
-											children: /* @__PURE__ */ jsx(Layers, { className: "h-4 w-4" })
-										}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h4", {
-											className: "text-xs font-semibold text-zinc-200",
-											children: "Linear Cycles & Burndown"
-										}), /* @__PURE__ */ jsx("p", {
-											className: "mt-0.5 text-xs text-zinc-400",
-											children: "Fixed-cadence sprint delivery, automatic ticket rollover, and real-time velocity metrics."
-										})] })]
-									}),
-									/* @__PURE__ */ jsxs("div", {
-										className: "flex items-start gap-3.5 rounded-xl border border-white/[0.06] bg-[#0c0d13]/70 p-4 backdrop-blur-sm transition-colors hover:border-white/[0.1] hover:bg-[#0e1017]/80",
-										children: [/* @__PURE__ */ jsx("div", {
-											className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-cyan-500/30 bg-cyan-500/10 text-cyan-400",
-											children: /* @__PURE__ */ jsx(Activity, { className: "h-4 w-4" })
-										}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h4", {
-											className: "text-xs font-semibold text-zinc-200",
-											children: "Live WebSockets & TipTap Block Editor"
-										}), /* @__PURE__ */ jsx("p", {
-											className: "mt-0.5 text-xs text-zinc-400",
-											children: "Real-time collaboration with Laravel Reverb, active presence avatars, and conflict resolution."
-										})] })]
-									}),
-									/* @__PURE__ */ jsxs("div", {
-										className: "flex items-start gap-3.5 rounded-xl border border-white/[0.06] bg-[#0c0d13]/70 p-4 backdrop-blur-sm transition-colors hover:border-white/[0.1] hover:bg-[#0e1017]/80",
-										children: [/* @__PURE__ */ jsx("div", {
-											className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-											children: /* @__PURE__ */ jsx(Terminal, { className: "h-4 w-4" })
-										}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h4", {
-											className: "text-xs font-semibold text-zinc-200",
-											children: "Developer Platform & GitHub Sync"
-										}), /* @__PURE__ */ jsx("p", {
-											className: "mt-0.5 text-xs text-zinc-400",
-											children: "Full REST API v1, Personal Access Tokens, bidirectional PR sync, and ⌘K command palette."
-										})] })]
-									})
-								]
-							}),
-							/* @__PURE__ */ jsxs("div", {
-								className: "rounded-xl border border-white/[0.06] bg-white/[0.02] p-4 text-xs italic text-zinc-300",
-								children: ["“Relay Studio eliminated our sprint overhead. The sub-second keyboard navigation and obsidian interface keep our engineers entirely in the flow.”", /* @__PURE__ */ jsxs("div", {
-									className: "mt-2.5 flex items-center justify-between not-italic text-[11px] text-zinc-500",
-									children: [/* @__PURE__ */ jsx("span", {
-										className: "font-medium text-zinc-400",
-										children: "Open-source issue tracker"
+						className: "relative z-10 my-auto max-w-xl py-8 space-y-8",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "space-y-3",
+							children: [
+								/* @__PURE__ */ jsxs("div", {
+									className: "inline-flex items-center gap-2 rounded-full border border-indigo-500/20 bg-indigo-500/10 px-3 py-1 text-xs font-medium text-indigo-300",
+									children: [/* @__PURE__ */ jsx(Sparkles, { className: "h-3.5 w-3.5 text-indigo-400" }), /* @__PURE__ */ jsx("span", { children: "Your daily mission control" })]
+								}),
+								/* @__PURE__ */ jsx("h1", {
+									className: "text-3xl font-extrabold tracking-tight text-white xl:text-4xl",
+									children: "Where your team builds with clarity."
+								}),
+								/* @__PURE__ */ jsx("p", {
+									className: "text-sm leading-relaxed text-zinc-400",
+									children: "Pick up where you left off. Plan your week, track active sprint cycles, and collaborate with your teammates in real time."
+								})
+							]
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "rounded-2xl border border-white/[0.08] bg-[#0c0d13]/80 p-5 shadow-2xl shadow-black/70 backdrop-blur-md transition-all duration-200 hover:border-white/[0.12]",
+							children: [
+								/* @__PURE__ */ jsxs("div", {
+									className: "flex items-center justify-between pb-3.5 border-b border-white/[0.06]",
+									children: [/* @__PURE__ */ jsxs("div", {
+										className: "flex items-center gap-2.5",
+										children: [/* @__PURE__ */ jsx("span", {
+											className: "flex h-6 items-center rounded-md border border-indigo-500/30 bg-indigo-500/10 px-2 text-[11px] font-semibold text-indigo-300",
+											children: "Cycle 14"
+										}), /* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-1.5 text-xs text-zinc-400",
+											children: [/* @__PURE__ */ jsx(Clock, { className: "h-3.5 w-3.5 text-zinc-500" }), /* @__PURE__ */ jsx("span", { children: "4 days remaining" })]
+										})]
 									}), /* @__PURE__ */ jsx("span", {
-										className: "font-mono text-zinc-500",
-										children: "100% Data Ownership"
+										className: "font-mono text-xs font-semibold text-emerald-400",
+										children: "78% on track"
 									})]
-								})]
-							})
-						]
+								}),
+								/* @__PURE__ */ jsx("div", {
+									className: "my-3.5 h-1.5 w-full overflow-hidden rounded-full bg-zinc-800/80",
+									children: /* @__PURE__ */ jsx("div", { className: "h-full w-[78%] rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400" })
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: "space-y-2 pt-1",
+									children: [
+										/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]",
+											children: [/* @__PURE__ */ jsxs("div", {
+												className: "flex items-center gap-2.5 min-w-0",
+												children: [
+													/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-amber-400 shrink-0" }),
+													/* @__PURE__ */ jsx("span", {
+														className: "font-mono text-[11px] text-zinc-500 shrink-0",
+														children: "#REQ-104"
+													}),
+													/* @__PURE__ */ jsx("span", {
+														className: "truncate text-zinc-200",
+														children: "Refine notification preferences & digest"
+													})
+												]
+											}), /* @__PURE__ */ jsxs("div", {
+												className: "flex items-center gap-2 shrink-0 ml-3",
+												children: [/* @__PURE__ */ jsx("span", {
+													className: "rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400",
+													children: "#settings"
+												}), /* @__PURE__ */ jsx("div", {
+													className: "flex h-5 w-5 items-center justify-center rounded-full bg-purple-500/20 text-[10px] font-bold text-purple-300",
+													children: "M"
+												})]
+											})]
+										}),
+										/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]",
+											children: [/* @__PURE__ */ jsxs("div", {
+												className: "flex items-center gap-2.5 min-w-0",
+												children: [
+													/* @__PURE__ */ jsx(CheckCircle2, { className: "h-3.5 w-3.5 text-emerald-400 shrink-0" }),
+													/* @__PURE__ */ jsx("span", {
+														className: "font-mono text-[11px] text-zinc-500 shrink-0",
+														children: "#REQ-102"
+													}),
+													/* @__PURE__ */ jsx("span", {
+														className: "truncate text-zinc-200",
+														children: "Deliver 1-click social authentication"
+													})
+												]
+											}), /* @__PURE__ */ jsxs("div", {
+												className: "flex items-center gap-2 shrink-0 ml-3",
+												children: [/* @__PURE__ */ jsx("span", {
+													className: "rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400",
+													children: "#auth"
+												}), /* @__PURE__ */ jsx("div", {
+													className: "flex h-5 w-5 items-center justify-center rounded-full bg-cyan-500/20 text-[10px] font-bold text-cyan-300",
+													children: "H"
+												})]
+											})]
+										}),
+										/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-2 text-xs transition-colors hover:bg-white/[0.04]",
+											children: [/* @__PURE__ */ jsxs("div", {
+												className: "flex items-center gap-2.5 min-w-0",
+												children: [
+													/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-cyan-400 shrink-0" }),
+													/* @__PURE__ */ jsx("span", {
+														className: "font-mono text-[11px] text-zinc-500 shrink-0",
+														children: "#REQ-98"
+													}),
+													/* @__PURE__ */ jsx("span", {
+														className: "truncate text-zinc-200",
+														children: "Automate sprint burndown velocity"
+													})
+												]
+											}), /* @__PURE__ */ jsxs("div", {
+												className: "flex items-center gap-2 shrink-0 ml-3",
+												children: [/* @__PURE__ */ jsx("span", {
+													className: "rounded bg-zinc-800/80 px-1.5 py-0.5 text-[10px] text-zinc-400",
+													children: "#agile"
+												}), /* @__PURE__ */ jsx("div", {
+													className: "flex h-5 w-5 items-center justify-center rounded-full bg-amber-500/20 text-[10px] font-bold text-amber-300",
+													children: "R"
+												})]
+											})]
+										})
+									]
+								}),
+								/* @__PURE__ */ jsxs("div", {
+									className: "mt-3.5 flex items-center justify-between rounded-lg bg-zinc-900/60 px-3 py-2 text-[11px] text-zinc-400 border border-zinc-800/60",
+									children: [/* @__PURE__ */ jsxs("div", {
+										className: "flex items-center gap-1.5",
+										children: [/* @__PURE__ */ jsx(Command, { className: "h-3 w-3 text-zinc-400" }), /* @__PURE__ */ jsxs("span", { children: [
+											"Press ",
+											/* @__PURE__ */ jsx("kbd", {
+												className: "rounded bg-zinc-800 px-1 py-0.5 font-mono text-[10px] text-zinc-200",
+												children: "⌘K"
+											}),
+											" to jump anywhere"
+										] })]
+									}), /* @__PURE__ */ jsx("span", {
+										className: "font-mono text-zinc-500 text-[10px]",
+										children: "C: New task"
+									})]
+								})
+							]
+						})]
 					}),
 					/* @__PURE__ */ jsxs("div", {
 						className: "relative z-10 flex items-center justify-between border-t border-white/[0.04] pt-6 text-xs text-zinc-500",
 						children: [/* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-3",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "flex -space-x-1.5",
+								children: [
+									/* @__PURE__ */ jsx("div", {
+										className: "flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-indigo-600 text-[10px] font-bold text-white",
+										children: "R"
+									}),
+									/* @__PURE__ */ jsx("div", {
+										className: "flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-cyan-600 text-[10px] font-bold text-white",
+										children: "H"
+									}),
+									/* @__PURE__ */ jsx("div", {
+										className: "flex h-6 w-6 items-center justify-center rounded-full border border-[#07090e] bg-purple-600 text-[10px] font-bold text-white",
+										children: "M"
+									})
+								]
+							}), /* @__PURE__ */ jsx("span", {
+								className: "text-zinc-400 text-xs font-medium",
+								children: "Your team is active and in sync"
+							})]
+						}), /* @__PURE__ */ jsxs("div", {
 							className: "flex items-center gap-2",
 							children: [/* @__PURE__ */ jsxs("span", {
 								className: "relative flex h-2 w-2",
 								children: [/* @__PURE__ */ jsx("span", { className: "absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" }), /* @__PURE__ */ jsx("span", { className: "relative inline-flex h-2 w-2 rounded-full bg-emerald-500" })]
 							}), /* @__PURE__ */ jsx("span", {
-								className: "font-medium text-zinc-400",
-								children: "All systems operational"
+								className: "text-zinc-400 font-medium",
+								children: "Ready"
 							})]
-						}), /* @__PURE__ */ jsx("span", {
-							className: "font-mono text-[11px] text-zinc-500",
-							children: "Apache 2.0 · Self-Hostable"
 						})]
 					})
 				]
@@ -245,7 +329,7 @@ function Login({ socialProviders = {
 								children: "Sign In"
 							}), /* @__PURE__ */ jsx("p", {
 								className: "text-xs text-zinc-400",
-								children: "Enter your credentials or pick a demo persona below"
+								children: "Welcome back! Enter your details or select a demo persona"
 							})]
 						}),
 						status && /* @__PURE__ */ jsx("div", {
