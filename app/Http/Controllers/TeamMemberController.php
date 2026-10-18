@@ -7,18 +7,83 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
+use App\Mail\WorkspaceInvitationMail;
+use App\Models\Workspace;
+use App\Models\WorkspaceInvitation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 final class TeamMemberController extends Controller
 {
+    public function invite(Request $request): JsonResponse
+    {
+        $this->ensureCanManage($request);
+
+        $validated = $request->validate([
+            'email' => ['required', 'email', 'max:255'],
+            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value]))],
+        ]);
+
+        $activeWorkspace = $request->user()->currentWorkspace();
+        if (! $activeWorkspace) {
+            $activeWorkspace = $request->user()->workspaces()->first();
+        }
+
+        if (! $activeWorkspace) {
+            $activeWorkspace = Workspace::query()->firstOrCreate(
+                ['slug' => 'default'],
+                ['name' => 'Default Workspace', 'owner_id' => $request->user()->id]
+            );
+            $request->user()->workspaces()->syncWithoutDetaching([
+                $activeWorkspace->id => ['role_id' => $request->user()->role_id ?? 1],
+            ]);
+        }
+
+        $invitation = WorkspaceInvitation::query()->create([
+            'workspace_id' => $activeWorkspace->id,
+            'email' => $validated['email'],
+            'role_id' => $validated['role_id'],
+            'token' => Str::random(40),
+            'expires_at' => now()->addDays(7),
+            'created_at' => now(),
+        ]);
+
+        Mail::to($invitation->email)->send(new WorkspaceInvitationMail($invitation));
+
+        app(\App\Services\AuditService::class)->log(
+            $request->user(),
+            'member.invited',
+            $invitation,
+            [],
+            ['email' => $invitation->email, 'role_id' => $invitation->role_id, 'workspace_id' => $activeWorkspace->id]
+        );
+
+        return response()->json([
+            'invitation' => $invitation->load(['role:id,name', 'workspace:id,name']),
+        ], 201);
+    }
+
     public function store(Request $request): JsonResponse
     {
         $this->ensureCanManage($request);
+
+        if ($request->has('email') && ($request->boolean('invite') || ! $request->filled('password'))) {
+            return $this->invite($request);
+        }
+
         $validated = $request->validate($this->rules());
         $validated['active'] = (bool) ($validated['active'] ?? true);
 
         $user = User::query()->create($validated);
+
+        $activeWorkspace = $request->user()->currentWorkspace();
+        if ($activeWorkspace) {
+            $activeWorkspace->users()->syncWithoutDetaching([
+                $user->id => ['role_id' => $user->role_id],
+            ]);
+        }
 
         app(\App\Services\AuditService::class)->log(
             $request->user(),

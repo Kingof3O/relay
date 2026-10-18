@@ -1,4 +1,4 @@
-import type { Role, User, WorkspaceNotification } from './models';
+import type { Role, User, Workspace, WorkspaceNotification } from './models';
 
 export type PageProps<
     T extends Record<string, unknown> = Record<string, unknown>,
@@ -8,6 +8,14 @@ export type PageProps<
         role?: Role | null;
         permissions: string[];
     };
+    currentWorkspace?: Workspace | null;
+    userWorkspaces?: Workspace[];
     workspaceNotifications?: WorkspaceNotification[];
     unreadNotificationsCount?: number;
+    flash?: {
+        alert?: string | null;
+        message?: string | null;
+        success?: string | null;
+        error?: string | null;
+    };
 };

@@ -34,8 +34,10 @@ final class WorkRequestController extends Controller
         $this->authorize('viewAny', WorkRequest::class);
 
         $filterValues = $request->only(['project', 'area', 'owner', 'requester', 'status', 'priority', 'my_work', 'blocked', 'is_blocked', 'search']);
+        $activeWorkspace = $request->user()?->currentWorkspace();
 
         $requests = WorkRequest::query()
+            ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
             ->filter($filterValues, $request->user())
             ->with(['area', 'requester', 'assignee'])
             ->orderByDesc('is_blocked')

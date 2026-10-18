@@ -18,6 +18,7 @@ class WorkRequest extends Model
     protected $table = 'requests';
 
     protected $fillable = [
+        'workspace_id',
         'area_id',
         'title',
         'description',
@@ -40,6 +41,11 @@ class WorkRequest extends Model
             'due_date' => 'date',
             'tags' => 'array',
         ];
+    }
+
+    public function workspace(): BelongsTo
+    {
+        return $this->belongsTo(Workspace::class);
     }
 
     public function area(): BelongsTo
@@ -122,5 +128,12 @@ class WorkRequest extends Model
                 $search = '%'.(string) $filters['search'].'%';
                 $query->where(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('title', 'like', $search)->orWhere('description', 'like', $search));
             });
+    }
+
+    public function scopeForWorkspace(\Illuminate\Database\Eloquent\Builder $query, int|Workspace $workspace): \Illuminate\Database\Eloquent\Builder
+    {
+        $workspaceId = $workspace instanceof Workspace ? $workspace->id : $workspace;
+
+        return $query->where('workspace_id', $workspaceId);
     }
 }

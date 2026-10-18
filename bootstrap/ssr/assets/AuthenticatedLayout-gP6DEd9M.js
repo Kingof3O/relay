@@ -1,8 +1,7 @@
-import { t as ApplicationLogo } from "./ApplicationLogo-BVzx5-Vz.js";
 import { Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Calendar, Check, CheckCheck, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, Clock, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, Inbox, KanbanSquare, Keyboard, LayoutDashboard, Link2, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, RefreshCw, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
+import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Building2, Calendar, Check, CheckCheck, CheckCircle2, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Clock, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, Inbox, KanbanSquare, Keyboard, LayoutDashboard, Link2, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, RefreshCw, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Command } from "cmdk";
 import axios, { isAxiosError } from "axios";
@@ -87,6 +86,254 @@ Dropdown.Trigger = Trigger;
 Dropdown.Content = Content;
 Dropdown.Link = DropdownLink;
 //#endregion
+//#region resources/js/Components/Modal.tsx
+function Modal({ children, show = false, maxWidth = "2xl", closeable = true, onClose = () => {} }) {
+	const close = () => {
+		if (closeable) onClose();
+	};
+	const maxWidthClass = {
+		sm: "sm:max-w-sm",
+		md: "sm:max-w-md",
+		lg: "sm:max-w-lg",
+		xl: "sm:max-w-xl",
+		"2xl": "sm:max-w-2xl",
+		"3xl": "sm:max-w-3xl",
+		"4xl": "sm:max-w-4xl",
+		"5xl": "sm:max-w-5xl"
+	}[maxWidth] ?? "sm:max-w-2xl";
+	return /* @__PURE__ */ jsx(Transition, {
+		show,
+		leave: "duration-200",
+		children: /* @__PURE__ */ jsxs(Dialog, {
+			as: "div",
+			id: "modal",
+			className: "fixed inset-0 z-50 flex transform items-center justify-center overflow-y-auto px-4 py-6 transition-all sm:px-0",
+			onClose: close,
+			children: [/* @__PURE__ */ jsx(TransitionChild, {
+				enter: "ease-out duration-300",
+				enterFrom: "opacity-0",
+				enterTo: "opacity-100",
+				leave: "ease-in duration-200",
+				leaveFrom: "opacity-100",
+				leaveTo: "opacity-0",
+				children: /* @__PURE__ */ jsx("div", { className: "fixed inset-0 bg-black/80 backdrop-blur-md" })
+			}), /* @__PURE__ */ jsx(TransitionChild, {
+				enter: "ease-out duration-300",
+				enterFrom: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
+				enterTo: "opacity-100 translate-y-0 sm:scale-100",
+				leave: "ease-in duration-200",
+				leaveFrom: "opacity-100 translate-y-0 sm:scale-100",
+				leaveTo: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
+				children: /* @__PURE__ */ jsxs(DialogPanel, {
+					className: `relative mb-6 transform overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090a0f]/95 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] shadow-specular backdrop-blur-2xl ring-1 ring-white/[0.05] transition-all sm:mx-auto sm:w-full ${maxWidthClass}`,
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent",
+						"aria-hidden": "true"
+					}), children]
+				})
+			})]
+		})
+	});
+}
+//#endregion
+//#region resources/js/Components/WorkspaceSwitcher.tsx
+function WorkspaceSwitcher({ collapsed = false }) {
+	const pageProps = usePage().props;
+	const currentWorkspace = pageProps.currentWorkspace;
+	const userWorkspaces = pageProps.userWorkspaces ?? [];
+	const [isOpen, setIsOpen] = useState(false);
+	const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+	const [newWorkspaceName, setNewWorkspaceName] = useState("");
+	const [creating, setCreating] = useState(false);
+	const [createError, setCreateError] = useState("");
+	const dropdownRef = useRef(null);
+	useEffect(() => {
+		const handleClickOutside = (event) => {
+			if (dropdownRef.current && !dropdownRef.current.contains(event.target)) setIsOpen(false);
+		};
+		if (isOpen) document.addEventListener("mousedown", handleClickOutside);
+		return () => {
+			document.removeEventListener("mousedown", handleClickOutside);
+		};
+	}, [isOpen]);
+	const activeWorkspaceName = currentWorkspace?.name ?? "Relay Studio";
+	const activeInitials = currentWorkspace?.name ? currentWorkspace.name.trim().split(/\s+/).map((word) => word[0]).join("").slice(0, 2).toUpperCase() : "RS";
+	const handleSwitch = (workspace) => {
+		if (workspace.id === currentWorkspace?.id) {
+			setIsOpen(false);
+			return;
+		}
+		router.post(route("workspaces.switch", workspace.id), {}, {
+			preserveScroll: true,
+			onSuccess: () => {
+				setIsOpen(false);
+			}
+		});
+	};
+	const handleCreateWorkspace = (e) => {
+		e.preventDefault();
+		if (!newWorkspaceName.trim()) {
+			setCreateError("Workspace name is required");
+			return;
+		}
+		setCreating(true);
+		setCreateError("");
+		router.post(route("workspaces.store"), { name: newWorkspaceName.trim() }, {
+			preserveScroll: true,
+			onSuccess: () => {
+				setCreating(false);
+				setNewWorkspaceName("");
+				setIsCreateModalOpen(false);
+				setIsOpen(false);
+			},
+			onError: (errors) => {
+				setCreating(false);
+				setCreateError(errors.name ?? "Failed to create workspace.");
+			}
+		});
+	};
+	return /* @__PURE__ */ jsxs("div", {
+		className: "relative w-full",
+		ref: dropdownRef,
+		children: [
+			/* @__PURE__ */ jsxs("button", {
+				type: "button",
+				onClick: () => setIsOpen(!isOpen),
+				className: `group flex items-center rounded-xl border border-white/[0.06] bg-[#12131a] p-1.5 transition-all hover:border-zinc-700/80 hover:bg-[#181924] ${collapsed ? "justify-center w-10 h-10 p-0" : "w-full justify-between"}`,
+				title: collapsed ? activeWorkspaceName : void 0,
+				"aria-expanded": isOpen,
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "flex min-w-0 items-center gap-2.5",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-cyan-500/30 bg-gradient-to-br from-cyan-500/20 to-blue-600/20 text-xs font-bold font-mono tracking-tight text-cyan-300 shadow-sm",
+						children: activeInitials
+					}), !collapsed && /* @__PURE__ */ jsxs("div", {
+						className: "min-w-0 text-left",
+						children: [/* @__PURE__ */ jsx("div", {
+							className: "truncate text-xs font-bold text-zinc-100 group-hover:text-white",
+							children: activeWorkspaceName
+						}), /* @__PURE__ */ jsx("div", {
+							className: "truncate text-[10px] font-mono text-zinc-400",
+							children: currentWorkspace?.slug ? `@${currentWorkspace.slug}` : "workspace"
+						})]
+					})]
+				}), !collapsed && /* @__PURE__ */ jsx(ChevronsUpDown, { className: "h-4 w-4 shrink-0 text-zinc-500 transition-colors group-hover:text-zinc-300" })]
+			}),
+			isOpen && /* @__PURE__ */ jsxs("div", {
+				className: "absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-zinc-800 bg-[#0e0f15] p-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100",
+				children: [
+					/* @__PURE__ */ jsx("div", {
+						className: "px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-400",
+						children: "Workspaces"
+					}),
+					/* @__PURE__ */ jsx("div", {
+						className: "max-h-56 space-y-0.5 overflow-y-auto no-scrollbar",
+						children: userWorkspaces.length > 0 ? userWorkspaces.map((ws) => {
+							const isActive = ws.id === currentWorkspace?.id;
+							const wsInitials = ws.name.trim().split(/\s+/).map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+							return /* @__PURE__ */ jsxs("button", {
+								type: "button",
+								onClick: () => handleSwitch(ws),
+								className: `flex w-full items-center justify-between rounded-lg px-2.5 py-2 text-left text-xs transition-colors ${isActive ? "bg-zinc-800/80 text-white font-medium" : "text-zinc-300 hover:bg-zinc-850 hover:text-white"}`,
+								children: [/* @__PURE__ */ jsxs("div", {
+									className: "flex min-w-0 items-center gap-2.5",
+									children: [/* @__PURE__ */ jsx("div", {
+										className: `flex h-6 w-6 shrink-0 items-center justify-center rounded-md border text-[10px] font-mono font-bold ${isActive ? "border-cyan-500/40 bg-cyan-500/20 text-cyan-300" : "border-zinc-700 bg-zinc-800 text-zinc-400"}`,
+										children: wsInitials
+									}), /* @__PURE__ */ jsx("span", {
+										className: "truncate",
+										children: ws.name
+									})]
+								}), isActive && /* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5 shrink-0 text-cyan-400" })]
+							}, ws.id);
+						}) : /* @__PURE__ */ jsx("div", {
+							className: "px-2.5 py-2 text-xs text-zinc-400",
+							children: activeWorkspaceName
+						})
+					}),
+					/* @__PURE__ */ jsx("div", { className: "my-1 border-t border-zinc-800" }),
+					/* @__PURE__ */ jsxs("button", {
+						type: "button",
+						onClick: () => {
+							setIsOpen(false);
+							setIsCreateModalOpen(true);
+						},
+						className: "flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-xs font-medium text-cyan-400 transition-colors hover:bg-cyan-500/10 hover:text-cyan-300",
+						children: [/* @__PURE__ */ jsx(Plus, { className: "h-4 w-4" }), /* @__PURE__ */ jsx("span", { children: "Create Workspace" })]
+					})
+				]
+			}),
+			/* @__PURE__ */ jsx(Modal, {
+				show: isCreateModalOpen,
+				onClose: () => setIsCreateModalOpen(false),
+				maxWidth: "md",
+				children: /* @__PURE__ */ jsxs("div", {
+					className: "p-6",
+					children: [
+						/* @__PURE__ */ jsxs("div", {
+							className: "flex items-center justify-between border-b border-white/[0.08] pb-4",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "flex items-center gap-3",
+								children: [/* @__PURE__ */ jsx("div", {
+									className: "flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-sm",
+									children: /* @__PURE__ */ jsx(Building2, { className: "h-4 w-4" })
+								}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
+									className: "text-sm font-bold text-white tracking-tight",
+									children: "Create Workspace"
+								}), /* @__PURE__ */ jsx("p", {
+									className: "mt-0.5 text-xs text-zinc-400",
+									children: "Collaborate on requests and projects in an isolated workspace."
+								})] })]
+							}), /* @__PURE__ */ jsx("button", {
+								type: "button",
+								onClick: () => setIsCreateModalOpen(false),
+								className: "flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.04] text-zinc-400 transition-colors hover:bg-white/[0.08] hover:text-white",
+								children: /* @__PURE__ */ jsx(X, { className: "h-4 w-4" })
+							})]
+						}),
+						createError && /* @__PURE__ */ jsx("div", {
+							className: "mt-4 rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300",
+							children: createError
+						}),
+						/* @__PURE__ */ jsxs("form", {
+							onSubmit: handleCreateWorkspace,
+							className: "mt-5 space-y-4",
+							children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("label", {
+								className: "text-[11px] font-bold uppercase tracking-wider text-zinc-400",
+								children: ["Workspace Name ", /* @__PURE__ */ jsx("span", {
+									className: "text-rose-400",
+									children: "*"
+								})]
+							}), /* @__PURE__ */ jsx("input", {
+								autoFocus: true,
+								required: true,
+								type: "text",
+								placeholder: "e.g. Acme Engineering",
+								value: newWorkspaceName,
+								onChange: (e) => setNewWorkspaceName(e.target.value),
+								className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-sm transition-all"
+							})] }), /* @__PURE__ */ jsxs("div", {
+								className: "flex items-center justify-end gap-3 border-t border-white/[0.08] pt-4",
+								children: [/* @__PURE__ */ jsx("button", {
+									type: "button",
+									onClick: () => setIsCreateModalOpen(false),
+									className: "rounded-xl px-4 py-2 text-xs font-semibold text-zinc-400 hover:text-white transition-colors",
+									children: "Cancel"
+								}), /* @__PURE__ */ jsx("button", {
+									disabled: creating,
+									type: "submit",
+									className: "rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:from-cyan-400 hover:to-blue-500 active:scale-[0.98] disabled:opacity-50 transition-all",
+									children: creating ? "Creating..." : "Create Workspace"
+								})]
+							})]
+						})
+					]
+				})
+			})
+		]
+	});
+}
+//#endregion
 //#region resources/js/Components/Sidebar.tsx
 function Sidebar() {
 	const pageProps = usePage().props;
@@ -153,33 +400,14 @@ function Sidebar() {
 			className: "flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar",
 			children: [
 				/* @__PURE__ */ jsxs("div", {
-					className: `flex items-center border-b border-zinc-800/80 pb-3.5 ${collapsed ? "justify-center px-0" : "justify-between px-1"}`,
-					children: [/* @__PURE__ */ jsxs(Link, {
-						href: route("dashboard"),
-						prefetch: "hover",
-						cacheFor: "30s",
-						className: "group flex items-center gap-3 rounded-xl p-1 transition-colors hover:bg-zinc-850/60",
-						title: "Relay Studio",
-						children: [/* @__PURE__ */ jsx("div", {
-							className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-750 bg-[#16171e] text-white shadow-sm transition-all group-hover:border-zinc-600",
-							children: /* @__PURE__ */ jsx(ApplicationLogo, { className: "h-5 w-5 text-white" })
-						}), !collapsed && /* @__PURE__ */ jsx("div", {
-							className: "min-w-0 text-left",
-							children: /* @__PURE__ */ jsxs("div", {
-								className: "flex items-center gap-2",
-								children: [/* @__PURE__ */ jsx("span", {
-									className: "text-[15px] font-bold tracking-tight text-white",
-									children: "Relay"
-								}), /* @__PURE__ */ jsx("span", {
-									className: "rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-300",
-									children: "Studio"
-								})]
-							})
-						})]
+					className: `flex items-center gap-2 border-b border-zinc-800/80 pb-3.5 ${collapsed ? "justify-center px-0 flex-col gap-2" : "justify-between px-1"}`,
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "flex-1 min-w-0 w-full",
+						children: /* @__PURE__ */ jsx(WorkspaceSwitcher, { collapsed })
 					}), !collapsed && /* @__PURE__ */ jsx("button", {
 						type: "button",
 						onClick: toggleCollapsed,
-						className: "flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white",
+						className: "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white",
 						title: "Collapse sidebar (⌘[)",
 						children: /* @__PURE__ */ jsx(ChevronLeft, { className: "h-4 w-4" })
 					})]
@@ -2831,56 +3059,6 @@ function QuickViewDrawer({ requestId, onClose, onUpdated, projects, users, statu
 				onClose: () => setLightboxSrc(null)
 			})
 		]
-	});
-}
-//#endregion
-//#region resources/js/Components/Modal.tsx
-function Modal({ children, show = false, maxWidth = "2xl", closeable = true, onClose = () => {} }) {
-	const close = () => {
-		if (closeable) onClose();
-	};
-	const maxWidthClass = {
-		sm: "sm:max-w-sm",
-		md: "sm:max-w-md",
-		lg: "sm:max-w-lg",
-		xl: "sm:max-w-xl",
-		"2xl": "sm:max-w-2xl",
-		"3xl": "sm:max-w-3xl",
-		"4xl": "sm:max-w-4xl",
-		"5xl": "sm:max-w-5xl"
-	}[maxWidth] ?? "sm:max-w-2xl";
-	return /* @__PURE__ */ jsx(Transition, {
-		show,
-		leave: "duration-200",
-		children: /* @__PURE__ */ jsxs(Dialog, {
-			as: "div",
-			id: "modal",
-			className: "fixed inset-0 z-50 flex transform items-center justify-center overflow-y-auto px-4 py-6 transition-all sm:px-0",
-			onClose: close,
-			children: [/* @__PURE__ */ jsx(TransitionChild, {
-				enter: "ease-out duration-300",
-				enterFrom: "opacity-0",
-				enterTo: "opacity-100",
-				leave: "ease-in duration-200",
-				leaveFrom: "opacity-100",
-				leaveTo: "opacity-0",
-				children: /* @__PURE__ */ jsx("div", { className: "fixed inset-0 bg-black/80 backdrop-blur-md" })
-			}), /* @__PURE__ */ jsx(TransitionChild, {
-				enter: "ease-out duration-300",
-				enterFrom: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
-				enterTo: "opacity-100 translate-y-0 sm:scale-100",
-				leave: "ease-in duration-200",
-				leaveFrom: "opacity-100 translate-y-0 sm:scale-100",
-				leaveTo: "opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95",
-				children: /* @__PURE__ */ jsxs(DialogPanel, {
-					className: `relative mb-6 transform overflow-hidden rounded-2xl border border-white/[0.08] bg-[#090a0f]/95 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] shadow-specular backdrop-blur-2xl ring-1 ring-white/[0.05] transition-all sm:mx-auto sm:w-full ${maxWidthClass}`,
-					children: [/* @__PURE__ */ jsx("div", {
-						className: "pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent",
-						"aria-hidden": "true"
-					}), children]
-				})
-			})]
-		})
 	});
 }
 //#endregion
@@ -5621,4 +5799,4 @@ function Authenticated({ header, children }) {
 	});
 }
 //#endregion
-export { Badge as C, KanbanBoard as S, BoardHeader as T, Modal as _, useKanbanBoard as a, BulkActionBar as b, RequestDiscussionSection as c, Card as d, RequestBlockerBanner as f, notifySuccess as g, notifyError as h, useBoardFilters as i, RequestMediaGallery as l, QuickCreateModal as m, formatRelativeTime as n, triggerConfetti as o, RequestHeroHeader as p, getNotificationBadge as r, RequestSidebarProperties as s, Authenticated as t, RequestDescriptionCard as u, QuickViewDrawer as v, BoardFilterBar as w, RequestListView as x, ImageLightbox as y };
+export { BoardFilterBar as C, Badge as S, Modal as T, QuickViewDrawer as _, useKanbanBoard as a, RequestListView as b, RequestDiscussionSection as c, Card as d, RequestBlockerBanner as f, notifySuccess as g, notifyError as h, useBoardFilters as i, RequestMediaGallery as l, QuickCreateModal as m, formatRelativeTime as n, triggerConfetti as o, RequestHeroHeader as p, getNotificationBadge as r, RequestSidebarProperties as s, Authenticated as t, RequestDescriptionCard as u, ImageLightbox as v, BoardHeader as w, KanbanBoard as x, BulkActionBar as y };

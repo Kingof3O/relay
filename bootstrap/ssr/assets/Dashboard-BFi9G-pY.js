@@ -1,4 +1,4 @@
-import { C as Badge, d as Card, t as Authenticated } from "./AuthenticatedLayout-BDkBDsK0.js";
+import { S as Badge, d as Card, t as Authenticated } from "./AuthenticatedLayout-gP6DEd9M.js";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";

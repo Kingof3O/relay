@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import ApplicationLogo from './ApplicationLogo';
 import Dropdown from './Dropdown';
+import WorkspaceSwitcher from './WorkspaceSwitcher';
 import {
     LayoutDashboard,
     KanbanSquare,
@@ -98,37 +99,19 @@ export default function Sidebar() {
             <div className="flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar">
                 {/* Brand / Workspace Switcher Header */}
                 <div
-                    className={`flex items-center border-b border-zinc-800/80 pb-3.5 ${
-                        collapsed ? 'justify-center px-0' : 'justify-between px-1'
+                    className={`flex items-center gap-2 border-b border-zinc-800/80 pb-3.5 ${
+                        collapsed ? 'justify-center px-0 flex-col gap-2' : 'justify-between px-1'
                     }`}
                 >
-                    <Link
-                        href={route('dashboard')}
-                        prefetch="hover"
-                        cacheFor="30s"
-                        className="group flex items-center gap-3 rounded-xl p-1 transition-colors hover:bg-zinc-850/60"
-                        title="Relay Studio"
-                    >
-                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-750 bg-[#16171e] text-white shadow-sm transition-all group-hover:border-zinc-600">
-                            <ApplicationLogo className="h-5 w-5 text-white" />
-                        </div>
-                        {!collapsed && (
-                            <div className="min-w-0 text-left">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-[15px] font-bold tracking-tight text-white">Relay</span>
-                                    <span className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-300">
-                                        Studio
-                                    </span>
-                                </div>
-                            </div>
-                        )}
-                    </Link>
+                    <div className="flex-1 min-w-0 w-full">
+                        <WorkspaceSwitcher collapsed={collapsed} />
+                    </div>
 
                     {!collapsed && (
                         <button
                             type="button"
                             onClick={toggleCollapsed}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
                             title="Collapse sidebar (⌘[)"
                         >
                             <ChevronLeft className="h-4 w-4" />

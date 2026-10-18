@@ -7,6 +7,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -34,6 +35,7 @@ class User extends Authenticatable
         'two_factor_confirmed_at',
         'github_id',
         'google_id',
+        'force_password_reset',
     ];
 
     /**
@@ -62,6 +64,7 @@ class User extends Authenticatable
             'two_factor_secret' => 'encrypted',
             'two_factor_recovery_codes' => 'encrypted:array',
             'two_factor_confirmed_at' => 'datetime',
+            'force_password_reset' => 'boolean',
         ];
     }
 
@@ -73,6 +76,37 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function workspaces(): BelongsToMany
+    {
+        return $this->belongsToMany(Workspace::class, 'workspace_user')
+            ->withPivot('id', 'role_id')
+            ->withTimestamps();
+    }
+
+    public function ownedWorkspaces(): HasMany
+    {
+        return $this->hasMany(Workspace::class, 'owner_id');
+    }
+
+    public function currentWorkspace(): ?Workspace
+    {
+        $activeId = session('active_workspace_id');
+
+        if ($activeId) {
+            $workspace = $this->workspaces()->where('workspaces.id', $activeId)->first();
+            if ($workspace) {
+                return $workspace;
+            }
+        }
+
+        return $this->workspaces()->first();
+    }
+
+    public function getCurrentWorkspaceAttribute(): ?Workspace
+    {
+        return $this->currentWorkspace();
     }
 
     public function requestedWork(): HasMany

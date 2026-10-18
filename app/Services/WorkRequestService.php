@@ -17,7 +17,10 @@ final class WorkRequestService
     public function create(User $actor, array $attributes): WorkRequest
     {
         return DB::transaction(function () use ($actor, $attributes): WorkRequest {
+            $workspaceId = $attributes['workspace_id'] ?? $actor->currentWorkspace()?->id;
+
             $request = WorkRequest::query()->create([
+                'workspace_id' => $workspaceId,
                 'area_id' => $attributes['area_id'],
                 'title' => $attributes['title'],
                 'description' => $attributes['description'] ?? null,

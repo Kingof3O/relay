@@ -1,4 +1,4 @@
-import { c as RequestDiscussionSection, f as RequestBlockerBanner, l as RequestMediaGallery, o as triggerConfetti, p as RequestHeroHeader, s as RequestSidebarProperties, t as Authenticated, u as RequestDescriptionCard, y as ImageLightbox } from "./AuthenticatedLayout-BDkBDsK0.js";
+import { c as RequestDiscussionSection, f as RequestBlockerBanner, l as RequestMediaGallery, o as triggerConfetti, p as RequestHeroHeader, s as RequestSidebarProperties, t as Authenticated, u as RequestDescriptionCard, v as ImageLightbox } from "./AuthenticatedLayout-gP6DEd9M.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from "react";

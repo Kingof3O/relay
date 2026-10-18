@@ -1,10 +1,10 @@
 import { i as InputError, n as PrimaryButton, r as InputLabel, t as TextInput_default } from "./TextInput-CMpMv42q.js";
-import { t as Authenticated } from "./AuthenticatedLayout-BDkBDsK0.js";
+import { t as Authenticated } from "./AuthenticatedLayout-gP6DEd9M.js";
 import { n as getAvatarGradient, r as getRoleBadgeStyle } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useRef, useState } from "react";
-import { Activity, AlertCircle, AtSign, Bell, Calendar, Check, CheckCircle2, Circle, Copy, Download, ExternalLink, Eye, EyeOff, Hash, KanbanSquare, KeyRound, Layers, LayoutDashboard, Loader2, Lock, Mail, MessageSquare, QrCode, Radio, RefreshCw, Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User, UserCheck, X, Zap } from "lucide-react";
+import { Activity, AlertCircle, AlertTriangle, AtSign, Bell, Calendar, Check, CheckCircle2, Circle, Copy, Download, ExternalLink, Eye, EyeOff, Hash, KanbanSquare, KeyRound, Layers, LayoutDashboard, Loader2, Lock, Mail, MessageSquare, QrCode, Radio, RefreshCw, Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User, UserCheck, X, Zap } from "lucide-react";
 import { Transition } from "@headlessui/react";
 import axios from "axios";
 import { toast } from "sonner";
@@ -1324,6 +1324,8 @@ function TwoFactorSecurityCard({ initialEnabled = false, className = "" }) {
 //#endregion
 //#region resources/js/Pages/Profile/Edit.tsx
 function Edit({ stats, twoFactorEnabled = false }) {
+	const pageProps = usePage().props;
+	const alertMessage = pageProps.flash?.alert || (pageProps.auth?.user?.force_password_reset ? "Please update your default password to secure your account." : null);
 	return /* @__PURE__ */ jsxs(Authenticated, {
 		header: /* @__PURE__ */ jsxs("div", {
 			className: "flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between",
@@ -1356,21 +1358,37 @@ function Edit({ stats, twoFactorEnabled = false }) {
 		}),
 		children: [/* @__PURE__ */ jsx(Head, { title: "Profile & Security · Studio Account" }), /* @__PURE__ */ jsxs("div", {
 			className: "mx-auto max-w-[1600px] space-y-6",
-			children: [/* @__PURE__ */ jsx(VisualIdentityHero, { stats }), /* @__PURE__ */ jsxs("div", {
-				className: "grid grid-cols-1 gap-6 lg:grid-cols-12",
-				children: [/* @__PURE__ */ jsx("div", {
-					className: "space-y-6 lg:col-span-4",
-					children: /* @__PURE__ */ jsx(AccountTelemetryCard, { stats })
-				}), /* @__PURE__ */ jsxs("div", {
-					className: "space-y-6 lg:col-span-8",
-					children: [
-						/* @__PURE__ */ jsx(UpdateProfileInformation, {}),
-						/* @__PURE__ */ jsx(TwoFactorSecurityCard, { initialEnabled: twoFactorEnabled }),
-						/* @__PURE__ */ jsx(NotificationPreferencesCard, {}),
-						/* @__PURE__ */ jsx(UpdatePasswordForm, {})
-					]
-				})]
-			})]
+			children: [
+				alertMessage && /* @__PURE__ */ jsxs("div", {
+					className: "flex items-center gap-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-200 shadow-lg shadow-amber-500/5",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/20 text-amber-400",
+						children: /* @__PURE__ */ jsx(AlertTriangle, { className: "h-5 w-5" })
+					}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("div", {
+						className: "text-xs font-bold text-amber-200 uppercase tracking-wider",
+						children: "Security Notice"
+					}), /* @__PURE__ */ jsx("div", {
+						className: "text-xs text-amber-300/90 mt-0.5",
+						children: alertMessage
+					})] })]
+				}),
+				/* @__PURE__ */ jsx(VisualIdentityHero, { stats }),
+				/* @__PURE__ */ jsxs("div", {
+					className: "grid grid-cols-1 gap-6 lg:grid-cols-12",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "space-y-6 lg:col-span-4",
+						children: /* @__PURE__ */ jsx(AccountTelemetryCard, { stats })
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "space-y-6 lg:col-span-8",
+						children: [
+							/* @__PURE__ */ jsx(UpdateProfileInformation, {}),
+							/* @__PURE__ */ jsx(TwoFactorSecurityCard, { initialEnabled: twoFactorEnabled }),
+							/* @__PURE__ */ jsx(NotificationPreferencesCard, {}),
+							/* @__PURE__ */ jsx(UpdatePasswordForm, {})
+						]
+					})]
+				})
+			]
 		})]
 	});
 }

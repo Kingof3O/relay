@@ -8,6 +8,7 @@ import type {
     RequestActivityItem,
     WorkRequestCard,
     WorkRequestDetail,
+    Workspace,
 } from './workspace';
 
 export * from './workspace';
@@ -41,6 +42,14 @@ export type PageProps<T extends Record<string, unknown> = Record<string, unknown
         role?: Role | null;
         permissions: string[];
     };
+    currentWorkspace?: Workspace | null;
+    userWorkspaces?: Workspace[];
     workspaceNotifications?: WorkspaceNotification[];
     unreadNotificationsCount?: number;
+    flash?: {
+        alert?: string | null;
+        message?: string | null;
+        success?: string | null;
+        error?: string | null;
+    };
 };

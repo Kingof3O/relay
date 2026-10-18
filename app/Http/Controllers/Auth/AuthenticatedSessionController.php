@@ -29,6 +29,11 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        $user = $request->user();
+        if ($user && $user->force_password_reset) {
+            return redirect()->route('profile.edit')->with('alert', 'Please update your default password to secure your account.');
+        }
+
         return redirect()->intended(route('dashboard', absolute: false));
     }
 

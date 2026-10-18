@@ -8,7 +8,9 @@ import {
     UpdateProfileInformationForm,
     VisualIdentityHero,
 } from '@/Features/Profile';
-import { ShieldCheck } from 'lucide-react';
+import { AlertTriangle, ShieldCheck } from 'lucide-react';
+import { usePage } from '@inertiajs/react';
+import type { PageProps } from '@/types';
 
 export interface ProfileEditProps {
     stats?: {
@@ -19,6 +21,9 @@ export interface ProfileEditProps {
 }
 
 export default function Edit({ stats, twoFactorEnabled = false }: ProfileEditProps) {
+    const pageProps = usePage<PageProps>().props;
+    const alertMessage = pageProps.flash?.alert || (pageProps.auth?.user?.force_password_reset ? 'Please update your default password to secure your account.' : null);
+
     return (
         <AuthenticatedLayout
             header={
@@ -48,6 +53,18 @@ export default function Edit({ stats, twoFactorEnabled = false }: ProfileEditPro
             <Head title="Profile & Security · Studio Account" />
 
             <div className="mx-auto max-w-[1600px] space-y-6">
+                {alertMessage && (
+                    <div className="flex items-center gap-3.5 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-amber-200 shadow-lg shadow-amber-500/5">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/20 text-amber-400">
+                            <AlertTriangle className="h-5 w-5" />
+                        </div>
+                        <div>
+                            <div className="text-xs font-bold text-amber-200 uppercase tracking-wider">Security Notice</div>
+                            <div className="text-xs text-amber-300/90 mt-0.5">{alertMessage}</div>
+                        </div>
+                    </div>
+                )}
+
                 {/* Full-width Visual Identity Hero Banner across the top */}
                 <VisualIdentityHero stats={stats} />
 

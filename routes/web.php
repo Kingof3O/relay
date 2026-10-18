@@ -17,7 +17,13 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
+Route::get('/invitations/{token}', [\App\Http\Controllers\InvitationAcceptController::class, 'show'])->name('invitations.accept');
+Route::post('/invitations/{token}', [\App\Http\Controllers\InvitationAcceptController::class, 'store'])->name('invitations.store');
+
 Route::middleware(['auth', 'active'])->group(function (): void {
+    Route::post('/workspaces/{workspace}/switch', [\App\Http\Controllers\WorkspaceController::class, 'switch'])->name('workspaces.switch');
+    Route::post('/workspaces', [\App\Http\Controllers\WorkspaceController::class, 'store'])->name('workspaces.store');
+
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     Route::get('/requests', [WorkRequestController::class, 'index'])->name('requests.index');
@@ -41,6 +47,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
         Route::post('/settings/projects/reorder', [AreaController::class, 'reorder'])->name('settings.projects.reorder');
         Route::delete('/settings/projects/{area}', [AreaController::class, 'destroy'])->name('settings.projects.destroy');
         Route::post('/settings/team', [TeamMemberController::class, 'store'])->name('settings.team.store');
+        Route::post('/settings/team/invite', [TeamMemberController::class, 'invite'])->name('settings.team.invite');
         Route::patch('/settings/team/{user}', [TeamMemberController::class, 'update'])->name('settings.team.update');
         Route::delete('/settings/team/{user}', [TeamMemberController::class, 'destroy'])->name('settings.team.destroy');
     });

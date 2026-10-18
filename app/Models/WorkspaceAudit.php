@@ -17,6 +17,7 @@ class WorkspaceAudit extends Model
     protected $table = 'workspace_audits';
 
     protected $fillable = [
+        'workspace_id',
         'user_id',
         'event',
         'auditable_type',
@@ -39,5 +40,10 @@ class WorkspaceAudit extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function workspace(): BelongsTo
+    {
+        return $this->belongsTo(Workspace::class);
     }
 }

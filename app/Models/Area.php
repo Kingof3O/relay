@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Area extends Model
@@ -11,6 +12,7 @@ class Area extends Model
     use HasFactory;
 
     protected $fillable = [
+        'workspace_id',
         'name',
         'slug',
         'color',
@@ -24,6 +26,11 @@ class Area extends Model
             'sort_order' => 'integer',
             'archived_at' => 'datetime',
         ];
+    }
+
+    public function workspace(): BelongsTo
+    {
+        return $this->belongsTo(Workspace::class);
     }
 
     public function requests(): HasMany

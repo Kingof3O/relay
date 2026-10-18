@@ -13,6 +13,16 @@ export interface WorkspaceProject {
 
 export type WorkspaceArea = WorkspaceProject;
 
+export interface Workspace {
+    id: number;
+    name: string;
+    slug: string;
+    owner_id?: number;
+    logo_url?: string | null;
+    created_at?: string | null;
+    updated_at?: string | null;
+}
+
 export interface WorkspaceUser {
     id: number;
     name: string;
@@ -21,6 +31,7 @@ export interface WorkspaceUser {
     role_id?: number | null;
     role?: { id: number; name: string } | null;
     active?: boolean;
+    force_password_reset?: boolean;
     created_at?: string | null;
 }
 

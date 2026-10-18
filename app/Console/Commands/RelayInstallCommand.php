@@ -7,6 +7,7 @@ namespace App\Console\Commands;
 use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -240,7 +241,20 @@ ASCII;
         $user->password = Hash::make($password);
         $user->role_id = $ownerRole->id;
         $user->active = true;
+        $user->force_password_reset = true;
         $user->save();
+
+        $workspace = Workspace::query()->firstOrCreate(
+            ['slug' => 'default'],
+            [
+                'name' => 'Default Workspace',
+                'owner_id' => $user->id,
+            ]
+        );
+
+        $workspace->users()->syncWithoutDetaching([
+            $user->id => ['role_id' => $ownerRole->id],
+        ]);
 
         $this->components->twoColumnDetail('Owner Account', "<fg=green;options=bold>CONFIGURED ({$email})</>");
 
