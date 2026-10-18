@@ -96,6 +96,7 @@ class HandleInertiaRequests extends Middleware
                 ? []
                 : \App\Models\SavedView::query()
                     ->where('user_id', $user->id)
+                    ->when($user->currentWorkspace(), fn ($q, $activeWorkspace) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
                     ->orderByDesc('is_pinned')
                     ->orderBy('name')
                     ->get(['id', 'name', 'icon', 'filters', 'group_by', 'is_pinned'])

@@ -28,7 +28,7 @@ final class CycleService
             if ($r->story_points !== null) {
                 return max(0, (int) $r->story_points);
             }
-            return $hasEstimates ? 1 : 1;
+            return 1;
         };
 
         $totalPoints = $requests->sum($getWeight);
@@ -104,8 +104,13 @@ final class CycleService
             $dayIndex++;
         }
 
-        $daysElapsed = max(1, min($totalDays, (int) $startDate->diffInDays($today) + 1));
-        $velocity = $daysElapsed > 0 ? round($completedPoints / $daysElapsed, 2) : 0;
+        if ($today->lessThan($startDate)) {
+            $daysElapsed = 0;
+            $velocity = 0.0;
+        } else {
+            $daysElapsed = max(1, min($totalDays, (int) $startDate->diffInDays($today) + 1));
+            $velocity = $daysElapsed > 0 ? round($completedPoints / $daysElapsed, 2) : 0.0;
+        }
 
         return [
             'cycle' => [

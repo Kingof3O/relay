@@ -148,7 +148,7 @@ export default function RoadmapIndex({
         >
             <Head title={`Roadmap · Q${quarter} ${year}`} />
 
-            <div className="mx-auto max-w-7xl space-y-6">
+            <div className="mx-auto max-w-[1600px] space-y-6">
                 {/* Roadmap Summary Overview Pills */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">

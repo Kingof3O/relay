@@ -36,7 +36,7 @@ final class RolloverCycleCommand extends Command
 
         foreach ($activeCycles as $cycle) {
             $endDate = $cycle->end_date ? Carbon::parse($cycle->end_date)->toDateString() : $today;
-            $isExpired = strcmp($endDate, $today) <= 0;
+            $isExpired = strcmp($endDate, $today) < 0;
 
             if ($isExpired || $force) {
                 $unfinishedCount = $cycle->requests()->where('status', '!=', 'done')->count();

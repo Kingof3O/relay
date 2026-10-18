@@ -23,7 +23,7 @@ final class WorkRequestPresenter
     /** @return array<string, mixed> */
     private function base(WorkRequest $request, bool $includeDetail): array
     {
-        $request->loadMissing(['area', 'requester', 'assignee', 'cycle']);
+        $request->loadMissing(['area', 'requester', 'assignee', 'cycle', 'subtasks']);
 
         $isOverdue = false;
         $dueHuman = null;

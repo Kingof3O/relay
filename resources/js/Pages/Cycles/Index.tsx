@@ -159,7 +159,7 @@ export default function CyclesIndex({
         >
             <Head title={`Cycles · ${currentCycle.name}`} />
 
-            <div className="mx-auto max-w-7xl space-y-6">
+            <div className="mx-auto max-w-[1600px] space-y-6">
                 {/* Agile Velocity KPI Cards */}
                 <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
                     <div className="rounded-2xl border border-white/[0.07] bg-[#0c0d12] p-4">

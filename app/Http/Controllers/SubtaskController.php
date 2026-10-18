@@ -19,6 +19,8 @@ final class SubtaskController extends Controller
 
     public function store(Request $request, WorkRequest $workRequest): JsonResponse|RedirectResponse
     {
+        $this->authorize('update', $workRequest);
+
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'assignee_id' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
@@ -54,6 +56,8 @@ final class SubtaskController extends Controller
             abort(404, 'Subtask does not belong to this parent request.');
         }
 
+        $this->authorize('changeStatus', $subtask);
+
         $currentStatus = $subtask->status?->value ?? (string) $subtask->getRawOriginal('status');
         $newStatus = $currentStatus === 'done' ? 'ready' : 'done';
 
@@ -74,6 +78,8 @@ final class SubtaskController extends Controller
         if ($subtask->parent_id !== $workRequest->id) {
             abort(404, 'Subtask does not belong to this parent request.');
         }
+
+        $this->authorize('delete', $subtask);
 
         $subtask->delete();
 

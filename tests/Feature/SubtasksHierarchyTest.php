@@ -161,4 +161,66 @@ final class SubtasksHierarchyTest extends TestCase
         $this->assertEquals('ready', $subtask->fresh()->status->value);
         $this->assertEquals(0, $toggleIncomplete->json('request.subtasks_progress.completed'));
     }
+
+    public function test_deleting_subtask(): void
+    {
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $area = Area::query()->firstOrFail();
+
+        $parent = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'title' => 'Parent issue for deletion test',
+            'requester_id' => $owner->id,
+        ]);
+
+        $subtask = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'parent_id' => $parent->id,
+            'title' => 'Delete me subtask',
+            'requester_id' => $owner->id,
+        ]);
+
+        $response = $this->actingAs($owner)->deleteJson(
+            route('requests.subtasks.destroy', [$parent, $subtask])
+        );
+
+        $response->assertOk();
+        $this->assertSoftDeleted('requests', ['id' => $subtask->id]);
+        $this->assertNotNull($subtask->fresh()->deleted_at);
+    }
+
+    public function test_subtask_mutation_requires_authorization(): void
+    {
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $area = Area::query()->firstOrFail();
+
+        $parent = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'title' => 'Protected Epic',
+            'requester_id' => $owner->id,
+        ]);
+
+        $subtask = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'parent_id' => $parent->id,
+            'title' => 'Protected Child',
+            'requester_id' => $owner->id,
+        ]);
+
+        // Inactive user
+        $inactiveUser = User::query()->where('username', 'hussien')->firstOrFail();
+        $inactiveUser->update(['active' => false]);
+
+        $this->actingAs($inactiveUser)->postJson(route('requests.subtasks.store', $parent), [
+            'title' => 'Sneaky subtask',
+        ])->assertForbidden();
+
+        $this->actingAs($inactiveUser)->postJson(
+            route('requests.subtasks.toggle', [$parent, $subtask])
+        )->assertForbidden();
+
+        $this->actingAs($inactiveUser)->deleteJson(
+            route('requests.subtasks.destroy', [$parent, $subtask])
+        )->assertForbidden();
+    }
 }

@@ -62,6 +62,12 @@ final class RoadmapController extends Controller
         $requests = WorkRequest::query()
             ->whereNull('parent_id')
             ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
+            ->where(function ($query) use ($quarterStart, $quarterEnd): void {
+                $query->whereBetween('created_at', [$quarterStart, $quarterEnd])
+                    ->orWhereBetween('due_date', [$quarterStart, $quarterEnd])
+                    ->orWhere(fn ($sub) => $sub->where('created_at', '<=', $quarterStart)->where('due_date', '>=', $quarterEnd))
+                    ->orWhere(fn ($sub) => $sub->whereNull('due_date')->where('created_at', '<=', $quarterEnd));
+            })
             ->with(['area', 'assignee', 'relations.related'])
             ->orderBy('due_date')
             ->orderBy('id')

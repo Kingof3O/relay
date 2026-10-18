@@ -60,7 +60,7 @@ final class CycleController extends Controller
         $burndown = $this->cycles->getBurndown($cycle);
 
         $tickets = $cycle->requests()
-            ->with(['area', 'requester', 'assignee'])
+            ->with(['area', 'requester', 'assignee', 'cycle', 'subtasks'])
             ->orderByDesc('is_blocked')
             ->orderByRaw("CASE priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 WHEN 'low' THEN 4 ELSE 5 END")
             ->orderByDesc('id')

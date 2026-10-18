@@ -39,7 +39,7 @@ final class WorkRequestController extends Controller
         $requests = WorkRequest::query()
             ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
             ->filter($filterValues, $request->user())
-            ->with(['area', 'requester', 'assignee'])
+            ->with(['area', 'requester', 'assignee', 'cycle', 'subtasks'])
             ->orderByDesc('is_blocked')
             ->orderByRaw("CASE priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 WHEN 'low' THEN 4 ELSE 5 END")
             ->orderByDesc('updated_at')
