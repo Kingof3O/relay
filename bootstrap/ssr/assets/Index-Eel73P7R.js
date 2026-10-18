@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-CYBG4tVr.js";
+import { t as Authenticated } from "./AuthenticatedLayout-KgOcAsfl.js";
 import { a as DiscordWebhookCard, i as DiscordLivePreview, n as EmailLivePreview, o as IntegrationKpiTiles, r as EmailTemplateCard, t as DeliveryLogTable } from "./Integrations-CXfteOG9.js";
 import { Head } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";

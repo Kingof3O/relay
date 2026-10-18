@@ -134,7 +134,11 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
 
             {/* Dropdown Menu */}
             {isOpen && (
-                <div className="absolute left-0 top-full z-50 mt-1.5 w-64 rounded-xl border border-zinc-800 bg-[#0c0d12] p-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100">
+                <div
+                    className={`absolute z-50 mt-1.5 rounded-xl border border-zinc-800 bg-[#0c0d12] p-1.5 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 duration-100 ${
+                        collapsed ? 'left-full top-0 ml-2 w-60' : 'left-0 right-0 w-full'
+                    }`}
+                >
                     <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
                         Workspaces
                     </div>

@@ -123,7 +123,8 @@ export default function Sidebar() {
                 collapsed ? 'w-[76px] p-3' : 'w-[280px] p-4'
             }`}
         >
-            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto no-scrollbar">
+            {/* Top Fixed Header: Brand Logo & Workspace Card */}
+            <div className="shrink-0 space-y-3 pb-3">
                 {/* Brand Logo Header */}
                 <div
                     className={`flex items-center border-b border-zinc-800/80 pb-3 ${
@@ -163,7 +164,7 @@ export default function Sidebar() {
                 </div>
 
                 {collapsed && (
-                    <div className="flex justify-center pt-2">
+                    <div className="flex justify-center pt-1 pb-1">
                         <button
                             type="button"
                             onClick={toggleCollapsed}
@@ -176,12 +177,15 @@ export default function Sidebar() {
                 )}
 
                 {/* Workspace Switcher Card */}
-                <div className="mt-3">
+                <div>
                     <WorkspaceSwitcher collapsed={collapsed} />
                 </div>
+            </div>
 
+            {/* Middle Scrollable Navigation List */}
+            <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden no-scrollbar py-1">
                 {/* Primary Navigation Group */}
-                <div className="mt-5 space-y-1">
+                <div className="space-y-1">
                     {!collapsed && (
                         <p className="px-3 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                             Workspace
@@ -361,7 +365,7 @@ export default function Sidebar() {
             </div>
 
             {/* User Account Footer with Dropdown */}
-            <div className="border-t border-zinc-800/80 pt-3">
+            <div className="shrink-0 border-t border-zinc-800/80 pt-3">
                 <Dropdown>
                     <Dropdown.Trigger>
                         <button
