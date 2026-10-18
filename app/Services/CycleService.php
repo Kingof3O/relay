@@ -24,10 +24,11 @@ final class CycleService
             ->get();
 
         $hasEstimates = $requests->whereNotNull('story_points')->isNotEmpty();
-        $getWeight = function (WorkRequest $r) use ($hasEstimates): int {
+        $getWeight = function (WorkRequest $r): int {
             if ($r->story_points !== null) {
                 return max(0, (int) $r->story_points);
             }
+
             return 1;
         };
 
@@ -53,6 +54,7 @@ final class CycleService
         foreach ($completedRequests as $request) {
             $completionActivity = $request->activities->first(function ($activity) {
                 $meta = is_array($activity->metadata) ? $activity->metadata : [];
+
                 return ($meta['to'] ?? null) === 'done' || $activity->type === 'approval';
             });
 

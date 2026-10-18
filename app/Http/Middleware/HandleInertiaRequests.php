@@ -2,8 +2,11 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Area;
+use App\Models\SavedView;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Tighten\Ziggy\Ziggy;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -55,7 +58,7 @@ class HandleInertiaRequests extends Middleware
                 'error' => $request->session()->get('error'),
             ],
             'ziggy' => fn (): array => [
-                ...(new \Tighten\Ziggy\Ziggy)->toArray(),
+                ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
             'workspaceNotifications' => fn (): array => $user === null
@@ -77,7 +80,7 @@ class HandleInertiaRequests extends Middleware
             'workspaceProjects' => fn (): array => once(function () use ($user): array {
                 $activeWorkspace = $user?->currentWorkspace();
 
-                return \App\Models\Area::query()
+                return Area::query()
                     ->whereNull('archived_at')
                     ->when($activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
                     ->orderBy('sort_order')
@@ -94,13 +97,25 @@ class HandleInertiaRequests extends Middleware
             }),
             'savedViews' => fn (): array => $user === null
                 ? []
-                : \App\Models\SavedView::query()
+                : SavedView::query()
                     ->where('user_id', $user->id)
                     ->when($user->currentWorkspace(), fn ($q, $activeWorkspace) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
                     ->orderByDesc('is_pinned')
                     ->orderBy('name')
                     ->get(['id', 'name', 'icon', 'filters', 'group_by', 'is_pinned'])
                     ->all(),
+            'locale' => fn (): string => app()->getLocale(),
+            'translations' => fn (): array => [
+                'status' => trans('status'),
+                'workspace' => trans('workspace'),
+            ],
+            'i18n' => fn (): array => [
+                'locale' => app()->getLocale(),
+                'translations' => [
+                    'status' => trans('status'),
+                    'workspace' => trans('workspace'),
+                ],
+            ],
         ];
     }
 }

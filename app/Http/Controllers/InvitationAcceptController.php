@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -52,7 +52,7 @@ class InvitationAcceptController extends Controller
 
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', \Illuminate\Validation\Rule::unique('users', 'username')->ignore($user?->id)],
+            'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user?->id)],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 

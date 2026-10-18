@@ -7,7 +7,6 @@ namespace App\Console\Commands;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Database\DatabaseManager;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 

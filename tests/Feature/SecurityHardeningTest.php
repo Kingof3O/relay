@@ -13,6 +13,7 @@ use App\Models\Webhook;
 use App\Models\WorkRequest;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
@@ -46,7 +47,7 @@ final class SecurityHardeningTest extends TestCase
         $user = User::query()->where('username', 'robin')->firstOrFail();
         $token = $user->createToken('test-token')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson('/api/search?q=');
 
         $response->assertOk();
@@ -114,7 +115,7 @@ final class SecurityHardeningTest extends TestCase
             ],
         ]);
 
-        $validSignature = 'sha256=' . hash_hmac('sha256', (string) $payload, $secret);
+        $validSignature = 'sha256='.hash_hmac('sha256', (string) $payload, $secret);
 
         $response = $this->call(
             'POST',
@@ -169,7 +170,7 @@ final class SecurityHardeningTest extends TestCase
         $job = new DispatchOutgoingWebhook($ticket->id);
         $job->handle();
 
-        Http::assertSent(function (\Illuminate\Http\Client\Request $request) use ($webhook, $webhookSecret): bool {
+        Http::assertSent(function (Request $request) use ($webhook, $webhookSecret): bool {
             if ($request->url() !== $webhook->url) {
                 return false;
             }
@@ -179,7 +180,7 @@ final class SecurityHardeningTest extends TestCase
             }
 
             $signatureHeader = $request->header('X-Relay-Signature')[0] ?? '';
-            $expectedSignature = 'sha256=' . hash_hmac('sha256', (string) json_encode($request->data()), $webhookSecret);
+            $expectedSignature = 'sha256='.hash_hmac('sha256', (string) json_encode($request->data()), $webhookSecret);
 
             return hash_equals($expectedSignature, $signatureHeader);
         });

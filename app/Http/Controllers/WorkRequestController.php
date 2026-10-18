@@ -26,8 +26,7 @@ final class WorkRequestController extends Controller
         private readonly WorkRequestService $requests,
         private readonly WorkRequestPresenter $presenter,
         private readonly RequestFileService $files,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response|JsonResponse
     {

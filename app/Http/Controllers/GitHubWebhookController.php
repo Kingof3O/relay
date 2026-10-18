@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Events\WorkRequestMoved;
 use App\Models\PullRequest;
 use App\Models\Webhook;
 use App\Models\WorkRequest;
@@ -20,7 +21,7 @@ class GitHubWebhookController extends Controller
 
         if (! empty($secret)) {
             $signature = (string) $request->header('X-Hub-Signature-256', '');
-            $expectedSignature = 'sha256=' . hash_hmac('sha256', $request->getContent(), (string) $secret);
+            $expectedSignature = 'sha256='.hash_hmac('sha256', $request->getContent(), (string) $secret);
 
             if (! hash_equals($expectedSignature, $signature)) {
                 return response()->json(['error' => 'Unauthorized: Invalid signature.'], 401);
@@ -51,7 +52,7 @@ class GitHubWebhookController extends Controller
                 $status = 'closed';
             }
 
-            $searchString = $title . ' ' . $body . ' ' . $branch;
+            $searchString = $title.' '.$body.' '.$branch;
             $linkedCount = 0;
 
             if (preg_match_all('/(?:fixes|closes|resolves)?\s*#?REQ-([0-9]+)/i', $searchString, $matches)) {
@@ -108,7 +109,7 @@ class GitHubWebhookController extends Controller
                                 null
                             );
 
-                            \App\Events\WorkRequestMoved::dispatch($workRequest, null, $oldStatus, 'done');
+                            WorkRequestMoved::dispatch($workRequest, null, $oldStatus, 'done');
                         }
                     } elseif ($prRecord->wasRecentlyCreated) {
                         $workRequest->activities()->create([
@@ -139,7 +140,7 @@ class GitHubWebhookController extends Controller
 
         foreach ($commits as $commit) {
             $message = (string) ($commit['message'] ?? '');
-            $commitId = (string) ($commit['id'] ?? substr(sha1($message . microtime()), 0, 7));
+            $commitId = (string) ($commit['id'] ?? substr(sha1($message.microtime()), 0, 7));
             $shortId = substr($commitId, 0, 7);
 
             if (preg_match_all('/(?:fixes|closes|resolves)\s+#?REQ-([0-9]+)/i', $message, $matches)) {

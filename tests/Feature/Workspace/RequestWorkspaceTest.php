@@ -3,6 +3,7 @@
 namespace Tests\Feature\Workspace;
 
 use App\Models\Area;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\WorkRequest;
 use App\Services\RequestFileService;
@@ -114,7 +115,7 @@ final class RequestWorkspaceTest extends TestCase
     {
         $developer = User::query()->where('username', 'hussien')->firstOrFail();
         $brother = User::query()->where('username', 'brother')->firstOrFail();
-        $ownerRole = \App\Models\Role::query()->where('name', 'Owner')->firstOrFail();
+        $ownerRole = Role::query()->where('name', 'Owner')->firstOrFail();
 
         $response = $this->actingAs($developer)->patchJson(route('settings.team.update', $brother), [
             'name' => 'Brother Updated',

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\Area;
+use App\Models\RequestRelation;
 use App\Models\User;
 use App\Models\WorkRequest;
 use Database\Seeders\IndependentWorkspaceSeeder;
@@ -16,7 +17,9 @@ final class WorkRequestApiV1Test extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private string $token;
+
     private Area $area;
 
     protected function setUp(): void
@@ -48,7 +51,7 @@ final class WorkRequestApiV1Test extends TestCase
             ]);
         }
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->getJson('/api/v1/work-requests');
 
         $response->assertOk()
@@ -96,22 +99,22 @@ final class WorkRequestApiV1Test extends TestCase
         ]);
 
         // Filter by status
-        $resStatus = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $resStatus = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->getJson('/api/v1/work-requests?status=doing');
         $resStatus->assertOk();
         $this->assertCount(1, $resStatus->json('data'));
         $this->assertEquals($req1->id, $resStatus->json('data.0.id'));
 
         // Filter by priority
-        $resPriority = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $resPriority = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->getJson('/api/v1/work-requests?priority=urgent');
         $resPriority->assertOk();
         $this->assertCount(1, $resPriority->json('data'));
         $this->assertEquals($req1->id, $resPriority->json('data.0.id'));
 
         // Filter by area_id
-        $resArea = $this->withHeader('Authorization', 'Bearer ' . $this->token)
-            ->getJson('/api/v1/work-requests?area_id=' . $otherArea->id);
+        $resArea = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->getJson('/api/v1/work-requests?area_id='.$otherArea->id);
         $resArea->assertOk();
         $this->assertCount(1, $resArea->json('data'));
         $this->assertEquals($req2->id, $resArea->json('data.0.id'));
@@ -119,7 +122,7 @@ final class WorkRequestApiV1Test extends TestCase
 
     public function test_creating_work_request_validates_required_fields(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/v1/work-requests', []);
 
         $response->assertStatus(422)
@@ -128,7 +131,7 @@ final class WorkRequestApiV1Test extends TestCase
 
     public function test_creating_work_request_successfully_returns_201(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/v1/work-requests', [
                 'title' => 'Integrate REST API v1',
                 'description' => 'Document and test public API v1 endpoints.',
@@ -178,13 +181,13 @@ final class WorkRequestApiV1Test extends TestCase
             'priority' => 'urgent',
         ]);
 
-        \App\Models\RequestRelation::query()->create([
+        RequestRelation::query()->create([
             'request_id' => $parent->id,
             'related_id' => $relatedTicket->id,
             'type' => 'blocks',
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->getJson("/api/v1/work-requests/{$parent->id}");
 
         $response->assertOk()
@@ -201,7 +204,7 @@ final class WorkRequestApiV1Test extends TestCase
 
     public function test_creating_work_request_rejects_invalid_priority(): void
     {
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->postJson('/api/v1/work-requests', [
                 'title' => 'Invalid Priority Ticket',
                 'area_id' => $this->area->id,
@@ -222,7 +225,7 @@ final class WorkRequestApiV1Test extends TestCase
             'requester_id' => $this->user->id,
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->patchJson("/api/v1/work-requests/{$ticket->id}", [
                 'title' => 'Updated Title via API',
                 'status' => 'doing',
@@ -252,7 +255,7 @@ final class WorkRequestApiV1Test extends TestCase
             'priority' => 'normal',
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->deleteJson("/api/v1/work-requests/{$ticket->id}");
 
         $response->assertOk()
@@ -271,7 +274,7 @@ final class WorkRequestApiV1Test extends TestCase
             'archived_at' => now(),
         ]);
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $this->token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
             ->getJson('/api/v1/projects');
 
         $response->assertOk()

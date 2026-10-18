@@ -23,7 +23,9 @@ final class ReverbRealtimeBroadcastTest extends TestCase
     use DatabaseTransactions;
 
     private User $owner;
+
     private Area $area;
+
     private Workspace $workspace;
 
     protected function setUp(): void
@@ -56,7 +58,7 @@ final class ReverbRealtimeBroadcastTest extends TestCase
         $channels = $event->broadcastOn();
         $this->assertCount(1, $channels);
         $this->assertInstanceOf(PrivateChannel::class, $channels[0]);
-        $this->assertSame('private-workspace.' . $this->workspace->id, $channels[0]->name);
+        $this->assertSame('private-workspace.'.$this->workspace->id, $channels[0]->name);
 
         $payload = $event->broadcastWith();
         $this->assertSame($workRequest->id, $payload['request_id']);
@@ -83,7 +85,7 @@ final class ReverbRealtimeBroadcastTest extends TestCase
         $channels = $event->broadcastOn();
         $this->assertCount(1, $channels);
         $this->assertInstanceOf(PrivateChannel::class, $channels[0]);
-        $this->assertSame('private-workspace.' . $this->workspace->id, $channels[0]->name);
+        $this->assertSame('private-workspace.'.$this->workspace->id, $channels[0]->name);
 
         $payload = $event->broadcastWith();
         $this->assertSame($workRequest->id, $payload['request_id']);

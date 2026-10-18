@@ -9,11 +9,11 @@ use App\Models\Role;
 final class RoleService
 {
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function create(array $validated): Role
     {
-        $role = new Role();
+        $role = new Role;
         $role->name = (string) $validated['name'];
         $role->save();
 
@@ -24,7 +24,7 @@ final class RoleService
     }
 
     /**
-     * @param array<string, mixed> $validated
+     * @param  array<string, mixed>  $validated
      */
     public function update(Role $role, array $validated): Role
     {

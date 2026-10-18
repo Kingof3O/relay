@@ -21,8 +21,7 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
         public User $recipient,
         public WorkRequest $workRequest,
         public array $payload = [],
-    ) {
-    }
+    ) {}
 
     public function envelope(): Envelope
     {
@@ -57,7 +56,7 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
             'reopened' => '🔄 REQUEST REOPENED',
             'blocked' => '🚫 ROADBLOCK FLAGGED',
             'comment' => '💬 NEW COMMENT',
-            default => '⚡ ' . strtoupper(str_replace('_', ' ', $event ?: 'NOTIFICATION')),
+            default => '⚡ '.strtoupper(str_replace('_', ' ', $event ?: 'NOTIFICATION')),
         };
 
         $messageText = (string) ($this->payload['message'] ?? 'There is an update on this work request.');

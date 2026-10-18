@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\RequestPriority;
 use App\Enums\RequestStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -129,7 +130,7 @@ class WorkRequest extends Model
         return $this->hasMany(WorkRequest::class, 'parent_id')->orderBy('id');
     }
 
-    public function scopeDueSoon(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    public function scopeDueSoon(Builder $query): Builder
     {
         return $query->whereNotNull('due_date')
             ->where('due_date', '>=', now()->toDateString())
@@ -137,36 +138,36 @@ class WorkRequest extends Model
             ->where('status', '!=', RequestStatus::Done->value);
     }
 
-    public function scopeOverdue(\Illuminate\Database\Eloquent\Builder $query): \Illuminate\Database\Eloquent\Builder
+    public function scopeOverdue(Builder $query): Builder
     {
         return $query->whereNotNull('due_date')
             ->where('due_date', '<', now()->toDateString())
             ->where('status', '!=', RequestStatus::Done->value);
     }
 
-    public function scopeFilter(\Illuminate\Database\Eloquent\Builder $query, array $filters, ?User $user = null): \Illuminate\Database\Eloquent\Builder
+    public function scopeFilter(Builder $query, array $filters, ?User $user = null): Builder
     {
         return $query
-            ->when(!empty($filters['project']) || !empty($filters['area']), function (\Illuminate\Database\Eloquent\Builder $query) use ($filters): void {
-                $projectId = !empty($filters['project']) ? (int) $filters['project'] : (int) $filters['area'];
+            ->when(! empty($filters['project']) || ! empty($filters['area']), function (Builder $query) use ($filters): void {
+                $projectId = ! empty($filters['project']) ? (int) $filters['project'] : (int) $filters['area'];
                 $query->where('area_id', $projectId);
             })
-            ->when(!empty($filters['owner']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('assignee_id', (int) $filters['owner']))
-            ->when(!empty($filters['requester']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('requester_id', (int) $filters['requester']))
-            ->when(!empty($filters['status']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('status', (string) $filters['status']))
-            ->when(!empty($filters['priority']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('priority', (string) $filters['priority']))
-            ->when(!empty($filters['cycle']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('cycle_id', (int) $filters['cycle']))
-            ->when(!empty($filters['my_work']) && $user, fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where(function (\Illuminate\Database\Eloquent\Builder $query) use ($user): void {
+            ->when(! empty($filters['owner']), fn (Builder $query) => $query->where('assignee_id', (int) $filters['owner']))
+            ->when(! empty($filters['requester']), fn (Builder $query) => $query->where('requester_id', (int) $filters['requester']))
+            ->when(! empty($filters['status']), fn (Builder $query) => $query->where('status', (string) $filters['status']))
+            ->when(! empty($filters['priority']), fn (Builder $query) => $query->where('priority', (string) $filters['priority']))
+            ->when(! empty($filters['cycle']), fn (Builder $query) => $query->where('cycle_id', (int) $filters['cycle']))
+            ->when(! empty($filters['my_work']) && $user, fn (Builder $query) => $query->where(function (Builder $query) use ($user): void {
                 $query->where('assignee_id', $user->id)->orWhere('requester_id', $user->id);
             }))
-            ->when(!empty($filters['blocked']) || !empty($filters['is_blocked']), fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('is_blocked', true))
-            ->when(!empty($filters['search']), function (\Illuminate\Database\Eloquent\Builder $query) use ($filters): void {
+            ->when(! empty($filters['blocked']) || ! empty($filters['is_blocked']), fn (Builder $query) => $query->where('is_blocked', true))
+            ->when(! empty($filters['search']), function (Builder $query) use ($filters): void {
                 $search = '%'.(string) $filters['search'].'%';
-                $query->where(fn (\Illuminate\Database\Eloquent\Builder $query) => $query->where('title', 'like', $search)->orWhere('description', 'like', $search));
+                $query->where(fn (Builder $query) => $query->where('title', 'like', $search)->orWhere('description', 'like', $search));
             });
     }
 
-    public function scopeForWorkspace(\Illuminate\Database\Eloquent\Builder $query, int|Workspace $workspace): \Illuminate\Database\Eloquent\Builder
+    public function scopeForWorkspace(Builder $query, int|Workspace $workspace): Builder
     {
         $workspaceId = $workspace instanceof Workspace ? $workspace->id : $workspace;
 

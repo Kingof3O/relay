@@ -33,7 +33,7 @@ final class SocialAuthController extends Controller
             $socialUser = Socialite::driver($provider)->user();
         } catch (\Throwable $e) {
             return redirect()->route('login')->withErrors([
-                'username' => 'Unable to authenticate with social provider: ' . $e->getMessage(),
+                'username' => 'Unable to authenticate with social provider: '.$e->getMessage(),
             ]);
         }
 

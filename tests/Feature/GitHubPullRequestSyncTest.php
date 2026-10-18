@@ -17,6 +17,7 @@ final class GitHubPullRequestSyncTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private WorkRequest $ticket;
 
     protected function setUp(): void
@@ -158,7 +159,7 @@ final class GitHubPullRequestSyncTest extends TestCase
 
         $token = $this->user->createToken('test')->plainTextToken;
 
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        $response = $this->withHeader('Authorization', 'Bearer '.$token)
             ->getJson("/api/v1/work-requests/{$this->ticket->id}");
 
         $response->assertOk()

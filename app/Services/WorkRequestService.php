@@ -2,9 +2,13 @@
 
 namespace App\Services;
 
+use App\Events\WorkRequestCommented;
+use App\Events\WorkRequestMoved;
 use App\Http\Requests\WorkRequest\BulkWorkRequestRequest;
+use App\Jobs\DispatchOutgoingWebhook;
 use App\Jobs\SendRequestEmail;
 use App\Models\RequestActivity;
+use App\Models\RequestRelation;
 use App\Models\User;
 use App\Models\WorkRequest;
 use App\Notifications\RequestDatabaseNotification;
@@ -49,7 +53,7 @@ final class WorkRequestService
             }
 
             if (($request->priority?->value ?? (string) $request->priority) === 'urgent' || $request->is_blocked) {
-                \App\Jobs\DispatchOutgoingWebhook::dispatch($request->id)->afterCommit();
+                DispatchOutgoingWebhook::dispatch($request->id)->afterCommit();
             }
 
             return $request;
@@ -126,7 +130,7 @@ final class WorkRequestService
                     'to' => $newPriority,
                 ]);
                 if ($newPriority === 'urgent') {
-                    \App\Jobs\DispatchOutgoingWebhook::dispatch($request->id)->afterCommit();
+                    DispatchOutgoingWebhook::dispatch($request->id)->afterCommit();
                 }
             }
 
@@ -136,7 +140,7 @@ final class WorkRequestService
                         'reason' => $request->blocked_reason,
                     ]);
                     $this->notifyRelevantUsers($request, 'blocked', "{$actor->name} blocked this request.", $actor);
-                    \App\Jobs\DispatchOutgoingWebhook::dispatch($request->id)->afterCommit();
+                    DispatchOutgoingWebhook::dispatch($request->id)->afterCommit();
                 } elseif ($oldBlocked) {
                     $this->recordActivity($request, $actor, 'unblocked', 'Request unblocked.');
                 }
@@ -146,7 +150,7 @@ final class WorkRequestService
                 $this->recordActivity($request, $actor, 'edited', 'Request details updated.');
             }
 
-            \App\Events\WorkRequestMoved::dispatch(
+            WorkRequestMoved::dispatch(
                 $request,
                 $actor->id,
                 $oldStatus,
@@ -162,7 +166,7 @@ final class WorkRequestService
         $activity = $this->recordActivity($request, $actor, 'comment', $body);
         $this->notifyRelevantUsers($request, 'comment', "{$actor->name} commented on this request.", $actor);
 
-        \App\Events\WorkRequestCommented::dispatch($request, $activity, $actor->id);
+        WorkRequestCommented::dispatch($request, $activity, $actor->id);
 
         return $activity;
     }
@@ -190,8 +194,7 @@ final class WorkRequestService
         string $message,
         ?User $actor = null,
         array $additionalUsers = [],
-    ): void
-    {
+    ): void {
         $request->loadMissing(['requester', 'assignee']);
         $users = collect([$request->requester, $request->assignee, ...$additionalUsers])
             ->filter()
@@ -226,8 +229,8 @@ final class WorkRequestService
     }
 
     /**
-     * @param array<int, array<string, mixed>> $rows
-     * @param (callable(WorkRequest): array<string, mixed>)|null $presenter
+     * @param  array<int, array<string, mixed>>  $rows
+     * @param  (callable(WorkRequest): array<string, mixed>)|null  $presenter
      * @return array<int, array<string, mixed>>
      */
     public function bulkCreate(User $actor, array $rows, ?callable $presenter = null): array
@@ -252,6 +255,7 @@ final class WorkRequestService
                         'errors' => $validator->errors()->toArray(),
                     ];
                     $index++;
+
                     continue;
                 }
 
@@ -280,7 +284,7 @@ final class WorkRequestService
 
     public function resolveBlockedDependencies(WorkRequest $completedRequest, ?User $actor = null): void
     {
-        $relations = \App\Models\RequestRelation::query()
+        $relations = RequestRelation::query()
             ->where('related_id', $completedRequest->id)
             ->where('type', 'blocks')
             ->get();
@@ -291,7 +295,7 @@ final class WorkRequestService
                 continue;
             }
 
-            $otherIncompleteBlockersCount = \App\Models\RequestRelation::query()
+            $otherIncompleteBlockersCount = RequestRelation::query()
                 ->where('request_id', $blockedRequest->id)
                 ->where('type', 'blocks')
                 ->where('related_id', '!=', $completedRequest->id)

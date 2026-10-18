@@ -13,9 +13,7 @@ use Illuminate\Validation\ValidationException;
 
 final class RequestFileService
 {
-    public function __construct(private readonly WorkRequestService $requests)
-    {
-    }
+    public function __construct(private readonly WorkRequestService $requests) {}
 
     public function upload(WorkRequest $request, User $uploader, UploadedFile $uploadedFile): RequestFile
     {

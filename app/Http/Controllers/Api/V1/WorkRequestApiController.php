@@ -19,8 +19,7 @@ final class WorkRequestApiController extends Controller
 {
     public function __construct(
         private readonly WorkRequestService $service,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): AnonymousResourceCollection
     {

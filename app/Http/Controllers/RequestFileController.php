@@ -18,8 +18,7 @@ final class RequestFileController extends Controller
     public function __construct(
         private readonly RequestFileService $files,
         private readonly WorkRequestPresenter $presenter,
-    ) {
-    }
+    ) {}
 
     public function store(Request $httpRequest, WorkRequest $request): JsonResponse
     {
@@ -36,6 +35,7 @@ final class RequestFileController extends Controller
         foreach ($uploads as $upload) {
             if (! $upload instanceof UploadedFile) {
                 $results[] = ['success' => false, 'name' => 'Unknown file', 'errors' => ['file' => ['The upload was not received.']]];
+
                 continue;
             }
 

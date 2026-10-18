@@ -7,6 +7,7 @@ namespace App\Events;
 use App\Models\RequestActivity;
 use App\Models\WorkRequest;
 use App\Services\WorkRequestPresenter;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -21,18 +22,17 @@ final class WorkRequestCommented implements ShouldBroadcast
         public WorkRequest $request,
         public RequestActivity $activity,
         public ?int $actorId = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return array<int, Channel>
      */
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('workspace.' . $this->request->workspace_id),
+            new PrivateChannel('workspace.'.$this->request->workspace_id),
         ];
     }
 
@@ -54,7 +54,7 @@ final class WorkRequestCommented implements ShouldBroadcast
             'body' => $this->activity->body,
             'actor_id' => $this->actorId,
             'created_at' => $this->activity->created_at?->toIso8601String(),
-            'request' => (new WorkRequestPresenter())->detail($this->request),
+            'request' => (new WorkRequestPresenter)->detail($this->request),
         ];
     }
 }

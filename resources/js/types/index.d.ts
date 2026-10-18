@@ -19,4 +19,11 @@ export type PageProps<
         success?: string | null;
         error?: string | null;
     };
+    locale?: string;
+    translations?: Record<string, any>;
+    i18n?: {
+        locale: string;
+        translations: Record<string, any>;
+    };
 };
+

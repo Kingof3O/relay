@@ -58,7 +58,7 @@ final class GlobalSearchTest extends TestCase
         $this->assertEquals($area->id, $projData['projects'][0]['id']);
 
         // Search by ticket ID directly (#REQ-ID)
-        $idResponse = $this->actingAs($user)->getJson('/api/search?q=REQ-' . $request->id);
+        $idResponse = $this->actingAs($user)->getJson('/api/search?q=REQ-'.$request->id);
         $idResponse->assertOk();
         $idData = $idResponse->json();
         $this->assertCount(1, $idData['requests']);

@@ -17,8 +17,7 @@ final class RequestCommentController extends Controller
     public function __construct(
         private readonly WorkRequestService $requests,
         private readonly WorkRequestPresenter $presenter,
-    ) {
-    }
+    ) {}
 
     public function store(Request $httpRequest, WorkRequest $request): JsonResponse
     {
@@ -33,7 +32,7 @@ final class RequestCommentController extends Controller
         // Parse @mentions using regex /@([a-zA-Z0-9_\-\.]+)/
         if (preg_match_all('/@([a-zA-Z0-9_\-\.]+)/', $validated['body'], $matches)) {
             $tokens = array_slice(array_unique($matches[1]), 0, 10);
-            if (!empty($tokens)) {
+            if (! empty($tokens)) {
                 $mentionedUsers = User::query()
                     ->where('active', true)
                     ->whereIn('username', $tokens)

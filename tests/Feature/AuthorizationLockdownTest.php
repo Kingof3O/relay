@@ -11,6 +11,7 @@ use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\WorkRequest;
+use App\Policies\WorkRequestPolicy;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -152,7 +153,7 @@ final class AuthorizationLockdownTest extends TestCase
             'active' => false,
         ]);
 
-        $policy = new \App\Policies\WorkRequestPolicy();
+        $policy = new WorkRequestPolicy;
         $this->assertFalse($policy->viewAny($inactiveUser));
         $this->assertFalse($policy->view($inactiveUser, $ticket));
         $this->assertFalse($policy->changeStatus($inactiveUser, $ticket));

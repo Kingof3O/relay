@@ -1,0 +1,16 @@
+parameters:
+    paths:
+        - app
+        - bootstrap/app.php
+        - config
+        - routes
+
+    # PHPStan / Larastan analysis level 6
+    level: 6
+
+    checkMissingIterableValueType: false
+    checkGenericClassInNonGenericObjectType: false
+    reportUnmatchedIgnoredErrors: false
+
+    excludePaths:
+        - ./*/*/FileToBeExcluded.php

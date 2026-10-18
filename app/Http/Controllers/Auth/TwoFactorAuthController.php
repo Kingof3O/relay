@@ -12,9 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 final class TwoFactorAuthController extends Controller
 {
-    public function __construct(private readonly TwoFactorService $twoFactor)
-    {
-    }
+    public function __construct(private readonly TwoFactorService $twoFactor) {}
 
     public function enable(Request $request): JsonResponse
     {

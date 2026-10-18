@@ -19,8 +19,7 @@ final class WorkspaceInvitationMail extends Mailable implements ShouldQueue
 
     public function __construct(
         public WorkspaceInvitation $invitation
-    ) {
-    }
+    ) {}
 
     public function invitationUrl(): string
     {

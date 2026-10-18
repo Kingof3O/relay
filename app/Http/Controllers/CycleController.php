@@ -8,8 +8,6 @@ use App\Models\Cycle;
 use App\Models\WorkRequest;
 use App\Services\CycleService;
 use App\Services\WorkRequestPresenter;
-use Carbon\Carbon;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -20,8 +18,7 @@ final class CycleController extends Controller
     public function __construct(
         private readonly CycleService $cycles,
         private readonly WorkRequestPresenter $presenter,
-    ) {
-    }
+    ) {}
 
     public function index(Request $request): Response
     {
@@ -107,7 +104,7 @@ final class CycleController extends Controller
             ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
             ->max('number');
 
-        if (!empty($validated['is_active'])) {
+        if (! empty($validated['is_active'])) {
             Cycle::query()
                 ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
                 ->update(['is_active' => false]);

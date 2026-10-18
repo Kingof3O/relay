@@ -8,6 +8,7 @@ use App\Models\Area;
 use App\Models\RequestActivity;
 use App\Models\User;
 use App\Models\WorkRequest;
+use Illuminate\Database\Eloquent\Builder;
 
 final class DashboardService
 {
@@ -20,7 +21,7 @@ final class DashboardService
 
         // Consolidated single-pass SQL aggregation for all counts
         $aggregates = WorkRequest::query()
-            ->selectRaw("
+            ->selectRaw('
                 COUNT(*) as total_count,
                 COUNT(CASE WHEN status = ? THEN 1 END) as new_count,
                 COUNT(CASE WHEN status = ? THEN 1 END) as ready_count,
@@ -30,7 +31,7 @@ final class DashboardService
                 COUNT(CASE WHEN is_blocked = 1 THEN 1 END) as blocked_count,
                 COUNT(CASE WHEN priority = ? AND status != ? THEN 1 END) as urgent_count,
                 COUNT(CASE WHEN assignee_id = ? AND status != ? THEN 1 END) as my_work_count
-            ", [
+            ', [
                 RequestStatus::New->value,
                 RequestStatus::Ready->value,
                 RequestStatus::Doing->value,
@@ -191,7 +192,7 @@ final class DashboardService
         ];
     }
 
-    /** @param \Illuminate\Database\Eloquent\Builder<WorkRequest> $query */
+    /** @param Builder<WorkRequest> $query */
     private function cards($query): array
     {
         return $query

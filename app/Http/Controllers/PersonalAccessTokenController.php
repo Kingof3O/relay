@@ -31,8 +31,8 @@ final class PersonalAccessTokenController extends Controller
             'expires_at' => ['nullable', 'date', 'after:now'],
         ]);
 
-        $abilities = !empty($validated['abilities']) ? $validated['abilities'] : ['*'];
-        $expiresAt = !empty($validated['expires_at']) ? Carbon::parse($validated['expires_at']) : null;
+        $abilities = ! empty($validated['abilities']) ? $validated['abilities'] : ['*'];
+        $expiresAt = ! empty($validated['expires_at']) ? Carbon::parse($validated['expires_at']) : null;
 
         $tokenResult = $request->user()->createToken(
             $validated['name'],

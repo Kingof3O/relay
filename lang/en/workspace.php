@@ -1,0 +1,47 @@
+<?php
+
+return [
+    'title' => 'Relay Studio',
+    'tagline' => 'High-velocity engineering work tracking',
+    'navigation' => [
+        'dashboard' => 'Dashboard',
+        'issues' => 'Issues',
+        'cycles' => 'Cycles',
+        'roadmap' => 'Roadmap',
+        'views' => 'Saved Views',
+        'settings' => 'Settings',
+        'notifications' => 'Notifications',
+        'profile' => 'Profile',
+        'api_tokens' => 'API Tokens',
+    ],
+    'actions' => [
+        'create' => 'Create',
+        'save' => 'Save Changes',
+        'cancel' => 'Cancel',
+        'delete' => 'Delete',
+        'edit' => 'Edit',
+        'search' => 'Search issues, projects, members... (⌘K)',
+        'filter' => 'Filter',
+        'export' => 'Export Issues',
+        'clone' => 'Clone Issue',
+        'invite' => 'Invite Member',
+    ],
+    'fields' => [
+        'title' => 'Title',
+        'description' => 'Description',
+        'status' => 'Status',
+        'priority' => 'Priority',
+        'project' => 'Project',
+        'assignee' => 'Assignee',
+        'due_date' => 'Due Date',
+        'story_points' => 'Story Points',
+        'tags' => 'Tags',
+    ],
+    'messages' => [
+        'saved' => 'Saved successfully.',
+        'created' => 'Created successfully.',
+        'deleted' => 'Deleted successfully.',
+        'updated' => 'Updated successfully.',
+        'confirm_delete' => 'Are you sure you want to delete this item?',
+    ],
+];

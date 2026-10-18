@@ -17,6 +17,7 @@ final class KanbanUndoAndPaginationTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private Area $area;
 
     protected function setUp(): void

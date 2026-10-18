@@ -18,7 +18,7 @@ final class TwoFactorService
 
     public function __construct()
     {
-        $this->engine = new Google2FA();
+        $this->engine = new Google2FA;
     }
 
     public function generateSecret(): string
@@ -32,7 +32,7 @@ final class TwoFactorService
 
         $renderer = new ImageRenderer(
             new RendererStyle(200, 0),
-            new SvgImageBackEnd()
+            new SvgImageBackEnd
         );
 
         $writer = new Writer($renderer);
@@ -55,6 +55,6 @@ final class TwoFactorService
      */
     public function generateRecoveryCodes(int $count = 8): array
     {
-        return Collection::times($count, fn () => Str::random(10) . '-' . Str::random(10))->all();
+        return Collection::times($count, fn () => Str::random(10).'-'.Str::random(10))->all();
     }
 }

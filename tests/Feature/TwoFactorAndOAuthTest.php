@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Services\TwoFactorService;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Socialite\Contracts\Provider as SocialiteProvider;
@@ -76,7 +75,7 @@ final class TwoFactorAndOAuthTest extends TestCase
         $enableResponse = $this->actingAs($user)->postJson(route('two-factor.enable'));
         $secret = $enableResponse->json('secret');
 
-        $google2fa = new Google2FA();
+        $google2fa = new Google2FA;
         $validCode = $google2fa->getCurrentOtp($secret);
 
         $confirmResponse = $this->actingAs($user)->postJson(route('two-factor.confirm'), [
@@ -100,7 +99,7 @@ final class TwoFactorAndOAuthTest extends TestCase
         $enableResponse = $this->actingAs($user)->postJson(route('two-factor.enable'));
         $secret = $enableResponse->json('secret');
 
-        $validCode = (new Google2FA())->getCurrentOtp($secret);
+        $validCode = (new Google2FA)->getCurrentOtp($secret);
         $this->actingAs($user)->postJson(route('two-factor.confirm'), ['code' => $validCode]);
 
         $user->refresh();
@@ -127,7 +126,7 @@ final class TwoFactorAndOAuthTest extends TestCase
         // Now enable 2FA
         $enableResponse = $this->actingAs($user)->postJson(route('two-factor.enable'));
         $secret = $enableResponse->json('secret');
-        $validCode = (new Google2FA())->getCurrentOtp($secret);
+        $validCode = (new Google2FA)->getCurrentOtp($secret);
         $this->actingAs($user)->postJson(route('two-factor.confirm'), ['code' => $validCode]);
 
         $regenResponse = $this->actingAs($user)->postJson(route('two-factor.recovery-codes'));

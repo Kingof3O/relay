@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\RoleName;
-use App\Models\Role;
-use App\Models\User;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Http\JsonResponse;
 use App\Mail\WorkspaceInvitationMail;
+use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceInvitation;
+use App\Services\AuditService;
+use Illuminate\Database\Query\Builder;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
@@ -61,7 +61,7 @@ final class TeamMemberController extends Controller
 
         Mail::to($invitation->email)->send(new WorkspaceInvitationMail($invitation));
 
-        app(\App\Services\AuditService::class)->log(
+        app(AuditService::class)->log(
             $request->user(),
             'member.invited',
             $invitation,
@@ -94,7 +94,7 @@ final class TeamMemberController extends Controller
             ]);
         }
 
-        app(\App\Services\AuditService::class)->log(
+        app(AuditService::class)->log(
             $request->user(),
             'member.invited',
             $user,
@@ -127,7 +127,7 @@ final class TeamMemberController extends Controller
         $user->update($validated);
 
         $event = ($user->role_id !== $oldRoleId) ? 'member.role_updated' : 'member.updated';
-        app(\App\Services\AuditService::class)->log(
+        app(AuditService::class)->log(
             $request->user(),
             $event,
             $user,
@@ -151,7 +151,7 @@ final class TeamMemberController extends Controller
         $oldValues = $user->only(['id', 'name', 'username', 'email']);
         $user->delete();
 
-        app(\App\Services\AuditService::class)->log(
+        app(AuditService::class)->log(
             $request->user(),
             'member.removed',
             $user,

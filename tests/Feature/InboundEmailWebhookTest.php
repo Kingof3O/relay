@@ -16,6 +16,7 @@ final class InboundEmailWebhookTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private WorkRequest $ticket;
 
     protected function setUp(): void

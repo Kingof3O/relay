@@ -10,6 +10,7 @@ use App\Models\Area;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\WorkRequest;
+use App\Policies\WorkRequestPolicy;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Queue;
@@ -46,7 +47,7 @@ final class ArchitectureCleanupTest extends TestCase
             'requester_id' => $otherUser->id,
         ]);
 
-        $policy = app(\App\Policies\WorkRequestPolicy::class);
+        $policy = app(WorkRequestPolicy::class);
         $this->assertFalse($policy->update($designerUser, $requestNotOwned), 'Designer should not update request not created by them');
 
         $requestOwned = WorkRequest::query()->create([
@@ -158,6 +159,7 @@ final class ArchitectureCleanupTest extends TestCase
         // Maximum of 10 emails dispatched
         Queue::assertPushed(SendRequestEmail::class, function () use (&$count) {
             $count++;
+
             return true;
         });
         $this->assertLessThanOrEqual(10, Queue::pushed(SendRequestEmail::class)->count());

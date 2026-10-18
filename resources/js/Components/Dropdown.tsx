@@ -65,8 +65,8 @@ const Content = ({
 }>) => {
     const { open, setOpen } = useContext(DropDownContext);
 
-    let originClass = '';
-    let posClass = '';
+    let originClass: string;
+    let posClass: string;
 
     if (position === 'up') {
         posClass = 'bottom-full mb-2';

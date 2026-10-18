@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\PullRequest;
 use App\Models\RequestActivity;
 use App\Models\RequestFile;
 use App\Models\WorkRequest;
@@ -56,6 +57,7 @@ final class WorkRequestPresenter
         $totalSubtasks = $subtasks->count();
         $completedSubtasks = $subtasks->filter(function ($sub) {
             $st = $sub->status?->value ?? (string) $sub->getRawOriginal('status');
+
             return $st === 'done';
         })->count();
 
@@ -109,7 +111,7 @@ final class WorkRequestPresenter
             ]);
 
             $payload['pull_requests'] = $request->pullRequests
-                ->map(fn (\App\Models\PullRequest $pr): array => [
+                ->map(fn (PullRequest $pr): array => [
                     'id' => $pr->id,
                     'provider' => $pr->provider,
                     'pr_number' => $pr->pr_number,

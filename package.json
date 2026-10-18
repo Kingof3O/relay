@@ -4,9 +4,11 @@
     "scripts": {
         "dev": "vite",
         "build": "tsc && vite build && vite build --ssr",
-        "build:ssr": "vite build --ssr"
+        "build:ssr": "vite build --ssr",
+        "lint": "eslint resources/js"
     },
     "devDependencies": {
+        "@eslint/js": "^10.0.1",
         "@headlessui/react": "^2.0.0",
         "@inertiajs/react": "^3.7.1",
         "@tailwindcss/forms": "^0.5.3",
@@ -18,12 +20,16 @@
         "@vitejs/plugin-react": "^6.1.1",
         "autoprefixer": "^10.4.12",
         "axios": "^1.20.0",
+        "eslint": "^10.13.0",
+        "globals": "^17.13.0",
         "laravel-vite-plugin": "^3.2.0",
         "postcss": "^8.4.31",
+        "prettier": "^3.9.10",
         "react": "^19.3.0",
         "react-dom": "^19.3.0",
         "tailwindcss": "^4.3.3",
-        "typescript": "^7.0.2",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.71.2",
         "vite": "^8.3.0"
     },
     "dependencies": {
@@ -38,6 +44,7 @@
         "@tiptap/starter-kit": "^3.32.0",
         "cmdk": "^1.1.1",
         "lucide-react": "^1.31.0",
+        "react-is": "^19.3.1",
         "recharts": "^3.10.1",
         "sonner": "^2.0.8"
     }

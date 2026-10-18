@@ -2,9 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Enums\RequestFileProcessingStatus;
 use App\Models\RequestFile;
 use App\Services\RequestFileProcessingService;
-use App\Enums\RequestFileProcessingStatus;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -17,9 +17,7 @@ final class ProcessRequestFile implements ShouldQueue
 
     public int $tries = 1;
 
-    public function __construct(public readonly int $fileId)
-    {
-    }
+    public function __construct(public readonly int $fileId) {}
 
     public function handle(RequestFileProcessingService $processor): void
     {

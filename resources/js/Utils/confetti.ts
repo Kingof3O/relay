@@ -58,7 +58,7 @@ export function triggerCelebration(originX?: number, originY?: number) {
         };
     });
 
-    let startTime = performance.now();
+    const startTime = performance.now();
     const duration = 1200; // 1.2s
 
     function animate(currentTime: number) {

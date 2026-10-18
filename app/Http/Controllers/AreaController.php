@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Area;
+use App\Services\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -28,7 +29,7 @@ final class AreaController extends Controller
             'sort_order' => (int) Area::query()->max('sort_order') + 1,
         ]);
 
-        app(\App\Services\AuditService::class)->log(
+        app(AuditService::class)->log(
             $request->user(),
             'project.created',
             $area,
@@ -89,7 +90,7 @@ final class AreaController extends Controller
         $oldValues = ['archived_at' => $area->archived_at?->toIso8601String()];
         $area->update(['archived_at' => now()]);
 
-        app(\App\Services\AuditService::class)->log(
+        app(AuditService::class)->log(
             $request->user(),
             'project.archived',
             $area,

@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordController;
+use App\Http\Controllers\Auth\SocialAuthController;
+use App\Http\Controllers\Auth\TwoFactorAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -11,10 +13,10 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [AuthenticatedSessionController::class, 'store'])
         ->middleware('throttle:6,1');
 
-    Route::get('auth/{provider}/redirect', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirect'])
+    Route::get('auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])
         ->name('auth.social.redirect');
 
-    Route::get('auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialAuthController::class, 'callback'])
+    Route::get('auth/{provider}/callback', [SocialAuthController::class, 'callback'])
         ->name('auth.social.callback');
 });
 
@@ -24,15 +26,15 @@ Route::middleware(['auth', 'active'])->group(function () {
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
 
-    Route::post('user/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthController::class, 'enable'])
+    Route::post('user/two-factor-authentication', [TwoFactorAuthController::class, 'enable'])
         ->name('two-factor.enable');
 
-    Route::post('user/confirmed-two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthController::class, 'confirm'])
+    Route::post('user/confirmed-two-factor-authentication', [TwoFactorAuthController::class, 'confirm'])
         ->name('two-factor.confirm');
 
-    Route::delete('user/two-factor-authentication', [\App\Http\Controllers\Auth\TwoFactorAuthController::class, 'disable'])
+    Route::delete('user/two-factor-authentication', [TwoFactorAuthController::class, 'disable'])
         ->name('two-factor.disable');
 
-    Route::post('user/two-factor-recovery-codes', [\App\Http\Controllers\Auth\TwoFactorAuthController::class, 'regenerateRecoveryCodes'])
+    Route::post('user/two-factor-recovery-codes', [TwoFactorAuthController::class, 'regenerateRecoveryCodes'])
         ->name('two-factor.recovery-codes');
 });

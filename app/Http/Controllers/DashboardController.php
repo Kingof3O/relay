@@ -11,9 +11,7 @@ use Inertia\Response;
 
 final class DashboardController extends Controller
 {
-    public function __construct(private readonly DashboardService $dashboard)
-    {
-    }
+    public function __construct(private readonly DashboardService $dashboard) {}
 
     public function __invoke(Request $request): Response
     {

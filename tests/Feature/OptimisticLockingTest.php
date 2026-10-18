@@ -18,7 +18,9 @@ final class OptimisticLockingTest extends TestCase
     use DatabaseTransactions;
 
     private User $owner;
+
     private Area $area;
+
     private Workspace $workspace;
 
     protected function setUp(): void

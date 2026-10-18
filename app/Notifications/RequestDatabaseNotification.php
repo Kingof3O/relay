@@ -10,9 +10,7 @@ final class RequestDatabaseNotification extends Notification
     use Queueable;
 
     /** @param array<string, mixed> $payload */
-    public function __construct(private readonly array $payload)
-    {
-    }
+    public function __construct(private readonly array $payload) {}
 
     /** @return array<int, string> */
     public function via(object $notifiable): array

@@ -14,8 +14,7 @@ final class SubtaskController extends Controller
 {
     public function __construct(
         private readonly WorkRequestPresenter $presenter,
-    ) {
-    }
+    ) {}
 
     public function store(Request $request, WorkRequest $workRequest): JsonResponse|RedirectResponse
     {

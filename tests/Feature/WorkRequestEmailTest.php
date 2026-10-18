@@ -2,8 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Enums\RequestPriority;
-use App\Enums\RequestStatus;
 use App\Mail\WorkRequestNotificationMail;
 use App\Models\Area;
 use App\Models\User;
@@ -182,7 +180,7 @@ final class WorkRequestEmailTest extends TestCase
 
         $html = $mailable->render();
 
-        $this->assertStringContainsString('#REQ-' . $request->id, $html);
+        $this->assertStringContainsString('#REQ-'.$request->id, $html);
         $this->assertStringContainsString('Fix Stripe Webhook Idempotency &amp; Replay Attack Vulnerability', $html);
         $this->assertStringContainsString(route('requests.show', $request), $html);
         $this->assertStringContainsString('Open Work Request', $html);

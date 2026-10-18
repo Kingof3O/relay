@@ -7,9 +7,9 @@
 **Streamlined issue triage, sub-second cycle velocity, and keyboard-first productivity built for modern engineering teams.**
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![PHP](https://img.shields.io/badge/PHP-8.3%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
-[![Laravel](https://img.shields.io/badge/Laravel-11.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![PHP](https://img.shields.io/badge/PHP-8.4%2B-777BB4?logo=php&logoColor=white)](https://www.php.net/)
+[![Laravel](https://img.shields.io/badge/Laravel-13.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com/)
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?logo=docker&logoColor=white)](https://www.docker.com/)
 
@@ -29,7 +29,7 @@
 
 ## 🎯 Vision
 
-Relay Studio is an open-source, self-hostable project management and issue delivery system inspired by the precision and craftsmanship of Linear. Engineered with Laravel 11, React 18, and Inertia SPA architecture, Relay delivers sub-second page transitions, keyboard-first navigation, and zero-bloat workflows for studios and software teams.
+Relay Studio is an open-source, self-hostable project management and issue delivery system inspired by the precision and craftsmanship of Linear. Engineered with Laravel 13, React 19, and Inertia SPA architecture, Relay delivers sub-second page transitions, keyboard-first navigation, and zero-bloat workflows for studios and software teams.
 
 ---
 
@@ -183,20 +183,42 @@ php artisan serve
 
 ---
 
-## 🔌 API & Webhooks
+## 🔌 API, Tokens & Webhooks
 
-Relay provides modern REST APIs and GitHub webhook integrations for continuous delivery.
+Relay provides a high-performance REST API (v1) and webhook integrations for automation, third-party tooling, and CI/CD pipelines.
 
-### REST Endpoints
-- `GET /api/v1/work-requests`: Paginated list of issues with filters (area, priority, status).
-- `POST /api/v1/work-requests`: Create a new issue or feature request.
-- `GET /api/v1/work-requests/{id}`: Detailed issue payload including activities, attachments, and comments.
-- `PATCH /api/v1/work-requests/{id}`: Update status, priority, due date, or assignee.
+### Personal Access Tokens (PAT)
+All REST API v1 endpoints are protected using Laravel Sanctum Personal Access Tokens.
+
+1. **Generate Token**: Navigate to **Profile > API Tokens** (`/profile/tokens`) in the web interface and click **Create New Token**.
+2. **Authenticate Requests**: Provide the Bearer token in the standard HTTP `Authorization` header:
+   ```bash
+   curl -H "Authorization: Bearer <your-personal-access-token>" \
+        -H "Accept: application/json" \
+        http://localhost:8080/api/v1/work-requests
+   ```
+3. **Revocation**: Tokens can be individually revoked anytime from the web UI.
+
+### REST API v1 Endpoints
+
+| Method | Endpoint | Description | Query / Body Parameters |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/search` | Fast global search across issues & projects | `q` (search query) |
+| `GET` | `/api/v1/work-requests` | Paginated list of issues with filter criteria | `status`, `priority`, `area_id`, `search`, `page` |
+| `POST` | `/api/v1/work-requests` | Create a new work request / issue | `title` (required), `description`, `status`, `priority`, `area_id`, `assignee_id`, `story_points`, `due_date`, `tags` |
+| `GET` | `/api/v1/work-requests/{id}` | Retrieve complete issue details with relations, subtasks, activities & attachments | `{id}` (issue ID) |
+| `PATCH` | `/api/v1/work-requests/{id}` | Update issue properties | `title`, `description`, `status`, `priority`, `area_id`, `assignee_id`, `story_points`, `due_date`, `tags` |
+| `DELETE` | `/api/v1/work-requests/{id}` | Soft-delete a work request | `{id}` (issue ID) |
+| `GET` | `/api/v1/projects` | List all active workspace areas / projects | — |
 
 ### GitHub Push & Commit Auto-Close
-Relay can automatically transition and comment on tickets when commits reference them:
-- Push payload endpoint: `POST /api/webhooks/github`
+Relay automatically associates commits and transitions referenced tickets when git push events occur:
+- Push payload endpoint: `POST /api/webhooks/github` (supports HMAC SHA-256 signature via `GITHUB_WEBHOOK_SECRET`)
 - Commit message syntax: `fixes REQ-104` or `closes #REQ-104`
+
+### Inbound Email Webhook
+Create new issues directly via inbound email ingestion:
+- Endpoint: `POST /api/webhooks/inbound-email` (supports SendGrid, Mailgun, and raw MIME formats)
 
 ---
 

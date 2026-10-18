@@ -45,7 +45,7 @@ function calculateStrength(pwd: string): StrengthResult {
     if (/\d/.test(pwd)) points++;
     if (/[^A-Za-z0-9]/.test(pwd)) points++;
 
-    let score = 1;
+    let score: number;
     if (points >= 5) score = 4;
     else if (points >= 3) score = 3;
     else if (points >= 2) score = 2;

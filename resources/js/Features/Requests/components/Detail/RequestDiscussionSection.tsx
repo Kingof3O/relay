@@ -26,7 +26,7 @@ function activityLabel(type: string) {
 
 // Render text and highlight @mentions with glowing violet pill badge
 function renderCommentBody(text: string) {
-    const parts = text.split(/(@[a-zA-Z0-9_\-\.]+)/g);
+    const parts = text.split(/(@[a-zA-Z0-9_\-.]+)/g);
 
     return parts.map((part, index) => {
         if (part.startsWith('@') && part.length > 1) {
@@ -75,7 +75,7 @@ export default function RequestDiscussionSection({
 
         // Check if cursor is right after an '@' mention token
         const textBeforeCursor = value.slice(0, cursor);
-        const match = textBeforeCursor.match(/@([a-zA-Z0-9_\-\.]*)$/);
+        const match = textBeforeCursor.match(/@([a-zA-Z0-9_\-.]*)$/);
 
         if (match) {
             setMentionOpen(true);
@@ -91,7 +91,7 @@ export default function RequestDiscussionSection({
         const textBeforeCursor = comment.slice(0, cursor);
         const textAfterCursor = comment.slice(cursor);
 
-        const match = textBeforeCursor.match(/@([a-zA-Z0-9_\-\.]*)$/);
+        const match = textBeforeCursor.match(/@([a-zA-Z0-9_\-.]*)$/);
         if (match) {
             const prefix = textBeforeCursor.slice(0, match.index);
             const insertion = `@${selectedUser.username} `;

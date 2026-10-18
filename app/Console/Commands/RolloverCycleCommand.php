@@ -29,6 +29,7 @@ final class RolloverCycleCommand extends Command
 
         if ($activeCycles->isEmpty()) {
             $this->info('No active cycles found.');
+
             return self::SUCCESS;
         }
 

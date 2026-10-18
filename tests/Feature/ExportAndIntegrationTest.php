@@ -13,6 +13,7 @@ use App\Models\Webhook;
 use App\Models\WorkRequest;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -138,7 +139,7 @@ final class ExportAndIntegrationTest extends TestCase
         $job = new DispatchOutgoingWebhook($ticket->id);
         $job->handle();
 
-        Http::assertSent(function (\Illuminate\Http\Client\Request $request) use ($webhook, $ticket): bool {
+        Http::assertSent(function (Request $request) use ($webhook, $ticket): bool {
             return $request->url() === $webhook->url
                 && str_contains($request['text'], "[BLOCKED] #REQ-{$ticket->id}")
                 && str_contains($request['blocks'][0]['text']['text'], 'Waiting on cloud quota increase');

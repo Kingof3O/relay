@@ -6,6 +6,7 @@ namespace App\Events;
 
 use App\Models\WorkRequest;
 use App\Services\WorkRequestPresenter;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -21,18 +22,17 @@ final class WorkRequestMoved implements ShouldBroadcast
         public ?int $actorId = null,
         public ?string $fromStatus = null,
         public ?string $toStatus = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the channels the event should broadcast on.
      *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
+     * @return array<int, Channel>
      */
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('workspace.' . $this->request->workspace_id),
+            new PrivateChannel('workspace.'.$this->request->workspace_id),
         ];
     }
 
@@ -54,7 +54,7 @@ final class WorkRequestMoved implements ShouldBroadcast
             'from_status' => $this->fromStatus,
             'to_status' => $this->toStatus,
             'status' => $this->request->status?->value ?? (string) $this->request->getRawOriginal('status'),
-            'request' => (new WorkRequestPresenter())->card($this->request),
+            'request' => (new WorkRequestPresenter)->card($this->request),
         ];
     }
 }

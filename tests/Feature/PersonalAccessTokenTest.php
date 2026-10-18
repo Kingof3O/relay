@@ -14,6 +14,7 @@ final class PersonalAccessTokenTest extends TestCase
     use RefreshDatabase;
 
     private User $user;
+
     private User $otherUser;
 
     protected function setUp(): void
@@ -128,7 +129,7 @@ final class PersonalAccessTokenTest extends TestCase
 
         $plainTextToken = $res->json('token');
 
-        $apiRes = $this->withHeader('Authorization', 'Bearer ' . $plainTextToken)
+        $apiRes = $this->withHeader('Authorization', 'Bearer '.$plainTextToken)
             ->getJson('/api/v1/projects');
 
         $apiRes->assertOk();

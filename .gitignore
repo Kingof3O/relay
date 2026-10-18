@@ -14,6 +14,21 @@ Homestead.yaml
 auth.json
 npm-debug.log
 yarn-error.log
+*.log
 /.fleet
 /.idea
 /.vscode
+
+# System & OS
+.DS_Store
+Thumbs.db
+
+# Playwright MCP artifacts
+.playwright-mcp/
+
+# Local SQLite databases
+database/database.sqlite
+database/database.sqlite-journal
+
+# Internal planning docs
+docs/superpowers/

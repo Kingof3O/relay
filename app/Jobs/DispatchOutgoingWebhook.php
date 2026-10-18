@@ -23,8 +23,7 @@ class DispatchOutgoingWebhook implements ShouldQueue
         public readonly int $requestId,
         public readonly string $event = 'ticket.alert',
         public readonly ?string $targetUrl = null
-    ) {
-    }
+    ) {}
 
     public function handle(): void
     {
@@ -69,7 +68,7 @@ class DispatchOutgoingWebhook implements ShouldQueue
                     'type' => 'section',
                     'text' => [
                         'type' => 'mrkdwn',
-                        'text' => "{$headline}\n*Project:* {$projectName} | *Priority:* `{$priority}` | *Status:* `{$status}`\n*Assignee:* {$assigneeName}" . ($isBlocked ? "\n*Blocked Reason:* {$blockedReason}" : '') . "\n<{$ticketUrl}|View Request in Relay Studio>",
+                        'text' => "{$headline}\n*Project:* {$projectName} | *Priority:* `{$priority}` | *Status:* `{$status}`\n*Assignee:* {$assigneeName}".($isBlocked ? "\n*Blocked Reason:* {$blockedReason}" : '')."\n<{$ticketUrl}|View Request in Relay Studio>",
                     ],
                 ],
             ],

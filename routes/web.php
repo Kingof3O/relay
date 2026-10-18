@@ -1,14 +1,24 @@
 <?php
 
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\CycleController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExportController;
+use App\Http\Controllers\InvitationAcceptController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\PersonalAccessTokenController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RequestCloneController;
 use App\Http\Controllers\RequestCommentController;
 use App\Http\Controllers\RequestFileController;
+use App\Http\Controllers\RequestRelationController;
+use App\Http\Controllers\RoadmapController;
+use App\Http\Controllers\SavedViewController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SubtaskController;
 use App\Http\Controllers\TeamMemberController;
 use App\Http\Controllers\WorkRequestController;
+use App\Http\Controllers\WorkspaceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -17,12 +27,12 @@ Route::get('/', function () {
         : redirect()->route('login');
 });
 
-Route::get('/invitations/{token}', [\App\Http\Controllers\InvitationAcceptController::class, 'show'])->name('invitations.accept');
-Route::post('/invitations/{token}', [\App\Http\Controllers\InvitationAcceptController::class, 'store'])->name('invitations.store');
+Route::get('/invitations/{token}', [InvitationAcceptController::class, 'show'])->name('invitations.accept');
+Route::post('/invitations/{token}', [InvitationAcceptController::class, 'store'])->name('invitations.store');
 
 Route::middleware(['auth', 'active'])->group(function (): void {
-    Route::post('/workspaces/{workspace}/switch', [\App\Http\Controllers\WorkspaceController::class, 'switch'])->name('workspaces.switch');
-    Route::post('/workspaces', [\App\Http\Controllers\WorkspaceController::class, 'store'])->name('workspaces.store');
+    Route::post('/workspaces/{workspace}/switch', [WorkspaceController::class, 'switch'])->name('workspaces.switch');
+    Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store');
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
@@ -34,28 +44,28 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::post('/requests/{request}/files', [RequestFileController::class, 'store'])->name('requests.files.store');
     Route::get('/requests/{request}/files/{file}', [RequestFileController::class, 'show'])->name('requests.files.show');
     Route::get('/requests/{request}/files/{file}/preview', [RequestFileController::class, 'preview'])->name('requests.files.preview');
-    Route::get('/requests/export', [\App\Http\Controllers\ExportController::class, 'export'])->name('requests.export');
-    Route::post('/requests/{workRequest}/clone', [\App\Http\Controllers\RequestCloneController::class, 'store'])->name('requests.clone');
-    Route::post('/requests/{request}/relations', [\App\Http\Controllers\RequestRelationController::class, 'store'])->name('requests.relations.store');
-    Route::delete('/requests/{request}/relations/{relation}', [\App\Http\Controllers\RequestRelationController::class, 'destroy'])->name('requests.relations.destroy');
-    Route::post('/requests/{workRequest}/subtasks', [\App\Http\Controllers\SubtaskController::class, 'store'])->name('requests.subtasks.store');
-    Route::post('/requests/{workRequest}/subtasks/{subtask}/toggle', [\App\Http\Controllers\SubtaskController::class, 'toggle'])->name('requests.subtasks.toggle');
-    Route::delete('/requests/{workRequest}/subtasks/{subtask}', [\App\Http\Controllers\SubtaskController::class, 'destroy'])->name('requests.subtasks.destroy');
+    Route::get('/requests/export', [ExportController::class, 'export'])->name('requests.export');
+    Route::post('/requests/{workRequest}/clone', [RequestCloneController::class, 'store'])->name('requests.clone');
+    Route::post('/requests/{request}/relations', [RequestRelationController::class, 'store'])->name('requests.relations.store');
+    Route::delete('/requests/{request}/relations/{relation}', [RequestRelationController::class, 'destroy'])->name('requests.relations.destroy');
+    Route::post('/requests/{workRequest}/subtasks', [SubtaskController::class, 'store'])->name('requests.subtasks.store');
+    Route::post('/requests/{workRequest}/subtasks/{subtask}/toggle', [SubtaskController::class, 'toggle'])->name('requests.subtasks.toggle');
+    Route::delete('/requests/{workRequest}/subtasks/{subtask}', [SubtaskController::class, 'destroy'])->name('requests.subtasks.destroy');
     Route::get('/requests/{request}', [WorkRequestController::class, 'show'])->name('requests.show');
 
     // Cycles
-    Route::get('/cycles', [\App\Http\Controllers\CycleController::class, 'index'])->name('cycles.index');
-    Route::post('/cycles', [\App\Http\Controllers\CycleController::class, 'store'])->name('cycles.store');
-    Route::post('/cycles/{cycle}/rollover', [\App\Http\Controllers\CycleController::class, 'rollover'])->name('cycles.rollover');
+    Route::get('/cycles', [CycleController::class, 'index'])->name('cycles.index');
+    Route::post('/cycles', [CycleController::class, 'store'])->name('cycles.store');
+    Route::post('/cycles/{cycle}/rollover', [CycleController::class, 'rollover'])->name('cycles.rollover');
 
     // Saved Views
-    Route::get('/saved-views', [\App\Http\Controllers\SavedViewController::class, 'index'])->name('saved-views.index');
-    Route::post('/saved-views', [\App\Http\Controllers\SavedViewController::class, 'store'])->name('saved-views.store');
-    Route::delete('/saved-views/{savedView}', [\App\Http\Controllers\SavedViewController::class, 'destroy'])->name('saved-views.destroy');
-    Route::patch('/saved-views/{savedView}/pin', [\App\Http\Controllers\SavedViewController::class, 'togglePin'])->name('saved-views.pin');
+    Route::get('/saved-views', [SavedViewController::class, 'index'])->name('saved-views.index');
+    Route::post('/saved-views', [SavedViewController::class, 'store'])->name('saved-views.store');
+    Route::delete('/saved-views/{savedView}', [SavedViewController::class, 'destroy'])->name('saved-views.destroy');
+    Route::patch('/saved-views/{savedView}/pin', [SavedViewController::class, 'togglePin'])->name('saved-views.pin');
 
     // Roadmap
-    Route::get('/roadmap', [\App\Http\Controllers\RoadmapController::class, 'index'])->name('roadmap.index');
+    Route::get('/roadmap', [RoadmapController::class, 'index'])->name('roadmap.index');
 
     Route::middleware('permission:manage_workspace')->group(function (): void {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
@@ -78,12 +88,12 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    Route::get('/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'index'])->name('tokens.index');
-    Route::post('/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'store'])->name('tokens.store');
-    Route::delete('/tokens/{token}', [\App\Http\Controllers\PersonalAccessTokenController::class, 'destroy'])->name('tokens.destroy');
-    Route::get('/profile/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'index'])->name('profile.tokens.index');
-    Route::post('/profile/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'store'])->name('profile.tokens.store');
-    Route::delete('/profile/tokens/{token}', [\App\Http\Controllers\PersonalAccessTokenController::class, 'destroy'])->name('profile.tokens.destroy');
+    Route::get('/tokens', [PersonalAccessTokenController::class, 'index'])->name('tokens.index');
+    Route::post('/tokens', [PersonalAccessTokenController::class, 'store'])->name('tokens.store');
+    Route::delete('/tokens/{token}', [PersonalAccessTokenController::class, 'destroy'])->name('tokens.destroy');
+    Route::get('/profile/tokens', [PersonalAccessTokenController::class, 'index'])->name('profile.tokens.index');
+    Route::post('/profile/tokens', [PersonalAccessTokenController::class, 'store'])->name('profile.tokens.store');
+    Route::delete('/profile/tokens/{token}', [PersonalAccessTokenController::class, 'destroy'])->name('profile.tokens.destroy');
 });
 
 require __DIR__.'/auth.php';

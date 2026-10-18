@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Requests\WorkRequest;
 
+use App\Enums\RequestPriority;
 use App\Models\WorkRequest;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 final class BulkWorkRequestRequest extends FormRequest
 {
@@ -37,9 +39,9 @@ final class BulkWorkRequestRequest extends FormRequest
         return [
             'title' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string'],
-            'area_id' => ['required', 'integer', \Illuminate\Validation\Rule::exists('areas', 'id')->where(fn ($query) => $query->whereNull('archived_at'))],
-            'priority' => ['required', \Illuminate\Validation\Rule::in(array_keys(\App\Enums\RequestPriority::options()))],
-            'assignee_id' => ['nullable', 'integer', \Illuminate\Validation\Rule::exists('users', 'id')->where(fn ($query) => $query->where('active', true))],
+            'area_id' => ['required', 'integer', Rule::exists('areas', 'id')->where(fn ($query) => $query->whereNull('archived_at'))],
+            'priority' => ['required', Rule::in(array_keys(RequestPriority::options()))],
+            'assignee_id' => ['nullable', 'integer', Rule::exists('users', 'id')->where(fn ($query) => $query->where('active', true))],
         ];
     }
 }

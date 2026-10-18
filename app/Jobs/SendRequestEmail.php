@@ -21,8 +21,7 @@ final class SendRequestEmail implements ShouldQueue
     public function __construct(
         public readonly int $userId,
         public readonly array $payload,
-    ) {
-    }
+    ) {}
 
     public function handle(): void
     {
