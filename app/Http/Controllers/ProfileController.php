@@ -26,6 +26,7 @@ class ProfileController extends Controller
                 'completed_count' => $completedCount,
             ],
             'twoFactorEnabled' => $user?->hasTwoFactorEnabled() ?? false,
+            'tokens' => $user ? $user->tokens()->latest('created_at')->get(['id', 'name', 'abilities', 'last_used_at', 'expires_at', 'created_at']) : [],
         ]);
     }
 

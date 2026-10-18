@@ -29,12 +29,17 @@ final class WorkRequestController extends Controller
     ) {
     }
 
-    public function index(Request $request): Response
+    public function index(Request $request): Response|JsonResponse
     {
         $this->authorize('viewAny', WorkRequest::class);
 
         $filterValues = $request->only(['project', 'area', 'owner', 'requester', 'status', 'priority', 'my_work', 'blocked', 'is_blocked', 'search']);
         $activeWorkspace = $request->user()?->currentWorkspace();
+
+        $queryCap = 250;
+        $maxCap = 500;
+        $limit = $request->input('limit') ?? $request->input('per_page') ?? $request->input('window');
+        $effectiveLimit = $limit !== null ? min(max((int) $limit, 1), $maxCap) : $queryCap;
 
         $requests = WorkRequest::query()
             ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
@@ -43,13 +48,23 @@ final class WorkRequestController extends Controller
             ->orderByDesc('is_blocked')
             ->orderByRaw("CASE priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 WHEN 'low' THEN 4 ELSE 5 END")
             ->orderByDesc('updated_at')
+            ->limit($effectiveLimit)
             ->get()
             ->map(fn (WorkRequest $workRequest): array => $this->presenter->card($workRequest))
             ->values()
             ->all();
 
+        if ($request->wantsJson()) {
+            return response()->json([
+                'requests' => $requests,
+                'count' => count($requests),
+                'limit' => $effectiveLimit,
+            ]);
+        }
+
         return Inertia::render('Requests/Index', [
             'requests' => $requests,
+            'limit' => $effectiveLimit,
             'projects' => Inertia::getShared('workspaceProjects') ?? Area::query()->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
             'users' => User::query()->where('active', true)->whereNotNull('role_id')->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'role_id']),
             'statuses' => RequestStatus::options(),

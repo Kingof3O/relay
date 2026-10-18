@@ -105,7 +105,24 @@ final class WorkRequestPresenter
                 'activities.user',
                 'relations.related',
                 'subtasks.assignee',
+                'pullRequests',
             ]);
+
+            $payload['pull_requests'] = $request->pullRequests
+                ->map(fn (\App\Models\PullRequest $pr): array => [
+                    'id' => $pr->id,
+                    'provider' => $pr->provider,
+                    'pr_number' => $pr->pr_number,
+                    'title' => $pr->title,
+                    'url' => $pr->url,
+                    'status' => $pr->status,
+                    'is_draft' => (bool) $pr->is_draft,
+                    'review_status' => $pr->review_status,
+                    'created_at' => $pr->created_at?->toIso8601String(),
+                    'updated_at' => $pr->updated_at?->toIso8601String(),
+                ])
+                ->values()
+                ->all();
 
             $payload['subtasks'] = $request->subtasks
                 ->map(fn (WorkRequest $subtask): array => [

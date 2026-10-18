@@ -19,6 +19,8 @@ export default function Settings({
     canManageAreas,
     canManageTeam,
     audits = [],
+    auditMeta,
+    auditEvents = [],
 }: PageProps<{
     projects: WorkspaceProject[];
     users: WorkspaceUser[];
@@ -26,6 +28,8 @@ export default function Settings({
     canManageAreas: boolean;
     canManageTeam: boolean;
     audits?: any[];
+    auditMeta?: any;
+    auditEvents?: string[];
 }>) {
     const [projects, setProjects] = useState<WorkspaceProject[]>(initialProjects);
     const [users, setUsers] = useState<WorkspaceUser[]>(initialUsers);
@@ -198,6 +202,8 @@ export default function Settings({
                         projects={projects}
                         users={users}
                         audits={audits}
+                        auditMeta={auditMeta}
+                        auditEvents={auditEvents}
                         onSelectTab={(tab) => setActiveTab(tab)}
                     />
                 )}

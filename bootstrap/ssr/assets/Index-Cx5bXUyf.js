@@ -1,9 +1,9 @@
-import { E as Modal, _ as notifySuccess, g as notifyError, t as Authenticated } from "./AuthenticatedLayout-Da8j2hUo.js";
+import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-DFiGyini.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DhJIhOln.js";
-import { Head } from "@inertiajs/react";
-import { jsx, jsxs } from "react/jsx-runtime";
+import { Head, router } from "@inertiajs/react";
+import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
-import { Activity, AlertCircle, Archive, ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Check, CheckCircle2, Clock, Cpu, Edit2, FolderKanban, KeyRound, Layers, LayoutGrid, List, Lock, Mail, Plus, RotateCcw, Search, Shield, ShieldCheck, Sparkles, User, Users, X } from "lucide-react";
+import { Activity, AlertCircle, Archive, ArrowDown, ArrowRight, ArrowUp, ArrowUpRight, Check, CheckCircle2, ChevronLeft, ChevronRight, Clock, Cpu, Edit2, Filter, FolderKanban, KeyRound, Layers, LayoutGrid, List, Lock, Mail, Plus, RotateCcw, Search, Shield, ShieldCheck, Sparkles, User, Users, X } from "lucide-react";
 import axios, { isAxiosError } from "axios";
 //#region resources/js/Features/Settings/components/ProjectsManagementCard.tsx
 var COLOR_SWATCHES = [
@@ -873,7 +873,41 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 }
 //#endregion
 //#region resources/js/Features/Settings/components/WorkspaceSnapshotCard.tsx
-function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, projects = [], users = [], audits = [], onSelectTab }) {
+function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, projects = [], users = [], audits = [], auditMeta, auditEvents = [], onSelectTab }) {
+	const [selectedEvent, setSelectedEvent] = useState(auditMeta?.event_filter || "all");
+	const [page, setPage] = useState(auditMeta?.current_page || 1);
+	const allUniqueEvents = Array.from(/* @__PURE__ */ new Set([...auditEvents, ...audits.map((a) => a.event)])).filter(Boolean);
+	const handleFilterChange = (newEvent) => {
+		setSelectedEvent(newEvent);
+		setPage(1);
+		if (typeof window !== "undefined" && typeof window.route === "function") router.get(route("settings.index"), {
+			audit_event: newEvent === "all" ? void 0 : newEvent,
+			audit_page: 1
+		}, {
+			preserveState: true,
+			preserveScroll: true,
+			only: [
+				"audits",
+				"auditMeta",
+				"auditEvents"
+			]
+		});
+	};
+	const handlePageChange = (newPage) => {
+		setPage(newPage);
+		if (typeof window !== "undefined" && typeof window.route === "function") router.get(route("settings.index"), {
+			audit_event: selectedEvent === "all" ? void 0 : selectedEvent,
+			audit_page: newPage
+		}, {
+			preserveState: true,
+			preserveScroll: true,
+			only: [
+				"audits",
+				"auditMeta",
+				"auditEvents"
+			]
+		});
+	};
 	const totalActiveRequests = projects.reduce((sum, p) => sum + (p.active_count ?? 0), 0);
 	const archivedProjectsCount = projects.filter((p) => Boolean(p.archived_at)).length;
 	const activeUsersCount = users.filter((u) => u.active !== false).length;
@@ -1314,7 +1348,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 			/* @__PURE__ */ jsxs("section", {
 				className: "rounded-xl border border-zinc-800 bg-[#111216] p-6 shadow-sm",
 				children: [/* @__PURE__ */ jsxs("div", {
-					className: "flex items-center justify-between border-b border-zinc-800/80 pb-4",
+					className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4",
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-2.5",
 						children: [/* @__PURE__ */ jsx("div", {
@@ -1327,63 +1361,117 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 							className: "text-[11px] text-zinc-400",
 							children: "Chronological feed of administrative, permission, and project changes."
 						})] })]
-					}), /* @__PURE__ */ jsxs("span", {
-						className: "font-mono text-xs text-zinc-400",
-						children: [audits.length, " Recent Events"]
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "flex items-center gap-2.5",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs text-zinc-300",
+							children: [/* @__PURE__ */ jsx(Filter, { className: "h-3 w-3 text-zinc-500" }), /* @__PURE__ */ jsxs("select", {
+								value: selectedEvent,
+								onChange: (e) => handleFilterChange(e.target.value),
+								className: "bg-transparent text-xs text-zinc-300 focus:outline-none border-none p-0 cursor-pointer",
+								children: [/* @__PURE__ */ jsx("option", {
+									value: "all",
+									className: "bg-zinc-900 text-zinc-300",
+									children: "All Event Types"
+								}), allUniqueEvents.map((evt) => /* @__PURE__ */ jsx("option", {
+									value: evt,
+									className: "bg-zinc-900 text-zinc-300",
+									children: evt
+								}, evt))]
+							})]
+						}), /* @__PURE__ */ jsxs("span", {
+							className: "font-mono text-xs text-zinc-400",
+							children: [auditMeta?.total ?? audits.length, " Events"]
+						})]
 					})]
 				}), /* @__PURE__ */ jsx("div", {
 					className: "mt-4",
-					children: audits.length === 0 ? /* @__PURE__ */ jsxs("div", {
-						className: "py-8 text-center",
-						children: [/* @__PURE__ */ jsx(Clock, { className: "mx-auto h-6 w-6 text-zinc-600" }), /* @__PURE__ */ jsx("p", {
-							className: "mt-2 text-xs text-zinc-500",
-							children: "No governance audit events recorded yet."
-						})]
-					}) : /* @__PURE__ */ jsx("div", {
-						className: "divide-y divide-zinc-800/60",
-						children: audits.map((audit) => {
-							const tagConfig = getActionTagConfig(audit.event);
-							const actorName = audit.user?.name || "System Actor";
-							const formattedDate = audit.created_at ? new Date(audit.created_at).toLocaleString(void 0, {
-								month: "short",
-								day: "numeric",
-								hour: "2-digit",
-								minute: "2-digit"
-							}) : "Recent";
-							return /* @__PURE__ */ jsxs("div", {
-								className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-3 text-xs first:pt-1 last:pb-1",
-								children: [/* @__PURE__ */ jsxs("div", {
-									className: "flex items-center gap-3 min-w-0",
-									children: [/* @__PURE__ */ jsx("span", {
-										className: `rounded px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider shrink-0 ${tagConfig.badgeClass}`,
-										children: tagConfig.label
+					children: (() => {
+						const filteredAudits = audits.filter((a) => {
+							if (selectedEvent === "all") return true;
+							return a.event === selectedEvent;
+						});
+						const currentPage = auditMeta?.current_page || page;
+						const lastPage = auditMeta?.last_page || Math.max(1, Math.ceil(filteredAudits.length / 15));
+						if (filteredAudits.length === 0) return /* @__PURE__ */ jsxs("div", {
+							className: "py-8 text-center",
+							children: [/* @__PURE__ */ jsx(Clock, { className: "mx-auto h-6 w-6 text-zinc-600" }), /* @__PURE__ */ jsx("p", {
+								className: "mt-2 text-xs text-zinc-500",
+								children: "No governance audit events found."
+							})]
+						});
+						return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("div", {
+							className: "divide-y divide-zinc-800/60",
+							children: filteredAudits.map((audit) => {
+								const tagConfig = getActionTagConfig(audit.event);
+								const actorName = audit.user?.name || "System Actor";
+								const formattedDate = audit.created_at ? new Date(audit.created_at).toLocaleString(void 0, {
+									month: "short",
+									day: "numeric",
+									hour: "2-digit",
+									minute: "2-digit"
+								}) : "Recent";
+								return /* @__PURE__ */ jsxs("div", {
+									className: "flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-3 text-xs first:pt-1 last:pb-1",
+									children: [/* @__PURE__ */ jsxs("div", {
+										className: "flex items-center gap-3 min-w-0",
+										children: [/* @__PURE__ */ jsx("span", {
+											className: `rounded px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider shrink-0 ${tagConfig.badgeClass}`,
+											children: tagConfig.label
+										}), /* @__PURE__ */ jsxs("div", {
+											className: "min-w-0 truncate",
+											children: [
+												/* @__PURE__ */ jsx("span", {
+													className: "font-medium text-zinc-200",
+													children: actorName
+												}),
+												/* @__PURE__ */ jsx("span", {
+													className: "text-zinc-500 mx-1.5",
+													children: "·"
+												}),
+												/* @__PURE__ */ jsx("span", {
+													className: "text-zinc-400 truncate",
+													children: tagConfig.description(audit)
+												})
+											]
+										})]
 									}), /* @__PURE__ */ jsxs("div", {
-										className: "min-w-0 truncate",
-										children: [
-											/* @__PURE__ */ jsx("span", {
-												className: "font-medium text-zinc-200",
-												children: actorName
-											}),
-											/* @__PURE__ */ jsx("span", {
-												className: "text-zinc-500 mx-1.5",
-												children: "·"
-											}),
-											/* @__PURE__ */ jsx("span", {
-												className: "text-zinc-400 truncate",
-												children: tagConfig.description(audit)
-											})
-										]
+										className: "flex items-center gap-3 shrink-0 text-[11px] font-mono text-zinc-500 pl-8 sm:pl-0",
+										children: [audit.ip_address && /* @__PURE__ */ jsx("span", {
+											className: "hidden md:inline text-zinc-600",
+											children: audit.ip_address
+										}), /* @__PURE__ */ jsx("span", { children: formattedDate })]
 									})]
-								}), /* @__PURE__ */ jsxs("div", {
-									className: "flex items-center gap-3 shrink-0 text-[11px] font-mono text-zinc-500 pl-8 sm:pl-0",
-									children: [audit.ip_address && /* @__PURE__ */ jsx("span", {
-										className: "hidden md:inline text-zinc-600",
-										children: audit.ip_address
-									}), /* @__PURE__ */ jsx("span", { children: formattedDate })]
+								}, audit.id);
+							})
+						}), lastPage > 1 && /* @__PURE__ */ jsxs("div", {
+							className: "flex items-center justify-between border-t border-zinc-800/80 pt-4 mt-4 text-xs text-zinc-400",
+							children: [/* @__PURE__ */ jsxs("span", {
+								className: "font-mono text-[11px]",
+								children: [
+									"Page ",
+									currentPage,
+									" of ",
+									lastPage
+								]
+							}), /* @__PURE__ */ jsxs("div", {
+								className: "flex items-center gap-2",
+								children: [/* @__PURE__ */ jsxs("button", {
+									type: "button",
+									onClick: () => handlePageChange(currentPage - 1),
+									disabled: currentPage <= 1,
+									className: "inline-flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs font-medium text-zinc-300 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed",
+									children: [/* @__PURE__ */ jsx(ChevronLeft, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Previous" })]
+								}), /* @__PURE__ */ jsxs("button", {
+									type: "button",
+									onClick: () => handlePageChange(currentPage + 1),
+									disabled: currentPage >= lastPage,
+									className: "inline-flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs font-medium text-zinc-300 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed",
+									children: [/* @__PURE__ */ jsx("span", { children: "Next" }), /* @__PURE__ */ jsx(ChevronRight, { className: "h-3.5 w-3.5" })]
 								})]
-							}, audit.id);
-						})
-					})
+							})]
+						})] });
+					})()
 				})]
 			})
 		]
@@ -1435,7 +1523,7 @@ function getActionTagConfig(event) {
 }
 //#endregion
 //#region resources/js/Pages/Settings/Index.tsx
-function Settings({ projects: initialProjects, users: initialUsers, roles, canManageAreas, canManageTeam, audits = [] }) {
+function Settings({ projects: initialProjects, users: initialUsers, roles, canManageAreas, canManageTeam, audits = [], auditMeta, auditEvents = [] }) {
 	const [projects, setProjects] = useState(initialProjects);
 	const [users, setUsers] = useState(initialUsers);
 	const [activeTab, setActiveTab] = useState("projects");
@@ -1561,6 +1649,8 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 						projects,
 						users,
 						audits,
+						auditMeta,
+						auditEvents,
 						onSelectTab: (tab) => setActiveTab(tab)
 					})
 				]

@@ -1,10 +1,10 @@
 import { i as InputError, n as PrimaryButton, r as InputLabel, t as TextInput_default } from "./TextInput-CMpMv42q.js";
-import { t as Authenticated } from "./AuthenticatedLayout-Da8j2hUo.js";
+import { t as Authenticated } from "./AuthenticatedLayout-DFiGyini.js";
 import { n as getAvatarGradient, r as getRoleBadgeStyle } from "./TeamManagementCard-DhJIhOln.js";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useRef, useState } from "react";
-import { Activity, AlertCircle, AlertTriangle, AtSign, Bell, Calendar, Check, CheckCircle2, Circle, Copy, Download, ExternalLink, Eye, EyeOff, Hash, KanbanSquare, KeyRound, Layers, LayoutDashboard, Loader2, Lock, Mail, MessageSquare, QrCode, Radio, RefreshCw, Shield, ShieldAlert, ShieldCheck, Sparkles, TrendingUp, User, UserCheck, X, Zap } from "lucide-react";
+import { Activity, AlertCircle, AlertTriangle, AtSign, Bell, Calendar, Check, CheckCircle2, Circle, Copy, Download, ExternalLink, Eye, EyeOff, Hash, KanbanSquare, Key, KeyRound, Layers, LayoutDashboard, Loader2, Lock, Mail, MessageSquare, Plus, QrCode, Radio, RefreshCw, Shield, ShieldAlert, ShieldCheck, Sparkles, Trash2, TrendingUp, User, UserCheck, X, Zap } from "lucide-react";
 import { Transition } from "@headlessui/react";
 import axios from "axios";
 import { toast } from "sonner";
@@ -1322,8 +1322,301 @@ function TwoFactorSecurityCard({ initialEnabled = false, className = "" }) {
 	});
 }
 //#endregion
+//#region resources/js/Features/Profile/components/PersonalAccessTokensCard.tsx
+function PersonalAccessTokensCard({ initialTokens = [], className = "" }) {
+	const [tokens, setTokens] = useState(initialTokens);
+	const [isCreating, setIsCreating] = useState(false);
+	const [name, setName] = useState("");
+	const [expirationDays, setExpirationDays] = useState("30");
+	const [abilities, setAbilities] = useState(["*"]);
+	const [loading, setLoading] = useState(false);
+	const [revokingId, setRevokingId] = useState(null);
+	const [newToken, setNewToken] = useState(null);
+	const [copiedToken, setCopiedToken] = useState(false);
+	const availableAbilities = [
+		{
+			id: "*",
+			label: "Full Access (*)"
+		},
+		{
+			id: "read:requests",
+			label: "Read Work Requests"
+		},
+		{
+			id: "write:requests",
+			label: "Create & Update Requests"
+		},
+		{
+			id: "delete:requests",
+			label: "Delete Requests"
+		},
+		{
+			id: "read:projects",
+			label: "Read Projects"
+		}
+	];
+	const toggleAbility = (ability) => {
+		if (ability === "*") {
+			setAbilities(["*"]);
+			return;
+		}
+		const filtered = abilities.filter((a) => a !== "*");
+		if (filtered.includes(ability)) {
+			const next = filtered.filter((a) => a !== ability);
+			setAbilities(next.length === 0 ? ["*"] : next);
+		} else setAbilities([...filtered, ability]);
+	};
+	const handleCreateToken = async (e) => {
+		e.preventDefault();
+		if (!name.trim()) return;
+		setLoading(true);
+		try {
+			let expiresAt = null;
+			if (expirationDays !== "never") {
+				const date = /* @__PURE__ */ new Date();
+				date.setDate(date.getDate() + parseInt(expirationDays, 10));
+				expiresAt = date.toISOString();
+			}
+			const response = await axios.post("/tokens", {
+				name: name.trim(),
+				abilities,
+				expires_at: expiresAt
+			});
+			const tokenString = response.data.token || response.data.plainTextToken;
+			const createdToken = response.data.accessToken;
+			setNewToken(tokenString);
+			if (createdToken) setTokens((prev) => [createdToken, ...prev]);
+			else {
+				const listRes = await axios.get("/tokens");
+				setTokens(listRes.data.tokens || []);
+			}
+			setName("");
+			setIsCreating(false);
+			toast.success("Personal access token generated.");
+		} catch (err) {
+			toast.error(err.response?.data?.message || "Failed to generate token.");
+		} finally {
+			setLoading(false);
+		}
+	};
+	const handleRevokeToken = async (tokenId) => {
+		setRevokingId(tokenId);
+		try {
+			await axios.delete(`/tokens/${tokenId}`);
+			setTokens((prev) => prev.filter((t) => t.id !== tokenId));
+			toast.success("Token revoked.");
+		} catch (err) {
+			toast.error(err.response?.data?.message || "Failed to revoke token.");
+		} finally {
+			setRevokingId(null);
+		}
+	};
+	const handleCopyToken = () => {
+		if (!newToken) return;
+		navigator.clipboard.writeText(newToken);
+		setCopiedToken(true);
+		toast.info("Copied secret token to clipboard.");
+		setTimeout(() => setCopiedToken(false), 2e3);
+	};
+	return /* @__PURE__ */ jsxs("div", {
+		className: `rounded-2xl border border-zinc-800 bg-[#111216] p-6 shadow-xl shadow-black/40 transition-all ${className}`,
+		children: [
+			/* @__PURE__ */ jsxs("div", {
+				className: "flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between",
+				children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("div", {
+					className: "flex items-center gap-2",
+					children: [/* @__PURE__ */ jsx("div", {
+						className: "flex h-8 w-8 items-center justify-center rounded-lg border border-violet-500/30 bg-violet-500/10 text-violet-400",
+						children: /* @__PURE__ */ jsx(Key, { className: "h-4 w-4" })
+					}), /* @__PURE__ */ jsx("h2", {
+						className: "text-base font-semibold text-zinc-100",
+						children: "Personal Access Tokens"
+					})]
+				}), /* @__PURE__ */ jsx("p", {
+					className: "mt-1 text-xs text-zinc-400",
+					children: "Manage API tokens to authenticate with the Relay Studio REST API v1."
+				})] }), !isCreating && /* @__PURE__ */ jsxs("button", {
+					type: "button",
+					onClick: () => setIsCreating(true),
+					className: "inline-flex items-center gap-1.5 rounded-lg border border-violet-500/30 bg-violet-600/20 px-3 py-1.5 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-600/30 hover:border-violet-500/50",
+					children: [/* @__PURE__ */ jsx(Plus, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Generate New Token" })]
+				})]
+			}),
+			newToken && /* @__PURE__ */ jsxs("div", {
+				className: "mt-6 rounded-xl border border-emerald-500/30 bg-emerald-950/20 p-4",
+				children: [
+					/* @__PURE__ */ jsxs("div", {
+						className: "flex items-start justify-between gap-3",
+						children: [/* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-2 text-emerald-400",
+							children: [/* @__PURE__ */ jsx(CheckCircle2, { className: "h-4 w-4 shrink-0" }), /* @__PURE__ */ jsx("span", {
+								className: "text-xs font-bold uppercase tracking-wider",
+								children: "Secret Token Generated"
+							})]
+						}), /* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: () => setNewToken(null),
+							className: "text-xs text-zinc-500 hover:text-zinc-300",
+							children: "Dismiss"
+						})]
+					}),
+					/* @__PURE__ */ jsx("p", {
+						className: "mt-1.5 text-xs text-zinc-300",
+						children: "Make sure to copy your personal access token now. You won't be able to see it again!"
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "mt-3 flex items-center gap-2",
+						children: [/* @__PURE__ */ jsx("input", {
+							type: "text",
+							readOnly: true,
+							value: newToken,
+							className: "flex-1 rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 font-mono text-xs text-emerald-300 focus:outline-none"
+						}), /* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: handleCopyToken,
+							className: "inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-500/20 px-3 py-1.5 text-xs font-semibold text-emerald-300 transition-all hover:bg-emerald-500/30",
+							children: copiedToken ? /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Check, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Copied" })] }) : /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Copy, { className: "h-3.5 w-3.5" }), /* @__PURE__ */ jsx("span", { children: "Copy" })] })
+						})]
+					})
+				]
+			}),
+			isCreating && /* @__PURE__ */ jsxs("form", {
+				onSubmit: handleCreateToken,
+				className: "mt-6 space-y-4 rounded-xl border border-zinc-800/80 bg-zinc-900/50 p-4",
+				children: [
+					/* @__PURE__ */ jsxs("div", {
+						className: "flex items-center justify-between",
+						children: [/* @__PURE__ */ jsx("h3", {
+							className: "text-xs font-semibold uppercase tracking-wider text-zinc-300",
+							children: "New Token Details"
+						}), /* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: () => setIsCreating(false),
+							className: "text-xs text-zinc-500 hover:text-zinc-300",
+							children: "Cancel"
+						})]
+					}),
+					/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx(InputLabel, {
+						htmlFor: "token_name",
+						value: "Token Name"
+					}), /* @__PURE__ */ jsx(TextInput_default, {
+						id: "token_name",
+						type: "text",
+						value: name,
+						onChange: (e) => setName(e.target.value),
+						placeholder: "e.g. CI/CD Deployment, CLI Tool",
+						className: "mt-1 w-full",
+						required: true
+					})] }),
+					/* @__PURE__ */ jsxs("div", {
+						className: "grid grid-cols-1 sm:grid-cols-2 gap-4",
+						children: [/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx(InputLabel, { value: "Expiration" }), /* @__PURE__ */ jsxs("select", {
+							value: expirationDays,
+							onChange: (e) => setExpirationDays(e.target.value),
+							className: "mt-1 w-full rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-2 text-xs text-zinc-200 focus:border-violet-500 focus:ring-1 focus:ring-violet-500",
+							children: [
+								/* @__PURE__ */ jsx("option", {
+									value: "7",
+									children: "7 Days"
+								}),
+								/* @__PURE__ */ jsx("option", {
+									value: "30",
+									children: "30 Days"
+								}),
+								/* @__PURE__ */ jsx("option", {
+									value: "60",
+									children: "60 Days"
+								}),
+								/* @__PURE__ */ jsx("option", {
+									value: "90",
+									children: "90 Days"
+								}),
+								/* @__PURE__ */ jsx("option", {
+									value: "never",
+									children: "No Expiration"
+								})
+							]
+						})] }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx(InputLabel, { value: "Abilities & Scopes" }), /* @__PURE__ */ jsx("div", {
+							className: "mt-2 space-y-1.5",
+							children: availableAbilities.map((ab) => /* @__PURE__ */ jsxs("label", {
+								className: "flex items-center gap-2 text-xs text-zinc-300 cursor-pointer",
+								children: [/* @__PURE__ */ jsx("input", {
+									type: "checkbox",
+									checked: abilities.includes(ab.id),
+									onChange: () => toggleAbility(ab.id),
+									className: "rounded border-zinc-700 bg-zinc-800 text-violet-500 focus:ring-violet-500 focus:ring-offset-zinc-900"
+								}), /* @__PURE__ */ jsx("span", { children: ab.label })]
+							}, ab.id))
+						})] })]
+					}),
+					/* @__PURE__ */ jsxs("div", {
+						className: "flex items-center justify-end gap-2 pt-2",
+						children: [/* @__PURE__ */ jsx(SecondaryButton, {
+							type: "button",
+							onClick: () => setIsCreating(false),
+							children: "Cancel"
+						}), /* @__PURE__ */ jsx(PrimaryButton, {
+							type: "submit",
+							disabled: loading || !name.trim(),
+							children: loading ? "Generating..." : "Create Token"
+						})]
+					})
+				]
+			}),
+			/* @__PURE__ */ jsx("div", {
+				className: "mt-6",
+				children: tokens.length === 0 ? /* @__PURE__ */ jsxs("div", {
+					className: "rounded-xl border border-zinc-800/60 bg-zinc-900/30 py-8 text-center",
+					children: [/* @__PURE__ */ jsx(Key, { className: "mx-auto h-6 w-6 text-zinc-600" }), /* @__PURE__ */ jsx("p", {
+						className: "mt-2 text-xs text-zinc-400",
+						children: "No personal access tokens generated yet."
+					})]
+				}) : /* @__PURE__ */ jsx("div", {
+					className: "divide-y divide-zinc-800/60 rounded-xl border border-zinc-800/80 bg-zinc-900/40",
+					children: tokens.map((token) => {
+						const lastUsed = token.last_used_at ? new Date(token.last_used_at).toLocaleDateString() : "Never used";
+						const expiresText = token.expires_at ? `Expires ${new Date(token.expires_at).toLocaleDateString()}` : "No expiration";
+						return /* @__PURE__ */ jsxs("div", {
+							className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 text-xs first:rounded-t-xl last:rounded-b-xl hover:bg-zinc-850/40",
+							children: [/* @__PURE__ */ jsxs("div", {
+								className: "space-y-1",
+								children: [/* @__PURE__ */ jsxs("div", {
+									className: "flex items-center gap-2",
+									children: [/* @__PURE__ */ jsx("span", {
+										className: "font-semibold text-zinc-200",
+										children: token.name
+									}), token.abilities && token.abilities.length > 0 && /* @__PURE__ */ jsx("div", {
+										className: "flex flex-wrap gap-1",
+										children: token.abilities.map((ability) => /* @__PURE__ */ jsx("span", {
+											className: "rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-[10px] text-zinc-400",
+											children: ability
+										}, ability))
+									})]
+								}), /* @__PURE__ */ jsxs("div", {
+									className: "flex items-center gap-3 text-[11px] text-zinc-500 font-mono",
+									children: [
+										/* @__PURE__ */ jsxs("span", { children: ["Last used: ", lastUsed] }),
+										/* @__PURE__ */ jsx("span", { children: "·" }),
+										/* @__PURE__ */ jsx("span", { children: expiresText })
+									]
+								})]
+							}), /* @__PURE__ */ jsxs("button", {
+								type: "button",
+								onClick: () => handleRevokeToken(token.id),
+								disabled: revokingId === token.id,
+								className: "inline-flex items-center gap-1.5 self-start sm:self-center rounded-lg border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-400 transition-all hover:bg-red-500/20 hover:border-red-500/40 disabled:opacity-50",
+								children: [/* @__PURE__ */ jsx(Trash2, { className: "h-3 w-3" }), /* @__PURE__ */ jsx("span", { children: revokingId === token.id ? "Revoking..." : "Revoke" })]
+							})]
+						}, token.id);
+					})
+				})
+			})
+		]
+	});
+}
+//#endregion
 //#region resources/js/Pages/Profile/Edit.tsx
-function Edit({ stats, twoFactorEnabled = false }) {
+function Edit({ stats, twoFactorEnabled = false, tokens = [] }) {
 	const pageProps = usePage().props;
 	const alertMessage = pageProps.flash?.alert || (pageProps.auth?.user?.force_password_reset ? "Please update your default password to secure your account." : null);
 	return /* @__PURE__ */ jsxs(Authenticated, {
@@ -1382,6 +1675,7 @@ function Edit({ stats, twoFactorEnabled = false }) {
 						className: "space-y-6 lg:col-span-8",
 						children: [
 							/* @__PURE__ */ jsx(UpdateProfileInformation, {}),
+							/* @__PURE__ */ jsx(PersonalAccessTokensCard, { initialTokens: tokens }),
 							/* @__PURE__ */ jsx(TwoFactorSecurityCard, { initialEnabled: twoFactorEnabled }),
 							/* @__PURE__ */ jsx(NotificationPreferencesCard, {}),
 							/* @__PURE__ */ jsx(UpdatePasswordForm, {})

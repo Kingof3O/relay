@@ -6,6 +6,7 @@ import {
     RequestBlockerBanner,
     RequestDescriptionCard,
     RequestSubtasksSection,
+    RequestPullRequestsSection,
     RequestMediaGallery,
     RequestDiscussionSection,
     RequestSidebarProperties,
@@ -242,6 +243,7 @@ export default function Show({
                             canEdit={canEdit}
                             onSubtasksChange={(updated: WorkRequestDetail) => setRequest(updated)}
                         />
+                        <RequestPullRequestsSection pullRequests={request.pull_requests || []} />
                         <RequestMediaGallery
                             files={request.files} canUpload={canUpload} uploading={uploading}
                             onUploadFiles={uploadFiles} onRetry={retry} onOpenLightbox={(src: string) => setLightboxSrc(src)}

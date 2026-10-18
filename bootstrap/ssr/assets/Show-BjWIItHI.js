@@ -1,4 +1,4 @@
-import { c as RequestSidebarProperties, d as RequestDescriptionCard, l as RequestDiscussionSection, m as RequestHeroHeader, o as triggerConfetti, p as RequestBlockerBanner, s as RequestSubtasksSection, t as Authenticated, u as RequestMediaGallery, y as ImageLightbox } from "./AuthenticatedLayout-Da8j2hUo.js";
+import { b as ImageLightbox, c as RequestSubtasksSection, d as RequestMediaGallery, f as RequestDescriptionCard, h as RequestHeroHeader, l as RequestSidebarProperties, m as RequestBlockerBanner, o as triggerConfetti, s as RequestPullRequestsSection, t as Authenticated, u as RequestDiscussionSection } from "./AuthenticatedLayout-DFiGyini.js";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from "react";
@@ -186,7 +186,11 @@ function Show({ request: initialRequest, projects, users, statuses, priorities, 
 		router.visit(route("requests.index"));
 	};
 	const handleReloadFresh = () => {
-		router.reload();
+		setConflict(null);
+		router.reload({ onSuccess: (page) => {
+			const refreshed = page.props.request;
+			if (refreshed) setRequest(refreshed);
+		} });
 	};
 	useEffect(() => {
 		const handlePaste = (e) => {
@@ -292,6 +296,7 @@ function Show({ request: initialRequest, projects, users, statuses, priorities, 
 									canEdit,
 									onSubtasksChange: (updated) => setRequest(updated)
 								}),
+								/* @__PURE__ */ jsx(RequestPullRequestsSection, { pullRequests: request.pull_requests || [] }),
 								/* @__PURE__ */ jsx(RequestMediaGallery, {
 									files: request.files,
 									canUpload,

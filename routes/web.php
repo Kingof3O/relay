@@ -77,6 +77,13 @@ Route::middleware(['auth', 'active'])->group(function (): void {
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'index'])->name('tokens.index');
+    Route::post('/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'store'])->name('tokens.store');
+    Route::delete('/tokens/{token}', [\App\Http\Controllers\PersonalAccessTokenController::class, 'destroy'])->name('tokens.destroy');
+    Route::get('/profile/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'index'])->name('profile.tokens.index');
+    Route::post('/profile/tokens', [\App\Http\Controllers\PersonalAccessTokenController::class, 'store'])->name('profile.tokens.store');
+    Route::delete('/profile/tokens/{token}', [\App\Http\Controllers\PersonalAccessTokenController::class, 'destroy'])->name('profile.tokens.destroy');
 });
 
 require __DIR__.'/auth.php';

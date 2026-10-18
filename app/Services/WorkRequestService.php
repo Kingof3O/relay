@@ -30,6 +30,11 @@ final class WorkRequestService
                 'assignee_id' => $attributes['assignee_id'] ?? null,
                 'is_blocked' => (bool) ($attributes['is_blocked'] ?? false),
                 'blocked_reason' => $attributes['blocked_reason'] ?? null,
+                'story_points' => isset($attributes['story_points']) ? (int) $attributes['story_points'] : null,
+                'parent_id' => $attributes['parent_id'] ?? null,
+                'cycle_id' => $attributes['cycle_id'] ?? null,
+                'due_date' => $attributes['due_date'] ?? null,
+                'tags' => $attributes['tags'] ?? null,
             ]);
 
             $this->recordActivity($request, $actor, 'created', 'Request created.');

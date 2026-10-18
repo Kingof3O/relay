@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { router } from '@inertiajs/react';
 import { WorkspaceProject, WorkspaceUser } from '@/types/workspace';
 import {
     Sparkles,
@@ -12,6 +14,9 @@ import {
     CheckCircle2,
     Clock,
     Shield,
+    Filter,
+    ChevronLeft,
+    ChevronRight,
 } from 'lucide-react';
 
 export interface WorkspaceAuditFeedItem {
@@ -30,12 +35,22 @@ export interface WorkspaceAuditFeedItem {
     created_at?: string | null;
 }
 
+export interface WorkspaceAuditMeta {
+    current_page: number;
+    per_page: number;
+    total: number;
+    last_page: number;
+    event_filter?: string | null;
+}
+
 export interface WorkspaceSnapshotCardProps {
     activeProjectsCount: number;
     teamAccountsCount: number;
     projects?: WorkspaceProject[];
     users?: WorkspaceUser[];
     audits?: WorkspaceAuditFeedItem[];
+    auditMeta?: WorkspaceAuditMeta;
+    auditEvents?: string[];
     onSelectTab?: (tab: 'projects' | 'team') => void;
 }
 
@@ -45,8 +60,53 @@ export default function WorkspaceSnapshotCard({
     projects = [],
     users = [],
     audits = [],
+    auditMeta,
+    auditEvents = [],
     onSelectTab,
 }: WorkspaceSnapshotCardProps) {
+    const [selectedEvent, setSelectedEvent] = useState<string>(auditMeta?.event_filter || 'all');
+    const [page, setPage] = useState<number>(auditMeta?.current_page || 1);
+
+    const allUniqueEvents = Array.from(
+        new Set([...auditEvents, ...audits.map((a) => a.event)])
+    ).filter(Boolean);
+
+    const handleFilterChange = (newEvent: string) => {
+        setSelectedEvent(newEvent);
+        setPage(1);
+        if (typeof window !== 'undefined' && typeof (window as any).route === 'function') {
+            router.get(
+                route('settings.index'),
+                {
+                    audit_event: newEvent === 'all' ? undefined : newEvent,
+                    audit_page: 1,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    only: ['audits', 'auditMeta', 'auditEvents'],
+                }
+            );
+        }
+    };
+
+    const handlePageChange = (newPage: number) => {
+        setPage(newPage);
+        if (typeof window !== 'undefined' && typeof (window as any).route === 'function') {
+            router.get(
+                route('settings.index'),
+                {
+                    audit_event: selectedEvent === 'all' ? undefined : selectedEvent,
+                    audit_page: newPage,
+                },
+                {
+                    preserveState: true,
+                    preserveScroll: true,
+                    only: ['audits', 'auditMeta', 'auditEvents'],
+                }
+            );
+        }
+    };
     const totalActiveRequests = projects.reduce(
         (sum, p) => sum + (p.active_count ?? 0),
         0
@@ -452,7 +512,7 @@ export default function WorkspaceSnapshotCard({
 
             {/* 4. Enterprise Audit Log & Governance Activity Feed */}
             <section className="rounded-xl border border-zinc-800 bg-[#111216] p-6 shadow-sm">
-                <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
                     <div className="flex items-center gap-2.5">
                         <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-amber-400">
                             <Shield className="h-4 w-4" />
@@ -466,66 +526,131 @@ export default function WorkspaceSnapshotCard({
                             </p>
                         </div>
                     </div>
-                    <span className="font-mono text-xs text-zinc-400">
-                        {audits.length} Recent Events
-                    </span>
+
+                    <div className="flex items-center gap-2.5">
+                        <div className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs text-zinc-300">
+                            <Filter className="h-3 w-3 text-zinc-500" />
+                            <select
+                                value={selectedEvent}
+                                onChange={(e) => handleFilterChange(e.target.value)}
+                                className="bg-transparent text-xs text-zinc-300 focus:outline-none border-none p-0 cursor-pointer"
+                            >
+                                <option value="all" className="bg-zinc-900 text-zinc-300">
+                                    All Event Types
+                                </option>
+                                {allUniqueEvents.map((evt) => (
+                                    <option key={evt} value={evt} className="bg-zinc-900 text-zinc-300">
+                                        {evt}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+
+                        <span className="font-mono text-xs text-zinc-400">
+                            {auditMeta?.total ?? audits.length} Events
+                        </span>
+                    </div>
                 </div>
 
                 <div className="mt-4">
-                    {audits.length === 0 ? (
-                        <div className="py-8 text-center">
-                            <Clock className="mx-auto h-6 w-6 text-zinc-600" />
-                            <p className="mt-2 text-xs text-zinc-500">No governance audit events recorded yet.</p>
-                        </div>
-                    ) : (
-                        <div className="divide-y divide-zinc-800/60">
-                            {audits.map((audit) => {
-                                const tagConfig = getActionTagConfig(audit.event);
-                                const actorName = audit.user?.name || 'System Actor';
-                                const formattedDate = audit.created_at
-                                    ? new Date(audit.created_at).toLocaleString(undefined, {
-                                          month: 'short',
-                                          day: 'numeric',
-                                          hour: '2-digit',
-                                          minute: '2-digit',
-                                      })
-                                    : 'Recent';
+                    {(() => {
+                        const filteredAudits = audits.filter((a) => {
+                            if (selectedEvent === 'all') return true;
+                            return a.event === selectedEvent;
+                        });
 
-                                return (
-                                    <div
-                                        key={audit.id}
-                                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-3 text-xs first:pt-1 last:pb-1"
-                                    >
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <span
-                                                className={`rounded px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider shrink-0 ${tagConfig.badgeClass}`}
+                        const currentPage = auditMeta?.current_page || page;
+                        const lastPage = auditMeta?.last_page || Math.max(1, Math.ceil(filteredAudits.length / 15));
+
+                        if (filteredAudits.length === 0) {
+                            return (
+                                <div className="py-8 text-center">
+                                    <Clock className="mx-auto h-6 w-6 text-zinc-600" />
+                                    <p className="mt-2 text-xs text-zinc-500">No governance audit events found.</p>
+                                </div>
+                            );
+                        }
+
+                        return (
+                            <>
+                                <div className="divide-y divide-zinc-800/60">
+                                    {filteredAudits.map((audit) => {
+                                        const tagConfig = getActionTagConfig(audit.event);
+                                        const actorName = audit.user?.name || 'System Actor';
+                                        const formattedDate = audit.created_at
+                                            ? new Date(audit.created_at).toLocaleString(undefined, {
+                                                  month: 'short',
+                                                  day: 'numeric',
+                                                  hour: '2-digit',
+                                                  minute: '2-digit',
+                                              })
+                                            : 'Recent';
+
+                                        return (
+                                            <div
+                                                key={audit.id}
+                                                className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 py-3 text-xs first:pt-1 last:pb-1"
                                             >
-                                                {tagConfig.label}
-                                            </span>
-                                            <div className="min-w-0 truncate">
-                                                <span className="font-medium text-zinc-200">
-                                                    {actorName}
-                                                </span>
-                                                <span className="text-zinc-500 mx-1.5">·</span>
-                                                <span className="text-zinc-400 truncate">
-                                                    {tagConfig.description(audit)}
-                                                </span>
-                                            </div>
-                                        </div>
+                                                <div className="flex items-center gap-3 min-w-0">
+                                                    <span
+                                                        className={`rounded px-2 py-0.5 text-[10px] font-mono font-semibold uppercase tracking-wider shrink-0 ${tagConfig.badgeClass}`}
+                                                    >
+                                                        {tagConfig.label}
+                                                    </span>
+                                                    <div className="min-w-0 truncate">
+                                                        <span className="font-medium text-zinc-200">
+                                                            {actorName}
+                                                        </span>
+                                                        <span className="text-zinc-500 mx-1.5">·</span>
+                                                        <span className="text-zinc-400 truncate">
+                                                            {tagConfig.description(audit)}
+                                                        </span>
+                                                    </div>
+                                                </div>
 
-                                        <div className="flex items-center gap-3 shrink-0 text-[11px] font-mono text-zinc-500 pl-8 sm:pl-0">
-                                            {audit.ip_address && (
-                                                <span className="hidden md:inline text-zinc-600">
-                                                    {audit.ip_address}
-                                                </span>
-                                            )}
-                                            <span>{formattedDate}</span>
+                                                <div className="flex items-center gap-3 shrink-0 text-[11px] font-mono text-zinc-500 pl-8 sm:pl-0">
+                                                    {audit.ip_address && (
+                                                        <span className="hidden md:inline text-zinc-600">
+                                                            {audit.ip_address}
+                                                        </span>
+                                                    )}
+                                                    <span>{formattedDate}</span>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {lastPage > 1 && (
+                                    <div className="flex items-center justify-between border-t border-zinc-800/80 pt-4 mt-4 text-xs text-zinc-400">
+                                        <span className="font-mono text-[11px]">
+                                            Page {currentPage} of {lastPage}
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => handlePageChange(currentPage - 1)}
+                                                disabled={currentPage <= 1}
+                                                className="inline-flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs font-medium text-zinc-300 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                                            >
+                                                <ChevronLeft className="h-3.5 w-3.5" />
+                                                <span>Previous</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => handlePageChange(currentPage + 1)}
+                                                disabled={currentPage >= lastPage}
+                                                className="inline-flex items-center gap-1 rounded-lg border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-xs font-medium text-zinc-300 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed"
+                                            >
+                                                <span>Next</span>
+                                                <ChevronRight className="h-3.5 w-3.5" />
+                                            </button>
                                         </div>
                                     </div>
-                                );
-                            })}
-                        </div>
-                    )}
+                                )}
+                            </>
+                        );
+                    })()}
                 </div>
             </section>
         </div>

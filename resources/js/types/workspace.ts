@@ -123,10 +123,24 @@ export interface WorkRequestCard {
     updated_at?: string | null;
 }
 
+export interface LinkedPullRequest {
+    id: number;
+    provider: string;
+    pr_number: number;
+    title: string;
+    url: string;
+    status: 'open' | 'closed' | 'merged';
+    is_draft: boolean;
+    review_status: 'pending' | 'approved' | 'changes_requested';
+    created_at?: string | null;
+    updated_at?: string | null;
+}
+
 export interface WorkRequestDetail extends WorkRequestCard {
     files: RequestFileItem[];
     activities: RequestActivityItem[];
     subtasks?: WorkRequestCard[];
+    pull_requests?: LinkedPullRequest[];
 }
 
 export interface CycleItem {

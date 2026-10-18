@@ -13,6 +13,7 @@ export { default as RequestMediaGallery } from './components/Detail/RequestMedia
 export { default as RequestDiscussionSection } from './components/Detail/RequestDiscussionSection';
 export { default as RequestSidebarProperties } from './components/Detail/RequestSidebarProperties';
 export { default as RequestSubtasksSection } from './components/Detail/RequestSubtasksSection';
+export { default as RequestPullRequestsSection } from './components/Detail/RequestPullRequestsSection';
 
 // Hooks
 export * from './hooks/useKanbanBoard';

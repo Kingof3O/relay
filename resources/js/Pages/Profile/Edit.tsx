@@ -3,6 +3,7 @@ import { Head } from '@inertiajs/react';
 import {
     AccountTelemetryCard,
     NotificationPreferencesCard,
+    PersonalAccessTokensCard,
     TwoFactorSecurityCard,
     UpdatePasswordForm,
     UpdateProfileInformationForm,
@@ -18,9 +19,10 @@ export interface ProfileEditProps {
         completed_count: number;
     };
     twoFactorEnabled?: boolean;
+    tokens?: any[];
 }
 
-export default function Edit({ stats, twoFactorEnabled = false }: ProfileEditProps) {
+export default function Edit({ stats, twoFactorEnabled = false, tokens = [] }: ProfileEditProps) {
     const pageProps = usePage<PageProps>().props;
     const alertMessage = pageProps.flash?.alert || (pageProps.auth?.user?.force_password_reset ? 'Please update your default password to secure your account.' : null);
 
@@ -78,6 +80,7 @@ export default function Edit({ stats, twoFactorEnabled = false }: ProfileEditPro
                     {/* Right Column (lg:col-span-8 space-y-6): Full-width Form Sections */}
                     <div className="space-y-6 lg:col-span-8">
                         <UpdateProfileInformationForm />
+                        <PersonalAccessTokensCard initialTokens={tokens} />
                         <TwoFactorSecurityCard initialEnabled={twoFactorEnabled} />
                         <NotificationPreferencesCard />
                         <UpdatePasswordForm />

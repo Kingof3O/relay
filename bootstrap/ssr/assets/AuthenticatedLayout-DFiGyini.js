@@ -1,7 +1,7 @@
 import { Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, Quote, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
+import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, GitMerge, GitPullRequest, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, Quote, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Command } from "cmdk";
 import axios, { isAxiosError } from "axios";
@@ -4866,7 +4866,7 @@ function TipTapEditor({ content = "", onChange, editable = true, placeholder = "
 	const containerRef = useRef(null);
 	const editor = useEditor({
 		extensions: [
-			StarterKit.configure({ codeBlock: false }),
+			StarterKit,
 			TaskList.configure({ HTMLAttributes: { class: "custom-task-list space-y-1.5 my-2" } }),
 			TaskItem.configure({
 				nested: true,
@@ -6042,6 +6042,104 @@ function RequestSubtasksSection({ request, canEdit, onSubtasksChange }) {
 	});
 }
 //#endregion
+//#region resources/js/Features/Requests/components/Detail/RequestPullRequestsSection.tsx
+function RequestPullRequestsSection({ pullRequests = [], className = "" }) {
+	if (!pullRequests || pullRequests.length === 0) return null;
+	const getStatusBadge = (status, isDraft) => {
+		if (isDraft) return /* @__PURE__ */ jsxs("span", {
+			className: "inline-flex items-center gap-1 rounded-md border border-zinc-700 bg-zinc-800/80 px-2 py-0.5 text-[11px] font-medium text-zinc-400",
+			children: [/* @__PURE__ */ jsx(FileCode, { className: "h-3 w-3" }), "Draft"]
+		});
+		switch (status) {
+			case "merged": return /* @__PURE__ */ jsxs("span", {
+				className: "inline-flex items-center gap-1 rounded-md border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 text-[11px] font-medium text-purple-300",
+				children: [/* @__PURE__ */ jsx(GitMerge, { className: "h-3 w-3 text-purple-400" }), "Merged"]
+			});
+			case "closed": return /* @__PURE__ */ jsxs("span", {
+				className: "inline-flex items-center gap-1 rounded-md border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[11px] font-medium text-red-300",
+				children: [/* @__PURE__ */ jsx(GitPullRequest, { className: "h-3 w-3 text-red-400" }), "Closed"]
+			});
+			default: return /* @__PURE__ */ jsxs("span", {
+				className: "inline-flex items-center gap-1 rounded-md border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[11px] font-medium text-emerald-300",
+				children: [/* @__PURE__ */ jsx(GitPullRequest, { className: "h-3 w-3 text-emerald-400" }), "Open"]
+			});
+		}
+	};
+	const getReviewBadge = (reviewStatus) => {
+		switch (reviewStatus) {
+			case "approved": return /* @__PURE__ */ jsxs("span", {
+				className: "inline-flex items-center gap-1 text-[11px] font-medium text-emerald-400",
+				children: [/* @__PURE__ */ jsx(CheckCircle2, { className: "h-3 w-3" }), "Approved"]
+			});
+			case "changes_requested": return /* @__PURE__ */ jsxs("span", {
+				className: "inline-flex items-center gap-1 text-[11px] font-medium text-amber-400",
+				children: [/* @__PURE__ */ jsx(AlertCircle, { className: "h-3 w-3" }), "Changes Requested"]
+			});
+			default: return /* @__PURE__ */ jsxs("span", {
+				className: "inline-flex items-center gap-1 text-[11px] font-medium text-zinc-400",
+				children: [/* @__PURE__ */ jsx(Clock, { className: "h-3 w-3 text-zinc-500" }), "Review Pending"]
+			});
+		}
+	};
+	return /* @__PURE__ */ jsxs("section", {
+		className: `rounded-2xl border border-zinc-800 bg-[#111216] p-6 shadow-xl shadow-black/40 ${className}`,
+		children: [/* @__PURE__ */ jsxs("div", {
+			className: "flex items-center justify-between",
+			children: [/* @__PURE__ */ jsxs("div", {
+				className: "flex items-center gap-2",
+				children: [/* @__PURE__ */ jsx("div", {
+					className: "flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-violet-400",
+					children: /* @__PURE__ */ jsx(GitPullRequest, { className: "h-4 w-4" })
+				}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
+					className: "text-sm font-semibold text-zinc-100",
+					children: "Linked Pull Requests"
+				}), /* @__PURE__ */ jsx("p", {
+					className: "text-[11px] text-zinc-400",
+					children: "Synchronized automatically via GitHub Webhooks."
+				})] })]
+			}), /* @__PURE__ */ jsxs("span", {
+				className: "rounded-full border border-zinc-800 bg-zinc-900 px-2.5 py-0.5 font-mono text-[11px] font-medium text-zinc-400",
+				children: [
+					pullRequests.length,
+					" ",
+					pullRequests.length === 1 ? "PR" : "PRs"
+				]
+			})]
+		}), /* @__PURE__ */ jsx("div", {
+			className: "mt-4 divide-y divide-zinc-800/60 rounded-xl border border-zinc-800/80 bg-zinc-900/30",
+			children: pullRequests.map((pr) => /* @__PURE__ */ jsxs("div", {
+				className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 text-xs first:rounded-t-xl last:rounded-b-xl hover:bg-zinc-850/40",
+				children: [/* @__PURE__ */ jsxs("div", {
+					className: "min-w-0 space-y-1",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "flex items-center gap-2",
+						children: [
+							getStatusBadge(pr.status, pr.is_draft),
+							/* @__PURE__ */ jsxs("span", {
+								className: "font-mono text-[11px] text-zinc-500",
+								children: ["#", pr.pr_number]
+							}),
+							/* @__PURE__ */ jsx("span", {
+								className: "truncate font-medium text-zinc-200",
+								children: pr.title
+							})
+						]
+					}), /* @__PURE__ */ jsxs("div", {
+						className: "flex items-center gap-3 pl-1 font-mono text-[11px] text-zinc-500",
+						children: [/* @__PURE__ */ jsx("span", { children: getReviewBadge(pr.review_status) }), pr.created_at && /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("span", { children: "·" }), /* @__PURE__ */ jsx("span", { children: new Date(pr.created_at).toLocaleDateString() })] })]
+					})]
+				}), pr.url && /* @__PURE__ */ jsxs("a", {
+					href: pr.url,
+					target: "_blank",
+					rel: "noopener noreferrer",
+					className: "inline-flex items-center gap-1.5 self-start sm:self-center shrink-0 rounded-lg border border-zinc-700/60 bg-zinc-800/60 px-2.5 py-1 text-xs font-medium text-zinc-300 transition-all hover:border-zinc-600 hover:bg-zinc-700 hover:text-white",
+					children: [/* @__PURE__ */ jsx("span", { children: "View on GitHub" }), /* @__PURE__ */ jsx(ExternalLink, { className: "h-3 w-3" })]
+				})]
+			}, pr.id))
+		})]
+	});
+}
+//#endregion
 //#region resources/js/Utils/confetti.ts
 /**
 * Lightweight canvas particle burst celebration.
@@ -6186,6 +6284,12 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 			} : r);
 		});
 	}, []);
+	const handleCardUpdated = useCallback((updated) => {
+		setBoardRequests((prev) => prev.map((r) => r.id === updated.id ? {
+			...r,
+			...updated
+		} : r));
+	}, []);
 	const handleDragEnd = async (result) => {
 		if (!result.destination) return;
 		const { source, destination, draggableId } = result;
@@ -6220,62 +6324,63 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 			return list;
 		});
 		if (destinationStatus === "done") triggerCelebration();
-		toast.success(`Moved to ${statusLabel}`, { action: {
-			label: "Undo",
-			onClick: async () => {
-				setBoardRequests((prev) => prev.map((r) => r.id === cardId ? {
-					...r,
-					status: sourceStatus,
-					status_label: sourceStatusLabel
-				} : r));
-				try {
-					await axios.patch(route("requests.update", cardId), { status: sourceStatus });
-				} catch {
-					toast.error("Could not undo move.");
-				}
-			}
-		} });
+		notifyUndo(cardId, sourceStatus, sourceStatusLabel, statusLabel);
 		try {
-			await axios.patch(route("requests.update", cardId), { status: destinationStatus });
-		} catch {
+			const response = await axios.patch(route("requests.update", cardId), { status: destinationStatus });
+			if (response.data?.request) handleCardUpdated(response.data.request);
+		} catch (error) {
 			setBoardRequests((prev) => prev.map((r) => r.id === cardId ? {
 				...r,
 				status: sourceStatus,
 				status_label: sourceStatusLabel
 			} : r));
-			toast.error("Could not update status. Reverting change.");
+			const errorMsg = error?.response?.data?.message || error?.response?.data?.error || "Could not update status. Reverting change.";
+			toast.error(errorMsg);
 		}
 	};
+	const notifyUndo = useCallback((cardId, previousStatus, previousStatusLabel, targetStatusLabel) => {
+		toast.success(`Moved to ${targetStatusLabel}`, { action: {
+			label: "Undo",
+			onClick: async () => {
+				setBoardRequests((prev) => prev.map((r) => r.id === cardId ? {
+					...r,
+					status: previousStatus,
+					status_label: previousStatusLabel
+				} : r));
+				try {
+					const response = await axios.patch(route("requests.update", cardId), { status: previousStatus });
+					if (response.data?.request) handleCardUpdated(response.data.request);
+					toast.info(`Reverted to ${previousStatusLabel}`);
+				} catch (err) {
+					const errorMsg = err?.response?.data?.message || err?.response?.data?.error || "Could not undo move.";
+					toast.error(errorMsg);
+				}
+			}
+		} });
+	}, [handleCardUpdated]);
 	const handleQuickStatus = async (request, nextStatus) => {
-		const oldStatus = request.status;
+		const previousStatus = request.status;
 		const statusLabel = statuses[nextStatus] ?? nextStatus;
-		const oldStatusLabel = statuses[oldStatus] ?? oldStatus;
+		const previousStatusLabel = statuses[previousStatus] ?? previousStatus;
 		setBoardRequests((prev) => prev.map((r) => r.id === request.id ? {
 			...r,
 			status: nextStatus,
 			status_label: statusLabel
 		} : r));
 		if (nextStatus === "done") triggerCelebration();
-		toast.success(`Moved to ${statusLabel}`, { action: {
-			label: "Undo",
-			onClick: () => handleQuickStatus(request, oldStatus)
-		} });
+		notifyUndo(request.id, previousStatus, previousStatusLabel, statusLabel);
 		try {
-			await axios.patch(route("requests.update", request.id), { status: nextStatus });
-		} catch {
+			const response = await axios.patch(route("requests.update", request.id), { status: nextStatus });
+			if (response.data?.request) handleCardUpdated(response.data.request);
+		} catch (error) {
 			setBoardRequests((prev) => prev.map((r) => r.id === request.id ? {
 				...r,
-				status: oldStatus,
-				status_label: oldStatusLabel
+				status: previousStatus,
+				status_label: previousStatusLabel
 			} : r));
-			toast.error("Could not update status.");
+			const errorMsg = error?.response?.data?.message || error?.response?.data?.error || "Could not update status. Reverting change.";
+			toast.error(errorMsg);
 		}
-	};
-	const handleCardUpdated = (updated) => {
-		setBoardRequests((prev) => prev.map((r) => r.id === updated.id ? {
-			...r,
-			...updated
-		} : r));
 	};
 	const handleBulkUpdateStatus = async (ids, status) => {
 		setBoardRequests((prev) => prev.map((r) => ids.includes(r.id) ? {
@@ -7116,4 +7221,4 @@ function Authenticated({ header, children }) {
 	});
 }
 //#endregion
-export { Badge as C, Modal as E, KanbanBoard as S, BoardHeader as T, notifySuccess as _, useKanbanBoard as a, BulkActionBar as b, RequestSidebarProperties as c, RequestDescriptionCard as d, Card as f, notifyError as g, QuickCreateModal as h, useBoardFilters as i, RequestDiscussionSection as l, RequestHeroHeader as m, formatRelativeTime as n, triggerConfetti as o, RequestBlockerBanner as p, getNotificationBadge as r, RequestSubtasksSection as s, Authenticated as t, RequestMediaGallery as u, QuickViewDrawer as v, BoardFilterBar as w, RequestListView as x, ImageLightbox as y };
+export { KanbanBoard as C, Modal as D, BoardHeader as E, RequestListView as S, BoardFilterBar as T, notifyError as _, useKanbanBoard as a, ImageLightbox as b, RequestSubtasksSection as c, RequestMediaGallery as d, RequestDescriptionCard as f, QuickCreateModal as g, RequestHeroHeader as h, useBoardFilters as i, RequestSidebarProperties as l, RequestBlockerBanner as m, formatRelativeTime as n, triggerConfetti as o, Card as p, getNotificationBadge as r, RequestPullRequestsSection as s, Authenticated as t, RequestDiscussionSection as u, notifySuccess as v, Badge as w, BulkActionBar as x, QuickViewDrawer as y };

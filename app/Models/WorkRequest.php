@@ -88,6 +88,11 @@ class WorkRequest extends Model
         return $this->hasMany(RequestRelation::class, 'request_id');
     }
 
+    public function pullRequests(): HasMany
+    {
+        return $this->hasMany(PullRequest::class, 'work_request_id');
+    }
+
     public function blockedBy(): BelongsToMany
     {
         return $this->belongsToMany(WorkRequest::class, 'request_relations', 'request_id', 'related_id')

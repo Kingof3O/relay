@@ -1,4 +1,4 @@
-import { S as KanbanBoard, T as BoardHeader, a as useKanbanBoard, b as BulkActionBar, h as QuickCreateModal, i as useBoardFilters, t as Authenticated, v as QuickViewDrawer, w as BoardFilterBar, x as RequestListView } from "./AuthenticatedLayout-Da8j2hUo.js";
+import { C as KanbanBoard, E as BoardHeader, S as RequestListView, T as BoardFilterBar, a as useKanbanBoard, g as QuickCreateModal, i as useBoardFilters, t as Authenticated, x as BulkActionBar, y as QuickViewDrawer } from "./AuthenticatedLayout-DFiGyini.js";
 import { Head, router, usePage } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useState } from "react";

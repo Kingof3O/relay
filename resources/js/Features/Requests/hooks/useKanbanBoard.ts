@@ -114,6 +114,12 @@ export function useKanbanBoard({
         });
     }, []);
 
+    const handleCardUpdated = useCallback((updated: WorkRequestCard) => {
+        setBoardRequests((prev) =>
+            prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r))
+        );
+    }, []);
+
     const handleDragEnd = async (result: DropResult) => {
         if (!result.destination) return;
         const { source, destination, draggableId } = result;
@@ -167,33 +173,14 @@ export function useKanbanBoard({
             triggerCelebration();
         }
 
-        toast.success(`Moved to ${statusLabel}`, {
-            action: {
-                label: 'Undo',
-                onClick: async () => {
-                    setBoardRequests((prev) =>
-                        prev.map((r) =>
-                            r.id === cardId
-                                ? {
-                                      ...r,
-                                      status: sourceStatus as RequestStatus,
-                                      status_label: sourceStatusLabel,
-                                  }
-                                : r
-                        )
-                    );
-                    try {
-                        await axios.patch(route('requests.update', cardId), { status: sourceStatus });
-                    } catch {
-                        toast.error('Could not undo move.');
-                    }
-                },
-            },
-        });
+        notifyUndo(cardId, sourceStatus, sourceStatusLabel, statusLabel);
 
         try {
-            await axios.patch(route('requests.update', cardId), { status: destinationStatus });
-        } catch {
+            const response = await axios.patch(route('requests.update', cardId), { status: destinationStatus });
+            if (response.data?.request) {
+                handleCardUpdated(response.data.request);
+            }
+        } catch (error: any) {
             // Revert on failure
             setBoardRequests((prev) =>
                 prev.map((r) =>
@@ -206,14 +193,57 @@ export function useKanbanBoard({
                         : r
                 )
             );
-            toast.error('Could not update status. Reverting change.');
+            const errorMsg =
+                error?.response?.data?.message ||
+                error?.response?.data?.error ||
+                'Could not update status. Reverting change.';
+            toast.error(errorMsg);
         }
     };
 
+    const notifyUndo = useCallback(
+        (cardId: number, previousStatus: string, previousStatusLabel: string, targetStatusLabel: string) => {
+            toast.success(`Moved to ${targetStatusLabel}`, {
+                action: {
+                    label: 'Undo',
+                    onClick: async () => {
+                        setBoardRequests((prev) =>
+                            prev.map((r) =>
+                                r.id === cardId
+                                    ? {
+                                          ...r,
+                                          status: previousStatus as RequestStatus,
+                                          status_label: previousStatusLabel,
+                                      }
+                                    : r
+                            )
+                        );
+                        try {
+                            const response = await axios.patch(route('requests.update', cardId), {
+                                status: previousStatus,
+                            });
+                            if (response.data?.request) {
+                                handleCardUpdated(response.data.request);
+                            }
+                            toast.info(`Reverted to ${previousStatusLabel}`);
+                        } catch (err: any) {
+                            const errorMsg =
+                                err?.response?.data?.message ||
+                                err?.response?.data?.error ||
+                                'Could not undo move.';
+                            toast.error(errorMsg);
+                        }
+                    },
+                },
+            });
+        },
+        [handleCardUpdated]
+    );
+
     const handleQuickStatus = async (request: WorkRequestCard, nextStatus: string) => {
-        const oldStatus = request.status;
+        const previousStatus = request.status;
         const statusLabel = statuses[nextStatus] ?? nextStatus;
-        const oldStatusLabel = statuses[oldStatus] ?? oldStatus;
+        const previousStatusLabel = statuses[previousStatus] ?? previousStatus;
 
         setBoardRequests((prev) =>
             prev.map((r) =>
@@ -231,35 +261,31 @@ export function useKanbanBoard({
             triggerCelebration();
         }
 
-        toast.success(`Moved to ${statusLabel}`, {
-            action: {
-                label: 'Undo',
-                onClick: () => handleQuickStatus(request, oldStatus),
-            },
-        });
+        notifyUndo(request.id, previousStatus, previousStatusLabel, statusLabel);
 
         try {
-            await axios.patch(route('requests.update', request.id), { status: nextStatus });
-        } catch {
+            const response = await axios.patch(route('requests.update', request.id), { status: nextStatus });
+            if (response.data?.request) {
+                handleCardUpdated(response.data.request);
+            }
+        } catch (error: any) {
             setBoardRequests((prev) =>
                 prev.map((r) =>
                     r.id === request.id
                         ? {
                               ...r,
-                              status: oldStatus,
-                              status_label: oldStatusLabel,
+                              status: previousStatus,
+                              status_label: previousStatusLabel,
                           }
                         : r
                 )
             );
-            toast.error('Could not update status.');
+            const errorMsg =
+                error?.response?.data?.message ||
+                error?.response?.data?.error ||
+                'Could not update status. Reverting change.';
+            toast.error(errorMsg);
         }
-    };
-
-    const handleCardUpdated = (updated: WorkRequestCard) => {
-        setBoardRequests((prev) =>
-            prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r))
-        );
     };
 
     const handleBulkUpdateStatus = async (ids: number[], status: string) => {
