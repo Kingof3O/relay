@@ -48,7 +48,10 @@ class HandleInertiaRequests extends Middleware
             'currentWorkspace' => fn (): ?\App\Models\Workspace => $user?->currentWorkspace(),
             'userWorkspaces' => fn (): array => $user === null
                 ? []
-                : $user->workspaces()
+                : \App\Models\Workspace::query()
+                    ->whereHas('users', fn ($q) => $q->where('users.id', $user->id))
+                    ->orWhere('owner_id', $user->id)
+                    ->distinct()
                     ->get(['workspaces.id', 'workspaces.name', 'workspaces.slug', 'workspaces.logo_url'])
                     ->all(),
             'flash' => fn (): array => [
@@ -82,9 +85,9 @@ class HandleInertiaRequests extends Middleware
 
                 return Area::query()
                     ->whereNull('archived_at')
-                    ->when($activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
+                    ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
                     ->orderBy('sort_order')
-                    ->withCount(['requests' => fn ($q) => $q->where('status', '!=', 'done')])
+                    ->withCount(['requests' => fn ($q) => $q->when($activeWorkspace, fn ($sq) => $sq->where('workspace_id', $activeWorkspace->id))->where('status', '!=', 'done')])
                     ->get(['id', 'name', 'slug', 'color'])
                     ->map(fn ($area): array => [
                         'id' => $area->id,

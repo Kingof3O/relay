@@ -17,16 +17,18 @@ final class AreaController extends Controller
             'name' => ['required', 'string', 'max:80'],
             'color' => ['nullable', 'string', 'max:20'],
         ]);
+        $activeWorkspace = $request->user()?->currentWorkspace();
         $slug = str($validated['name'])->slug()->toString();
 
-        if (Area::query()->where('slug', $slug)->exists()) {
-            return response()->json(['message' => 'A project with that name already exists.'], 422);
+        if (Area::query()->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))->where('slug', $slug)->exists()) {
+            return response()->json(['message' => 'A project with that name already exists in this workspace.'], 422);
         }
 
         $area = Area::query()->create([
             ...$validated,
+            'workspace_id' => $activeWorkspace?->id,
             'slug' => $slug,
-            'sort_order' => (int) Area::query()->max('sort_order') + 1,
+            'sort_order' => (int) Area::query()->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))->max('sort_order') + 1,
         ]);
 
         app(AuditService::class)->log(

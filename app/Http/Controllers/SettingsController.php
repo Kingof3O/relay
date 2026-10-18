@@ -24,11 +24,14 @@ final class SettingsController extends Controller
     {
         $user = $request->user();
 
+        $activeWorkspace = $user->currentWorkspace();
+
         $auditEvent = $request->input('audit_event');
         $auditPage = max((int) $request->input('audit_page', 1), 1);
         $auditPerPage = min(max((int) $request->input('audit_per_page', 15), 1), 100);
 
         $auditQuery = WorkspaceAudit::query()
+            ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
             ->with('user:id,name,username')
             ->when($auditEvent, fn ($q) => $q->where('event', $auditEvent))
             ->latest('created_at');
@@ -73,7 +76,8 @@ final class SettingsController extends Controller
 
         return Inertia::render('Settings/Index', [
             'projects' => Area::query()
-                ->withCount(['requests' => fn ($q) => $q->where('status', '!=', 'done')])
+                ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
+                ->withCount(['requests' => fn ($q) => $q->when($activeWorkspace, fn ($sq) => $sq->where('workspace_id', $activeWorkspace->id))->where('status', '!=', 'done')])
                 ->orderBy('sort_order')
                 ->orderBy('name')
                 ->get()
@@ -87,7 +91,9 @@ final class SettingsController extends Controller
                     'archived_at' => $area->archived_at?->toIso8601String(),
                 ]),
             'users' => $user->hasPermission('manage_team')
-                ? User::query()->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'email', 'role_id', 'active', 'created_at'])
+                ? ($activeWorkspace && $activeWorkspace->users()->exists()
+                    ? $activeWorkspace->users()->with('role:id,name')->orderBy('name')->get(['users.id', 'users.name', 'users.username', 'users.email', 'users.role_id', 'users.active', 'users.created_at'])
+                    : User::query()->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'email', 'role_id', 'active', 'created_at']))
                 : [],
             'roles' => $user->hasPermission('manage_team')
                 ? Role::query()->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value])->orderBy('name')->get(['id', 'name'])

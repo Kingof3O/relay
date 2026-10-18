@@ -98,13 +98,14 @@ class User extends Authenticatable
         $activeId = session('active_workspace_id');
 
         if ($activeId) {
-            $workspace = $this->workspaces()->where('workspaces.id', $activeId)->first();
+            $workspace = $this->workspaces()->where('workspaces.id', $activeId)->first()
+                ?? Workspace::query()->where('id', $activeId)->where('owner_id', $this->id)->first();
             if ($workspace) {
                 return $workspace;
             }
         }
 
-        return $this->workspaces()->first();
+        return $this->workspaces()->first() ?? $this->ownedWorkspaces()->first();
     }
 
     public function getCurrentWorkspaceAttribute(): ?Workspace

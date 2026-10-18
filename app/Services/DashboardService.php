@@ -19,8 +19,12 @@ final class DashboardService
             return [];
         }
 
-        // Consolidated single-pass SQL aggregation for all counts
+        $activeWorkspace = $user->currentWorkspace();
+        $workspaceId = $activeWorkspace?->id;
+
+        // Consolidated single-pass SQL aggregation for all counts scoped to workspace
         $aggregates = WorkRequest::query()
+            ->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))
             ->selectRaw('
                 COUNT(*) as total_count,
                 COUNT(CASE WHEN status = ? THEN 1 END) as new_count,
@@ -59,16 +63,18 @@ final class DashboardService
             'completion_rate' => $completionRate,
         ];
 
-        // 7-Day Velocity Curve for Interactive AreaChart (2 fast grouped queries)
+        // 7-Day Velocity Curve for Interactive AreaChart (2 fast grouped queries scoped to workspace)
         $startDate = now()->subDays(6)->startOfDay();
 
         $createdCounts = WorkRequest::query()
+            ->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))
             ->where('created_at', '>=', $startDate)
             ->selectRaw('DATE(created_at) as day_date, count(*) as total')
             ->groupBy('day_date')
             ->pluck('total', 'day_date');
 
         $completedCounts = RequestActivity::query()
+            ->when($workspaceId, fn ($q) => $q->whereHas('request', fn ($rq) => $rq->where('workspace_id', $workspaceId)))
             ->where('type', 'status_changed')
             ->where('created_at', '>=', $startDate)
             ->where('metadata->to', 'done')
@@ -90,15 +96,16 @@ final class DashboardService
             ];
         })->values()->all();
 
-        // Project / Initiative Health and Completion Rates
+        // Project / Initiative Health and Completion Rates scoped to workspace
         $projectStats = Area::query()
+            ->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))
             ->whereNull('archived_at')
             ->orderBy('sort_order')
             ->withCount([
-                'requests as total_count',
-                'requests as done_count' => fn ($q) => $q->where('status', RequestStatus::Done->value),
-                'requests as active_count' => fn ($q) => $q->whereIn('status', [RequestStatus::Ready->value, RequestStatus::Doing->value, RequestStatus::Review->value]),
-                'requests as blocked_count' => fn ($q) => $q->where('is_blocked', true),
+                'requests as total_count' => fn ($q) => $q->when($workspaceId, fn ($sq) => $sq->where('workspace_id', $workspaceId)),
+                'requests as done_count' => fn ($q) => $q->when($workspaceId, fn ($sq) => $sq->where('workspace_id', $workspaceId))->where('status', RequestStatus::Done->value),
+                'requests as active_count' => fn ($q) => $q->when($workspaceId, fn ($sq) => $sq->where('workspace_id', $workspaceId))->whereIn('status', [RequestStatus::Ready->value, RequestStatus::Doing->value, RequestStatus::Review->value]),
+                'requests as blocked_count' => fn ($q) => $q->when($workspaceId, fn ($sq) => $sq->where('workspace_id', $workspaceId))->where('is_blocked', true),
             ])
             ->get()
             ->map(function (Area $area): array {
@@ -129,14 +136,16 @@ final class DashboardService
             'done' => $doneCount,
         ];
 
-        // Team Workload
-        $teamWorkload = User::query()
-            ->where('active', true)
-            ->with('role:id,name')
+        // Team Workload scoped to workspace members
+        $teamQuery = $activeWorkspace && $activeWorkspace->users()->exists()
+            ? $activeWorkspace->users()->where('users.active', true)->with('role:id,name')
+            : User::query()->where('active', true)->with('role:id,name');
+
+        $teamWorkload = $teamQuery
             ->withCount([
-                'assignedWork as active_count' => fn ($q) => $q->whereIn('status', [RequestStatus::Ready->value, RequestStatus::Doing->value]),
-                'assignedWork as review_count' => fn ($q) => $q->where('status', RequestStatus::Review->value),
-                'assignedWork as done_count' => fn ($q) => $q->where('status', RequestStatus::Done->value),
+                'assignedWork as active_count' => fn ($q) => $q->when($workspaceId, fn ($sq) => $sq->where('workspace_id', $workspaceId))->whereIn('status', [RequestStatus::Ready->value, RequestStatus::Doing->value]),
+                'assignedWork as review_count' => fn ($q) => $q->when($workspaceId, fn ($sq) => $sq->where('workspace_id', $workspaceId))->where('status', RequestStatus::Review->value),
+                'assignedWork as done_count' => fn ($q) => $q->when($workspaceId, fn ($sq) => $sq->where('workspace_id', $workspaceId))->where('status', RequestStatus::Done->value),
             ])
             ->get()
             ->map(fn (User $u): array => [
@@ -157,21 +166,22 @@ final class DashboardService
             'statusBreakdown' => $statusBreakdown,
             'teamWorkload' => $teamWorkload,
             'newRequests' => $this->cards(
-                WorkRequest::query()->where('status', RequestStatus::New->value)->latest('id')->limit(8),
+                WorkRequest::query()->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))->where('status', RequestStatus::New->value)->latest('id')->limit(8),
             ),
             'myAssignedWork' => $this->cards(
-                WorkRequest::query()->where('assignee_id', $user->id)->where('status', '!=', RequestStatus::Done->value)->latest('updated_at')->limit(8),
+                WorkRequest::query()->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))->where('assignee_id', $user->id)->where('status', '!=', RequestStatus::Done->value)->latest('updated_at')->limit(8),
             ),
             'reviewRequests' => $this->cards(
-                WorkRequest::query()->where('status', RequestStatus::Review->value)->latest('updated_at')->limit(8),
+                WorkRequest::query()->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))->where('status', RequestStatus::Review->value)->latest('updated_at')->limit(8),
             ),
             'blockedRequests' => $this->cards(
-                WorkRequest::query()->where('is_blocked', true)->latest('updated_at')->limit(8),
+                WorkRequest::query()->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))->where('is_blocked', true)->latest('updated_at')->limit(8),
             ),
             'urgentRequests' => $this->cards(
-                WorkRequest::query()->where('priority', RequestPriority::Urgent->value)->where('status', '!=', RequestStatus::Done->value)->latest('updated_at')->limit(8),
+                WorkRequest::query()->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))->where('priority', RequestPriority::Urgent->value)->where('status', '!=', RequestStatus::Done->value)->latest('updated_at')->limit(8),
             ),
             'recentActivity' => RequestActivity::query()
+                ->when($workspaceId, fn ($q) => $q->whereHas('request', fn ($rq) => $rq->where('workspace_id', $workspaceId)))
                 ->with(['request', 'user'])
                 ->latest('id')
                 ->limit(10)

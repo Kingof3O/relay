@@ -24,7 +24,24 @@ class WorkspaceController extends Controller
             'You do not have access to this workspace.'
         );
 
+        if (! $user->workspaces()->where('workspaces.id', $workspace->id)->exists() && $workspace->owner_id === $user->id) {
+            $ownerRole = Role::query()->where('name', RoleName::Owner->value)->first()
+                ?? Role::query()->where('name', 'Owner')->first();
+            if ($ownerRole) {
+                $workspace->users()->attach($user->id, ['role_id' => $ownerRole->id]);
+            }
+        }
+
         session(['active_workspace_id' => $workspace->id]);
+
+        $previousUrl = url()->previous();
+        if (preg_match('#/requests/\d+#', $previousUrl)) {
+            return redirect()->route('requests.index');
+        }
+
+        if (str_contains($previousUrl, 'project=')) {
+            return redirect()->route('requests.index');
+        }
 
         return back();
     }
