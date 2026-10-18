@@ -140,7 +140,7 @@ export default function RequestDiscussionSection({
         <Card className="p-5 sm:p-6">
             <div className="flex items-center justify-between border-b border-white/[0.06] pb-3">
                 <div className="flex items-center gap-2">
-                    <MessageSquare className="h-4 w-4 text-cyan-400" />
+                    <MessageSquare className="h-4 w-4 text-violet-400" />
                     <h2 className="text-xs font-bold uppercase tracking-wider text-zinc-300">
                         Activity & Discussion
                     </h2>
@@ -154,7 +154,7 @@ export default function RequestDiscussionSection({
                 <div className="relative mt-4">
                     {/* Autocomplete Mention Popover */}
                     {mentionOpen && filteredUsers.length > 0 && (
-                        <div className="absolute bottom-full mb-2 left-0 w-72 max-h-56 overflow-y-auto rounded-xl border border-white/[0.12] bg-[#0d1322]/95 backdrop-blur-xl shadow-2xl p-1.5 z-30 animate-in fade-in slide-in-from-bottom-2 duration-100">
+                        <div className="absolute bottom-full mb-2 left-0 w-72 max-h-56 overflow-y-auto rounded-xl border border-zinc-800 bg-[#0c0d12]/95 backdrop-blur-xl shadow-2xl p-1.5 z-30 animate-in fade-in slide-in-from-bottom-2 duration-100">
                             <div className="flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400 border-b border-white/[0.06] mb-1">
                                 <AtSign className="h-3 w-3" />
                                 <span>Mention Team Member</span>

@@ -60,8 +60,8 @@ export function getRoleBadgeStyle(roleName?: string | null): {
         return {
             label: roleName || 'Developer',
             pillClass:
-                'border-cyan-500/30 bg-cyan-500/10 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.12)]',
-            dotClass: 'bg-cyan-400',
+                'border-sky-500/30 bg-sky-500/10 text-sky-300 shadow-[0_0_10px_rgba(14,165,233,0.12)]',
+            dotClass: 'bg-sky-400',
         };
     }
     if (name.includes('design') || name.includes('ui') || name.includes('ux')) {
@@ -184,13 +184,13 @@ export default function TeamManagementCard({
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-zinc-800/80 pb-5">
                 <div className="flex items-center gap-3.5">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-cyan-400">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-200">
                         <Users className="h-5 w-5" />
                     </div>
                     <div>
                         <div className="flex items-center gap-2.5">
                             <h2 className="text-base font-semibold text-zinc-100">Team & Access Control</h2>
-                            <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-cyan-300">
+                            <span className="rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-0.5 font-mono text-[10px] font-bold text-zinc-300">
                                 {users.length} Total Members
                             </span>
                         </div>
@@ -237,7 +237,7 @@ export default function TeamManagementCard({
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         placeholder="Filter roster by name, username, email, or role title…"
-                        className="w-full rounded-xl border border-zinc-800 bg-[#0c0d12] pl-10 pr-10 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-colors"
+                        className="w-full rounded-xl border border-zinc-800 bg-[#0c0d12] pl-10 pr-10 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition-colors"
                     />
                     {searchQuery && (
                         <button
@@ -269,7 +269,7 @@ export default function TeamManagementCard({
                             onClick={() => setSelectedRoleFilter('admin')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 selectedRoleFilter === 'admin'
-                                    ? 'border border-violet-500/40 bg-violet-500/15 text-violet-300 shadow-sm'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200'
                             }`}
                         >
@@ -280,7 +280,7 @@ export default function TeamManagementCard({
                             onClick={() => setSelectedRoleFilter('dev')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 selectedRoleFilter === 'dev'
-                                    ? 'border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 shadow-sm'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200'
                             }`}
                         >
@@ -291,7 +291,7 @@ export default function TeamManagementCard({
                             onClick={() => setSelectedRoleFilter('design')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 selectedRoleFilter === 'design'
-                                    ? 'border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-sm'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200'
                             }`}
                         >
@@ -302,7 +302,7 @@ export default function TeamManagementCard({
                             onClick={() => setSelectedRoleFilter('stakeholder')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 selectedRoleFilter === 'stakeholder'
-                                    ? 'border border-amber-500/40 bg-amber-500/15 text-amber-300 shadow-sm'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200'
                             }`}
                         >
@@ -313,7 +313,7 @@ export default function TeamManagementCard({
                             onClick={() => setSelectedRoleFilter('active')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 selectedRoleFilter === 'active'
-                                    ? 'border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-sm'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200'
                             }`}
                         >
@@ -324,7 +324,7 @@ export default function TeamManagementCard({
                             onClick={() => setSelectedRoleFilter('paused')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 selectedRoleFilter === 'paused'
-                                    ? 'border border-rose-500/40 bg-rose-500/15 text-rose-300 shadow-sm'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200'
                             }`}
                         >
@@ -464,7 +464,7 @@ export default function TeamManagementCard({
                                             className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-[#111216] px-2.5 py-1 text-[11px] font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
                                             title="Update credentials & login settings"
                                         >
-                                            <KeyRound className="h-3 w-3 text-cyan-400" />
+                                            <KeyRound className="h-3 w-3 text-zinc-400" />
                                             <span>Credentials</span>
                                         </button>
 

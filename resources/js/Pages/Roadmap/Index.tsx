@@ -123,10 +123,10 @@ export default function RoadmapIndex({
                                     onClick={() =>
                                         router.visit(route('roadmap.index', { year, quarter: q }))
                                     }
-                                    className={`rounded-lg px-2.5 py-1 font-semibold transition-all ${
+                                    className={`rounded-lg border px-2.5 py-1 font-semibold transition-all ${
                                         quarter === q
-                                            ? 'bg-zinc-800 text-white shadow-sm'
-                                            : 'text-zinc-400 hover:text-zinc-200'
+                                            ? 'border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                            : 'border-transparent text-zinc-400 hover:text-zinc-200'
                                     }`}
                                 >
                                     Q{q}

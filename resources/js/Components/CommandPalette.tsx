@@ -203,7 +203,7 @@ export default function CommandPalette({
                                                         ? 'bg-amber-400'
                                                         : req.priority === 'low'
                                                         ? 'bg-zinc-500'
-                                                        : 'bg-cyan-400'
+                                                        : 'bg-zinc-400'
                                                 }`}
                                                 title={`Priority: ${req.priority}`}
                                             />
@@ -314,7 +314,7 @@ export default function CommandPalette({
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300">
                                         <Flame className="h-3.5 w-3.5" />
                                     </div>
                                     <span className="font-semibold">Set priority: Normal</span>
@@ -370,7 +370,7 @@ export default function CommandPalette({
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300">
                                         <Calendar className="h-3.5 w-3.5" />
                                     </div>
                                     <span className="font-semibold">Set due date: Tomorrow</span>
@@ -492,7 +492,7 @@ export default function CommandPalette({
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300">
                                         <User className="h-3.5 w-3.5" />
                                     </div>
                                     <span className="font-semibold">My Assigned Tasks</span>

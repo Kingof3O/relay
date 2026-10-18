@@ -101,21 +101,21 @@ export default function Settings({
                             onClick={() => setActiveTab('projects')}
                             className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
                                 activeTab === 'projects'
-                                    ? 'border border-violet-500/40 bg-violet-500/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
                             <FolderKanban
                                 className={`h-3.5 w-3.5 ${
-                                    activeTab === 'projects' ? 'text-violet-400' : 'text-zinc-500'
+                                    activeTab === 'projects' ? 'text-zinc-200' : 'text-zinc-500'
                                 }`}
                             />
                             <span>Projects</span>
                             <span
                                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                     activeTab === 'projects'
-                                        ? 'bg-violet-500/25 text-violet-200'
-                                        : 'bg-zinc-800 text-zinc-400'
+                                        ? 'bg-zinc-750 text-zinc-300'
+                                        : 'bg-zinc-850 text-zinc-500'
                                 }`}
                             >
                                 {activeProjectsCount}
@@ -129,21 +129,21 @@ export default function Settings({
                                 onClick={() => setActiveTab('team')}
                                 className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
                                     activeTab === 'team'
-                                        ? 'border border-cyan-500/40 bg-cyan-500/10 text-white shadow-[0_0_15px_rgba(6,182,212,0.15)]'
-                                        : 'border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200'
+                                        ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                        : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                                 }`}
                             >
                                 <Users
                                     className={`h-3.5 w-3.5 ${
-                                        activeTab === 'team' ? 'text-cyan-400' : 'text-zinc-500'
+                                        activeTab === 'team' ? 'text-zinc-200' : 'text-zinc-500'
                                     }`}
                                 />
                                 <span>Team & Roles</span>
                                 <span
                                     className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                         activeTab === 'team'
-                                            ? 'bg-cyan-500/25 text-cyan-200'
-                                            : 'bg-zinc-800 text-zinc-400'
+                                            ? 'bg-zinc-750 text-zinc-300'
+                                            : 'bg-zinc-850 text-zinc-500'
                                     }`}
                                 >
                                     {teamCount}
@@ -157,21 +157,21 @@ export default function Settings({
                             onClick={() => setActiveTab('auth')}
                             className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
                                 activeTab === 'auth'
-                                    ? 'border border-amber-500/40 bg-amber-500/10 text-white shadow-[0_0_15px_rgba(245,158,11,0.15)]'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
                             <ShieldCheck
                                 className={`h-3.5 w-3.5 ${
-                                    activeTab === 'auth' ? 'text-amber-400' : 'text-zinc-500'
+                                    activeTab === 'auth' ? 'text-zinc-200' : 'text-zinc-500'
                                 }`}
                             />
                             <span>Authentication</span>
                             <span
                                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                     activeTab === 'auth'
-                                        ? 'bg-amber-500/25 text-amber-200'
-                                        : 'bg-zinc-800 text-zinc-400'
+                                        ? 'bg-zinc-750 text-zinc-300'
+                                        : 'bg-zinc-850 text-zinc-500'
                                 }`}
                             >
                                 Security
@@ -184,21 +184,21 @@ export default function Settings({
                             onClick={() => setActiveTab('integrations')}
                             className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
                                 activeTab === 'integrations'
-                                    ? 'border border-[#5865F2]/40 bg-[#5865F2]/10 text-white shadow-[0_0_15px_rgba(88,101,242,0.15)]'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
                             <Radio
                                 className={`h-3.5 w-3.5 ${
-                                    activeTab === 'integrations' ? 'text-[#5865F2]' : 'text-zinc-500'
+                                    activeTab === 'integrations' ? 'text-zinc-200' : 'text-zinc-500'
                                 }`}
                             />
                             <span>Integrations & Alerts</span>
                             <span
                                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                     activeTab === 'integrations'
-                                        ? 'bg-[#5865F2]/25 text-white'
-                                        : 'bg-zinc-800 text-zinc-400'
+                                        ? 'bg-zinc-750 text-zinc-300'
+                                        : 'bg-zinc-850 text-zinc-500'
                                 }`}
                             >
                                 Discord + Mail
@@ -211,21 +211,21 @@ export default function Settings({
                             onClick={() => setActiveTab('snapshot')}
                             className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
                                 activeTab === 'snapshot'
-                                    ? 'border border-emerald-500/40 bg-emerald-500/10 text-white shadow-[0_0_15px_rgba(16,185,129,0.15)]'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
                             <Sparkles
                                 className={`h-3.5 w-3.5 ${
-                                    activeTab === 'snapshot' ? 'text-emerald-400' : 'text-zinc-500'
+                                    activeTab === 'snapshot' ? 'text-zinc-200' : 'text-zinc-500'
                                 }`}
                             />
                             <span>Workspace Snapshot</span>
                             <span
                                 className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
                                     activeTab === 'snapshot'
-                                        ? 'bg-emerald-500/25 text-emerald-200'
-                                        : 'bg-zinc-800 text-zinc-400'
+                                        ? 'bg-zinc-750 text-zinc-300'
+                                        : 'bg-zinc-850 text-zinc-500'
                                 }`}
                             >
                                 Live

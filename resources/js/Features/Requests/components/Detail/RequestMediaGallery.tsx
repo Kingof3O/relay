@@ -132,7 +132,7 @@ export default function RequestMediaGallery({
                                                         isPdf
                                                             ? 'border-rose-500/30 bg-rose-500/10 text-rose-400'
                                                             : isCodeOrLog
-                                                            ? 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400'
+                                                            ? 'border-sky-500/30 bg-sky-500/10 text-sky-400'
                                                             : isArchive
                                                             ? 'border-amber-500/30 bg-amber-500/10 text-amber-400'
                                                             : 'border-blue-500/30 bg-blue-500/10 text-blue-400'
@@ -156,7 +156,7 @@ export default function RequestMediaGallery({
                                                             </span>
                                                         )}
                                                         {isCodeOrLog && (
-                                                            <span className="rounded bg-cyan-500/20 px-1.5 py-0.5 text-[9px] font-bold text-cyan-300 uppercase tracking-wide border border-cyan-500/30">
+                                                            <span className="rounded bg-sky-500/20 px-1.5 py-0.5 text-[9px] font-bold text-sky-300 uppercase tracking-wide border border-sky-500/30">
                                                                 CODE / LOG
                                                             </span>
                                                         )}

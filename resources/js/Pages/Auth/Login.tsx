@@ -92,7 +92,7 @@ export default function Login({
                 {/* Luminous Organic Ambient Light Canvas */}
                 <div className="pointer-events-none absolute inset-0 overflow-hidden">
                     <div className="absolute -left-32 -top-32 h-[680px] w-[680px] rounded-full bg-gradient-to-br from-indigo-500/15 via-purple-600/[0.07] to-transparent blur-[130px]" />
-                    <div className="absolute bottom-[-10%] right-[-10%] h-[580px] w-[580px] rounded-full bg-gradient-to-tl from-cyan-500/10 via-blue-600/[0.05] to-transparent blur-[140px]" />
+                    <div className="absolute bottom-[-10%] right-[-10%] h-[580px] w-[580px] rounded-full bg-gradient-to-tl from-indigo-500/10 via-violet-600/[0.05] to-transparent blur-[140px]" />
                     <div className="relay-grid absolute inset-0 opacity-20" />
                 </div>
 

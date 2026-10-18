@@ -820,7 +820,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 												children: ["#REQ-", req.id]
 											}),
 											/* @__PURE__ */ jsx("span", {
-												className: `h-2 w-2 rounded-full shrink-0 ${req.priority === "urgent" ? "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" : req.priority === "high" ? "bg-amber-400" : req.priority === "low" ? "bg-zinc-500" : "bg-cyan-400"}`,
+												className: `h-2 w-2 rounded-full shrink-0 ${req.priority === "urgent" ? "bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" : req.priority === "high" ? "bg-amber-400" : req.priority === "low" ? "bg-zinc-500" : "bg-zinc-400"}`,
 												title: `Priority: ${req.priority}`
 											}),
 											/* @__PURE__ */ jsx("span", {
@@ -953,7 +953,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										children: [/* @__PURE__ */ jsxs("div", {
 											className: "flex items-center gap-2.5",
 											children: [/* @__PURE__ */ jsx("div", {
-												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300",
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300",
 												children: /* @__PURE__ */ jsx(Flame, { className: "h-3.5 w-3.5" })
 											}), /* @__PURE__ */ jsx("span", {
 												className: "font-semibold",
@@ -1025,7 +1025,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										children: [/* @__PURE__ */ jsxs("div", {
 											className: "flex items-center gap-2.5",
 											children: [/* @__PURE__ */ jsx("div", {
-												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300",
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300",
 												children: /* @__PURE__ */ jsx(Calendar, { className: "h-3.5 w-3.5" })
 											}), /* @__PURE__ */ jsx("span", {
 												className: "font-semibold",
@@ -1181,7 +1181,7 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										children: [/* @__PURE__ */ jsxs("div", {
 											className: "flex items-center gap-2.5",
 											children: [/* @__PURE__ */ jsx("div", {
-												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-cyan-300",
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300",
 												children: /* @__PURE__ */ jsx(User, { className: "h-3.5 w-3.5" })
 											}), /* @__PURE__ */ jsx("span", {
 												className: "font-semibold",
@@ -1417,7 +1417,7 @@ function BoardHeader({ viewMode, onViewModeChange, onAddRequest, onOpenShortcuts
 								onClick: () => handleExport("json"),
 								className: "w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs text-zinc-300 hover:bg-zinc-850 hover:text-white transition-colors group",
 								children: [/* @__PURE__ */ jsx("div", {
-									className: "flex h-6 w-6 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 text-cyan-400",
+									className: "flex h-6 w-6 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 text-violet-400",
 									children: /* @__PURE__ */ jsx(FileCode, { className: "h-3.5 w-3.5" })
 								}), /* @__PURE__ */ jsxs("div", {
 									className: "flex flex-col",
@@ -2040,7 +2040,7 @@ function highlightCodeLine(line, language) {
 			children: matchedText
 		}, match.index));
 		else if (groups.variable) elements.push(/* @__PURE__ */ jsx("span", {
-			className: "text-cyan-300",
+			className: "text-sky-300",
 			children: matchedText
 		}, match.index));
 		else elements.push(matchedText);
@@ -2215,7 +2215,7 @@ function RequestCard({ request, index, onQuickStatus, onOpenDrawer, isSelected =
 		icon: Play,
 		iconClass: "fill-current",
 		next: "doing",
-		color: "border-zinc-750 bg-zinc-850/90 text-zinc-300 hover:border-blue-500/50 hover:bg-blue-950/40 hover:text-blue-200"
+		color: "border-zinc-750 bg-zinc-850/90 text-zinc-300 hover:border-violet-500/50 hover:bg-violet-950/40 hover:text-violet-200"
 	} : request.status === "doing" ? {
 		label: "Review",
 		icon: Send,
@@ -2254,7 +2254,7 @@ function RequestCard({ request, index, onQuickStatus, onOpenDrawer, isSelected =
 					else router.visit(route("requests.show", request.id));
 				},
 				id: `kanban-card-${request.id}`,
-				className: `group relative mb-2.5 rounded-xl border p-3.5 select-none transition-all duration-150 ${snapshot.isDragging ? "border-zinc-500 bg-[#16171f] shadow-2xl shadow-black/80 ring-1 ring-white/20 z-50" : isKeyboardFocused ? "border-violet-500/80 bg-[#181926] ring-2 ring-violet-500/60 shadow-lg shadow-violet-500/10 z-20" : isSelected ? "border-blue-500/80 bg-blue-950/20 shadow-md ring-1 ring-blue-500/30" : "border-white/[0.07] bg-[#111216] hover:border-zinc-700 hover:bg-[#14151a]"}`,
+				className: `group relative mb-2.5 rounded-xl border p-3.5 select-none transition-all duration-150 ${snapshot.isDragging ? "border-zinc-500 bg-[#16171f] shadow-2xl shadow-black/80 ring-1 ring-white/20 z-50" : isKeyboardFocused ? "border-violet-500/80 bg-[#181926] ring-2 ring-violet-500/60 shadow-lg shadow-violet-500/10 z-20" : isSelected ? "border-violet-500/80 bg-violet-950/20 shadow-md ring-1 ring-violet-500/30" : "border-white/[0.07] bg-[#111216] hover:border-zinc-700 hover:bg-[#14151a]"}`,
 				children: [
 					onToggleSelect && /* @__PURE__ */ jsx("div", {
 						className: `absolute left-2.5 top-2.5 z-10 transition-opacity ${isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`,
@@ -2266,7 +2266,7 @@ function RequestCard({ request, index, onQuickStatus, onOpenDrawer, isSelected =
 							type: "checkbox",
 							checked: isSelected,
 							onChange: () => onToggleSelect(request.id),
-							className: "h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-0 focus:ring-offset-0 cursor-pointer shadow-sm"
+							className: "h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 text-violet-500 focus:ring-0 focus:ring-offset-0 cursor-pointer shadow-sm"
 						})
 					}),
 					/* @__PURE__ */ jsxs("div", {
@@ -2794,7 +2794,7 @@ function RequestListView({ requests, onSelectRequest, onQuickStatus, selectedIds
 								type: "checkbox",
 								checked: isAllSelected,
 								onChange: handleSelectAllToggle,
-								className: "h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-blue-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
+								className: "h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-violet-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
 							})
 						}),
 						/* @__PURE__ */ jsx("th", {
@@ -2839,7 +2839,7 @@ function RequestListView({ requests, onSelectRequest, onQuickStatus, selectedIds
 							label: "Start",
 							icon: Play,
 							next: "doing",
-							color: "text-blue-300 hover:bg-blue-950/40 border-blue-800/60"
+							color: "text-violet-300 hover:bg-violet-950/40 border-violet-800/60"
 						} : req.status === "doing" ? {
 							label: "Review",
 							icon: Send,
@@ -2853,7 +2853,7 @@ function RequestListView({ requests, onSelectRequest, onQuickStatus, selectedIds
 						} : null;
 						return /* @__PURE__ */ jsxs("tr", {
 							onClick: () => onSelectRequest(req),
-							className: `group cursor-pointer transition-colors ${isSelected ? "bg-blue-500/[0.08] hover:bg-blue-500/[0.12]" : "hover:bg-zinc-850/50"}`,
+							className: `group cursor-pointer transition-colors ${isSelected ? "bg-violet-500/[0.08] hover:bg-violet-500/[0.12]" : "hover:bg-zinc-850/50"}`,
 							children: [
 								/* @__PURE__ */ jsx("td", {
 									className: "py-3 px-4 text-center",
@@ -2865,7 +2865,7 @@ function RequestListView({ requests, onSelectRequest, onQuickStatus, selectedIds
 										type: "checkbox",
 										checked: isSelected,
 										onChange: () => onToggleSelect && onToggleSelect(req.id),
-										className: "h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-blue-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
+										className: "h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-violet-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
 									})
 								}),
 								/* @__PURE__ */ jsx("td", {
@@ -3022,7 +3022,7 @@ function BulkActionBar({ selectedCount, onClearSelection, onBulkUpdateStatus, on
 				/* @__PURE__ */ jsxs("div", {
 					className: "flex items-center gap-2 pr-2 border-r border-zinc-800",
 					children: [/* @__PURE__ */ jsx("span", {
-						className: "flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold font-mono text-white px-1",
+						className: "flex h-5 min-w-5 items-center justify-center rounded-full bg-white text-[10px] font-bold font-mono text-zinc-950 px-1.5",
 						children: selectedCount
 					}), /* @__PURE__ */ jsx("span", {
 						className: "font-semibold text-zinc-100",
@@ -3031,7 +3031,7 @@ function BulkActionBar({ selectedCount, onClearSelection, onBulkUpdateStatus, on
 				}),
 				loading ? /* @__PURE__ */ jsxs("div", {
 					className: "flex items-center gap-2 px-3 py-1 text-zinc-400",
-					children: [/* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin text-blue-400" }), /* @__PURE__ */ jsx("span", { children: "Updating..." })]
+					children: [/* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin text-zinc-200" }), /* @__PURE__ */ jsx("span", { children: "Updating..." })]
 				}) : /* @__PURE__ */ jsxs(Fragment, { children: [
 					/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-1.5",
@@ -3710,7 +3710,7 @@ function ToastPill({ id, icon, title, description, action }) {
 					action.onClick();
 					toast$1.dismiss(id);
 				},
-				className: `shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${action.variant === "undo" ? "border border-cyan-500/30 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 hover:text-cyan-200" : "border border-violet-500/40 bg-violet-500/20 text-violet-300 hover:bg-violet-500/30 hover:text-white"}`,
+				className: `shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${action.variant === "undo" ? "border border-amber-500/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:text-amber-200" : "border border-violet-500/40 bg-violet-500/20 text-violet-300 hover:bg-violet-500/30 hover:text-white"}`,
 				children: action.label
 			}),
 			/* @__PURE__ */ jsx("button", {
@@ -3892,12 +3892,12 @@ function SingleRequestForm({ projects = [], users = [], onClose, onFinished, sho
 						{
 							id: "normal",
 							label: "Normal",
-							dot: "bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)]"
+							dot: "bg-zinc-400"
 						},
 						{
 							id: "low",
 							label: "Low",
-							dot: "bg-zinc-400"
+							dot: "bg-zinc-500"
 						}
 					].map((p) => /* @__PURE__ */ jsxs("button", {
 						type: "button",
@@ -3963,7 +3963,7 @@ function SingleRequestForm({ projects = [], users = [], onClose, onFinished, sho
 				}), files.length > 0 && /* @__PURE__ */ jsx("div", {
 					className: "flex flex-wrap gap-2",
 					children: files.map((file, idx) => /* @__PURE__ */ jsxs("span", {
-						className: "flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[11px] text-cyan-300",
+						className: "flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[11px] text-zinc-200",
 						children: [
 							/* @__PURE__ */ jsx(Paperclip, { className: "h-3 w-3" }),
 							/* @__PURE__ */ jsx("span", {
@@ -4239,9 +4239,9 @@ function BulkSpreadsheetForm({ projects = [], onClose, onFinished }) {
 								}), row.files && row.files.length > 0 && /* @__PURE__ */ jsx("div", {
 									className: "flex flex-wrap gap-1.5",
 									children: row.files.map((file, fIdx) => /* @__PURE__ */ jsxs("span", {
-										className: "flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[10px] text-cyan-300",
+										className: "flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[10px] text-zinc-200",
 										children: [
-											/* @__PURE__ */ jsx(Paperclip, { className: "h-3 w-3 text-cyan-400" }),
+											/* @__PURE__ */ jsx(Paperclip, { className: "h-3 w-3 text-zinc-400" }),
 											/* @__PURE__ */ jsx("span", {
 												className: "max-w-[120px] truncate",
 												children: file.name
@@ -4446,7 +4446,7 @@ function RequestHeroHeader({ request, canEdit, canDelete, saving, onUpdate, onDe
 					request.status === "ready" && canEdit && /* @__PURE__ */ jsxs("button", {
 						type: "button",
 						onClick: () => onUpdate({ status: "doing" }),
-						className: "flex items-center gap-1.5 rounded-xl bg-cyan-500/20 border border-cyan-500/30 px-3.5 py-1.5 text-xs font-bold text-cyan-200 hover:bg-cyan-500/30 transition-all shadow-specular",
+						className: "flex items-center gap-1.5 rounded-xl bg-violet-600/20 border border-violet-500/40 px-3.5 py-1.5 text-xs font-bold text-violet-200 hover:bg-violet-600/30 hover:text-white transition-all shadow-specular",
 						children: [/* @__PURE__ */ jsx(Play, { className: "h-3.5 w-3.5 fill-current" }), /* @__PURE__ */ jsx("span", { children: "Start Work" })]
 					}),
 					request.status === "doing" && canEdit && /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsxs("button", {
@@ -4545,7 +4545,7 @@ function RequestHeroHeader({ request, canEdit, canDelete, saving, onUpdate, onDe
 								children: request.requester?.name ?? "Unknown"
 							}),
 							saving && /* @__PURE__ */ jsxs("span", {
-								className: "flex items-center gap-1 text-[11px] text-cyan-300",
+								className: "flex items-center gap-1 text-[11px] text-zinc-400",
 								children: [/* @__PURE__ */ jsx(RefreshCw, { className: "h-3 w-3 animate-spin" }), " Saving…"]
 							})
 						]
@@ -5239,7 +5239,7 @@ function RequestMediaGallery({ files, canUpload, uploading, onUploadFiles, onRet
 								children: [/* @__PURE__ */ jsxs("div", {
 									className: "flex items-start gap-3",
 									children: [/* @__PURE__ */ jsx("div", {
-										className: `flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${isPdf ? "border-rose-500/30 bg-rose-500/10 text-rose-400" : isCodeOrLog ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-400" : isArchive ? "border-amber-500/30 bg-amber-500/10 text-amber-400" : "border-blue-500/30 bg-blue-500/10 text-blue-400"}`,
+										className: `flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border ${isPdf ? "border-rose-500/30 bg-rose-500/10 text-rose-400" : isCodeOrLog ? "border-sky-500/30 bg-sky-500/10 text-sky-400" : isArchive ? "border-amber-500/30 bg-amber-500/10 text-amber-400" : "border-blue-500/30 bg-blue-500/10 text-blue-400"}`,
 										children: isPdf ? /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5" }) : isCodeOrLog ? /* @__PURE__ */ jsx(FileCode, { className: "h-5 w-5" }) : isArchive ? /* @__PURE__ */ jsx(Archive, { className: "h-5 w-5" }) : /* @__PURE__ */ jsx(FileText, { className: "h-5 w-5" })
 									}), /* @__PURE__ */ jsxs("div", {
 										className: "min-w-0 flex-1",
@@ -5251,7 +5251,7 @@ function RequestMediaGallery({ files, canUpload, uploading, onUploadFiles, onRet
 													children: "PDF"
 												}),
 												isCodeOrLog && /* @__PURE__ */ jsx("span", {
-													className: "rounded bg-cyan-500/20 px-1.5 py-0.5 text-[9px] font-bold text-cyan-300 uppercase tracking-wide border border-cyan-500/30",
+													className: "rounded bg-sky-500/20 px-1.5 py-0.5 text-[9px] font-bold text-sky-300 uppercase tracking-wide border border-sky-500/30",
 													children: "CODE / LOG"
 												}),
 												isArchive && /* @__PURE__ */ jsx("span", {
@@ -5416,7 +5416,7 @@ function RequestDiscussionSection({ activities, canComment, saving, onAddComment
 				className: "flex items-center justify-between border-b border-white/[0.06] pb-3",
 				children: [/* @__PURE__ */ jsxs("div", {
 					className: "flex items-center gap-2",
-					children: [/* @__PURE__ */ jsx(MessageSquare, { className: "h-4 w-4 text-cyan-400" }), /* @__PURE__ */ jsx("h2", {
+					children: [/* @__PURE__ */ jsx(MessageSquare, { className: "h-4 w-4 text-violet-400" }), /* @__PURE__ */ jsx("h2", {
 						className: "text-xs font-bold uppercase tracking-wider text-zinc-300",
 						children: "Activity & Discussion"
 					})]
@@ -5432,7 +5432,7 @@ function RequestDiscussionSection({ activities, canComment, saving, onAddComment
 			canComment && /* @__PURE__ */ jsxs("div", {
 				className: "relative mt-4",
 				children: [mentionOpen && filteredUsers.length > 0 && /* @__PURE__ */ jsxs("div", {
-					className: "absolute bottom-full mb-2 left-0 w-72 max-h-56 overflow-y-auto rounded-xl border border-white/[0.12] bg-[#0d1322]/95 backdrop-blur-xl shadow-2xl p-1.5 z-30 animate-in fade-in slide-in-from-bottom-2 duration-100",
+					className: "absolute bottom-full mb-2 left-0 w-72 max-h-56 overflow-y-auto rounded-xl border border-zinc-800 bg-[#0c0d12]/95 backdrop-blur-xl shadow-2xl p-1.5 z-30 animate-in fade-in slide-in-from-bottom-2 duration-100",
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-1.5 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400 border-b border-white/[0.06] mb-1",
 						children: [/* @__PURE__ */ jsx(AtSign, { className: "h-3 w-3" }), /* @__PURE__ */ jsx("span", { children: "Mention Team Member" })]

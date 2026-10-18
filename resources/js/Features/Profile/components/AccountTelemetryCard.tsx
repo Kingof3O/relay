@@ -176,7 +176,7 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                 {/* Active Session Security Status */}
                 <div className="mt-5 rounded-lg border border-zinc-800 bg-[#090a0f] p-3.5">
                     <div className="flex items-center gap-2 text-xs font-semibold text-zinc-200">
-                        <Shield className="h-3.5 w-3.5 text-cyan-400" />
+                        <Shield className="h-3.5 w-3.5 text-zinc-300" />
                         <span>Security & Connection</span>
                     </div>
                     <div className="mt-2 space-y-1.5 text-[11px] text-zinc-400">
@@ -215,7 +215,7 @@ export default function AccountTelemetryCard({ stats }: AccountTelemetryCardProp
                         className="group flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-850/60 px-3.5 py-2.5 text-xs text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-white"
                     >
                         <span className="flex items-center gap-2.5">
-                            <KanbanSquare className="h-4 w-4 text-cyan-400 transition-transform group-hover:scale-110" />
+                            <KanbanSquare className="h-4 w-4 text-violet-400 transition-transform group-hover:scale-110" />
                             <span>My Tasks</span>
                         </span>
                         <div className="flex items-center gap-1.5">

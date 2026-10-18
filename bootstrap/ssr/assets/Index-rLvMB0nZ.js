@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-KgOcAsfl.js";
+import { t as Authenticated } from "./AuthenticatedLayout-CmuF4Gg9.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";
@@ -314,7 +314,7 @@ function RoadmapIndex({ projects, requests, year, quarter, quarter_start, quarte
 								year,
 								quarter: q
 							})),
-							className: `rounded-lg px-2.5 py-1 font-semibold transition-all ${quarter === q ? "bg-zinc-800 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"}`,
+							className: `rounded-lg border px-2.5 py-1 font-semibold transition-all ${quarter === q ? "border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border-transparent text-zinc-400 hover:text-zinc-200"}`,
 							children: ["Q", q]
 						}, q))
 					}),

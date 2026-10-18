@@ -192,7 +192,7 @@ export default function WorkspaceSnapshotCard({
                     className="group relative flex flex-col justify-between rounded-xl border border-zinc-800 bg-[#111216] p-4 transition-all duration-150 hover:border-zinc-700 hover:bg-[#14161c] cursor-pointer"
                 >
                     <div className="flex items-center justify-between gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-cyan-400">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-200">
                             <Users className="h-4 w-4" />
                         </div>
                         {onSelectTab && (
@@ -216,7 +216,7 @@ export default function WorkspaceSnapshotCard({
                         <span className="rounded bg-violet-500/15 px-1.5 py-0.5 text-violet-300 font-mono">
                             {adminsCount} Admin
                         </span>
-                        <span className="rounded bg-cyan-500/15 px-1.5 py-0.5 text-cyan-300 font-mono">
+                        <span className="rounded bg-sky-500/15 px-1.5 py-0.5 text-sky-300 font-mono">
                             {devsCount} Dev
                         </span>
                         <span className="rounded bg-emerald-500/15 px-1.5 py-0.5 text-emerald-300 font-mono">
@@ -276,7 +276,7 @@ export default function WorkspaceSnapshotCard({
                         </p>
                     </div>
                     <div className="mt-3 flex items-center gap-1.5 text-[10px] text-zinc-400 pt-2 border-t border-zinc-800/60">
-                        <Cpu className="h-3 w-3 text-cyan-400" />
+                        <Cpu className="h-3 w-3 text-emerald-400" />
                         <span>Email notifications active</span>
                     </div>
                 </div>
@@ -286,7 +286,7 @@ export default function WorkspaceSnapshotCard({
             <section className="relative overflow-hidden rounded-xl border border-zinc-800 bg-[#111216] p-6 shadow-sm sm:p-7">
                 {/* Specular Ambient Glows */}
                 <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-violet-600/10 blur-3xl" />
-                <div className="pointer-events-none absolute -bottom-20 left-1/3 h-64 w-64 rounded-full bg-cyan-600/10 blur-3xl" />
+                <div className="pointer-events-none absolute -bottom-20 left-1/3 h-64 w-64 rounded-full bg-indigo-600/10 blur-3xl" />
 
                 <div className="relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end">
                     <div className="max-w-2xl space-y-3">
@@ -417,7 +417,7 @@ export default function WorkspaceSnapshotCard({
                 <div className="rounded-xl border border-zinc-800 bg-[#111216] p-6 shadow-sm">
                     <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
                         <div className="flex items-center gap-2.5">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-cyan-400">
+                            <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-200">
                                 <ShieldCheck className="h-4 w-4" />
                             </div>
                             <div>
@@ -456,11 +456,11 @@ export default function WorkspaceSnapshotCard({
                         {/* Developer Policy */}
                         <div className="flex items-center justify-between rounded-lg border border-zinc-800 bg-[#0c0d12] p-3">
                             <div className="flex items-center gap-2.5 min-w-0">
-                                <span className="h-2 w-2 rounded-full bg-cyan-400 shrink-0" />
+                                <span className="h-2 w-2 rounded-full bg-sky-400 shrink-0" />
                                 <div>
                                     <div className="flex items-center gap-2">
                                         <span className="font-semibold text-zinc-200">Developers</span>
-                                        <span className="rounded bg-cyan-500/15 px-1.5 py-0.5 font-mono text-[10px] text-cyan-300">
+                                        <span className="rounded bg-sky-500/15 px-1.5 py-0.5 font-mono text-[10px] text-sky-300">
                                             {devsCount} Assigned
                                         </span>
                                     </div>
@@ -706,7 +706,7 @@ function getActionTagConfig(event: string) {
         default:
             return {
                 label: event.replace(/[._]/g, ' '),
-                badgeClass: 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/30',
+                badgeClass: 'bg-zinc-800 text-zinc-300 border border-zinc-700/60',
                 description: (a: WorkspaceAuditFeedItem) => `Executed ${event} on ${a.auditable_type || 'entity'} #${a.auditable_id || ''}`,
             };
     }

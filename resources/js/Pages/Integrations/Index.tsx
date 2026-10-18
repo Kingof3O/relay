@@ -75,11 +75,11 @@ export default function IntegrationsIndex({
                             onClick={() => setActiveTab('all')}
                             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all ${
                                 activeTab === 'all'
-                                    ? 'border border-violet-500/40 bg-violet-500/10 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
-                            <Layers className="h-3.5 w-3.5 text-violet-400" />
+                            <Layers className={`h-3.5 w-3.5 ${activeTab === 'all' ? 'text-zinc-200' : 'text-zinc-500'}`} />
                             <span>All Channels</span>
                         </button>
 
@@ -88,17 +88,17 @@ export default function IntegrationsIndex({
                             onClick={() => setActiveTab('discord')}
                             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all ${
                                 activeTab === 'discord'
-                                    ? 'border border-[#5865F2]/40 bg-[#5865F2]/10 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
-                            <Bot className="h-3.5 w-3.5 text-[#5865F2]" />
+                            <Bot className={`h-3.5 w-3.5 ${activeTab === 'discord' ? 'text-zinc-200' : 'text-zinc-500'}`} />
                             <span>Discord Webhook</span>
                             <span
-                                className={`rounded-full px-1.5 py-0.2 text-[9px] font-bold ${
+                                className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold ${
                                     discord.enabled && discord.configured
-                                        ? 'bg-emerald-500/20 text-emerald-400'
-                                        : 'bg-zinc-800 text-zinc-500'
+                                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/25'
+                                        : 'bg-zinc-850 text-zinc-500'
                                 }`}
                             >
                                 {discord.enabled && discord.configured ? 'Live' : 'Off'}
@@ -110,13 +110,17 @@ export default function IntegrationsIndex({
                             onClick={() => setActiveTab('email')}
                             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all ${
                                 activeTab === 'email'
-                                    ? 'border border-violet-500/40 bg-violet-500/10 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
-                            <Mail className="h-3.5 w-3.5 text-violet-400" />
+                            <Mail className={`h-3.5 w-3.5 ${activeTab === 'email' ? 'text-zinc-200' : 'text-zinc-500'}`} />
                             <span>Email Templates</span>
-                            <span className="rounded-full px-1.5 py-0.2 text-[9px] font-bold bg-violet-500/20 text-violet-300">
+                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold ${
+                                activeTab === 'email'
+                                    ? 'bg-zinc-750 text-zinc-300'
+                                    : 'bg-zinc-850 text-zinc-500'
+                            }`}>
                                 {email.mailer.toUpperCase()}
                             </span>
                         </button>
@@ -126,13 +130,17 @@ export default function IntegrationsIndex({
                             onClick={() => setActiveTab('logs')}
                             className={`flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all ${
                                 activeTab === 'logs'
-                                    ? 'border border-cyan-500/40 bg-cyan-500/10 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:text-zinc-200'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
                             }`}
                         >
-                            <Activity className="h-3.5 w-3.5 text-cyan-400" />
+                            <Activity className={`h-3.5 w-3.5 ${activeTab === 'logs' ? 'text-zinc-200' : 'text-zinc-500'}`} />
                             <span>Delivery Logs</span>
-                            <span className="rounded-full px-1.5 py-0.2 text-[9px] font-mono text-cyan-300 bg-cyan-500/20">
+                            <span className={`rounded-full px-2 py-0.5 text-[10px] font-mono font-bold ${
+                                activeTab === 'logs'
+                                    ? 'bg-zinc-750 text-zinc-300'
+                                    : 'bg-zinc-850 text-zinc-500'
+                            }`}>
                                 {logs.length}
                             </span>
                         </button>

@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-KgOcAsfl.js";
+import { t as Authenticated } from "./AuthenticatedLayout-CmuF4Gg9.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";
@@ -486,7 +486,7 @@ function CyclesIndex({ currentCycle, cycles, burndown, tickets }) {
 							].map((tab) => /* @__PURE__ */ jsx("button", {
 								type: "button",
 								onClick: () => setFilterStatus(tab.key),
-								className: `rounded-lg px-2.5 py-1 font-medium transition-all ${filterStatus === tab.key ? "bg-zinc-800 text-white shadow-sm" : "text-zinc-400 hover:text-zinc-200"}`,
+								className: `rounded-lg border px-3 py-1 font-medium text-xs transition-all ${filterStatus === tab.key ? "border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border-transparent text-zinc-400 hover:text-zinc-200"}`,
 								children: tab.label
 							}, tab.key))
 						})]

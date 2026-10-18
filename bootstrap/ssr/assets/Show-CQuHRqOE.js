@@ -1,4 +1,4 @@
-import { b as ImageLightbox, c as RequestSubtasksSection, d as RequestMediaGallery, f as RequestDescriptionCard, h as RequestHeroHeader, l as RequestSidebarProperties, m as RequestBlockerBanner, o as triggerConfetti, s as RequestPullRequestsSection, t as Authenticated, u as RequestDiscussionSection } from "./AuthenticatedLayout-KgOcAsfl.js";
+import { b as ImageLightbox, c as RequestSubtasksSection, d as RequestMediaGallery, f as RequestDescriptionCard, h as RequestHeroHeader, l as RequestSidebarProperties, m as RequestBlockerBanner, o as triggerConfetti, s as RequestPullRequestsSection, t as Authenticated, u as RequestDiscussionSection } from "./AuthenticatedLayout-CmuF4Gg9.js";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from "react";
@@ -230,7 +230,7 @@ function Show({ request: initialRequest, projects, users, statuses, priorities, 
 		children: [
 			/* @__PURE__ */ jsx(Head, { title: `#${request.id} · ${request.title}` }),
 			/* @__PURE__ */ jsxs("div", {
-				className: "mx-auto max-w-6xl space-y-6",
+				className: "mx-auto max-w-[1600px] space-y-6",
 				children: [
 					conflict && /* @__PURE__ */ jsxs("div", {
 						className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-xs font-semibold text-amber-200 shadow-xl backdrop-blur-md animate-in fade-in duration-150",

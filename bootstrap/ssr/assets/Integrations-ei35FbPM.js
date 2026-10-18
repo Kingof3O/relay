@@ -79,7 +79,7 @@ function IntegrationKpiTiles({ discord, email, kpis }) {
 							className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
 							children: "Total Notifications Sent"
 						}), /* @__PURE__ */ jsx("div", {
-							className: "h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400",
+							className: "h-8 w-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-200",
 							children: /* @__PURE__ */ jsx(Send, { className: "h-4 w-4" })
 						})]
 					}),
@@ -851,7 +851,7 @@ function DeliveryLogTable({ logs }) {
 			className: "flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4",
 			children: [/* @__PURE__ */ jsxs("div", {
 				className: "flex items-center gap-2.5",
-				children: [/* @__PURE__ */ jsx(Activity, { className: "h-4 w-4 text-cyan-400" }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
+				children: [/* @__PURE__ */ jsx(Activity, { className: "h-4 w-4 text-zinc-200" }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
 					className: "text-sm font-semibold text-zinc-100",
 					children: "Real-Time Notification Delivery Logs"
 				}), /* @__PURE__ */ jsx("p", {
@@ -867,7 +867,7 @@ function DeliveryLogTable({ logs }) {
 						value: searchTerm,
 						onChange: (e) => setSearchTerm(e.target.value),
 						placeholder: "Search logs...",
-						className: "w-40 sm:w-48 rounded-lg border border-zinc-800 bg-[#090a0f] pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none"
+						className: "w-40 sm:w-48 rounded-lg border border-zinc-800 bg-[#090a0f] pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none"
 					})]
 				}), /* @__PURE__ */ jsxs("div", {
 					className: "flex items-center rounded-lg border border-zinc-800 bg-[#090a0f] p-0.5 text-xs",

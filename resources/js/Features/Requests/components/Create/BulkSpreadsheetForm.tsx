@@ -257,9 +257,9 @@ export default function BulkSpreadsheetForm({
                                         {row.files.map((file, fIdx) => (
                                             <span
                                                 key={fIdx}
-                                                className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[10px] text-cyan-300"
+                                                className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 text-[10px] text-zinc-200"
                                             >
-                                                <Paperclip className="h-3 w-3 text-cyan-400" />
+                                                <Paperclip className="h-3 w-3 text-zinc-400" />
                                                 <span className="max-w-[120px] truncate">{file.name}</span>
                                                 <button
                                                     type="button"

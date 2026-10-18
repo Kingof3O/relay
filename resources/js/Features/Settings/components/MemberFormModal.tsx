@@ -102,7 +102,7 @@ export default function MemberFormModal({
                 {/* Modern Obsidian Header */}
                 <div className="flex items-center justify-between border-b border-white/[0.08] pb-4">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-specular">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-200 shadow-sm">
                             {editingMember ? <KeyRound className="h-4 w-4" /> : <Shield className="h-4 w-4" />}
                         </div>
                         <div>
@@ -152,7 +152,7 @@ export default function MemberFormModal({
                                 placeholder="Full Name"
                                 value={member.name}
                                 onChange={(event) => setMember({ ...member, name: event.target.value })}
-                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all"
+                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all"
                             />
                         </div>
 
@@ -167,7 +167,7 @@ export default function MemberFormModal({
                                 placeholder="Username (e.g. jdoe)"
                                 value={member.username}
                                 onChange={(event) => setMember({ ...member, username: event.target.value })}
-                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all font-mono"
+                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all font-mono"
                             />
                         </div>
 
@@ -181,7 +181,7 @@ export default function MemberFormModal({
                                 placeholder="Email Address (optional)"
                                 value={member.email}
                                 onChange={(event) => setMember({ ...member, email: event.target.value })}
-                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all"
+                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all"
                             />
                         </div>
 
@@ -198,7 +198,7 @@ export default function MemberFormModal({
                                 placeholder={editingMember ? 'New password (optional)' : 'Initial password'}
                                 value={member.password}
                                 onChange={(event) => setMember({ ...member, password: event.target.value })}
-                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all"
+                                className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all"
                             />
                         </div>
                     </div>
@@ -218,17 +218,17 @@ export default function MemberFormModal({
                                         onClick={() => setMember({ ...member, role_id: String(role.id) })}
                                         className={`group relative flex items-center justify-between rounded-xl border px-3.5 py-2.5 text-left transition-all ${
                                             isSelected
-                                                ? 'border-cyan-500/40 bg-cyan-500/10 text-white shadow-specular ring-1 ring-cyan-500/20'
+                                                ? 'border-zinc-600 bg-zinc-800 text-white shadow-sm ring-1 ring-white/10'
                                                 : 'border-white/[0.08] bg-[#07090e]/60 text-zinc-400 hover:border-white/[0.15] hover:bg-white/[0.03] hover:text-zinc-200'
                                         }`}
                                     >
-                                        <span className={`text-xs font-semibold ${isSelected ? 'text-cyan-300' : 'text-zinc-300'}`}>
+                                        <span className={`text-xs font-semibold ${isSelected ? 'text-white' : 'text-zinc-300'}`}>
                                             {role.name}
                                         </span>
                                         <span
                                             className={`h-2 w-2 rounded-full transition-all ${
                                                 isSelected
-                                                    ? 'bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]'
+                                                    ? 'bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]'
                                                     : 'bg-zinc-700 group-hover:bg-zinc-600'
                                             }`}
                                         />
@@ -249,7 +249,7 @@ export default function MemberFormModal({
                         <button
                             disabled={submitting}
                             type="submit"
-                            className="rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-[0_4px_16px_rgba(6,182,212,0.35)] shadow-specular hover:from-cyan-400 hover:to-blue-500 active:scale-[0.98] disabled:opacity-50 transition-all"
+                            className="rounded-xl bg-white px-5 py-2.5 text-xs font-semibold text-zinc-950 shadow-sm transition-all duration-150 hover:bg-zinc-200 active:scale-[0.98] disabled:opacity-50"
                         >
                             {submitting
                                 ? 'Saving...'

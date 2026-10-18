@@ -41,7 +41,7 @@ export default function BulkActionBar({
             <div className="pointer-events-auto flex flex-wrap items-center gap-2.5 rounded-2xl border border-zinc-750 bg-[#121318]/95 px-4 py-2.5 shadow-2xl backdrop-blur-xl ring-1 ring-white/10 text-xs text-zinc-200">
                 {/* Count Pill */}
                 <div className="flex items-center gap-2 pr-2 border-r border-zinc-800">
-                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-blue-500 text-[10px] font-bold font-mono text-white px-1">
+                    <span className="flex h-5 min-w-5 items-center justify-center rounded-full bg-white text-[10px] font-bold font-mono text-zinc-950 px-1.5">
                         {selectedCount}
                     </span>
                     <span className="font-semibold text-zinc-100">Selected</span>
@@ -49,7 +49,7 @@ export default function BulkActionBar({
 
                 {loading ? (
                     <div className="flex items-center gap-2 px-3 py-1 text-zinc-400">
-                        <Loader2 className="h-4 w-4 animate-spin text-blue-400" />
+                        <Loader2 className="h-4 w-4 animate-spin text-zinc-200" />
                         <span>Updating...</span>
                     </div>
                 ) : (

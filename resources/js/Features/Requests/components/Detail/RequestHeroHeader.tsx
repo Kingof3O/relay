@@ -104,7 +104,7 @@ export default function RequestHeroHeader({
                         <button
                             type="button"
                             onClick={() => onUpdate({ status: 'doing' })}
-                            className="flex items-center gap-1.5 rounded-xl bg-cyan-500/20 border border-cyan-500/30 px-3.5 py-1.5 text-xs font-bold text-cyan-200 hover:bg-cyan-500/30 transition-all shadow-specular"
+                            className="flex items-center gap-1.5 rounded-xl bg-violet-600/20 border border-violet-500/40 px-3.5 py-1.5 text-xs font-bold text-violet-200 hover:bg-violet-600/30 hover:text-white transition-all shadow-specular"
                         >
                             <Play className="h-3.5 w-3.5 fill-current" />
                             <span>Start Work</span>
@@ -231,7 +231,7 @@ export default function RequestHeroHeader({
                             {request.requester?.name ?? 'Unknown'}
                         </span>
                         {saving && (
-                            <span className="flex items-center gap-1 text-[11px] text-cyan-300">
+                            <span className="flex items-center gap-1 text-[11px] text-zinc-400">
                                 <RefreshCw className="h-3 w-3 animate-spin" /> Saving…
                             </span>
                         )}

@@ -114,7 +114,7 @@ function highlightCodeLine(line: string, language: string): React.ReactNode {
             );
         } else if (groups.variable) {
             elements.push(
-                <span key={match.index} className="text-cyan-300">
+                <span key={match.index} className="text-sky-300">
                     {matchedText}
                 </span>
             );

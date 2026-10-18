@@ -40,7 +40,7 @@ export default function RequestCard({
                   icon: Play,
                   iconClass: 'fill-current',
                   next: 'doing',
-                  color: 'border-zinc-750 bg-zinc-850/90 text-zinc-300 hover:border-blue-500/50 hover:bg-blue-950/40 hover:text-blue-200',
+                  color: 'border-zinc-750 bg-zinc-850/90 text-zinc-300 hover:border-violet-500/50 hover:bg-violet-950/40 hover:text-violet-200',
               }
             : request.status === 'doing'
             ? {
@@ -105,7 +105,7 @@ export default function RequestCard({
                                 : isKeyboardFocused
                                 ? 'border-violet-500/80 bg-[#181926] ring-2 ring-violet-500/60 shadow-lg shadow-violet-500/10 z-20'
                                 : isSelected
-                                ? 'border-blue-500/80 bg-blue-950/20 shadow-md ring-1 ring-blue-500/30'
+                                ? 'border-violet-500/80 bg-violet-950/20 shadow-md ring-1 ring-violet-500/30'
                                 : 'border-white/[0.07] bg-[#111216] hover:border-zinc-700 hover:bg-[#14151a]'
                         }`}
                     >
@@ -124,7 +124,7 @@ export default function RequestCard({
                                     type="checkbox"
                                     checked={isSelected}
                                     onChange={() => onToggleSelect(request.id)}
-                                    className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-0 focus:ring-offset-0 cursor-pointer shadow-sm"
+                                    className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 text-violet-500 focus:ring-0 focus:ring-offset-0 cursor-pointer shadow-sm"
                                 />
                             </div>
                         )}

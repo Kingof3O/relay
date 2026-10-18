@@ -1,6 +1,6 @@
-import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-KgOcAsfl.js";
-import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-CXfteOG9.js";
-import { t as TeamManagementCard } from "./TeamManagementCard-DhJIhOln.js";
+import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-CmuF4Gg9.js";
+import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-ei35FbPM.js";
+import { t as TeamManagementCard } from "./TeamManagementCard-DYzHc2r-.js";
 import { Head, router } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useMemo, useState } from "react";
@@ -269,7 +269,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setFilterState("all"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${filterState === "all" ? "border border-zinc-700 bg-zinc-800 text-white" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${filterState === "all" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200"}`,
 								children: [
 									"All (",
 									projects.length,
@@ -279,7 +279,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setFilterState("active"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${filterState === "active" ? "border border-violet-500/40 bg-violet-500/15 text-violet-300" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${filterState === "active" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200"}`,
 								children: [
 									"Active (",
 									activeCount,
@@ -289,7 +289,7 @@ function ProjectsManagementCard({ projects, setProjects, canManageAreas }) {
 							archivedCount > 0 && /* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setFilterState("archived"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${filterState === "archived" ? "border border-rose-500/40 bg-rose-500/15 text-rose-300" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${filterState === "archived" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200"}`,
 								children: [
 									"Archived (",
 									archivedCount,
@@ -712,7 +712,7 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-3",
 						children: [/* @__PURE__ */ jsx("div", {
-							className: "flex h-9 w-9 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-400 shadow-specular",
+							className: "flex h-9 w-9 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-200 shadow-sm",
 							children: editingMember ? /* @__PURE__ */ jsx(KeyRound, { className: "h-4 w-4" }) : /* @__PURE__ */ jsx(Shield, { className: "h-4 w-4" })
 						}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 							className: "text-sm font-bold text-white tracking-tight",
@@ -767,7 +767,7 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 										...member,
 										name: event.target.value
 									}),
-									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all"
+									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all"
 								})] }),
 								/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("label", {
 									className: "flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400",
@@ -790,7 +790,7 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 										...member,
 										username: event.target.value
 									}),
-									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all font-mono"
+									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all font-mono"
 								})] }),
 								/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("label", {
 									className: "flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400",
@@ -803,7 +803,7 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 										...member,
 										email: event.target.value
 									}),
-									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all"
+									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all"
 								})] }),
 								/* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("label", {
 									className: "flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-zinc-400",
@@ -825,7 +825,7 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 										...member,
 										password: event.target.value
 									}),
-									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-400 focus:outline-none focus:ring-1 focus:ring-cyan-400 shadow-specular transition-all"
+									className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 px-3.5 py-2 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-specular transition-all"
 								})] })
 							]
 						}),
@@ -845,11 +845,11 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 										...member,
 										role_id: String(role.id)
 									}),
-									className: `group relative flex items-center justify-between rounded-xl border px-3.5 py-2.5 text-left transition-all ${isSelected ? "border-cyan-500/40 bg-cyan-500/10 text-white shadow-specular ring-1 ring-cyan-500/20" : "border-white/[0.08] bg-[#07090e]/60 text-zinc-400 hover:border-white/[0.15] hover:bg-white/[0.03] hover:text-zinc-200"}`,
+									className: `group relative flex items-center justify-between rounded-xl border px-3.5 py-2.5 text-left transition-all ${isSelected ? "border-zinc-600 bg-zinc-800 text-white shadow-sm ring-1 ring-white/10" : "border-white/[0.08] bg-[#07090e]/60 text-zinc-400 hover:border-white/[0.15] hover:bg-white/[0.03] hover:text-zinc-200"}`,
 									children: [/* @__PURE__ */ jsx("span", {
-										className: `text-xs font-semibold ${isSelected ? "text-cyan-300" : "text-zinc-300"}`,
+										className: `text-xs font-semibold ${isSelected ? "text-white" : "text-zinc-300"}`,
 										children: role.name
-									}), /* @__PURE__ */ jsx("span", { className: `h-2 w-2 rounded-full transition-all ${isSelected ? "bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.8)]" : "bg-zinc-700 group-hover:bg-zinc-600"}` })]
+									}), /* @__PURE__ */ jsx("span", { className: `h-2 w-2 rounded-full transition-all ${isSelected ? "bg-white shadow-[0_0_8px_rgba(255,255,255,0.6)]" : "bg-zinc-700 group-hover:bg-zinc-600"}` })]
 								}, role.id);
 							})
 						})] }),
@@ -863,7 +863,7 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 							}), /* @__PURE__ */ jsx("button", {
 								disabled: submitting,
 								type: "submit",
-								className: "rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-[0_4px_16px_rgba(6,182,212,0.35)] shadow-specular hover:from-cyan-400 hover:to-blue-500 active:scale-[0.98] disabled:opacity-50 transition-all",
+								className: "rounded-xl bg-white px-5 py-2.5 text-xs font-semibold text-zinc-950 shadow-sm transition-all duration-150 hover:bg-zinc-200 active:scale-[0.98] disabled:opacity-50",
 								children: submitting ? "Saving..." : editingMember ? "Save Changes" : "Create Account"
 							})]
 						})
@@ -987,7 +987,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 							/* @__PURE__ */ jsxs("div", {
 								className: "flex items-center justify-between gap-3",
 								children: [/* @__PURE__ */ jsx("div", {
-									className: "flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-cyan-400",
+									className: "flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-200",
 									children: /* @__PURE__ */ jsx(Users, { className: "h-4 w-4" })
 								}), onSelectTab && /* @__PURE__ */ jsxs("span", {
 									className: "flex items-center gap-1 text-[11px] font-medium text-zinc-500 transition-colors group-hover:text-zinc-300",
@@ -1024,7 +1024,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 										children: [adminsCount, " Admin"]
 									}),
 									/* @__PURE__ */ jsxs("span", {
-										className: "rounded bg-cyan-500/15 px-1.5 py-0.5 text-cyan-300 font-mono",
+										className: "rounded bg-sky-500/15 px-1.5 py-0.5 text-sky-300 font-mono",
 										children: [devsCount, " Dev"]
 									}),
 									/* @__PURE__ */ jsxs("span", {
@@ -1103,7 +1103,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 							}),
 							/* @__PURE__ */ jsxs("div", {
 								className: "mt-3 flex items-center gap-1.5 text-[10px] text-zinc-400 pt-2 border-t border-zinc-800/60",
-								children: [/* @__PURE__ */ jsx(Cpu, { className: "h-3 w-3 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Email notifications active" })]
+								children: [/* @__PURE__ */ jsx(Cpu, { className: "h-3 w-3 text-emerald-400" }), /* @__PURE__ */ jsx("span", { children: "Email notifications active" })]
 							})
 						]
 					})
@@ -1113,7 +1113,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 				className: "relative overflow-hidden rounded-xl border border-zinc-800 bg-[#111216] p-6 shadow-sm sm:p-7",
 				children: [
 					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-violet-600/10 blur-3xl" }),
-					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-20 left-1/3 h-64 w-64 rounded-full bg-cyan-600/10 blur-3xl" }),
+					/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-20 left-1/3 h-64 w-64 rounded-full bg-indigo-600/10 blur-3xl" }),
 					/* @__PURE__ */ jsxs("div", {
 						className: "relative flex flex-col justify-between gap-6 lg:flex-row lg:items-end",
 						children: [/* @__PURE__ */ jsxs("div", {
@@ -1251,7 +1251,7 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 						children: [/* @__PURE__ */ jsxs("div", {
 							className: "flex items-center gap-2.5",
 							children: [/* @__PURE__ */ jsx("div", {
-								className: "flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-cyan-400",
+								className: "flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-200",
 								children: /* @__PURE__ */ jsx(ShieldCheck, { className: "h-4 w-4" })
 							}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h3", {
 								className: "text-sm font-semibold text-zinc-100",
@@ -1290,13 +1290,13 @@ function WorkspaceSnapshotCard({ activeProjectsCount, teamAccountsCount, project
 								className: "flex items-center justify-between rounded-lg border border-zinc-800 bg-[#0c0d12] p-3",
 								children: /* @__PURE__ */ jsxs("div", {
 									className: "flex items-center gap-2.5 min-w-0",
-									children: [/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-cyan-400 shrink-0" }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("div", {
+									children: [/* @__PURE__ */ jsx("span", { className: "h-2 w-2 rounded-full bg-sky-400 shrink-0" }), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("div", {
 										className: "flex items-center gap-2",
 										children: [/* @__PURE__ */ jsx("span", {
 											className: "font-semibold text-zinc-200",
 											children: "Developers"
 										}), /* @__PURE__ */ jsxs("span", {
-											className: "rounded bg-cyan-500/15 px-1.5 py-0.5 font-mono text-[10px] text-cyan-300",
+											className: "rounded bg-sky-500/15 px-1.5 py-0.5 font-mono text-[10px] text-sky-300",
 											children: [devsCount, " Assigned"]
 										})]
 									}), /* @__PURE__ */ jsx("p", {
@@ -1518,7 +1518,7 @@ function getActionTagConfig(event) {
 		};
 		default: return {
 			label: event.replace(/[._]/g, " "),
-			badgeClass: "bg-cyan-500/15 text-cyan-300 border border-cyan-500/30",
+			badgeClass: "bg-zinc-800 text-zinc-300 border border-zinc-700/60",
 			description: (a) => `Executed ${event} on ${a.auditable_type || "entity"} #${a.auditable_id || ""}`
 		};
 	}
@@ -1769,12 +1769,12 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 								/* @__PURE__ */ jsxs("button", {
 									type: "button",
 									onClick: () => setActiveTab("projects"),
-									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "projects" ? "border border-violet-500/40 bg-violet-500/10 text-white shadow-[0_0_15px_rgba(139,92,246,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
+									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "projects" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
-										/* @__PURE__ */ jsx(FolderKanban, { className: `h-3.5 w-3.5 ${activeTab === "projects" ? "text-violet-400" : "text-zinc-500"}` }),
+										/* @__PURE__ */ jsx(FolderKanban, { className: `h-3.5 w-3.5 ${activeTab === "projects" ? "text-zinc-200" : "text-zinc-500"}` }),
 										/* @__PURE__ */ jsx("span", { children: "Projects" }),
 										/* @__PURE__ */ jsx("span", {
-											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "projects" ? "bg-violet-500/25 text-violet-200" : "bg-zinc-800 text-zinc-400"}`,
+											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "projects" ? "bg-zinc-750 text-zinc-300" : "bg-zinc-850 text-zinc-500"}`,
 											children: activeProjectsCount
 										})
 									]
@@ -1782,12 +1782,12 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 								canManageTeam && /* @__PURE__ */ jsxs("button", {
 									type: "button",
 									onClick: () => setActiveTab("team"),
-									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "team" ? "border border-cyan-500/40 bg-cyan-500/10 text-white shadow-[0_0_15px_rgba(6,182,212,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
+									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "team" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
-										/* @__PURE__ */ jsx(Users, { className: `h-3.5 w-3.5 ${activeTab === "team" ? "text-cyan-400" : "text-zinc-500"}` }),
+										/* @__PURE__ */ jsx(Users, { className: `h-3.5 w-3.5 ${activeTab === "team" ? "text-zinc-200" : "text-zinc-500"}` }),
 										/* @__PURE__ */ jsx("span", { children: "Team & Roles" }),
 										/* @__PURE__ */ jsx("span", {
-											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "team" ? "bg-cyan-500/25 text-cyan-200" : "bg-zinc-800 text-zinc-400"}`,
+											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "team" ? "bg-zinc-750 text-zinc-300" : "bg-zinc-850 text-zinc-500"}`,
 											children: teamCount
 										})
 									]
@@ -1795,12 +1795,12 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 								/* @__PURE__ */ jsxs("button", {
 									type: "button",
 									onClick: () => setActiveTab("auth"),
-									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "auth" ? "border border-amber-500/40 bg-amber-500/10 text-white shadow-[0_0_15px_rgba(245,158,11,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
+									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "auth" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
-										/* @__PURE__ */ jsx(ShieldCheck, { className: `h-3.5 w-3.5 ${activeTab === "auth" ? "text-amber-400" : "text-zinc-500"}` }),
+										/* @__PURE__ */ jsx(ShieldCheck, { className: `h-3.5 w-3.5 ${activeTab === "auth" ? "text-zinc-200" : "text-zinc-500"}` }),
 										/* @__PURE__ */ jsx("span", { children: "Authentication" }),
 										/* @__PURE__ */ jsx("span", {
-											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "auth" ? "bg-amber-500/25 text-amber-200" : "bg-zinc-800 text-zinc-400"}`,
+											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "auth" ? "bg-zinc-750 text-zinc-300" : "bg-zinc-850 text-zinc-500"}`,
 											children: "Security"
 										})
 									]
@@ -1808,12 +1808,12 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 								/* @__PURE__ */ jsxs("button", {
 									type: "button",
 									onClick: () => setActiveTab("integrations"),
-									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "integrations" ? "border border-[#5865F2]/40 bg-[#5865F2]/10 text-white shadow-[0_0_15px_rgba(88,101,242,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
+									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "integrations" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
-										/* @__PURE__ */ jsx(Radio, { className: `h-3.5 w-3.5 ${activeTab === "integrations" ? "text-[#5865F2]" : "text-zinc-500"}` }),
+										/* @__PURE__ */ jsx(Radio, { className: `h-3.5 w-3.5 ${activeTab === "integrations" ? "text-zinc-200" : "text-zinc-500"}` }),
 										/* @__PURE__ */ jsx("span", { children: "Integrations & Alerts" }),
 										/* @__PURE__ */ jsx("span", {
-											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "integrations" ? "bg-[#5865F2]/25 text-white" : "bg-zinc-800 text-zinc-400"}`,
+											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "integrations" ? "bg-zinc-750 text-zinc-300" : "bg-zinc-850 text-zinc-500"}`,
 											children: "Discord + Mail"
 										})
 									]
@@ -1821,12 +1821,12 @@ function Settings({ projects: initialProjects, users: initialUsers, roles, canMa
 								/* @__PURE__ */ jsxs("button", {
 									type: "button",
 									onClick: () => setActiveTab("snapshot"),
-									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "snapshot" ? "border border-emerald-500/40 bg-emerald-500/10 text-white shadow-[0_0_15px_rgba(16,185,129,0.15)]" : "border border-transparent text-zinc-400 hover:border-zinc-700/60 hover:bg-[#14161c] hover:text-zinc-200"}`,
+									className: `flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${activeTab === "snapshot" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200"}`,
 									children: [
-										/* @__PURE__ */ jsx(Sparkles, { className: `h-3.5 w-3.5 ${activeTab === "snapshot" ? "text-emerald-400" : "text-zinc-500"}` }),
+										/* @__PURE__ */ jsx(Sparkles, { className: `h-3.5 w-3.5 ${activeTab === "snapshot" ? "text-zinc-200" : "text-zinc-500"}` }),
 										/* @__PURE__ */ jsx("span", { children: "Workspace Snapshot" }),
 										/* @__PURE__ */ jsx("span", {
-											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "snapshot" ? "bg-emerald-500/25 text-emerald-200" : "bg-zinc-800 text-zinc-400"}`,
+											className: `rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${activeTab === "snapshot" ? "bg-zinc-750 text-zinc-300" : "bg-zinc-850 text-zinc-500"}`,
 											children: "Live"
 										})
 									]

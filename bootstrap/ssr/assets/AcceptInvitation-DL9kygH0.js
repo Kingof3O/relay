@@ -59,11 +59,11 @@ function AcceptInvitation({ invitation }) {
 	return /* @__PURE__ */ jsxs(Guest, { children: [
 		/* @__PURE__ */ jsx(Head, { title: `Join ${workspaceName} · Relay Studio` }),
 		/* @__PURE__ */ jsx("div", {
-			className: "mb-6 rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/10 via-transparent to-blue-600/10 p-5 shadow-lg",
+			className: "mb-6 rounded-2xl border border-zinc-800 bg-[#0c0d12] p-5 shadow-lg",
 			children: /* @__PURE__ */ jsxs("div", {
 				className: "flex items-center gap-3",
 				children: [/* @__PURE__ */ jsx("div", {
-					className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-cyan-500/30 bg-cyan-500/20 text-cyan-300",
+					className: "flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-700 bg-zinc-800 text-zinc-200",
 					children: /* @__PURE__ */ jsx(Building2, { className: "h-5 w-5" })
 				}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("div", {
 					className: "flex items-center gap-2",
@@ -71,7 +71,7 @@ function AcceptInvitation({ invitation }) {
 						className: "text-sm font-bold text-white",
 						children: workspaceName
 					}), /* @__PURE__ */ jsxs("span", {
-						className: "inline-flex items-center gap-1 rounded-md border border-cyan-500/30 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-medium text-cyan-300",
+						className: "inline-flex items-center gap-1 rounded-md border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-medium text-violet-300",
 						children: [/* @__PURE__ */ jsx(Shield, { className: "h-2.5 w-2.5" }), roleName]
 					})]
 				}), /* @__PURE__ */ jsxs("div", {
@@ -109,7 +109,7 @@ function AcceptInvitation({ invitation }) {
 							id: "name",
 							name: "name",
 							value: data.name,
-							className: "block w-full rounded-xl border-zinc-800 bg-[#12131a] pl-10 pr-4 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-500 focus:ring-cyan-500/20",
+							className: "block w-full rounded-xl border-zinc-800 bg-[#090a0f] pl-10 pr-4 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:ring-zinc-500/20",
 							placeholder: "Alex Smith",
 							autoComplete: "name",
 							isFocused: true,
@@ -137,7 +137,7 @@ function AcceptInvitation({ invitation }) {
 							id: "username",
 							name: "username",
 							value: data.username,
-							className: "block w-full rounded-xl border-zinc-800 bg-[#12131a] pl-10 pr-4 py-2.5 text-xs font-mono text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-500 focus:ring-cyan-500/20",
+							className: "block w-full rounded-xl border-zinc-800 bg-[#090a0f] pl-10 pr-4 py-2.5 text-xs font-mono text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:ring-zinc-500/20",
 							placeholder: "alexsmith",
 							autoComplete: "username",
 							onChange: (e) => setData("username", e.target.value),
@@ -167,7 +167,7 @@ function AcceptInvitation({ invitation }) {
 								type: showPassword ? "text" : "password",
 								name: "password",
 								value: data.password,
-								className: "block w-full rounded-xl border-zinc-800 bg-[#12131a] pl-10 pr-10 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-500 focus:ring-cyan-500/20",
+								className: "block w-full rounded-xl border-zinc-800 bg-[#090a0f] pl-10 pr-10 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:ring-zinc-500/20",
 								placeholder: "Min. 8 characters",
 								autoComplete: "new-password",
 								onChange: (e) => setData("password", e.target.value),
@@ -202,7 +202,7 @@ function AcceptInvitation({ invitation }) {
 							type: showPassword ? "text" : "password",
 							name: "password_confirmation",
 							value: data.password_confirmation,
-							className: "block w-full rounded-xl border-zinc-800 bg-[#12131a] pl-10 pr-4 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-cyan-500 focus:ring-cyan-500/20",
+							className: "block w-full rounded-xl border-zinc-800 bg-[#090a0f] pl-10 pr-4 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-500 focus:ring-zinc-500/20",
 							placeholder: "Re-enter your password",
 							autoComplete: "new-password",
 							onChange: (e) => setData("password_confirmation", e.target.value),
@@ -217,7 +217,7 @@ function AcceptInvitation({ invitation }) {
 				/* @__PURE__ */ jsx("div", {
 					className: "pt-2",
 					children: /* @__PURE__ */ jsx(PrimaryButton, {
-						className: "w-full justify-center rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 py-3 text-xs font-semibold text-white shadow-lg shadow-cyan-500/20 hover:from-cyan-400 hover:to-blue-500 disabled:opacity-50",
+						className: "w-full justify-center rounded-xl bg-white py-3 text-xs font-semibold text-zinc-950 shadow-sm hover:bg-zinc-200 disabled:opacity-50",
 						disabled: processing,
 						children: processing ? /* @__PURE__ */ jsxs("div", {
 							className: "flex items-center gap-2",

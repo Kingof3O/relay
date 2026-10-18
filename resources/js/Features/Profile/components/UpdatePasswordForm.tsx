@@ -73,8 +73,8 @@ function calculateStrength(pwd: string): StrengthResult {
                 score: 3,
                 label: 'Good',
                 widthClass: 'w-3/4',
-                barColor: 'bg-cyan-500',
-                textColor: 'text-cyan-400',
+                barColor: 'bg-sky-500',
+                textColor: 'text-sky-400',
             };
         case 4:
             return {
@@ -161,7 +161,7 @@ export default function UpdatePasswordForm({
             <header className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
                 <div className="flex items-center gap-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-300">
-                        <KeyRound className="h-4 w-4 text-cyan-400" />
+                        <KeyRound className="h-4 w-4 text-zinc-300" />
                     </div>
                     <div>
                         <h2 className="text-sm font-semibold text-zinc-100">Security & Credentials</h2>
@@ -172,7 +172,7 @@ export default function UpdatePasswordForm({
                 </div>
 
                 <div className="hidden sm:inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#121318] px-2.5 py-0.5 text-[11px] font-medium text-zinc-400">
-                    <Shield className="h-3 w-3 text-cyan-400" />
+                    <Shield className="h-3 w-3 text-zinc-400" />
                     <span>Argon2id Hash</span>
                 </div>
             </header>
@@ -357,7 +357,6 @@ export default function UpdatePasswordForm({
                 <div className="flex items-center justify-between border-t border-zinc-800/80 pt-4">
                     <PrimaryButton
                         disabled={processing}
-                        className="bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 shadow-sm"
                     >
                         {processing ? (
                             <span className="flex items-center gap-2">

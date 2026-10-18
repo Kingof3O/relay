@@ -202,8 +202,8 @@ export default function SingleRequestForm({
                     <div className="mt-1.5 grid grid-cols-3 gap-2">
                         {[
                             { id: 'urgent', label: 'Urgent', dot: 'bg-rose-400 shadow-[0_0_8px_rgba(244,63,94,0.6)]' },
-                            { id: 'normal', label: 'Normal', dot: 'bg-cyan-400 shadow-[0_0_8px_rgba(6,182,212,0.6)]' },
-                            { id: 'low', label: 'Low', dot: 'bg-zinc-400' },
+                            { id: 'normal', label: 'Normal', dot: 'bg-zinc-400' },
+                            { id: 'low', label: 'Low', dot: 'bg-zinc-500' },
                         ].map((p) => (
                             <button
                                 key={p.id}
@@ -282,7 +282,7 @@ export default function SingleRequestForm({
                             {files.map((file, idx) => (
                                 <span
                                     key={idx}
-                                    className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[11px] text-cyan-300"
+                                    className="flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[11px] text-zinc-200"
                                 >
                                     <Paperclip className="h-3 w-3" />
                                     <span className="max-w-[140px] truncate">{file.name}</span>

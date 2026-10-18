@@ -41,10 +41,10 @@ export const STATUS_META: Record<StatusKey, StatusMeta> = {
     },
     needs_info: {
         label: 'Needs info',
-        badge: 'cyan',
-        hex: '#22d3ee',
-        dot: 'bg-cyan-400',
-        text: 'text-cyan-300',
+        badge: 'indigo',
+        hex: '#818cf8',
+        dot: 'bg-indigo-400',
+        text: 'text-indigo-300',
     },
     needs_changes: {
         label: 'Needs changes',

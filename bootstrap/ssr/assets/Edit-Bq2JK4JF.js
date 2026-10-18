@@ -1,6 +1,6 @@
 import { i as InputError, n as PrimaryButton, r as InputLabel, t as TextInput_default } from "./TextInput-CMpMv42q.js";
-import { t as Authenticated } from "./AuthenticatedLayout-KgOcAsfl.js";
-import { n as getAvatarGradient, r as getRoleBadgeStyle } from "./TeamManagementCard-DhJIhOln.js";
+import { t as Authenticated } from "./AuthenticatedLayout-CmuF4Gg9.js";
+import { n as getAvatarGradient, r as getRoleBadgeStyle } from "./TeamManagementCard-DYzHc2r-.js";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useRef, useState } from "react";
@@ -47,8 +47,8 @@ function calculateStrength(pwd) {
 			score: 3,
 			label: "Good",
 			widthClass: "w-3/4",
-			barColor: "bg-cyan-500",
-			textColor: "text-cyan-400"
+			barColor: "bg-sky-500",
+			textColor: "text-sky-400"
 		};
 		case 4: return {
 			score: 4,
@@ -113,7 +113,7 @@ function UpdatePasswordForm({ className = "" }) {
 					className: "flex items-center gap-3",
 					children: [/* @__PURE__ */ jsx("div", {
 						className: "flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-300",
-						children: /* @__PURE__ */ jsx(KeyRound, { className: "h-4 w-4 text-cyan-400" })
+						children: /* @__PURE__ */ jsx(KeyRound, { className: "h-4 w-4 text-zinc-300" })
 					}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
 						className: "text-sm font-semibold text-zinc-100",
 						children: "Security & Credentials"
@@ -123,7 +123,7 @@ function UpdatePasswordForm({ className = "" }) {
 					})] })]
 				}), /* @__PURE__ */ jsxs("div", {
 					className: "hidden sm:inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#121318] px-2.5 py-0.5 text-[11px] font-medium text-zinc-400",
-					children: [/* @__PURE__ */ jsx(Shield, { className: "h-3 w-3 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Argon2id Hash" })]
+					children: [/* @__PURE__ */ jsx(Shield, { className: "h-3 w-3 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Argon2id Hash" })]
 				})]
 			}),
 			hasErrors && /* @__PURE__ */ jsxs("div", {
@@ -302,7 +302,6 @@ function UpdatePasswordForm({ className = "" }) {
 						className: "flex items-center justify-between border-t border-zinc-800/80 pt-4",
 						children: [/* @__PURE__ */ jsx(PrimaryButton, {
 							disabled: processing,
-							className: "bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 shadow-sm",
 							children: processing ? /* @__PURE__ */ jsxs("span", {
 								className: "flex items-center gap-2",
 								children: [/* @__PURE__ */ jsx(Loader2, { className: "h-3.5 w-3.5 animate-spin" }), /* @__PURE__ */ jsx("span", { children: "Updating credentials…" })]
@@ -453,7 +452,6 @@ function UpdateProfileInformation({ className = "" }) {
 						className: "flex items-center justify-between border-t border-zinc-800/80 pt-4",
 						children: [/* @__PURE__ */ jsx(PrimaryButton, {
 							disabled: processing,
-							className: "bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-sm",
 							children: processing ? /* @__PURE__ */ jsxs("span", {
 								className: "flex items-center gap-2",
 								children: [/* @__PURE__ */ jsx(Loader2, { className: "h-3.5 w-3.5 animate-spin" }), /* @__PURE__ */ jsx("span", { children: "Saving changes…" })]
@@ -508,7 +506,7 @@ function VisualIdentityHero({ stats }) {
 		children: [
 			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" }),
 			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-violet-600/[0.05] blur-3xl" }),
-			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-24 left-16 h-72 w-72 rounded-full bg-cyan-600/[0.04] blur-3xl" }),
+			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-24 left-16 h-72 w-72 rounded-full bg-indigo-600/[0.04] blur-3xl" }),
 			/* @__PURE__ */ jsxs("div", {
 				className: "relative flex flex-col justify-between gap-6 xl:flex-row xl:items-center",
 				children: [/* @__PURE__ */ jsxs("div", {
@@ -576,7 +574,7 @@ function VisualIdentityHero({ stats }) {
 								children: [
 									/* @__PURE__ */ jsxs("div", {
 										className: "flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400",
-										children: [/* @__PURE__ */ jsx(Activity, { className: "h-3 w-3 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Assigned" })]
+										children: [/* @__PURE__ */ jsx(Activity, { className: "h-3 w-3 text-violet-400" }), /* @__PURE__ */ jsx("span", { children: "Assigned" })]
 									}),
 									/* @__PURE__ */ jsx("p", {
 										className: "text-xl sm:text-2xl font-extrabold tabular-nums tracking-tight text-white",
@@ -782,7 +780,7 @@ function AccountTelemetryCard({ stats }) {
 					className: "mt-5 rounded-lg border border-zinc-800 bg-[#090a0f] p-3.5",
 					children: [/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-2 text-xs font-semibold text-zinc-200",
-						children: [/* @__PURE__ */ jsx(Shield, { className: "h-3.5 w-3.5 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Security & Connection" })]
+						children: [/* @__PURE__ */ jsx(Shield, { className: "h-3.5 w-3.5 text-zinc-300" }), /* @__PURE__ */ jsx("span", { children: "Security & Connection" })]
 					}), /* @__PURE__ */ jsxs("div", {
 						className: "mt-2 space-y-1.5 text-[11px] text-zinc-400",
 						children: [
@@ -833,7 +831,7 @@ function AccountTelemetryCard({ stats }) {
 						className: "group flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-850/60 px-3.5 py-2.5 text-xs text-zinc-300 transition-all hover:border-zinc-700 hover:bg-zinc-800 hover:text-white",
 						children: [/* @__PURE__ */ jsxs("span", {
 							className: "flex items-center gap-2.5",
-							children: [/* @__PURE__ */ jsx(KanbanSquare, { className: "h-4 w-4 text-cyan-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "My Tasks" })]
+							children: [/* @__PURE__ */ jsx(KanbanSquare, { className: "h-4 w-4 text-violet-400 transition-transform group-hover:scale-110" }), /* @__PURE__ */ jsx("span", { children: "My Tasks" })]
 						}), /* @__PURE__ */ jsxs("div", {
 							className: "flex items-center gap-1.5",
 							children: [/* @__PURE__ */ jsx("span", {
@@ -917,7 +915,7 @@ function NotificationPreferencesCard({ className = "" }) {
 			children: [/* @__PURE__ */ jsxs("div", {
 				className: "flex items-center gap-3",
 				children: [/* @__PURE__ */ jsx("div", {
-					className: "flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-cyan-400",
+					className: "flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-200",
 					children: /* @__PURE__ */ jsx(Bell, { className: "h-4 w-4" })
 				}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsx("h2", {
 					className: "text-sm font-semibold text-zinc-100",
@@ -928,7 +926,7 @@ function NotificationPreferencesCard({ className = "" }) {
 				})] })]
 			}), /* @__PURE__ */ jsxs("div", {
 				className: "hidden sm:inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#121318] px-2.5 py-0.5 text-[11px] font-medium text-zinc-400 font-mono",
-				children: [/* @__PURE__ */ jsx(Mail, { className: "h-3 w-3 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Transactional Engine" })]
+				children: [/* @__PURE__ */ jsx(Mail, { className: "h-3 w-3 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Transactional Engine" })]
 			})]
 		}), /* @__PURE__ */ jsxs("form", {
 			onSubmit: submit,

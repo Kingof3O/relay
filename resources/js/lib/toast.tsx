@@ -40,7 +40,7 @@ function ToastPill({ id, icon, title, description, action }: ToastPillProps) {
                     }}
                     className={`shrink-0 rounded-lg px-2.5 py-1 text-[11px] font-semibold transition-all active:scale-95 ${
                         action.variant === 'undo'
-                            ? 'border border-cyan-500/30 bg-cyan-500/15 text-cyan-300 hover:bg-cyan-500/25 hover:text-cyan-200'
+                            ? 'border border-amber-500/30 bg-amber-500/15 text-amber-300 hover:bg-amber-500/25 hover:text-amber-200'
                             : 'border border-violet-500/40 bg-violet-500/20 text-violet-300 hover:bg-violet-500/30 hover:text-white'
                     }`}
                 >
@@ -123,7 +123,7 @@ export function notifyUndo(
             description={description}
             action={{ label: 'Undo', onClick: onUndo, variant: 'undo' }}
             icon={
-                <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-cyan-500/20 bg-cyan-500/10 text-cyan-400">
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-amber-500/20 bg-amber-500/10 text-amber-400">
                     <ArrowRightLeft className="h-4 w-4" />
                 </div>
             }

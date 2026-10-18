@@ -181,7 +181,7 @@ export default function Show({
         >
             <Head title={`#${request.id} · ${request.title}`} />
 
-            <div className="mx-auto max-w-6xl space-y-6">
+            <div className="mx-auto max-w-[1600px] space-y-6">
                 {/* 409 Conflict Banner with Review and Reload actions */}
                 {conflict && (
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-amber-500/40 bg-amber-500/10 p-4 text-xs font-semibold text-amber-200 shadow-xl backdrop-blur-md animate-in fade-in duration-150">

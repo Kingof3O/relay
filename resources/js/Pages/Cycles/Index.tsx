@@ -257,10 +257,10 @@ export default function CyclesIndex({
                                     key={tab.key}
                                     type="button"
                                     onClick={() => setFilterStatus(tab.key)}
-                                    className={`rounded-lg px-2.5 py-1 font-medium transition-all ${
+                                    className={`rounded-lg border px-3 py-1 font-medium text-xs transition-all ${
                                         filterStatus === tab.key
-                                            ? 'bg-zinc-800 text-white shadow-sm'
-                                            : 'text-zinc-400 hover:text-zinc-200'
+                                            ? 'border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                            : 'border-transparent text-zinc-400 hover:text-zinc-200'
                                     }`}
                                 >
                                     {tab.label}

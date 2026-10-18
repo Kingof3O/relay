@@ -76,7 +76,7 @@ export function IntegrationKpiTiles({ discord, email, kpis }: Props) {
                     <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                         Total Notifications Sent
                     </span>
-                    <div className="h-8 w-8 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+                    <div className="h-8 w-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-200">
                         <Send className="h-4 w-4" />
                     </div>
                 </div>

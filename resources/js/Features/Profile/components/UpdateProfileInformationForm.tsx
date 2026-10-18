@@ -131,7 +131,6 @@ export default function UpdateProfileInformation({
                 <div className="flex items-center justify-between border-t border-zinc-800/80 pt-4">
                     <PrimaryButton
                         disabled={processing}
-                        className="bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 shadow-sm"
                     >
                         {processing ? (
                             <span className="flex items-center gap-2">

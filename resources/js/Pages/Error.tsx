@@ -86,7 +86,7 @@ export default function ErrorPage({ status = 404 }: ErrorProps) {
 
             {/* Specular Ambient Obsidian Background Lighting */}
             <div className="pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-violet-600/10 blur-[140px]" />
-            <div className="pointer-events-none absolute top-1/3 -right-40 h-[400px] w-[600px] rounded-full bg-cyan-600/10 blur-[130px]" />
+            <div className="pointer-events-none absolute top-1/3 -right-40 h-[400px] w-[600px] rounded-full bg-indigo-600/10 blur-[130px]" />
             <div className="pointer-events-none absolute -bottom-40 -left-40 h-[400px] w-[600px] rounded-full bg-emerald-600/5 blur-[120px]" />
 
             {/* Minimal Obsidian Top Navigation Bar */}
@@ -197,7 +197,7 @@ export default function ErrorPage({ status = 404 }: ErrorProps) {
                             or review your{' '}
                             <Link
                                 href="/settings"
-                                className="font-medium text-cyan-400 hover:underline"
+                                className="font-medium text-violet-400 hover:underline"
                             >
                                 Workspace Settings
                             </Link>

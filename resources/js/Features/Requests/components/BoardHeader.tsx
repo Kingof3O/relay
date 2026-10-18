@@ -128,7 +128,7 @@ export default function BoardHeader({
                                     onClick={() => handleExport('json')}
                                     className="w-full flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-xs text-zinc-300 hover:bg-zinc-850 hover:text-white transition-colors group"
                                 >
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 text-cyan-400">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900 text-violet-400">
                                         <FileCode className="h-3.5 w-3.5" />
                                     </div>
                                     <div className="flex flex-col">

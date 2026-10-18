@@ -334,7 +334,7 @@ export default function ProjectsManagementCard({
                             onClick={() => setFilterState('all')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 filterState === 'all'
-                                    ? 'border border-zinc-700 bg-zinc-800 text-white'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200'
                             }`}
                         >
@@ -345,7 +345,7 @@ export default function ProjectsManagementCard({
                             onClick={() => setFilterState('active')}
                             className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                 filterState === 'active'
-                                    ? 'border border-violet-500/40 bg-violet-500/15 text-violet-300'
+                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                     : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200'
                             }`}
                         >
@@ -357,7 +357,7 @@ export default function ProjectsManagementCard({
                                 onClick={() => setFilterState('archived')}
                                 className={`rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${
                                     filterState === 'archived'
-                                        ? 'border border-rose-500/40 bg-rose-500/15 text-rose-300'
+                                        ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
                                         : 'border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:text-zinc-200'
                                 }`}
                             >

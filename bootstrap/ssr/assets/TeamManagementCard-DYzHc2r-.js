@@ -27,8 +27,8 @@ function getRoleBadgeStyle(roleName) {
 	};
 	if (name.includes("dev") || name.includes("engineer")) return {
 		label: roleName || "Developer",
-		pillClass: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300 shadow-[0_0_10px_rgba(6,182,212,0.12)]",
-		dotClass: "bg-cyan-400"
+		pillClass: "border-sky-500/30 bg-sky-500/10 text-sky-300 shadow-[0_0_10px_rgba(14,165,233,0.12)]",
+		dotClass: "bg-sky-400"
 	};
 	if (name.includes("design") || name.includes("ui") || name.includes("ux")) return {
 		label: roleName || "Designer",
@@ -109,7 +109,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 				children: [/* @__PURE__ */ jsxs("div", {
 					className: "flex items-center gap-3.5",
 					children: [/* @__PURE__ */ jsx("div", {
-						className: "flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-cyan-400",
+						className: "flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-850 text-zinc-200",
 						children: /* @__PURE__ */ jsx(Users, { className: "h-5 w-5" })
 					}), /* @__PURE__ */ jsxs("div", { children: [/* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-2.5",
@@ -117,7 +117,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							className: "text-base font-semibold text-zinc-100",
 							children: "Team & Access Control"
 						}), /* @__PURE__ */ jsxs("span", {
-							className: "rounded-full border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-0.5 font-mono text-[10px] font-bold text-cyan-300",
+							className: "rounded-full border border-zinc-700 bg-zinc-800 px-2.5 py-0.5 font-mono text-[10px] font-bold text-zinc-300",
 							children: [users.length, " Total Members"]
 						})]
 					}), /* @__PURE__ */ jsx("p", {
@@ -154,7 +154,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							value: searchQuery,
 							onChange: (e) => setSearchQuery(e.target.value),
 							placeholder: "Filter roster by name, username, email, or role title…",
-							className: "w-full rounded-xl border border-zinc-800 bg-[#0c0d12] pl-10 pr-10 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 transition-colors"
+							className: "w-full rounded-xl border border-zinc-800 bg-[#0c0d12] pl-10 pr-10 py-2.5 text-xs text-zinc-100 placeholder:text-zinc-500 focus:border-zinc-600 focus:outline-none focus:ring-1 focus:ring-zinc-600 transition-colors"
 						}),
 						searchQuery && /* @__PURE__ */ jsx("button", {
 							type: "button",
@@ -181,7 +181,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setSelectedRoleFilter("admin"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "admin" ? "border border-violet-500/40 bg-violet-500/15 text-violet-300 shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "admin" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
 								children: [
 									"Admins (",
 									counts.admins,
@@ -191,7 +191,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setSelectedRoleFilter("dev"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "dev" ? "border border-cyan-500/40 bg-cyan-500/15 text-cyan-300 shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "dev" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
 								children: [
 									"Developers (",
 									counts.devs,
@@ -201,7 +201,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setSelectedRoleFilter("design"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "design" ? "border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "design" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
 								children: [
 									"Designers (",
 									counts.designs,
@@ -211,7 +211,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setSelectedRoleFilter("stakeholder"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "stakeholder" ? "border border-amber-500/40 bg-amber-500/15 text-amber-300 shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "stakeholder" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
 								children: [
 									"Stakeholders (",
 									counts.stakeholders,
@@ -221,7 +221,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setSelectedRoleFilter("active"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "active" ? "border border-emerald-500/40 bg-emerald-500/15 text-emerald-300 shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "active" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
 								children: [
 									"Active Only (",
 									counts.active,
@@ -231,7 +231,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 							/* @__PURE__ */ jsxs("button", {
 								type: "button",
 								onClick: () => setSelectedRoleFilter("paused"),
-								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "paused" ? "border border-rose-500/40 bg-rose-500/15 text-rose-300 shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
+								className: `rounded-lg px-2.5 py-1 text-[11px] font-medium transition-all ${selectedRoleFilter === "paused" ? "border border-zinc-700 bg-zinc-800 text-white shadow-sm" : "border border-zinc-850 bg-[#0c0d12] text-zinc-400 hover:border-zinc-750 hover:text-zinc-200"}`,
 								children: [
 									"Paused (",
 									counts.paused,
@@ -350,7 +350,7 @@ function TeamManagementCard({ users, setUsers, onAddMember, onEditMember }) {
 									onClick: () => onEditMember(user),
 									className: "inline-flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-[#111216] px-2.5 py-1 text-[11px] font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:bg-zinc-800 hover:text-white",
 									title: "Update credentials & login settings",
-									children: [/* @__PURE__ */ jsx(KeyRound, { className: "h-3 w-3 text-cyan-400" }), /* @__PURE__ */ jsx("span", { children: "Credentials" })]
+									children: [/* @__PURE__ */ jsx(KeyRound, { className: "h-3 w-3 text-zinc-400" }), /* @__PURE__ */ jsx("span", { children: "Credentials" })]
 								}), /* @__PURE__ */ jsxs("button", {
 									type: "button",
 									onClick: () => onEditMember(user),

@@ -28,7 +28,7 @@ export function DeliveryLogTable({ logs }: Props) {
         <div className="rounded-xl border border-zinc-800 bg-[#0c0d12] p-5 shadow-sm space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-zinc-800/80 pb-4">
                 <div className="flex items-center gap-2.5">
-                    <Activity className="h-4 w-4 text-cyan-400" />
+                    <Activity className="h-4 w-4 text-zinc-200" />
                     <div>
                         <h2 className="text-sm font-semibold text-zinc-100">
                             Real-Time Notification Delivery Logs
@@ -49,7 +49,7 @@ export function DeliveryLogTable({ logs }: Props) {
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="Search logs..."
-                            className="w-40 sm:w-48 rounded-lg border border-zinc-800 bg-[#090a0f] pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-cyan-500 focus:outline-none"
+                            className="w-40 sm:w-48 rounded-lg border border-zinc-800 bg-[#090a0f] pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder-zinc-500 focus:border-zinc-500 focus:outline-none"
                         />
                     </div>
 

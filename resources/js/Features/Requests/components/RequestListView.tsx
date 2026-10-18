@@ -59,7 +59,7 @@ export default function RequestListView({
                                     type="checkbox"
                                     checked={isAllSelected}
                                     onChange={handleSelectAllToggle}
-                                    className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-blue-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                                    className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-violet-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
                                 />
                             </th>
                             <th className="py-3 px-3 w-28">Status</th>
@@ -80,7 +80,7 @@ export default function RequestListView({
 
                                 const nextAction =
                                     req.status === 'ready'
-                                        ? { label: 'Start', icon: Play, next: 'doing', color: 'text-blue-300 hover:bg-blue-950/40 border-blue-800/60' }
+                                        ? { label: 'Start', icon: Play, next: 'doing', color: 'text-violet-300 hover:bg-violet-950/40 border-violet-800/60' }
                                         : req.status === 'doing'
                                         ? { label: 'Review', icon: Send, next: 'review', color: 'text-violet-300 hover:bg-violet-950/40 border-violet-800/60' }
                                         : req.status === 'review'
@@ -93,7 +93,7 @@ export default function RequestListView({
                                         onClick={() => onSelectRequest(req)}
                                         className={`group cursor-pointer transition-colors ${
                                             isSelected
-                                                ? 'bg-blue-500/[0.08] hover:bg-blue-500/[0.12]'
+                                                ? 'bg-violet-500/[0.08] hover:bg-violet-500/[0.12]'
                                                 : 'hover:bg-zinc-850/50'
                                         }`}
                                     >
@@ -109,7 +109,7 @@ export default function RequestListView({
                                                 type="checkbox"
                                                 checked={isSelected}
                                                 onChange={() => onToggleSelect && onToggleSelect(req.id)}
-                                                className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-blue-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
+                                                className="h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-800 text-violet-500 focus:ring-0 focus:ring-offset-0 cursor-pointer"
                                             />
                                         </td>
 

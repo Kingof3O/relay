@@ -55,7 +55,7 @@ export default function VisualIdentityHero({ stats }: VisualIdentityHeroProps) {
             {/* Ambient specular highlight */}
             <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
             <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-violet-600/[0.05] blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-24 left-16 h-72 w-72 rounded-full bg-cyan-600/[0.04] blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-24 left-16 h-72 w-72 rounded-full bg-indigo-600/[0.04] blur-3xl" />
 
             <div className="relative flex flex-col justify-between gap-6 xl:flex-row xl:items-center">
                 {/* Avatar & Identification */}
@@ -121,7 +121,7 @@ export default function VisualIdentityHero({ stats }: VisualIdentityHeroProps) {
                         {/* Assigned */}
                         <div className="space-y-0.5">
                             <div className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-                                <Activity className="h-3 w-3 text-cyan-400" />
+                                <Activity className="h-3 w-3 text-violet-400" />
                                 <span>Assigned</span>
                             </div>
                             <p className="text-xl sm:text-2xl font-extrabold tabular-nums tracking-tight text-white">

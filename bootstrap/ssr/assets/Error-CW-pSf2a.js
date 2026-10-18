@@ -53,7 +53,7 @@ function ErrorPage({ status = 404 }) {
 		children: [
 			/* @__PURE__ */ jsx(Head, { title: `${status} · ${config.title} — Relay Studio` }),
 			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-violet-600/10 blur-[140px]" }),
-			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute top-1/3 -right-40 h-[400px] w-[600px] rounded-full bg-cyan-600/10 blur-[130px]" }),
+			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute top-1/3 -right-40 h-[400px] w-[600px] rounded-full bg-indigo-600/10 blur-[130px]" }),
 			/* @__PURE__ */ jsx("div", { className: "pointer-events-none absolute -bottom-40 -left-40 h-[400px] w-[600px] rounded-full bg-emerald-600/5 blur-[120px]" }),
 			/* @__PURE__ */ jsx("header", {
 				className: "relative z-10 border-b border-zinc-800/80 bg-[#090a0f]/80 backdrop-blur-md px-6 py-4",
@@ -164,7 +164,7 @@ function ErrorPage({ status = 404 }) {
 									" ",
 									/* @__PURE__ */ jsx(Link, {
 										href: "/settings",
-										className: "font-medium text-cyan-400 hover:underline",
+										className: "font-medium text-violet-400 hover:underline",
 										children: "Workspace Settings"
 									}),
 									"."
