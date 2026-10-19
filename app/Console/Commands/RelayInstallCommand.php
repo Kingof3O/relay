@@ -190,28 +190,11 @@ ASCII;
         $this->newLine();
         $this->components->info('Step 4/5: Initial Administrator / Owner Setup');
 
-        $permissions = [
-            'manage_workspace',
-            'manage_team',
-            'manage_roles',
-            'manage_areas',
-            'create_requests',
-            'edit_requests',
-            'assign_requests',
-            'change_request_status',
-            'comment_requests',
-            'upload_request_files',
-            'delete_requests',
-        ];
-
-        foreach ($permissions as $permissionName) {
-            Permission::query()->firstOrCreate(['name' => $permissionName]);
-        }
+        // Ensure all core system roles (Owner, Admin, Developer, Designer, Member) and permissions exist
+        Artisan::call('db:seed', ['--class' => \Database\Seeders\RolesAndPermissionsSeeder::class, '--force' => true]);
 
         /** @var Role $ownerRole */
         $ownerRole = Role::query()->firstOrCreate(['name' => 'Owner']);
-        $allPermissions = Permission::query()->whereIn('name', $permissions)->pluck('id');
-        $ownerRole->permissions()->sync($allPermissions);
 
         $name = $this->option('admin-name');
         $username = $this->option('admin-username');
