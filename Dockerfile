@@ -33,7 +33,7 @@ RUN composer install \
 # ==========================================
 # Stage 3: Production Web Server & Runtime
 # ==========================================
-FROM php:8.3-fpm-alpine AS production
+FROM php:8.4-fpm-alpine AS production
 
 # Install system dependencies
 RUN apk update && apk add --no-cache \

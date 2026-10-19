@@ -5,7 +5,7 @@
     "keywords": ["relay", "kanban", "linear", "project-management", "laravel", "inertia", "react"],
     "license": "Apache-2.0",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "bacon/bacon-qr-code": "^3.1",
         "inertiajs/inertia-laravel": "^3.0",
         "laravel/framework": "^13.0",
