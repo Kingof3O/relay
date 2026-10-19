@@ -18,15 +18,16 @@
 </p>
 
 <p align="center">
-  <a href="#-why-relay-studio-competitive-comparison">Why Relay</a> •
-  <a href="#-feature-matrix">Features</a> •
-  <a href="#-ui-showcase">Screenshots</a> •
-  <a href="#-architecture--technology-stack">Architecture</a> •
-  <a href="#-quickstart-options">Quickstart</a> •
+  <a href="#-overview">Overview</a> •
+  <a href="#-why-relay-studio-competitive-breakdown">Competitive Breakdown</a> •
+  <a href="#-core-capabilities">Capabilities</a> •
+  <a href="#-interface-showcase">Interface Showcase</a> •
+  <a href="#-system-architecture">Architecture</a> •
+  <a href="#-quickstart-guide">Quickstart</a> •
   <a href="#-configuration-reference">Configuration</a> •
-  <a href="#-cli-superpowers">CLI Tools</a> •
-  <a href="#-rest-api--integrations">API &amp; Webhooks</a> •
-  <a href="#-production-readiness--verification">Verification</a>
+  <a href="#-artisan-cli-tools">CLI Tools</a> •
+  <a href="#-rest-api-v1--webhooks">REST API &amp; Webhooks</a> •
+  <a href="#-verification--quality-benchmarks">Verification</a>
 </p>
 
 ---
@@ -37,14 +38,14 @@
 
 While commercial issue trackers trap engineering workflows inside proprietary clouds, enforce punitive per-seat licensing taxes, and suffer from sluggish page transitions, Relay Studio delivers:
 
-* **Sub-Second Latency:** Inertia.js SPA hydration powered by Laravel 13 and React 19 with zero page reloads.
+* **Sub-Second Latency:** Inertia.js SPA hydration powered by Laravel 13 and React 19 with zero full page reloads.
 * **Keyboard-First Ergonomics:** Seamless `⌘K` command launcher, quick-capture drawers, and Vim cursor navigation (`j`/`k`/`Enter`/`c`).
 * **Complete Self-Hosting Control:** Zero phone-home telemetry, full multi-tenancy, and turnkey Docker orchestration with automated backup tooling.
 * **Real-Time Collaboration:** Laravel Reverb WebSocket presence and live issue synchronization without third-party SaaS dependencies.
 
 ---
 
-## 🥊 Why Relay Studio? (Competitive Comparison)
+## 🥊 Why Relay Studio? (Competitive Breakdown)
 
 How does Relay Studio compare against industry standards and open-source alternatives?
 
@@ -52,7 +53,7 @@ How does Relay Studio compare against industry standards and open-source alterna
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Hosting Model** | **100% Self-Hosted & Sovereign** | Cloud Only (SaaS) | Cloud Only (Server EOL) | Self-Hosted / Cloud | Cloud Only |
 | **Per-Seat License Cost** | **$0 (Apache 2.0)** | $8 – $16 / user / mo | $8.15 – $16 / user / mo | Free tier + Paid Enterprise | Bundled in GitHub |
-| **Interface Speed** | **< 100ms (Inertia SPA)** | < 100ms (SPA) | 1,200ms – 3,500ms | 300ms – 800ms | 400ms – 1,000ms |
+| **Interface Latency** | **< 100ms (Inertia SPA)** | < 100ms (SPA) | 1,200ms – 3,500ms | 300ms – 800ms | 400ms – 1,000ms |
 | **Keyboard Ergonomics (⌘K / Vim)** | **Full Native Support** | Native Support | Partial / Mouse-heavy | Partial | Basic Shortcuts |
 | **Real-Time Multi-User Presence** | **Native WebSocket (Reverb)** | Proprietary Sync | Polling / Slow Webhooks | WebSockets | Polling |
 | **Agile Cycles & Auto-Rollover** | **Automated & Idempotent** | Native Cycles | Manual Sprints | Sprints Module | Milestones only |
@@ -63,21 +64,21 @@ How does Relay Studio compare against industry standards and open-source alterna
 
 ---
 
-## ⚡ Feature Matrix
+## ⚡ Core Capabilities
 
-### 1. Issue Triage & Delivery Pipeline
-* **Optimistic Kanban Board:** Smooth drag-and-drop transitions (`@hello-pangea/dnd`) across *Backlog*, *Todo*, *In Progress*, *In Review*, and *Done*.
-* **Status Workflows & Validations:** Forward and backward state movement with optimistic UI rollbacks on network failure.
+### 1. Issue Triage & Delivery Pipeline (`/requests`)
+* **Optimistic Kanban Board:** Smooth drag-and-drop transitions (`@hello-pangea/dnd`) across `new` (Backlog), `ready` (Ready), `doing` (In Progress), `review` (In Review), and `done` (Done).
+* **Status Workflows & Validations:** Forward and backward state transitions with optimistic UI rollbacks on network failure.
 * **Blocking Dependencies:** Explicit "Blocks" and "Blocked By" relationship tracking with circular dependency detection.
 * **Subtasks & Hierarchical Breakdown:** Track parent tickets with real-time aggregate completion percentage bars.
 * **Story Points & Estimation:** Fibonacci points sizing (`1, 2, 3, 5, 8, 13`) with aggregate sprint load forecasting.
-* **Taxonomy & Tags:** Multi-label tagging, area classification, and priority assignment (*Urgent*, *High*, *Normal*, *Low*).
+* **Taxonomy & Tags:** Multi-label tagging, area classification, and priority assignment (`urgent`, `normal`, `low`).
 
-### 2. Sprints, Cycles & Velocity Tracking
-* **Automated Cycle Rollover:** Scheduled automated rollover (`relay:rollover`) moves incomplete issues to subsequent sprints with strict idempotency guards.
+### 2. Sprints, Cycles & Velocity Tracking (`/cycles`)
+* **Automated Cycle Rollover:** Scheduled automated rollover (`relay:cycle-rollover`) moves incomplete issues to subsequent sprints with strict idempotency guards.
 * **Burndown Analytics:** Dynamic burndown visualization powered by Recharts, tracking ideal vs. actual remaining story points.
 * **Velocity Metrics:** Rolling historical velocity calculation across delivered iterations.
-* **Quarterly Roadmaps:** Milestone timeline grouping tasks by target horizon and release dates.
+* **Quarterly Roadmaps (`/roadmap`):** Milestone timeline grouping tasks by target horizon and release dates.
 
 ### 3. Keyboard-First Ergonomics
 * **Global Command Launcher (`⌘K` / `Ctrl+K`):** Instantly jump to any project, issue, cycle, or settings view.
@@ -98,33 +99,39 @@ How does Relay Studio compare against industry standards and open-source alterna
 * **Multi-Tenancy & Workspace Scoping:** Strict workspace boundary enforcement across all queries, search indices, and API controllers.
 * **Granular RBAC:** Five distinct workspace roles: `Owner`, `Admin`, `Developer`, `Designer`, and `Member`.
 * **Two-Factor Authentication (2FA):** Time-based One-Time Passwords (TOTP via Google Authenticator / 1Password) with emergency recovery codes.
-* **Sanctum Personal Access Tokens (PAT):** Scoped REST API tokens with individual revocation.
+* **Sanctum Personal Access Tokens (PAT):** Scoped REST API tokens with individual revocation (`/profile/tokens`).
 * **Audit Trails:** Immutable audit logs capturing every ticket transition, assignment modification, and workspace setting update.
 
 ---
 
-## 📸 UI Showcase
+## 📸 Interface Showcase
 
 <div align="center">
   <table>
     <tr>
       <td width="50%">
-        <img src="docs/assets/p1-index.png" alt="Kanban Board View" />
-        <p align="center"><em>High-velocity Kanban board with optimistic status movement</em></p>
+        <img src="docs/assets/kanban-board.png" alt="Kanban Board View" />
+        <p align="center"><em>High-velocity Kanban board with optimistic status movement &amp; story points</em></p>
       </td>
       <td width="50%">
-        <img src="docs/assets/v2-show.png" alt="Issue Detail View" />
-        <p align="center"><em>Deep issue view with TipTap discussion, subtasks &amp; dependencies</em></p>
+        <img src="docs/assets/command-palette.png" alt="Command Palette" />
+        <p align="center"><em>Global ⌘K command launcher and sub-second instant search</em></p>
       </td>
     </tr>
     <tr>
       <td width="50%">
-        <img src="docs/assets/c4-donut.png" alt="Cycle Analytics" />
-        <p align="center"><em>Sprint cycle burndown, velocity breakdown &amp; story point distribution</em></p>
+        <img src="docs/assets/issue-detail.png" alt="Issue Detail View" />
+        <p align="center"><em>Deep issue view with TipTap discussion, subtasks &amp; dependencies</em></p>
       </td>
       <td width="50%">
-        <img src="docs/assets/c7-tasks.png" alt="Task Triage List" />
-        <p align="center"><em>Linear-style dense issue triage list with keyboard navigation</em></p>
+        <img src="docs/assets/cycle-analytics.png" alt="Cycle Analytics" />
+        <p align="center"><em>Sprint cycle burndown, velocity breakdown &amp; story point distribution</em></p>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2" width="100%">
+        <img src="docs/assets/roadmap-timeline.png" alt="Roadmap Timeline" />
+        <p align="center"><em>Quarterly roadmap timeline tracking milestones and project delivery</em></p>
       </td>
     </tr>
   </table>
@@ -132,7 +139,7 @@ How does Relay Studio compare against industry standards and open-source alterna
 
 ---
 
-## 🏗️ Architecture & Technology Stack
+## 🏗️ System Architecture
 
 Relay Studio is built following clean, testable architectural principles:
 
@@ -181,9 +188,9 @@ flowchart TD
 
 ---
 
-## 🚀 Quickstart Options
+## 🚀 Quickstart Guide
 
-### Option 1: Turnkey Docker Compose (Recommended)
+### Option 1: Turnkey Docker Compose (Recommended for Self-Hosters)
 
 Get Relay Studio up and running in under 2 minutes:
 
@@ -243,8 +250,8 @@ Relay Studio provides granular configuration toggles via `.env` and [`config/rel
 | Environment Variable | Default | Description |
 | :--- | :---: | :--- |
 | `RELAY_BACKUP_ENABLED` | `false` | Enable or disable automated database & file backup scheduler |
-| `RELAY_BACKUP_SCHEDULE` | `daily` | Cron interval for backups (`daily`, `hourly`, `weekly`) |
-| `RELAY_BACKUP_RETENTION_DAYS`| `14` | Automatic retention window; older backups are automatically pruned |
+| `RELAY_BACKUP_SCHEDULE` | `0 2 * * *` | Cron interval for backups (`0 2 * * *` = daily at 02:00 UTC) |
+| `RELAY_BACKUP_RETENTION_DAYS`| `14` | Automatic retention window; backups older than this are pruned |
 | `RELAY_BACKUP_INCLUDE_FILES` | `false` | Include user attachments and uploaded media inside backup archives |
 | `RELAY_AGILE_AUTO_ROLLOVER_ENABLED` | `true` | Automatically move incomplete issues to next cycle at sprint end |
 | `RELAY_AGILE_ROLLOVER_TIME` | `00:05` | Time of day for cycle roll-forward execution |
@@ -259,9 +266,9 @@ Relay Studio provides granular configuration toggles via `.env` and [`config/rel
 
 ---
 
-## 🛠️ CLI Superpowers
+## 🛠️ Artisan CLI Tools
 
-Relay Studio includes built-in Artisan CLI utilities for operational administration:
+Relay Studio provides operational Artisan CLI commands in the `relay:*` namespace:
 
 ### 1. Stack Diagnostics (`relay:doctor`)
 Audit environment health, PHP extensions, database connectivity, directory permissions, and build manifests:
@@ -280,22 +287,35 @@ php artisan relay:install --force --no-seed --admin-name="Admin" --admin-email="
 ### 3. Automated Disaster Recovery (`relay:backup` & `relay:restore`)
 Safely back up and restore database records and attachment files:
 ```bash
-# Create manual snapshot with attachments
+# Database only snapshot
+php artisan relay:backup --only-db
+
+# Complete snapshot including file attachments
 php artisan relay:backup --include-files
 
-# Restore from snapshot
+# Restore from backup archive
 php artisan relay:restore /path/to/relay-backup-2026-10-19.tar.gz
 ```
 
-### 4. Sprint Rollover (`relay:rollover`)
+### 4. Sprint Rollover (`relay:cycle-rollover`)
 Manually trigger idempotent cycle rollover:
 ```bash
-php artisan relay:rollover
+php artisan relay:cycle-rollover
+```
+
+### 5. Integration Diagnostics (`relay:discord-test` & `relay:oauth`)
+Test Discord webhooks and manage OAuth providers:
+```bash
+# Test Discord webhook notification
+php artisan relay:discord-test
+
+# Inspect OAuth provider status
+php artisan relay:oauth
 ```
 
 ---
 
-## 🔌 REST API & Integrations
+## 🔌 REST API v1 & Webhooks
 
 Relay Studio exposes a complete REST API (v1) authenticated via **Laravel Sanctum Personal Access Tokens (PAT)**.
 
@@ -308,17 +328,18 @@ curl -X GET "http://localhost:8080/api/v1/work-requests" \
      -H "Accept: application/json"
 ```
 
-### Core API Endpoints
+### REST API v1 Endpoints (`routes/api.php`)
 
-| Method | Endpoint | Description |
-| :--- | :--- | :--- |
-| `GET` | `/api/v1/work-requests` | Retrieve filtered, paginated issues (`status`, `priority`, `search`) |
-| `POST` | `/api/v1/work-requests` | Create a new work request / issue |
-| `GET` | `/api/v1/work-requests/{id}` | Fetch full issue details including comments, subtasks, & attachments |
-| `PATCH` | `/api/v1/work-requests/{id}` | Update issue fields with optimistic concurrency locking (`lock_version`) |
-| `DELETE` | `/api/v1/work-requests/{id}` | Soft-delete a work request |
-| `GET` | `/api/v1/projects` | List all active workspace projects and areas |
-| `GET` | `/api/search` | Sub-second fuzzy search across issues, cycles, and projects |
+| Method | Endpoint | Description | Query / Body Parameters |
+| :--- | :--- | :--- | :--- |
+| `GET` | `/api/v1/work-requests` | Paginated list of issues with filter criteria | `status`, `priority`, `area_id`, `search`, `page` |
+| `POST` | `/api/v1/work-requests` | Create a new work request / issue | `title`, `description`, `status`, `priority`, `area_id`, `story_points`, `due_date`, `tags` |
+| `GET` | `/api/v1/work-requests/{id}` | Retrieve complete issue details with relations, subtasks, activities & attachments | `{id}` (issue ID) |
+| `PATCH` | `/api/v1/work-requests/{id}` | Update issue properties with optimistic locking | `lock_version`, `title`, `description`, `status`, `priority`, `story_points`, `due_date`, `tags` |
+| `DELETE` | `/api/v1/work-requests/{id}` | Soft-delete a work request | `{id}` (issue ID) |
+| `POST` | `/api/v1/work-requests/{id}/restore` | Restore a soft-deleted work request | `{id}` (issue ID) |
+| `GET` | `/api/v1/projects` | List all active workspace areas / projects | — |
+| `GET` | `/api/search` | Fast global search across issues & projects | `q` (search query) |
 
 ### GitHub Push Auto-Close Webhook
 Link GitHub commits directly to Relay tickets:
@@ -332,7 +353,7 @@ Link GitHub commits directly to Relay tickets:
 
 ---
 
-## 🧪 Production Readiness & Verification
+## 🧪 Verification & Quality Benchmarks
 
 The codebase undergoes rigorous static analysis and automated regression testing before every release:
 

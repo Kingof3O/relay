@@ -1,118 +1,107 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 360" width="100%" height="auto">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 350" width="100%" height="auto">
   <defs>
-    <!-- Background Gradient -->
-    <radialGradient id="bgGlow" cx="50%" cy="30%" r="60%">
-      <stop offset="0%" stop-color="#1e1b4b" stop-opacity="0.6"/>
-      <stop offset="60%" stop-color="#0a0d14" stop-opacity="0.95"/>
-      <stop offset="100%" stop-color="#07090e" stop-opacity="1"/>
+    <!-- Background Radial Gradient -->
+    <radialGradient id="bannerGlow" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#141728" stop-opacity="0.85"/>
+      <stop offset="50%" stop-color="#08090d" stop-opacity="0.98"/>
+      <stop offset="100%" stop-color="#050608" stop-opacity="1"/>
     </radialGradient>
 
-    <!-- Brand Gradients -->
-    <linearGradient id="relayGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="50%" stop-color="#8b5cf6"/>
-      <stop offset="100%" stop-color="#06b6d4"/>
-    </linearGradient>
-
-    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#ffffff"/>
-      <stop offset="60%" stop-color="#e0e7ff"/>
-      <stop offset="100%" stop-color="#a5b4fc"/>
-    </linearGradient>
-
-    <linearGradient id="borderGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Card Border Gradient -->
+    <linearGradient id="cardBorder" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.5"/>
-      <stop offset="50%" stop-color="#1e293b" stop-opacity="0.3"/>
+      <stop offset="50%" stop-color="#1e2230" stop-opacity="0.25"/>
       <stop offset="100%" stop-color="#06b6d4" stop-opacity="0.5"/>
     </linearGradient>
 
-    <!-- Subtle Grid Pattern -->
-    <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
-      <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#1e293b" stroke-width="0.75" stroke-opacity="0.35"/>
-    </pattern>
+    <!-- Logo Tile Gradient -->
+    <linearGradient id="tileBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.05"/>
+    </linearGradient>
 
-    <!-- Glow Filter -->
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+    <!-- Atmospheric Glow Filters -->
+    <filter id="softGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="28"/>
+    </filter>
+    <filter id="tileGlow" x="-20%" y="-20%" width="140%" height="140%">
       <feGaussianBlur stdDeviation="12" result="blur"/>
       <feComposite in="SourceGraphic" in2="blur" operator="over"/>
     </filter>
-    <filter id="subtleGlow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
+
+    <!-- Subtle Dot Matrix -->
+    <pattern id="dotPattern" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="0.8" fill="#334155" opacity="0.3"/>
+    </pattern>
   </defs>
 
-  <!-- Background Base -->
-  <rect width="1200" height="360" rx="16" fill="url(#bgGlow)"/>
-  <rect width="1200" height="360" rx="16" fill="url(#grid)"/>
+  <!-- Background Base Canvas -->
+  <rect width="1200" height="350" rx="14" fill="url(#bannerGlow)"/>
+  <rect width="1200" height="350" rx="14" fill="url(#dotPattern)"/>
+  <rect width="1198" height="348" x="1" y="1" rx="13" fill="none" stroke="url(#cardBorder)" stroke-width="1.2"/>
 
-  <!-- Border Frame -->
-  <rect width="1198" height="358" x="1" y="1" rx="15" fill="none" stroke="url(#borderGradient)" stroke-width="1.5"/>
+  <!-- Atmospheric Background Ambient Lights -->
+  <circle cx="600" cy="75" r="130" fill="#6366f1" opacity="0.14" filter="url(#softGlow)"/>
+  <circle cx="380" cy="190" r="110" fill="#06b6d4" opacity="0.08" filter="url(#softGlow)"/>
+  <circle cx="820" cy="190" r="110" fill="#a855f7" opacity="0.08" filter="url(#softGlow)"/>
 
-  <!-- Decorative Ambient Spheres -->
-  <circle cx="200" cy="80" r="120" fill="#4338ca" opacity="0.15" filter="url(#glow)"/>
-  <circle cx="1000" cy="260" r="140" fill="#0891b2" opacity="0.12" filter="url(#glow)"/>
+  <!-- Centered Content Structure -->
+  <g transform="translate(600, 160)">
 
-  <!-- Brand Mark Icon (Left-side glowing emblem) -->
-  <g transform="translate(130, 95)">
-    <!-- Icon Container Box -->
-    <rect width="170" height="170" rx="36" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
-    <rect width="170" height="170" rx="36" fill="url(#relayGradient)" opacity="0.1" filter="url(#glow)"/>
+    <!-- 1. Real Relay Logo (Exact SVG from public/img/logo.svg) in Dark Obsidian Glass Tile -->
+    <g transform="translate(0, -82)">
+      <!-- Ambient Glow under Logo Tile -->
+      <rect x="-38" y="-38" width="76" height="76" rx="20" fill="#6366f1" opacity="0.18" filter="url(#tileGlow)"/>
+      
+      <!-- Obsidian Tile Container -->
+      <rect x="-35" y="-35" width="70" height="70" rx="18" fill="#111216" stroke="url(#tileBorder)" stroke-width="1.5"/>
 
-    <!-- Relay Vector Symbol -->
-    <g transform="translate(25, 20) scale(3.3)">
-      <path d="M9 7C9 5.89543 9.89543 5 11 5H21C25.4183 5 29 8.58172 29 13C29 16.7224 26.4554 19.8506 23 20.7208V20.7208C21.7247 21.0487 21 22.2513 21 23.5685V31" stroke="url(#relayGradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" filter="url(#subtleGlow)"/>
-      <path d="M9 5V31" stroke="url(#relayGradient)" stroke-width="3" stroke-linecap="round"/>
-      <path d="M9 18H21" stroke="url(#relayGradient)" stroke-width="3" stroke-linecap="round"/>
-      <path d="M20 22L28 31" stroke="url(#relayGradient)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      <circle cx="21" cy="11.5" r="2.3" fill="#38bdf8" filter="url(#subtleGlow)"/>
-    </g>
-  </g>
-
-  <!-- Title & Typography (Right of Icon) -->
-  <g transform="translate(340, 140)">
-    <!-- Eyebrow Pill -->
-    <g transform="translate(0, -42)">
-      <rect width="210" height="26" rx="13" fill="#1e1b4b" stroke="#4f46e5" stroke-width="1"/>
-      <circle cx="14" cy="13" r="4" fill="#10b981"/>
-      <text x="26" y="17" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="11" font-weight="700" fill="#a5b4fc" letter-spacing="1.2">SELF-HOSTED SPRINT ENGINE</text>
-    </g>
-
-    <!-- Main Title -->
-    <text x="0" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="52" font-weight="800" fill="url(#textGradient)" letter-spacing="-1">RELAY STUDIO</text>
-
-    <!-- Subtitle / Mission -->
-    <text x="0" y="70" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#94a3b8">The Open-Source, High-Velocity Engineering &amp; Agile Delivery Engine</text>
-
-    <!-- Feature Tags -->
-    <g transform="translate(0, 102)">
-      <!-- Pill 1 -->
-      <rect width="130" height="28" rx="6" fill="#1e293b" opacity="0.8"/>
-      <text x="12" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#cbd5e1">⚡ Linear-Grade UX</text>
-
-      <!-- Pill 2 -->
-      <g transform="translate(142, 0)">
-        <rect width="118" height="28" rx="6" fill="#1e293b" opacity="0.8"/>
-        <text x="12" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#cbd5e1">🔒 Self-Hostable</text>
-      </g>
-
-      <!-- Pill 3 -->
-      <g transform="translate(272, 0)">
-        <rect width="128" height="28" rx="6" fill="#1e293b" opacity="0.8"/>
-        <text x="12" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#cbd5e1">⌨️ Vim &amp; ⌘K Keys</text>
-      </g>
-
-      <!-- Pill 4 -->
-      <g transform="translate(412, 0)">
-        <rect width="156" height="28" rx="6" fill="#1e293b" opacity="0.8"/>
-        <text x="12" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#cbd5e1">🚀 Laravel 13 + React 19</text>
-      </g>
-
-      <!-- Pill 5 -->
-      <g transform="translate(580, 0)">
-        <rect width="124" height="28" rx="6" fill="#1e293b" opacity="0.8"/>
-        <text x="12" y="18" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif" font-size="12" font-weight="600" fill="#cbd5e1">📡 Live Reverb Sync</text>
+      <!-- Real Relay Kinetic Vector Mark (viewBox 0 0 36 36 scaled 1.25x) -->
+      <g transform="translate(-22.5, -22.5) scale(1.25)">
+        <path d="M9 7C9 5.89543 9.89543 5 11 5H21C25.4183 5 29 8.58172 29 13C29 16.7224 26.4554 19.8506 23 20.7208V20.7208C21.7247 21.0487 21 22.2513 21 23.5685V31" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M9 5V31" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"/>
+        <path d="M9 18H21" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round"/>
+        <path d="M20 22L28 31" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="21" cy="11.5" r="2.5" fill="#ffffff"/>
       </g>
     </g>
+
+    <!-- 2. Release Badge Pill -->
+    <g transform="translate(0, -26)">
+      <rect x="-135" y="-12" width="270" height="24" rx="12" fill="#0b0e17" stroke="#312e81" stroke-width="1"/>
+      <circle cx="-116" cy="0" r="3.5" fill="#10b981"/>
+      <text x="-104" y="3.5" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif" font-size="10.5" font-weight="700" fill="#c7d2fe" letter-spacing="1.5">SELF-HOSTABLE AGILE ENGINE</text>
+    </g>
+
+    <!-- 3. Brand Typography -->
+    <text x="0" y="30" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, sans-serif" font-size="44" font-weight="800" fill="#ffffff" letter-spacing="4">RELAY STUDIO</text>
+
+    <!-- 4. Subtitle / Product Mission -->
+    <text x="0" y="66" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif" font-size="15" font-weight="400" fill="#94a3b8" letter-spacing="0.3">Sub-Second Issue Velocity • Linear Precision • Sovereign Infrastructure</text>
+
+    <!-- 5. Feature Badges -->
+    <g transform="translate(0, 106)">
+      <g transform="translate(-320, 0)">
+        <rect x="0" y="-12" width="118" height="24" rx="6" fill="#11131c" stroke="#1e2233" stroke-width="1"/>
+        <text x="59" y="3" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#cbd5e1">⚡ Sub-100ms SPA</text>
+      </g>
+      <g transform="translate(-190, 0)">
+        <rect x="0" y="-12" width="115" height="24" rx="6" fill="#11131c" stroke="#1e2233" stroke-width="1"/>
+        <text x="57" y="3" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#cbd5e1">🔒 100% Sovereign</text>
+      </g>
+      <g transform="translate(-63, 0)">
+        <rect x="0" y="-12" width="126" height="24" rx="6" fill="#11131c" stroke="#1e2233" stroke-width="1"/>
+        <text x="63" y="3" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#cbd5e1">⌨️ ⌘K &amp; Vim Keys</text>
+      </g>
+      <g transform="translate(75, 0)">
+        <rect x="0" y="-12" width="125" height="24" rx="6" fill="#11131c" stroke="#1e2233" stroke-width="1"/>
+        <text x="62" y="3" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#cbd5e1">📡 Reverb Live Sync</text>
+      </g>
+      <g transform="translate(212, 0)">
+        <rect x="0" y="-12" width="115" height="24" rx="6" fill="#11131c" stroke="#1e2233" stroke-width="1"/>
+        <text x="57" y="3" text-anchor="middle" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" font-weight="600" fill="#cbd5e1">🚀 Turnkey Docker</text>
+      </g>
+    </g>
+
   </g>
 </svg>
