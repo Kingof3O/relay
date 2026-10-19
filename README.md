@@ -196,7 +196,7 @@ Get Relay Studio up and running in under 2 minutes:
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/Kingof3O/stm.git relay
+git clone https://github.com/Kingof3O/relay.git relay
 cd relay
 
 # 2. Boot the full container stack (App, MySQL 8.4, Redis 7, Mailpit)
@@ -221,7 +221,7 @@ For developers using [Laravel Herd](https://herd.laravel.com/), Valet, or system
 
 ```bash
 # 1. Clone and install PHP dependencies
-git clone https://github.com/Kingof3O/stm.git relay
+git clone https://github.com/Kingof3O/relay.git relay
 cd relay
 composer install
 
