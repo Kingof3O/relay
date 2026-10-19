@@ -40,6 +40,18 @@ class RequestFile extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::deleted(function (RequestFile $file): void {
+            $disk = \Illuminate\Support\Facades\Storage::disk(config('workspace.storage_disk'));
+            foreach ([$file->source_path, $file->stored_path, $file->preview_path] as $path) {
+                if (filled($path) && $disk->exists($path)) {
+                    $disk->delete($path);
+                }
+            }
+        });
+    }
+
     public function request(): BelongsTo
     {
         return $this->belongsTo(WorkRequest::class, 'request_id');

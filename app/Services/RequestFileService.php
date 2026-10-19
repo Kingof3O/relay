@@ -165,9 +165,30 @@ final class RequestFileService
         $disk = Storage::disk(config('workspace.storage_disk'));
 
         foreach ([$file->source_path, $file->stored_path, $file->preview_path] as $path) {
-            if (filled($path)) {
+            if (filled($path) && $disk->exists($path)) {
                 $disk->delete($path);
             }
+        }
+    }
+
+    public function delete(WorkRequest $request, RequestFile $file, ?User $actor = null): void
+    {
+        if ($file->request_id !== $request->id) {
+            abort(404);
+        }
+
+        $fileName = $file->original_name;
+        $this->deleteStoredFiles($file);
+        $file->delete();
+
+        if ($actor) {
+            $this->requests->recordActivity(
+                $request,
+                $actor,
+                'file_deleted',
+                "Attachment \"{$fileName}\" was deleted.",
+                ['file_name' => $fileName]
+            );
         }
     }
 }

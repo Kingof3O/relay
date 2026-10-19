@@ -49,6 +49,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::get('/requests/{request}/files/{file}', [RequestFileController::class, 'show'])->name('requests.files.show');
     Route::get('/requests/{request}/files/{file}/preview', [RequestFileController::class, 'preview'])->name('requests.files.preview');
     Route::post('/requests/{request}/files/{file}/retry', [RequestFileController::class, 'retry'])->name('requests.files.retry');
+    Route::delete('/requests/{request}/files/{file}', [RequestFileController::class, 'destroy'])->name('requests.files.destroy');
     Route::get('/requests/export', [ExportController::class, 'export'])->name('requests.export');
     Route::post('/requests/{workRequest}/clone', [RequestCloneController::class, 'store'])->name('requests.clone');
     Route::post('/requests/{request}/relations', [RequestRelationController::class, 'store'])->name('requests.relations.store');

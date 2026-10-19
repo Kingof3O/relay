@@ -87,4 +87,74 @@ final class ExpandedFileUploadTest extends TestCase
             'type' => 'document',
         ]);
     }
+
+    public function test_deleting_file_attachment_removes_record_and_purges_stored_file_from_disk(): void
+    {
+        Storage::fake(config('workspace.storage_disk'));
+
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $area = Area::query()->firstOrFail();
+
+        $request = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'title' => 'File delete test',
+            'requester_id' => $owner->id,
+        ]);
+
+        $service = app(RequestFileService::class);
+        $pdfFile = UploadedFile::fake()->create('contract.pdf', 100, 'application/pdf');
+        $file = $service->upload($request, $owner, $pdfFile);
+
+        $storedPath = $file->stored_path;
+        $this->assertNotNull($storedPath);
+        Storage::disk(config('workspace.storage_disk'))->assertExists($storedPath);
+
+        // Delete via HTTP controller endpoint
+        $response = $this->actingAs($owner)->deleteJson(route('requests.files.destroy', [$request, $file]));
+
+        $response->assertOk();
+        $response->assertJson(['deleted' => true]);
+
+        // File is deleted from disk
+        Storage::disk(config('workspace.storage_disk'))->assertMissing($storedPath);
+
+        // File record is deleted from database
+        $this->assertDatabaseMissing('request_files', ['id' => $file->id]);
+    }
+
+    public function test_deleting_work_request_purges_all_its_stored_files_from_disk(): void
+    {
+        Storage::fake(config('workspace.storage_disk'));
+
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $area = Area::query()->firstOrFail();
+
+        $request = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'title' => 'Request cascade delete test',
+            'requester_id' => $owner->id,
+        ]);
+
+        $service = app(RequestFileService::class);
+        $file1 = $service->upload($request, $owner, UploadedFile::fake()->create('diagram.pdf', 100, 'application/pdf'));
+        $file2 = $service->upload($request, $owner, UploadedFile::fake()->create('notes.txt', 20, 'text/plain'));
+
+        $disk = Storage::disk(config('workspace.storage_disk'));
+        $disk->assertExists($file1->stored_path);
+        $disk->assertExists($file2->stored_path);
+
+        // Delete the ticket
+        $response = $this->actingAs($owner)->deleteJson(route('requests.destroy', $request));
+        $response->assertOk();
+
+        // Both files are physically purged from disk
+        $disk->assertMissing($file1->stored_path);
+        $disk->assertMissing($file2->stored_path);
+
+        // Database records are removed
+        $this->assertDatabaseMissing('request_files', ['id' => $file1->id]);
+        $this->assertDatabaseMissing('request_files', ['id' => $file2->id]);
+        $this->assertDatabaseMissing('requests', ['id' => $request->id]);
+    }
 }
+

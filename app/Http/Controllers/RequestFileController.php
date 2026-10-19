@@ -121,6 +121,19 @@ final class RequestFileController extends Controller
         ]);
     }
 
+    public function destroy(Request $httpRequest, WorkRequest $request, RequestFile $file): JsonResponse
+    {
+        $this->authorize('upload', $request);
+        $this->ensureBelongsToRequest($request, $file);
+
+        $this->files->delete($request, $file, $httpRequest->user());
+
+        return response()->json([
+            'deleted' => true,
+            'request' => $this->presenter->detail($request->fresh()),
+        ]);
+    }
+
     private function ensureBelongsToRequest(WorkRequest $request, RequestFile $file): void
     {
         if ($file->request_id !== $request->id) {

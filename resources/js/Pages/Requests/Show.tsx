@@ -135,6 +135,18 @@ export default function Show({
         }
     };
 
+    const deleteFile = async (fileId: number) => {
+        try {
+            const { data } = await axios.delete(route('requests.files.destroy', [request.id, fileId]));
+            setRequest(data.request);
+            toast.success('Attachment deleted from disk');
+        } catch (err: unknown) {
+            const msg = isAxiosError(err) ? (err.response?.data?.message ?? 'Could not delete attachment.') : 'Could not delete attachment.';
+            setError(msg);
+            toast.error(msg);
+        }
+    };
+
     const remove = () => {
         setShowDeleteDialog(true);
     };
@@ -267,7 +279,7 @@ export default function Show({
                         <RequestPullRequestsSection pullRequests={request.pull_requests || []} />
                         <RequestMediaGallery
                             files={request.files} canUpload={canUpload} uploading={uploading}
-                            onUploadFiles={uploadFiles} onRetry={retry} onOpenLightbox={(src: string) => setLightboxSrc(src)}
+                            onUploadFiles={uploadFiles} onRetry={retry} onDeleteFile={deleteFile} onOpenLightbox={(src: string) => setLightboxSrc(src)}
                         />
                         <RequestDiscussionSection activities={request.activities} canComment={canComment} saving={saving} onAddComment={addComment} users={users} />
                     </div>

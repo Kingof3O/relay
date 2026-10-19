@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import Badge from '@/Components/Badge';
 import Card from '@/Components/Card';
+import ConfirmDialog from '@/Components/ConfirmDialog';
 import FileDropZone from '../FileDropZone';
 import { RequestFileItem } from '@/types/workspace';
 import {
@@ -10,6 +12,7 @@ import {
     FileCode,
     Archive,
     Download,
+    Trash2,
 } from 'lucide-react';
 
 interface RequestMediaGalleryProps {
@@ -18,6 +21,7 @@ interface RequestMediaGalleryProps {
     uploading: boolean;
     onUploadFiles: (files: File[]) => void;
     onRetry: (fileId: number) => Promise<void> | void;
+    onDeleteFile?: (fileId: number) => Promise<void> | void;
     onOpenLightbox: (url: string) => void;
 }
 
@@ -36,8 +40,22 @@ export default function RequestMediaGallery({
     uploading,
     onUploadFiles,
     onRetry,
+    onDeleteFile,
     onOpenLightbox,
 }: RequestMediaGalleryProps) {
+    const [fileToDelete, setFileToDelete] = useState<RequestFileItem | null>(null);
+    const [deleting, setDeleting] = useState(false);
+
+    const handleConfirmDelete = async () => {
+        if (!fileToDelete || !onDeleteFile) return;
+        setDeleting(true);
+        try {
+            await onDeleteFile(fileToDelete.id);
+            setFileToDelete(null);
+        } finally {
+            setDeleting(false);
+        }
+    };
     return (
         <FileDropZone
             onFilesDropped={onUploadFiles}
@@ -178,8 +196,8 @@ export default function RequestMediaGallery({
                                                 </div>
                                             </div>
 
-                                            {file.url && (
-                                                <div className="mt-3 flex justify-end">
+                                            <div className="mt-3 flex items-center justify-end gap-2">
+                                                {file.url && (
                                                     <a
                                                         href={file.url}
                                                         download={file.original_name}
@@ -190,8 +208,18 @@ export default function RequestMediaGallery({
                                                         <Download className="h-3 w-3" />
                                                         <span>Download</span>
                                                     </a>
-                                                </div>
-                                            )}
+                                                )}
+                                                {canUpload && onDeleteFile && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setFileToDelete(file)}
+                                                        className="inline-flex items-center rounded-lg border border-white/10 bg-white/[0.04] p-1 text-[11px] text-zinc-400 transition-colors hover:border-rose-500/40 hover:bg-rose-500/10 hover:text-rose-300"
+                                                        title="Delete attachment from disk"
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
 
@@ -203,22 +231,34 @@ export default function RequestMediaGallery({
                                             >
                                                 {file.original_name}
                                             </p>
-                                            <Badge
-                                                variant={
-                                                    file.processing_status === 'ready'
-                                                        ? 'emerald'
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                                <Badge
+                                                    variant={
+                                                        file.processing_status === 'ready'
+                                                            ? 'emerald'
+                                                            : file.processing_status === 'failed'
+                                                            ? 'rose'
+                                                            : 'amber'
+                                                    }
+                                                    dot
+                                                >
+                                                    {file.processing_status === 'ready'
+                                                        ? 'Ready'
                                                         : file.processing_status === 'failed'
-                                                        ? 'rose'
-                                                        : 'amber'
-                                                }
-                                                dot
-                                            >
-                                                {file.processing_status === 'ready'
-                                                    ? 'Ready'
-                                                    : file.processing_status === 'failed'
-                                                    ? 'Failed'
-                                                    : 'Processing'}
-                                            </Badge>
+                                                        ? 'Failed'
+                                                        : 'Processing'}
+                                                </Badge>
+                                                {canUpload && onDeleteFile && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setFileToDelete(file)}
+                                                        className="rounded p-1 text-zinc-500 transition-colors hover:bg-rose-500/10 hover:text-rose-400"
+                                                        title="Delete attachment from disk"
+                                                    >
+                                                        <Trash2 className="h-3.5 w-3.5" />
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                         {file.processing_status === 'failed' && (
                                             <div className="mt-2 rounded-lg border border-rose-500/30 bg-rose-500/10 p-2 text-xs text-rose-300">
@@ -247,6 +287,17 @@ export default function RequestMediaGallery({
                     )}
                 </div>
             </Card>
+
+            <ConfirmDialog
+                open={!!fileToDelete}
+                onClose={() => setFileToDelete(null)}
+                onConfirm={handleConfirmDelete}
+                title="Delete Attachment"
+                description={`Are you sure you want to delete "${fileToDelete?.original_name}"? This file and all its optimized copies will be permanently deleted from your disk.`}
+                confirmLabel="Delete File"
+                variant="danger"
+                loading={deleting}
+            />
         </FileDropZone>
     );
 }
