@@ -148,7 +148,7 @@ final class EmailNotificationService
         ];
 
         try {
-            Mail::to($recipient->email)->send(new WorkRequestNotificationMail($recipient, $sampleRequest, $payload));
+            Mail::to($recipient->email)->sendNow(new WorkRequestNotificationMail($recipient, $sampleRequest, $payload));
 
             IntegrationDeliveryLog::query()->create([
                 'workspace_id' => $wsId,
