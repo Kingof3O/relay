@@ -31,7 +31,7 @@ class GlobalSearchController extends Controller
         $activeWorkspace = $user?->currentWorkspace();
 
         $requests = WorkRequest::query()
-            ->when($activeWorkspace, fn ($query) => $query->where('workspace_id', $activeWorkspace->id))
+            ->when($activeWorkspace, fn ($query) => $query->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
             ->when(! $activeWorkspace, fn ($query) => $query->where(fn ($sub) => $sub->where('requester_id', $user?->id)->orWhere('assignee_id', $user?->id)->orWhereNull('workspace_id')))
             ->with(['area', 'assignee'])
             ->where(function ($query) use ($q, $numericId): void {
@@ -58,12 +58,18 @@ class GlobalSearchController extends Controller
                 ] : null,
             ]);
 
+        $isGenericProjectQuery = in_array(strtolower($q), ['project', 'projects', 'area', 'areas']);
+
         $projects = Area::query()
-            ->when($activeWorkspace, fn ($query) => $query->where('workspace_id', $activeWorkspace->id))
+            ->when($activeWorkspace, fn ($query) => $query->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
             ->when(! $activeWorkspace, fn ($query) => $query->whereNull('workspace_id'))
             ->whereNull('archived_at')
-            ->where('name', 'like', "%{$q}%")
-            ->limit(6)
+            ->when(! $isGenericProjectQuery, fn ($query) => $query->where(function ($sub) use ($q): void {
+                $sub->where('name', 'like', "%{$q}%")
+                    ->orWhere('slug', 'like', "%{$q}%");
+            }))
+            ->orderBy('sort_order')
+            ->limit(8)
             ->get(['id', 'name', 'color']);
 
         return response()->json([

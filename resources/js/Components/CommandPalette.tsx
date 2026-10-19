@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Command } from 'cmdk';
+import { Command, defaultFilter } from 'cmdk';
 import { router, usePage } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -50,7 +50,7 @@ export default function CommandPalette({
     setOpen: (open: boolean) => void;
     onOpenCreate?: () => void;
     onOpenShortcuts?: () => void;
-    projects?: Array<{ id: number; name: string }>;
+    projects?: Array<{ id: number; name: string; color?: string | null }>;
 }) {
     const [search, setSearch] = useState('');
     const [searchResults, setSearchResults] = useState<{
@@ -61,9 +61,18 @@ export default function CommandPalette({
 
     const pageProps = usePage().props as any;
     const usersList = (pageProps.users as Array<{ id: number; name: string; username: string }>) || [];
+    const availableProjects: Array<{ id: number; name: string; color?: string | null }> =
+        (projects && projects.length > 0) ? projects : (pageProps.workspaceProjects ?? pageProps.projects ?? []);
     const activeRequest = pageProps.request;
     const pathTicketId = typeof window !== 'undefined' ? window.location.pathname.match(/\/requests\/(\d+)/)?.[1] : null;
     const ticketId = activeRequest?.id ?? (pathTicketId ? parseInt(pathTicketId, 10) : null);
+
+    const filterCommand = (value: string, searchStr: string, keywords?: string[]) => {
+        if (value.startsWith('server:')) {
+            return 1;
+        }
+        return defaultFilter(value, searchStr, keywords);
+    };
 
     const handleTicketAction = async (payload: Record<string, unknown>, successMsg: string) => {
         setOpen(false);
@@ -159,6 +168,13 @@ export default function CommandPalette({
         return () => clearTimeout(timer);
     }, [search]);
 
+    useEffect(() => {
+        if (!open) {
+            setSearch('');
+            setSearchResults({ requests: [], projects: [] });
+        }
+    }, [open]);
+
     if (!open) return null;
 
     const navigate = (url: string) => {
@@ -178,7 +194,7 @@ export default function CommandPalette({
                 <Command
                     label="Command Menu"
                     className="flex flex-col"
-                    shouldFilter={false}
+                    filter={filterCommand}
                 >
                     <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3.5">
                         <Search className="h-4 w-4 shrink-0 text-violet-400" />
@@ -204,7 +220,8 @@ export default function CommandPalette({
                                 {searchResults.requests.map((req) => (
                                     <Command.Item
                                         key={`req-${req.id}`}
-                                        value={`REQ-${req.id} ${req.title}`}
+                                        value={`server:req-${req.id} #${req.id} REQ-${req.id} ${req.title}`}
+                                        keywords={['ticket', 'request', String(req.id), `REQ-${req.id}`, `#${req.id}`, req.title, req.project?.name || '']}
                                         onSelect={() => navigate(`/requests/${req.id}`)}
                                         className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                                     >
@@ -250,7 +267,8 @@ export default function CommandPalette({
                                 {searchResults.projects.map((proj) => (
                                     <Command.Item
                                         key={`search-proj-${proj.id}`}
-                                        value={`project ${proj.name}`}
+                                        value={`server:proj-${proj.id} project ${proj.name}`}
+                                        keywords={['project', 'projects', proj.name]}
                                         onSelect={() => navigate(route('requests.index', { project: String(proj.id) }))}
                                         className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                                     >
@@ -450,6 +468,8 @@ export default function CommandPalette({
                         <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Actions</span>}>
                             {onOpenCreate && (
                                 <Command.Item
+                                    value="Create New Work Request ticket issue task"
+                                    keywords={['create', 'new', 'work', 'request', 'ticket', 'issue', 'task', 'add', 'c']}
                                     onSelect={() => {
                                         setOpen(false);
                                         onOpenCreate();
@@ -467,7 +487,8 @@ export default function CommandPalette({
                             )}
 
                             <Command.Item
-                                value="Create New Project / Initiative"
+                                value="Create New Project area initiative settings"
+                                keywords={['create', 'new', 'project', 'projects', 'area', 'initiative', 'settings']}
                                 onSelect={() => navigate(route('settings.index'))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -482,6 +503,8 @@ export default function CommandPalette({
 
                             {onOpenShortcuts && (
                                 <Command.Item
+                                    value="Keyboard Shortcuts Cheat-sheet help keys"
+                                    keywords={['keyboard', 'shortcuts', 'cheat-sheet', 'help', 'hotkeys', 'keys', '?']}
                                     onSelect={() => {
                                         setOpen(false);
                                         onOpenShortcuts();
@@ -499,6 +522,8 @@ export default function CommandPalette({
                             )}
 
                             <Command.Item
+                                value="Mark All Notifications as Read inbox clear"
+                                keywords={['mark', 'all', 'notifications', 'read', 'inbox', 'clear']}
                                 onSelect={async () => {
                                     setOpen(false);
                                     try {
@@ -524,6 +549,8 @@ export default function CommandPalette({
                         {/* Quick Filters */}
                         <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Quick Filters</span>}>
                             <Command.Item
+                                value="My Assigned Tasks filter work mine tickets"
+                                keywords={['my', 'assigned', 'tasks', 'tickets', 'mine', 'filter', 'work']}
                                 onSelect={() => navigate(route('requests.index', { my_work: '1' }))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -537,6 +564,8 @@ export default function CommandPalette({
                             </Command.Item>
 
                             <Command.Item
+                                value="Review & Sign-Off Queue pending approval review"
+                                keywords={['review', 'sign-off', 'queue', 'pending', 'approval']}
                                 onSelect={() => navigate(route('requests.index', { status: 'review' }))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -550,6 +579,8 @@ export default function CommandPalette({
                             </Command.Item>
 
                             <Command.Item
+                                value="Urgent Priority Items high priority flame critical"
+                                keywords={['urgent', 'priority', 'items', 'high', 'critical', 'flame']}
                                 onSelect={() => navigate(route('requests.index', { priority: 'urgent' }))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -566,6 +597,8 @@ export default function CommandPalette({
                         {/* Navigation */}
                         <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Navigation</span>}>
                             <Command.Item
+                                value="Dashboard Overview home metrics stats"
+                                keywords={['dashboard', 'overview', 'home', 'stats', 'metrics']}
                                 onSelect={() => navigate(route('dashboard'))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -577,6 +610,8 @@ export default function CommandPalette({
                             </Command.Item>
 
                             <Command.Item
+                                value="Live Kanban Board requests tickets issues tasks"
+                                keywords={['kanban', 'board', 'requests', 'tickets', 'issues', 'tasks']}
                                 onSelect={() => navigate(route('requests.index'))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -588,6 +623,8 @@ export default function CommandPalette({
                             </Command.Item>
 
                             <Command.Item
+                                value="Settings & Workspaces team config members roles"
+                                keywords={['settings', 'workspaces', 'config', 'team', 'members', 'roles']}
                                 onSelect={() => navigate(route('settings.index'))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -599,6 +636,8 @@ export default function CommandPalette({
                             </Command.Item>
 
                             <Command.Item
+                                value="Integrations & Webhooks Discord GitHub Mail email connect"
+                                keywords={['integrations', 'webhooks', 'discord', 'github', 'mail', 'email']}
                                 onSelect={() => navigate(route('integrations.index'))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -610,6 +649,8 @@ export default function CommandPalette({
                             </Command.Item>
 
                             <Command.Item
+                                value="Notifications alerts inbox unread"
+                                keywords={['notifications', 'alerts', 'inbox', 'unread']}
                                 onSelect={() => navigate(route('notifications.index'))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -621,6 +662,8 @@ export default function CommandPalette({
                             </Command.Item>
 
                             <Command.Item
+                                value="Profile & Account user password 2fa security"
+                                keywords={['profile', 'account', 'user', 'password', '2fa', 'security']}
                                 onSelect={() => navigate(route('profile.edit'))}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
@@ -632,12 +675,14 @@ export default function CommandPalette({
                             </Command.Item>
                         </Command.Group>
 
-                        {/* Projects from Props */}
-                        {projects.length > 0 && searchResults.projects.length === 0 && (
+                        {/* Projects from Props / Workspace */}
+                        {availableProjects.length > 0 && searchResults.projects.length === 0 && (
                             <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Jump to Project</span>}>
-                                {projects.map((proj) => (
+                                {availableProjects.map((proj) => (
                                     <Command.Item
-                                        key={proj.id}
+                                        key={`avail-proj-${proj.id}`}
+                                        value={`project ${proj.name}`}
+                                        keywords={['project', 'projects', 'jump', 'view', 'board', proj.name]}
                                         onSelect={() => navigate(route('requests.index', { project: String(proj.id) }))}
                                         className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                                     >
@@ -652,13 +697,11 @@ export default function CommandPalette({
                         )}
 
                         {/* Empty State when no results found */}
-                        {search.trim().length > 0 && !loading && searchResults.requests.length === 0 && searchResults.projects.length === 0 && (
-                            <div className="py-10 text-center">
-                                <Search className="mx-auto h-5 w-5 text-zinc-600 mb-2" />
-                                <p className="text-sm font-medium text-zinc-300">No results found for &ldquo;{search.trim()}&rdquo;</p>
-                                <p className="text-xs text-zinc-500 mt-1">Try searching by ticket ID (#101), title, project name, or keyword</p>
-                            </div>
-                        )}
+                        <Command.Empty className="py-10 text-center">
+                            <Search className="mx-auto h-5 w-5 text-zinc-600 mb-2" />
+                            <p className="text-sm font-medium text-zinc-300">No results found for &ldquo;{search.trim()}&rdquo;</p>
+                            <p className="text-xs text-zinc-500 mt-1">Try searching by ticket ID (#101), title, project name, or command</p>
+                        </Command.Empty>
                     </Command.List>
 
                     <div className="flex items-center justify-between border-t border-white/[0.06] bg-[#07090e]/60 px-4 py-2 text-[11px] text-zinc-500">

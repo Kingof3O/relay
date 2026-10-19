@@ -14,7 +14,7 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const props = usePage().props as any;
-    const projects = props.projects ?? [];
+    const projects = props.workspaceProjects ?? props.projects ?? [];
     const users = props.users ?? [];
 
     const [commandOpen, setCommandOpen] = useState(false);
