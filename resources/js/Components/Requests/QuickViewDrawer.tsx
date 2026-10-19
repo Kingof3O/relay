@@ -90,8 +90,6 @@ export default function QuickViewDrawer({
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
 
-    if (!requestId) return null;
-
     const handleCopyLink = () => {
         const url = `${window.location.origin}/requests/${requestId}`;
         navigator.clipboard.writeText(url);
@@ -185,6 +183,8 @@ export default function QuickViewDrawer({
             setSaving(false);
         }
     };
+
+    if (!requestId) return null;
 
     return (
         <div className="fixed inset-0 z-50 overflow-hidden">

@@ -130,7 +130,7 @@ export default function RequestCard({
                                         onOpenDrawer(request);
                                     }
                                 }}
-                                className="line-clamp-2 text-xs font-semibold leading-snug text-zinc-100 transition-colors group-hover:text-white"
+                                className="min-w-0 break-words line-clamp-2 text-xs font-semibold leading-snug text-zinc-100 transition-colors group-hover:text-white"
                             >
                                 {request.title}
                             </p>

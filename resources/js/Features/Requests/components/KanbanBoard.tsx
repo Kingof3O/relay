@@ -244,11 +244,11 @@ export default function KanbanBoard({
     // Loading Skeleton state
     if (isLoading) {
         return (
-            <div className="flex min-w-0 gap-4 overflow-x-auto pb-4 animate-pulse">
+            <div className="flex min-w-0 gap-3.5 sm:gap-4 overflow-x-auto pb-4 custom-scroll board-scroll pr-4 sm:pr-6 animate-pulse">
                 {Object.entries(statuses).map(([key, label]) => (
                     <div
                         key={key}
-                        className="flex min-h-[580px] w-[310px] shrink-0 flex-col rounded-xl border border-white/[0.05] bg-[#111216] p-3 shadow-sm space-y-3"
+                        className="flex min-h-[580px] min-w-[260px] flex-1 max-w-[340px] flex-col rounded-xl border border-white/[0.05] bg-[#111216] p-3 shadow-sm space-y-3"
                     >
                         <div className="flex items-center justify-between border-b border-zinc-800/80 pb-2.5">
                             <div className="flex items-center gap-2">
@@ -309,7 +309,7 @@ export default function KanbanBoard({
     return (
         <div className="space-y-4">
             <DragDropContext onDragEnd={onDragEnd}>
-                <div className="flex min-w-0 gap-4 overflow-x-auto pb-4">
+                <div className="flex min-w-0 gap-3.5 sm:gap-4 overflow-x-auto pb-4 custom-scroll board-scroll pr-4 sm:pr-6">
                     {columns.map((column, colIdx) => {
                         const style = columnHeaders[column.value] ?? { dot: 'bg-zinc-400' };
                         const isCollapsed = activeCollapsed.includes(column.value);
@@ -347,7 +347,7 @@ export default function KanbanBoard({
                         return (
                             <section
                                 key={column.value}
-                                className={`flex min-h-[580px] w-[310px] shrink-0 flex-col rounded-xl border p-3 shadow-sm transition-colors ${
+                                className={`flex min-h-[580px] min-w-[260px] flex-1 max-w-[340px] flex-col rounded-xl border p-3 shadow-sm transition-colors ${
                                     focusedColIndex === colIdx
                                         ? 'border-violet-500/30 bg-[#111218]'
                                         : 'border-white/[0.07] bg-[#111216]'
@@ -411,6 +411,7 @@ export default function KanbanBoard({
                             </section>
                         );
                     })}
+                    <div className="h-full w-2 shrink-0 pointer-events-none" aria-hidden="true" />
                 </div>
             </DragDropContext>
 
