@@ -20,7 +20,7 @@
     body {
         min-width: 320px;
         background: #090a0f;
-        overflow-x: hidden;
+        overflow-x: clip;
     }
 
     /* Selection styling */

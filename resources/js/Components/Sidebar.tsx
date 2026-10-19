@@ -132,7 +132,7 @@ export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarPr
                 />
             )}
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex h-full shrink-0 flex-col justify-between border-r border-zinc-800/80 bg-[#0c0d12] transition-transform duration-200 ease-in-out select-none lg:static lg:h-screen lg:top-0 lg:z-30 lg:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-50 flex h-full shrink-0 flex-col justify-between border-r border-zinc-800/80 bg-[#0c0d12] transition-transform duration-200 ease-in-out select-none lg:sticky lg:top-0 lg:h-screen lg:self-start lg:z-30 lg:translate-x-0 ${
                     mobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
                 } ${
                     collapsed ? 'lg:w-[76px] lg:p-3 w-[280px] p-4' : 'w-[280px] p-4'
