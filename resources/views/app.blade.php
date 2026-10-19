@@ -8,7 +8,11 @@
 
         <title inertia>{{ config('app.name', 'Relay') }}</title>
 
-        <!-- SEO & Fallback Meta Tags -->
+        <!-- Anti-Indexing & Search Engine Privacy (Internal Application) -->
+        <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+        <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+
+        <!-- Fallback Meta Tags -->
         <meta name="description" content="Relay Studio is a high-performance modern workspace for engineering teams, real-time work requests, Kanban boards, and delivery velocity tracking.">
         <link rel="canonical" href="{{ url()->current() }}">
 

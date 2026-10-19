@@ -12,6 +12,10 @@ class SeoAndDiscoveryTest extends TestCase
 
         $response->assertStatus(200);
 
+        // Anti-Indexing Meta Tags for Internal Workspace Privacy
+        $response->assertSee('<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">', false);
+        $response->assertSee('<meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet, noimageindex">', false);
+
         // Core Web Vitals Font Optimizations
         $response->assertSee('rel="preconnect" href="https://fonts.bunny.net"', false);
         $response->assertSee('rel="dns-prefetch" href="https://fonts.bunny.net"', false);
@@ -39,32 +43,20 @@ class SeoAndDiscoveryTest extends TestCase
         $response->assertSee('"name": "Relay Studio"', false);
     }
 
-    public function test_sitemap_xml_exists_and_contains_public_routes(): void
+    public function test_sitemap_xml_does_not_exist_for_internal_app(): void
     {
-        $sitemapPath = public_path('sitemap.xml');
-        $this->assertFileExists($sitemapPath);
-
-        $content = file_get_contents($sitemapPath);
-        $this->assertStringContainsString('<urlset', $content);
-        $this->assertStringContainsString('/login</loc>', $content);
-        $this->assertStringContainsString('<changefreq>weekly</changefreq>', $content);
-        $this->assertStringContainsString('<priority>1.0</priority>', $content);
+        $this->assertFileDoesNotExist(public_path('sitemap.xml'));
     }
 
-    public function test_robots_txt_exists_and_protects_internal_routes(): void
+    public function test_robots_txt_disallows_all_crawlers_for_internal_app(): void
     {
         $robotsPath = public_path('robots.txt');
         $this->assertFileExists($robotsPath);
 
-        $content = file_get_contents($robotsPath);
-        $this->assertStringContainsString('Allow: /', $content);
-        $this->assertStringContainsString('Allow: /login', $content);
-        $this->assertStringContainsString('Disallow: /dashboard', $content);
-        $this->assertStringContainsString('Disallow: /requests', $content);
-        $this->assertStringContainsString('Disallow: /settings', $content);
-        $this->assertStringContainsString('Disallow: /profile', $content);
-        $this->assertStringContainsString('Disallow: /notifications', $content);
-        $this->assertStringContainsString('Sitemap:', $content);
-        $this->assertStringContainsString('sitemap.xml', $content);
+        $content = trim(file_get_contents($robotsPath));
+        $this->assertStringContainsString('User-agent: *', $content);
+        $this->assertStringContainsString('Disallow: /', $content);
+        $this->assertStringNotContainsString('Allow:', $content);
+        $this->assertStringNotContainsString('Sitemap:', $content);
     }
 }

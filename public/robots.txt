@@ -1,11 +1,2 @@
 User-agent: *
-Allow: /
-Allow: /login
-Disallow: /dashboard
-Disallow: /requests
-Disallow: /settings
-Disallow: /profile
-Disallow: /notifications
-
-Sitemap: http://stm.test/sitemap.xml
-Sitemap: {{ url('/sitemap.xml') }}
+Disallow: /
