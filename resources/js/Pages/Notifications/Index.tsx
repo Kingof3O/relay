@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { Head, Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PageHeader from '@/Components/PageHeader';
 import { PageProps } from '@/types';
 import {
     Activity,
@@ -305,42 +306,37 @@ export default function Index({
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-violet-400">
-                                Activity
+                <PageHeader
+                    crumbs={[
+                        { label: 'Activity', href: route('notifications.index') },
+                        { label: 'Inbox' },
+                    ]}
+                    title="Notifications"
+                    badge={
+                        unreadCount > 0 ? (
+                            <span className="inline-flex items-center rounded-full bg-zinc-800 border border-zinc-750 px-2.5 py-0.5 text-xs font-semibold font-mono text-zinc-300">
+                                {unreadCount} unread
                             </span>
-                            <span className="text-zinc-600">/</span>
-                            <span className="text-[11px] text-zinc-500">Inbox</span>
-                        </div>
-                        <div className="mt-1 flex items-center gap-2.5">
-                            <h1 className="text-xl font-bold tracking-tight text-white">Notifications</h1>
-                            {unreadCount > 0 ? (
-                                <span className="inline-flex items-center rounded-full bg-violet-500/15 border border-violet-500/30 px-2.5 py-0.5 text-xs font-bold font-mono text-violet-300 shadow-[0_0_10px_rgba(167,139,250,0.25)]">
-                                    {unreadCount} unread
-                                </span>
-                            ) : (
-                                <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-300">
-                                    <Check className="h-3 w-3" />
-                                    <span>All caught up</span>
-                                </span>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Quick action: Mark all as read */}
-                    {unreadCount > 0 && (
-                        <button
-                            type="button"
-                            onClick={markAllAsRead}
-                            className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-zinc-200 shadow-sm transition-all hover:bg-white/[0.08] hover:text-white hover:border-white/20 active:scale-95"
-                        >
-                            <CheckCheck className="h-4 w-4 text-violet-400" />
-                            <span>Mark all as read</span>
-                        </button>
-                    )}
-                </div>
+                        ) : (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-400">
+                                <Check className="h-3 w-3" />
+                                <span>All caught up</span>
+                            </span>
+                        )
+                    }
+                    actions={
+                        unreadCount > 0 ? (
+                            <button
+                                type="button"
+                                onClick={markAllAsRead}
+                                className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-[#121318] px-3.5 py-1.5 text-xs font-semibold text-zinc-300 shadow-sm transition-all hover:bg-zinc-800 hover:text-white hover:border-zinc-700 active:scale-95"
+                            >
+                                <CheckCheck className="h-4 w-4 text-zinc-400" />
+                                <span>Mark all as read</span>
+                            </button>
+                        ) : undefined
+                    }
+                />
             }
         >
             <Head title="Notifications · Linear Inbox" />

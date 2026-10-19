@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PageHeader from '@/Components/PageHeader';
 import ImageLightbox from '@/Components/ImageLightbox';
 import LivePresenceAvatars from '@/Components/LivePresenceAvatars';
 import {
@@ -16,9 +17,9 @@ import { PageProps } from '@/types';
 import { WorkspaceProject, WorkspaceUser, WorkRequestDetail } from '@/types/workspace';
 import axios, { isAxiosError } from 'axios';
 import { useState, useEffect } from 'react';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 import { toast } from 'sonner';
-import { ChevronRight, ArrowLeft, AlertTriangle, RefreshCw } from 'lucide-react';
+import { AlertTriangle, RefreshCw } from 'lucide-react';
 
 type ShowProps = PageProps<{
     request: WorkRequestDetail;
@@ -164,21 +165,24 @@ export default function Show({
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex flex-wrap items-center justify-between gap-3 text-xs w-full">
-                    <div className="flex items-center gap-2 min-w-0">
-                        <Link href={route('requests.index')} className="flex items-center gap-1.5 font-semibold text-zinc-400 transition-colors hover:text-white">
-                            <ArrowLeft className="h-3.5 w-3.5" />
-                            <span>Work Board</span>
-                        </Link>
-                        <span className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-0.5 font-mono text-[11px] font-bold text-violet-300">
+                <PageHeader
+                    crumbs={[
+                        { label: 'Work', href: route('requests.index') },
+                        { label: 'Board', href: route('requests.index') },
+                        { label: `#REQ-${request.id}` },
+                    ]}
+                    title={
+                        <span className="truncate max-w-[280px] sm:max-w-md lg:max-w-xl">
+                            {request.title}
+                        </span>
+                    }
+                    badge={
+                        <span className="rounded-md border border-zinc-750 bg-zinc-850 px-2 py-0.5 font-mono text-xs font-semibold text-zinc-300">
                             #{request.id}
                         </span>
-                        <ChevronRight className="h-3.5 w-3.5 text-zinc-600" />
-                        <span className="max-w-[240px] truncate font-medium text-zinc-300 sm:max-w-md">{request.title}</span>
-                    </div>
-
-                    <LivePresenceAvatars requestId={request.id} />
-                </div>
+                    }
+                    actions={<LivePresenceAvatars requestId={request.id} />}
+                />
             }
         >
             <Head title={`#${request.id} · ${request.title}`} />

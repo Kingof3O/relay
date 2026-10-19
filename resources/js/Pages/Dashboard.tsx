@@ -1,3 +1,4 @@
+import PageHeader from '@/Components/PageHeader';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { PageProps } from '@/types';
 import { WorkRequestCard } from '@/types/workspace';
@@ -73,18 +74,13 @@ export default function Dashboard({
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center justify-between">
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                                Operations
-                            </span>
-                            <span className="text-zinc-600">/</span>
-                            <span className="text-[11px] text-zinc-500">Overview</span>
-                        </div>
-                        <h1 className="mt-1 text-lg font-semibold text-zinc-100">Studio Dashboard</h1>
-                    </div>
-                </div>
+                <PageHeader
+                    crumbs={[
+                        { label: 'Operations', href: route('dashboard') },
+                        { label: 'Overview' },
+                    ]}
+                    title="Studio Dashboard"
+                />
             }
         >
             <Head title="Dashboard · Overview" />

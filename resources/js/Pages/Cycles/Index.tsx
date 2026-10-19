@@ -1,10 +1,10 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PageHeader from '@/Components/PageHeader';
 import CycleBurndownChart from '@/Components/Cycles/CycleBurndownChart';
 import Badge from '@/Components/Badge';
 import { PageProps, WorkRequestCard } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import {
-    Repeat,
     Calendar,
     Flame,
     CheckCircle2,
@@ -95,66 +95,64 @@ export default function CyclesIndex({
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-500/30 bg-violet-500/10 text-violet-400">
-                            <Repeat className="h-4 w-4" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h1 className="text-base font-bold text-white tracking-tight">
-                                    {currentCycle.name}
-                                </h1>
-                                {currentCycle.is_active ? (
-                                    <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
-                                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                                        Active Cycle
-                                    </span>
-                                ) : (
-                                    <span className="rounded-full border border-zinc-700 bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
-                                        Completed
-                                    </span>
-                                )}
-                            </div>
-                            <p className="flex items-center gap-1.5 text-xs text-zinc-400">
-                                <Calendar className="h-3 w-3 text-zinc-500" />
-                                <span>
-                                    {currentCycle.start_date} – {currentCycle.end_date} (14 days)
-                                </span>
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Cycle Selector & Actions */}
-                    <div className="flex items-center gap-2.5">
-                        <select
-                            value={currentCycle.id}
-                            onChange={(e) =>
-                                router.visit(route('cycles.index', { cycle_id: e.target.value }))
-                            }
-                            className="rounded-xl border border-zinc-800 bg-[#0d0e12] px-3 py-1.5 text-xs font-medium text-zinc-200 focus:border-violet-500 focus:outline-none"
-                        >
-                            {cycles.map((c) => (
-                                <option key={c.id} value={c.id}>
-                                    Cycle {c.number}: {c.name} {c.is_active ? '★ Active' : ''}
-                                </option>
-                            ))}
-                        </select>
-
-                        {currentCycle.is_active && (
-                            <button
-                                type="button"
-                                disabled={rollingOver}
-                                onClick={handleRollover}
-                                className="flex items-center gap-1.5 rounded-xl border border-violet-500/40 bg-violet-600/20 px-3 py-1.5 text-xs font-semibold text-violet-200 hover:bg-violet-600/30 hover:text-white transition-all disabled:opacity-50"
-                                title="Close this cycle and rollover unfinished tickets to the next cycle"
+                <PageHeader
+                    crumbs={[
+                        { label: 'Planning', href: route('cycles.index') },
+                        { label: 'Cycles' },
+                        { label: `Cycle ${currentCycle.number}` },
+                    ]}
+                    title={currentCycle.name}
+                    badge={
+                        currentCycle.is_active ? (
+                            <span className="flex items-center gap-1 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold text-emerald-400">
+                                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                                Active Cycle
+                            </span>
+                        ) : (
+                            <span className="rounded-full border border-zinc-750 bg-zinc-850 px-2 py-0.5 text-[10px] font-semibold text-zinc-400">
+                                Completed
+                            </span>
+                        )
+                    }
+                    subtitle={
+                        <span className="hidden md:flex items-center gap-1.5 text-xs text-zinc-400">
+                            <Calendar className="h-3 w-3 text-zinc-500" />
+                            <span>
+                                {currentCycle.start_date} – {currentCycle.end_date} (14 days)
+                            </span>
+                        </span>
+                    }
+                    actions={
+                        <div className="flex items-center gap-2.5">
+                            <select
+                                value={currentCycle.id}
+                                onChange={(e) =>
+                                    router.visit(route('cycles.index', { cycle_id: e.target.value }))
+                                }
+                                className="rounded-xl border border-zinc-800 bg-[#0d0e12] px-3 py-1.5 text-xs font-medium text-zinc-200 focus:border-zinc-700 focus:outline-none"
                             >
-                                <RotateCcw className={`h-3.5 w-3.5 ${rollingOver ? 'animate-spin' : ''}`} />
-                                <span>{rollingOver ? 'Rolling Over…' : 'Rollover Cycle'}</span>
-                            </button>
-                        )}
-                    </div>
-                </div>
+                                {cycles.map((c) => (
+                                    <option key={c.id} value={c.id}>
+                                        Cycle {c.number}: {c.name} {c.is_active ? '★ Active' : ''}
+                                    </option>
+                                ))}
+                            </select>
+
+                            {currentCycle.is_active && (
+                                <button
+                                    type="button"
+                                    disabled={rollingOver}
+                                    onClick={handleRollover}
+                                    className="flex items-center gap-1.5 rounded-xl border border-zinc-800 bg-[#121318] px-3 py-1.5 text-xs font-semibold text-zinc-200 hover:bg-zinc-800 hover:text-white transition-all disabled:opacity-50"
+                                    title="Close this cycle and rollover unfinished tickets to the next cycle"
+                                >
+                                    <RotateCcw className={`h-3.5 w-3.5 ${rollingOver ? 'animate-spin' : ''}`} />
+                                    <span className="hidden sm:inline">{rollingOver ? 'Rolling Over…' : 'Rollover Cycle'}</span>
+                                </button>
+                            )}
+                        </div>
+                    }
+                />
             }
         >
             <Head title={`Cycles · ${currentCycle.name}`} />

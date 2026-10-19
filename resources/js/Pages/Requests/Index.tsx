@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PageHeader from '@/Components/PageHeader';
 import { PageProps } from '@/types';
 import { WorkspaceProject, WorkspaceUser, WorkRequestCard } from '@/types/workspace';
 import {
@@ -72,16 +73,13 @@ export default function Index({
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex items-center justify-between">
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">Project Board</span>
-                            <span className="text-zinc-600">/</span>
-                            <span className="text-[11px] text-zinc-500">Live Kanban</span>
-                        </div>
-                        <h1 className="mt-1 text-lg font-semibold text-zinc-100">Work Pipeline</h1>
-                    </div>
-                </div>
+                <PageHeader
+                    crumbs={[
+                        { label: 'Work', href: route('requests.index') },
+                        { label: 'Pipeline' },
+                    ]}
+                    title="Work Pipeline"
+                />
             }
         >
             <Head title="Work · Board" />

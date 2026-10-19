@@ -1,9 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PageHeader from '@/Components/PageHeader';
 import GanttTimeline from '@/Components/Roadmap/GanttTimeline';
 import { PageProps } from '@/types';
 import { Head, router } from '@inertiajs/react';
 import {
-    CalendarRange,
     ChevronLeft,
     ChevronRight,
     Layers,
@@ -84,66 +84,63 @@ export default function RoadmapIndex({
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-violet-500/30 bg-violet-500/10 text-violet-400">
-                            <CalendarRange className="h-4 w-4" />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-2">
-                                <h1 className="text-base font-bold text-white tracking-tight">
-                                    Roadmap & Timeline
-                                </h1>
-                                <span className="rounded-full border border-violet-500/30 bg-violet-500/10 px-2 py-0.5 text-[10px] font-semibold text-violet-300">
-                                    Q{quarter} {year}
-                                </span>
+                <PageHeader
+                    crumbs={[
+                        { label: 'Planning', href: route('roadmap.index') },
+                        { label: 'Roadmap & Timeline' },
+                    ]}
+                    title="Roadmap & Timeline"
+                    badge={
+                        <span className="rounded-full border border-zinc-750 bg-zinc-850 px-2.5 py-0.5 text-[10px] font-semibold text-zinc-300">
+                            Q{quarter} {year}
+                        </span>
+                    }
+                    subtitle={
+                        <span className="hidden md:inline text-xs text-zinc-400">
+                            Quarterly timeline of projects, tasks, and dependencies
+                        </span>
+                    }
+                    actions={
+                        <div className="flex items-center gap-2">
+                            <button
+                                type="button"
+                                onClick={handlePrevQuarter}
+                                className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#0d0e12] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
+                                title="Previous Quarter"
+                            >
+                                <ChevronLeft className="h-4 w-4" />
+                            </button>
+
+                            <div className="flex items-center gap-1 rounded-xl border border-zinc-800 bg-[#0d0e12] p-1 text-xs">
+                                {[1, 2, 3, 4].map((q) => (
+                                    <button
+                                        key={q}
+                                        type="button"
+                                        onClick={() =>
+                                            router.visit(route('roadmap.index', { year, quarter: q }))
+                                        }
+                                        className={`rounded-lg border px-2.5 py-1 font-semibold transition-all ${
+                                            quarter === q
+                                                ? 'border-zinc-700 bg-zinc-800 text-white shadow-sm'
+                                                : 'border-transparent text-zinc-400 hover:text-zinc-200'
+                                        }`}
+                                    >
+                                        Q{q}
+                                    </button>
+                                ))}
                             </div>
-                            <p className="text-xs text-zinc-400">
-                                Quarterly timeline of projects, tasks, and dependencies
-                            </p>
+
+                            <button
+                                type="button"
+                                onClick={handleNextQuarter}
+                                className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#0d0e12] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
+                                title="Next Quarter"
+                            >
+                                <ChevronRight className="h-4 w-4" />
+                            </button>
                         </div>
-                    </div>
-
-                    {/* Quarter Switcher Controls */}
-                    <div className="flex items-center gap-2">
-                        <button
-                            type="button"
-                            onClick={handlePrevQuarter}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#0d0e12] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
-                            title="Previous Quarter"
-                        >
-                            <ChevronLeft className="h-4 w-4" />
-                        </button>
-
-                        <div className="flex items-center gap-1 rounded-xl border border-zinc-800 bg-[#0d0e12] p-1 text-xs">
-                            {[1, 2, 3, 4].map((q) => (
-                                <button
-                                    key={q}
-                                    type="button"
-                                    onClick={() =>
-                                        router.visit(route('roadmap.index', { year, quarter: q }))
-                                    }
-                                    className={`rounded-lg border px-2.5 py-1 font-semibold transition-all ${
-                                        quarter === q
-                                            ? 'border-zinc-700 bg-zinc-800 text-white shadow-sm'
-                                            : 'border-transparent text-zinc-400 hover:text-zinc-200'
-                                    }`}
-                                >
-                                    Q{q}
-                                </button>
-                            ))}
-                        </div>
-
-                        <button
-                            type="button"
-                            onClick={handleNextQuarter}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#0d0e12] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
-                            title="Next Quarter"
-                        >
-                            <ChevronRight className="h-4 w-4" />
-                        </button>
-                    </div>
-                </div>
+                    }
+                />
             }
         >
             <Head title={`Roadmap · Q${quarter} ${year}`} />

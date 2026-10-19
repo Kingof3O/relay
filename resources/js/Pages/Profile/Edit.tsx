@@ -1,4 +1,5 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PageHeader from '@/Components/PageHeader';
 import { Head } from '@inertiajs/react';
 import {
     AccountTelemetryCard,
@@ -29,27 +30,19 @@ export default function Edit({ stats, twoFactorEnabled = false, tokens = [] }: P
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <div className="flex items-center gap-2 text-[11px]">
-                            <span className="font-semibold uppercase tracking-wider text-zinc-400">
-                                Account
-                            </span>
-                            <span className="text-zinc-600">/</span>
-                            <span className="text-zinc-500">Identity & Security</span>
-                        </div>
-                        <h1 className="mt-1 text-lg font-semibold text-zinc-100">
-                            Studio Profile & Credentials
-                        </h1>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-xs">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-700/60 bg-zinc-800/50 px-3 py-1 font-medium text-zinc-300">
+                <PageHeader
+                    crumbs={[
+                        { label: 'Account', href: route('profile.edit') },
+                        { label: 'Identity & Security' },
+                    ]}
+                    title="Studio Profile & Credentials"
+                    actions={
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#111216] px-3 py-1 text-xs font-medium text-zinc-300">
                             <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
                             <span>Identity Verified · Active Session</span>
                         </span>
-                    </div>
-                </div>
+                    }
+                />
             }
         >
             <Head title="Profile & Security · Studio Account" />

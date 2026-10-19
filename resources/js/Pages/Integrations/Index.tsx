@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import PageHeader from '@/Components/PageHeader';
 import { PageProps } from '@/types';
 import { Head } from '@inertiajs/react';
-import { Bot, Mail, Activity, Radio, Layers } from 'lucide-react';
+import { Bot, Mail, Activity, Layers } from 'lucide-react';
 import {
     DiscordConfig,
     EmailConfig,
@@ -37,28 +38,19 @@ export default function IntegrationsIndex({
     return (
         <AuthenticatedLayout
             header={
-                <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
-                                Settings
-                            </span>
-                            <span className="text-zinc-600">/</span>
-                            <span className="text-[11px] text-zinc-500">Notifications</span>
-                        </div>
-                        <h1 className="mt-1 text-lg font-semibold text-zinc-100 sm:text-xl flex items-center gap-2">
-                            <Radio className="h-5 w-5 text-violet-400" />
-                            <span>Integrations & Notifications</span>
-                        </h1>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-xs">
-                        <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#111216] px-3 py-1 font-medium text-emerald-400 shadow-sm">
+                <PageHeader
+                    crumbs={[
+                        { label: 'Settings', href: route('settings.index') },
+                        { label: 'Integrations & Webhooks' },
+                    ]}
+                    title="Integrations & Notifications"
+                    actions={
+                        <span className="inline-flex items-center gap-1.5 rounded-full border border-zinc-800 bg-[#111216] px-3 py-1 text-xs font-medium text-emerald-400 shadow-sm">
                             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
                             Notifications Active
                         </span>
-                    </div>
-                </div>
+                    }
+                />
             }
         >
             <Head title="Integrations & Notifications" />
