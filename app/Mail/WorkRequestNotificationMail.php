@@ -16,35 +16,40 @@ use Illuminate\Support\Facades\Cache;
 
 final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels {
+        __serialize as traitSerialize;
+        __unserialize as traitUnserialize;
+    }
 
     /** @param array<string, mixed> $payload */
     public function __construct(
         public User $recipient,
-        public WorkRequest $workRequest,
+        public ?WorkRequest $workRequest = null,
         public array $payload = [],
-    ) {}
+    ) {
+        if ($recipient->email) {
+            $this->to($recipient->email, $recipient->name);
+        }
+    }
 
     /**
      * @return array<string, mixed>
      */
     public function __serialize(): array
     {
-        $data = [
-            'recipient' => $this->getSerializedPropertyValue($this->recipient),
-            'payload' => $this->payload,
-        ];
+        $values = $this->traitSerialize();
 
-        if ($this->workRequest->exists) {
-            $data['workRequest'] = $this->getSerializedPropertyValue($this->workRequest);
-        } else {
-            $data['workRequest_raw'] = [
-                'attributes' => $this->workRequest->getAttributes(),
-                'area_attributes' => $this->workRequest->relationLoaded('area') ? $this->workRequest->area?->getAttributes() : null,
-            ];
+        if (! $this->workRequest || ! $this->workRequest->exists) {
+            unset($values['workRequest']);
+            if ($this->workRequest) {
+                $values['workRequest_raw'] = [
+                    'attributes' => $this->workRequest->getAttributes(),
+                    'area_attributes' => $this->workRequest->relationLoaded('area') ? $this->workRequest->area?->getAttributes() : null,
+                ];
+            }
         }
 
-        return $data;
+        return $values;
     }
 
     /**
@@ -52,17 +57,17 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
      */
     public function __unserialize(array $values): void
     {
-        $this->recipient = $this->getRestoredPropertyValue($values['recipient']);
-        $this->payload = (array) ($values['payload'] ?? []);
+        $hasRaw = isset($values['workRequest_raw']);
+        $raw = $values['workRequest_raw'] ?? null;
+        unset($values['workRequest_raw']);
 
-        if (isset($values['workRequest'])) {
-            try {
-                $this->workRequest = $this->getRestoredPropertyValue($values['workRequest']);
-            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
-                $this->workRequest = EmailNotificationService::getSampleRequest($this->recipient);
-            }
-        } elseif (isset($values['workRequest_raw']) && is_array($values['workRequest_raw'])) {
-            $raw = $values['workRequest_raw'];
+        try {
+            $this->traitUnserialize($values);
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+            $this->workRequest = EmailNotificationService::getSampleRequest($this->recipient);
+        }
+
+        if ($hasRaw && is_array($raw)) {
             $req = new WorkRequest((array) ($raw['attributes'] ?? []));
             if (isset($raw['attributes']['id'])) {
                 $req->id = (int) $raw['attributes']['id'];
@@ -79,8 +84,12 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
                 $req->setRelation('requester', $this->recipient);
             }
             $this->workRequest = $req;
-        } else {
+        } elseif (! $this->workRequest) {
             $this->workRequest = EmailNotificationService::getSampleRequest($this->recipient);
+        }
+
+        if (empty($this->to) && $this->recipient && filled($this->recipient->email)) {
+            $this->to($this->recipient->email, $this->recipient->name);
         }
     }
 
