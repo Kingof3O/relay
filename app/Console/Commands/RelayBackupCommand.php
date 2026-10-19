@@ -140,24 +140,27 @@ final class RelayBackupCommand extends Command
 
     private function getTableNames(): array
     {
-        $driver = config('database.default');
+        $driver = DB::connection()->getDriverName();
         if ($driver === 'sqlite') {
-            return collect(DB::select("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))
-                ->pluck('name')
+            return collect(DB::select("SELECT name AS tbl FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"))
+                ->map(fn ($row) => (string) ($row->tbl ?? $row->name ?? $row->NAME ?? (array_values((array) $row)[0] ?? '')))
+                ->filter()
                 ->values()
                 ->all();
         }
 
         if ($driver === 'mysql') {
-            return collect(DB::select('SELECT table_name FROM information_schema.tables WHERE table_schema = ?', [DB::connection()->getDatabaseName()]))
-                ->pluck('table_name')
+            return collect(DB::select('SELECT table_name AS tbl FROM information_schema.tables WHERE table_schema = ?', [DB::connection()->getDatabaseName()]))
+                ->map(fn ($row) => (string) ($row->tbl ?? $row->table_name ?? $row->TABLE_NAME ?? (array_values((array) $row)[0] ?? '')))
+                ->filter()
                 ->values()
                 ->all();
         }
 
         if ($driver === 'pgsql') {
-            return collect(DB::select("SELECT tablename FROM pg_tables WHERE schemaname = 'public'"))
-                ->pluck('tablename')
+            return collect(DB::select("SELECT tablename AS tbl FROM pg_tables WHERE schemaname = 'public'"))
+                ->map(fn ($row) => (string) ($row->tbl ?? $row->tablename ?? $row->TABLENAME ?? (array_values((array) $row)[0] ?? '')))
+                ->filter()
                 ->values()
                 ->all();
         }
@@ -175,6 +178,9 @@ final class RelayBackupCommand extends Command
         fwrite($handle, "SET FOREIGN_KEY_CHECKS = 0;\n\n");
 
         foreach ($tables as $table) {
+            if (empty($table)) {
+                continue;
+            }
             $rows = DB::table($table)->get();
             if ($rows->isEmpty()) {
                 continue;
