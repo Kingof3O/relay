@@ -215,7 +215,7 @@ final class EmailNotificationService
     /**
      * In-memory sample WorkRequest for preview when database has 0 records.
      */
-    private static function getSampleRequest(User $user): WorkRequest
+    public static function getSampleRequest(?User $user = null): WorkRequest
     {
         $req = new WorkRequest;
         $req->id = 101;

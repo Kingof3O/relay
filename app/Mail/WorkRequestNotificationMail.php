@@ -25,6 +25,65 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
         public array $payload = [],
     ) {}
 
+    /**
+     * @return array<string, mixed>
+     */
+    public function __serialize(): array
+    {
+        $data = [
+            'recipient' => $this->getSerializedPropertyValue($this->recipient),
+            'payload' => $this->payload,
+        ];
+
+        if ($this->workRequest->exists) {
+            $data['workRequest'] = $this->getSerializedPropertyValue($this->workRequest);
+        } else {
+            $data['workRequest_raw'] = [
+                'attributes' => $this->workRequest->getAttributes(),
+                'area_attributes' => $this->workRequest->relationLoaded('area') ? $this->workRequest->area?->getAttributes() : null,
+            ];
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param array<string, mixed> $values
+     */
+    public function __unserialize(array $values): void
+    {
+        $this->recipient = $this->getRestoredPropertyValue($values['recipient']);
+        $this->payload = (array) ($values['payload'] ?? []);
+
+        if (isset($values['workRequest'])) {
+            try {
+                $this->workRequest = $this->getRestoredPropertyValue($values['workRequest']);
+            } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+                $this->workRequest = EmailNotificationService::getSampleRequest($this->recipient);
+            }
+        } elseif (isset($values['workRequest_raw']) && is_array($values['workRequest_raw'])) {
+            $raw = $values['workRequest_raw'];
+            $req = new WorkRequest((array) ($raw['attributes'] ?? []));
+            if (isset($raw['attributes']['id'])) {
+                $req->id = (int) $raw['attributes']['id'];
+            }
+            if (!empty($raw['area_attributes']) && is_array($raw['area_attributes'])) {
+                $area = new \App\Models\Area($raw['area_attributes']);
+                if (isset($raw['area_attributes']['id'])) {
+                    $area->id = (int) $raw['area_attributes']['id'];
+                }
+                $req->setRelation('area', $area);
+            }
+            if ($this->recipient) {
+                $req->setRelation('assignee', $this->recipient);
+                $req->setRelation('requester', $this->recipient);
+            }
+            $this->workRequest = $req;
+        } else {
+            $this->workRequest = EmailNotificationService::getSampleRequest($this->recipient);
+        }
+    }
+
     public function envelope(): Envelope
     {
         $priorityValue = $this->workRequest->priority instanceof RequestPriority

@@ -233,4 +233,26 @@ final class WorkRequestEmailTest extends TestCase
         $this->assertStringContainsString('#6366f1', $normalHtml);
         $this->assertStringContainsString('💬 NEW COMMENT', $normalHtml);
     }
+
+    public function test_mailable_can_serialize_and_unserialize_unpersisted_sample_request_without_database_lookup(): void
+    {
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $sampleReq = \App\Services\EmailNotificationService::getSampleRequest($owner);
+
+        // Ensure sample model is not saved in database
+        $this->assertFalse($sampleReq->exists);
+
+        $mailable = new WorkRequestNotificationMail($owner, $sampleReq, [
+            'event' => 'assignment',
+            'message' => 'Test unpersisted serialization',
+        ]);
+
+        $serialized = serialize($mailable);
+        $unserialized = unserialize($serialized);
+
+        $this->assertInstanceOf(WorkRequestNotificationMail::class, $unserialized);
+        $this->assertSame($owner->email, $unserialized->recipient->email);
+        $this->assertSame($sampleReq->title, $unserialized->workRequest->title);
+        $this->assertFalse($unserialized->workRequest->exists);
+    }
 }
