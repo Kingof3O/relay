@@ -56,13 +56,13 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
 
         $event = (string) ($this->payload['event'] ?? 'notification');
         $eventTag = match ($event) {
-            'assignment' => '⚡ WORK ASSIGNMENT',
-            'review' => '👀 REVIEW REQUESTED',
-            'done' => '✅ WORK COMPLETED',
-            'reopened' => '🔄 REQUEST REOPENED',
-            'blocked' => '🚫 ROADBLOCK FLAGGED',
-            'comment' => '💬 NEW COMMENT',
-            default => '⚡ '.strtoupper(str_replace('_', ' ', $event ?: 'NOTIFICATION')),
+            'assignment' => 'WORK ASSIGNMENT',
+            'review' => 'REVIEW REQUESTED',
+            'done' => 'WORK COMPLETED',
+            'reopened' => 'REQUEST REOPENED',
+            'blocked' => 'ROADBLOCK FLAGGED',
+            'comment' => 'NEW COMMENT',
+            default => strtoupper(str_replace('_', ' ', $event ?: 'NOTIFICATION')),
         };
 
         $messageText = (string) ($this->payload['message'] ?? 'There is an update on this work request.');

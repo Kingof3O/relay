@@ -5,11 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Invitation to join {{ $workspace->name }} on Relay Studio</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050608; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e4e4e7; -webkit-font-smoothing: antialiased;">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#050608" style="background-color: #050608; padding: 40px 16px;">
+<body style="margin: 0; padding: 0; background-color: #f4f5f7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #e4e4e7; -webkit-font-smoothing: antialiased;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f4f5f7" style="background-color: #f4f5f7; padding: 40px 16px;">
         <tr>
             <td align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 560px; background-color: #090a0f; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#090a0f" style="max-width: 560px; background-color: #090a0f; border-radius: 16px; border: 1px solid #1e2029; overflow: hidden; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);">
                     <!-- Top Accent Bar -->
                     <tr>
                         <td height="4" style="height: 4px; background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 100%); font-size: 0; line-height: 0;">

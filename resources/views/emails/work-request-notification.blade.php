@@ -39,12 +39,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>[Relay] #REQ-{{ $workRequest->id }} - {{ $workRequest->title }}</title>
 </head>
-<body style="margin: 0; padding: 0; background-color: #050608; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #e4e4e7; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#050608" style="background-color: #050608; padding: 48px 16px;">
+<body style="margin: 0; padding: 0; background-color: #f4f5f7; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #e4e4e7; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;">
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#f4f5f7" style="background-color: #f4f5f7; padding: 48px 16px;">
         <tr>
             <td align="center">
                 <!-- Main Container -->
-                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 580px; background-color: #090a0f; border-radius: 14px; border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden; box-shadow: 0 20px 48px rgba(0, 0, 0, 0.75);">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" bgcolor="#090a0f" style="max-width: 580px; background-color: #090a0f; border-radius: 14px; border: 1px solid #1e2029; overflow: hidden; box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);">
                     <!-- Top Minimal Accent Line -->
                     <tr>
                         <td height="3" bgcolor="{{ $accentColor }}" style="height: 3px; background: {{ $accentColor }}; background: {{ $accentGradient }}; font-size: 0; line-height: 0;">
@@ -79,7 +79,22 @@
                                         </table>
                                     </td>
                                     <td align="right" style="vertical-align: middle;">
-                                        <span style="display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 6px; background-color: {{ $priorityBadgeBg }}; border: 1px solid {{ $priorityBadgeBorder }}; color: {{ $priorityTextColor }};">
+                                        <span style="display: inline-block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 10px; border-radius: 6px; background-color: {{ $priorityBadgeBg }}; border: 1px solid {{ $priorityBadgeBorder }}; color: {{ $priorityTextColor }}; vertical-align: middle;">
+                                            @if($event === 'assignment')
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                            @elseif($event === 'review')
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                                            @elseif($event === 'done')
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><polyline points="20 6 9 17 4 12"/></svg>
+                                            @elseif($event === 'reopened')
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                                            @elseif($event === 'blocked')
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg>
+                                            @elseif($event === 'comment')
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                                            @else
+                                                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" style="display: inline-block; vertical-align: -1px; margin-right: 4px;"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                            @endif
                                             {{ $eventTag }}
                                         </span>
                                     </td>
