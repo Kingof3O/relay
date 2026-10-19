@@ -19,8 +19,7 @@ createServer((page) =>
         setup: ({ App, props }) => {
             const ziggy = (page.props as any)?.ziggy;
 
-            // @ts-expect-error global route helper for SSR environment
-            global.route = (name: RouteName, params?: any, absolute?: boolean) =>
+            (global as any).route = (name: RouteName, params?: any, absolute?: boolean) =>
                 route(
                     name,
                     params,

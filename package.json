@@ -48,6 +48,7 @@
         "pusher-js": "^8.6.0",
         "react-is": "^19.3.1",
         "recharts": "^3.10.1",
-        "sonner": "^2.0.8"
+        "sonner": "^2.0.8",
+        "ziggy-js": "^2.6.5"
     }
 }
