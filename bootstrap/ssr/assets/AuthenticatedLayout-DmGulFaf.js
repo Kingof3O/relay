@@ -559,12 +559,20 @@ function Sidebar({ mobileOpen = false, onCloseMobile } = {}) {
 							children: [/* @__PURE__ */ jsx("p", {
 								className: "text-[11px] font-semibold uppercase tracking-wider text-zinc-400",
 								children: "Projects"
-							}), /* @__PURE__ */ jsx(Link, {
-								href: route("requests.index"),
-								prefetch: "hover",
-								cacheFor: "30s",
-								className: "text-[11px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors",
-								children: "All"
+							}), /* @__PURE__ */ jsxs("div", {
+								className: "flex items-center gap-2",
+								children: [/* @__PURE__ */ jsx(Link, {
+									href: route("requests.index"),
+									prefetch: "hover",
+									cacheFor: "30s",
+									className: "text-[11px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors",
+									children: "All"
+								}), /* @__PURE__ */ jsx(Link, {
+									href: route("settings.index"),
+									title: "Add or manage projects",
+									className: "flex h-4 w-4 items-center justify-center rounded text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors",
+									children: /* @__PURE__ */ jsx(Plus, { className: "h-3 w-3" })
+								})]
 							})]
 						}), projects.slice(0, 6).map((project) => {
 							const isProjectActive = String(project.id) === activeProjectId;
@@ -1129,6 +1137,24 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 										}), /* @__PURE__ */ jsx("kbd", {
 											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
 											children: "C"
+										})]
+									}),
+									/* @__PURE__ */ jsxs(Command.Item, {
+										value: "Create New Project / Initiative",
+										onSelect: () => navigate(route("settings.index")),
+										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
+										children: [/* @__PURE__ */ jsxs("div", {
+											className: "flex items-center gap-2.5",
+											children: [/* @__PURE__ */ jsx("div", {
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300",
+												children: /* @__PURE__ */ jsx(FolderKanban, { className: "h-3.5 w-3.5" })
+											}), /* @__PURE__ */ jsx("span", {
+												className: "font-semibold",
+												children: "Create New Project"
+											})]
+										}), /* @__PURE__ */ jsx("span", {
+											className: "text-[11px] text-zinc-500",
+											children: "Settings"
 										})]
 									}),
 									onOpenShortcuts && /* @__PURE__ */ jsxs(Command.Item, {

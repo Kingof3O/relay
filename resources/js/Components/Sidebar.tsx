@@ -19,6 +19,7 @@ import {
     Bookmark,
     Radio,
     X,
+    Plus,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { PageProps, WorkspaceProject, WorkspaceNotification } from '@/types';
@@ -304,14 +305,23 @@ export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarPr
                             <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
                                 Projects
                             </p>
-                            <Link
-                                href={route('requests.index')}
-                                prefetch="hover"
-                                cacheFor="30s"
-                                className="text-[11px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
-                            >
-                                All
-                            </Link>
+                            <div className="flex items-center gap-2">
+                                <Link
+                                    href={route('requests.index')}
+                                    prefetch="hover"
+                                    cacheFor="30s"
+                                    className="text-[11px] font-medium text-zinc-400 hover:text-zinc-200 transition-colors"
+                                >
+                                    All
+                                </Link>
+                                <Link
+                                    href={route('settings.index')}
+                                    title="Add or manage projects"
+                                    className="flex h-4 w-4 items-center justify-center rounded text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors"
+                                >
+                                    <Plus className="h-3 w-3" />
+                                </Link>
+                            </div>
                         </div>
                     )}
                     {projects.slice(0, 6).map((project: WorkspaceProject) => {

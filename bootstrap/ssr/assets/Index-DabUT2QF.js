@@ -1,4 +1,4 @@
-import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-Cj2veziU.js";
+import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-DmGulFaf.js";
 import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-ei35FbPM.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DpiBL_MV.js";
 import { Head, router } from "@inertiajs/react";

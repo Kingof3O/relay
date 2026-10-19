@@ -444,6 +444,20 @@ export default function CommandPalette({
                                 </Command.Item>
                             )}
 
+                            <Command.Item
+                                value="Create New Project / Initiative"
+                                onSelect={() => navigate(route('settings.index'))}
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                            >
+                                <div className="flex items-center gap-2.5">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                        <FolderKanban className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-semibold">Create New Project</span>
+                                </div>
+                                <span className="text-[11px] text-zinc-500">Settings</span>
+                            </Command.Item>
+
                             {onOpenShortcuts && (
                                 <Command.Item
                                     onSelect={() => {
