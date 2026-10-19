@@ -23,7 +23,7 @@ class GlobalSearchController extends Controller
         $numericId = null;
         if (is_numeric($q)) {
             $numericId = (int) $q;
-        } elseif (preg_match('/^#?REQ-(\d+)$/i', $q, $matches)) {
+        } elseif (preg_match('/^(?:#|#?REQ[-\s]?)(\d+)$/i', $q, $matches)) {
             $numericId = (int) $matches[1];
         }
 
@@ -33,16 +33,18 @@ class GlobalSearchController extends Controller
         $requests = WorkRequest::query()
             ->when($activeWorkspace, fn ($query) => $query->where('workspace_id', $activeWorkspace->id))
             ->when(! $activeWorkspace, fn ($query) => $query->where(fn ($sub) => $sub->where('requester_id', $user?->id)->orWhere('assignee_id', $user?->id)->orWhereNull('workspace_id')))
-            ->with(['area'])
+            ->with(['area', 'assignee'])
             ->where(function ($query) use ($q, $numericId): void {
                 $query->where('title', 'like', "%{$q}%")
-                    ->orWhere('description', 'like', "%{$q}%");
+                    ->orWhere('description', 'like', "%{$q}%")
+                    ->orWhereHas('assignee', fn ($sub) => $sub->where('name', 'like', "%{$q}%")->orWhere('username', 'like', "%{$q}%"))
+                    ->orWhereHas('area', fn ($sub) => $sub->where('name', 'like', "%{$q}%"));
 
                 if ($numericId !== null) {
                     $query->orWhere('id', $numericId);
                 }
             })
-            ->limit(8)
+            ->limit(10)
             ->get()
             ->map(fn (WorkRequest $item): array => [
                 'id' => $item->id,
@@ -59,8 +61,9 @@ class GlobalSearchController extends Controller
         $projects = Area::query()
             ->when($activeWorkspace, fn ($query) => $query->where('workspace_id', $activeWorkspace->id))
             ->when(! $activeWorkspace, fn ($query) => $query->whereNull('workspace_id'))
+            ->whereNull('archived_at')
             ->where('name', 'like', "%{$q}%")
-            ->limit(4)
+            ->limit(6)
             ->get(['id', 'name', 'color']);
 
         return response()->json([

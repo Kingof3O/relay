@@ -63,13 +63,26 @@ final class GlobalSearchTest extends TestCase
         $idData = $idResponse->json();
         $this->assertCount(1, $idData['requests']);
         $this->assertEquals($request->id, $idData['requests'][0]['id']);
+
+        // Search by numeric ID with hashtag (#ID)
+        $hashResponse = $this->actingAs($user)->getJson('/search?q='.urlencode('#'.$request->id));
+        $hashResponse->assertOk();
+        $hashData = $hashResponse->json();
+        $this->assertCount(1, $hashData['requests']);
+        $this->assertEquals($request->id, $hashData['requests'][0]['id']);
+    }
+
+    public function test_web_search_route_requires_authentication(): void
+    {
+        $response = $this->getJson('/search?q=test');
+        $response->assertUnauthorized();
     }
 
     public function test_global_search_returns_empty_results_when_query_is_blank(): void
     {
         $user = User::query()->where('username', 'robin')->firstOrFail();
 
-        $response = $this->actingAs($user)->getJson('/api/search?q=');
+        $response = $this->actingAs($user)->getJson('/search?q=');
         $response->assertOk();
         $response->assertJson([
             'requests' => [],

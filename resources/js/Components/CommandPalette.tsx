@@ -127,10 +127,30 @@ export default function CommandPalette({
         const timer = setTimeout(async () => {
             setLoading(true);
             try {
-                const res = await axios.get(`/api/search?q=${encodeURIComponent(query)}`);
-                setSearchResults(res.data);
+                const searchUrl = (typeof route === 'function' && route().has('search')) ? route('search') : '/search';
+                const res = await axios.get(searchUrl, {
+                    params: { q: query },
+                    headers: { Accept: 'application/json' },
+                });
+                if (res.data && typeof res.data === 'object' && Array.isArray(res.data.requests)) {
+                    setSearchResults(res.data);
+                } else {
+                    setSearchResults({ requests: [], projects: [] });
+                }
             } catch {
-                // Ignore search error silently
+                try {
+                    const res2 = await axios.get('/api/search', {
+                        params: { q: query },
+                        headers: { Accept: 'application/json' },
+                    });
+                    if (res2.data && typeof res2.data === 'object' && Array.isArray(res2.data.requests)) {
+                        setSearchResults(res2.data);
+                    } else {
+                        setSearchResults({ requests: [], projects: [] });
+                    }
+                } catch {
+                    setSearchResults({ requests: [], projects: [] });
+                }
             } finally {
                 setLoading(false);
             }
@@ -247,8 +267,9 @@ export default function CommandPalette({
                             </Command.Group>
                         )}
 
-                        {/* Actionable Linear Command Group */}
-                        <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400">{ticketId ? `Ticket Actions (#REQ-${ticketId})` : 'Linear Ticket Actions'}</span>}>
+                        {/* Actionable Linear Command Group (Visible when a ticket is open) */}
+                        {Boolean(ticketId) && (
+                            <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400">{`Ticket Actions (#REQ-${ticketId})`}</span>}>
                             {usersList.slice(0, 4).map((member) => (
                                 <Command.Item
                                     key={`assign-${member.id}`}
@@ -423,6 +444,7 @@ export default function CommandPalette({
                                 <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">?</kbd>
                             </Command.Item>
                         </Command.Group>
+                    )}
 
                         {/* Actions */}
                         <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Actions</span>}>
@@ -627,6 +649,15 @@ export default function CommandPalette({
                                     </Command.Item>
                                 ))}
                             </Command.Group>
+                        )}
+
+                        {/* Empty State when no results found */}
+                        {search.trim().length > 0 && !loading && searchResults.requests.length === 0 && searchResults.projects.length === 0 && (
+                            <div className="py-10 text-center">
+                                <Search className="mx-auto h-5 w-5 text-zinc-600 mb-2" />
+                                <p className="text-sm font-medium text-zinc-300">No results found for &ldquo;{search.trim()}&rdquo;</p>
+                                <p className="text-xs text-zinc-500 mt-1">Try searching by ticket ID (#101), title, project name, or keyword</p>
+                            </div>
                         )}
                     </Command.List>
 

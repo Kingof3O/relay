@@ -26,6 +26,8 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
 
+        $middleware->statefulApi();
+
         $middleware->api(append: [
             SecurityHeadersMiddleware::class,
         ]);

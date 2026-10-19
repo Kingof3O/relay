@@ -5,6 +5,7 @@ use App\Http\Controllers\CycleController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\IntegrationController;
+use App\Http\Controllers\GlobalSearchController;
 use App\Http\Controllers\InvitationAcceptController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PersonalAccessTokenController;
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store');
 
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::get('/search', GlobalSearchController::class)->name('search')->middleware('throttle:120,1');
 
     Route::get('/requests', [WorkRequestController::class, 'index'])->name('requests.index');
     Route::post('/requests/bulk', [WorkRequestController::class, 'bulk'])->name('requests.bulk');
