@@ -184,49 +184,55 @@ export default function CommandPalette({
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 p-4 pt-[15vh] backdrop-blur-md animate-in fade-in duration-150"
+            className="fixed inset-0 z-50 flex items-start justify-center bg-black/80 p-4 pt-[12vh] sm:pt-[15vh] backdrop-blur-md animate-in fade-in duration-150"
             onClick={() => setOpen(false)}
         >
             <div
-                className="w-full max-w-xl overflow-hidden rounded-2xl border border-white/[0.12] bg-[#0d1322]/95 shadow-2xl backdrop-blur-2xl shadow-specular animate-in zoom-in-95 duration-150"
+                className="relative w-full max-w-xl overflow-hidden rounded-2xl border border-zinc-800 bg-[#0c0d12]/95 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.95)] shadow-specular backdrop-blur-2xl ring-1 ring-white/[0.05] animate-in zoom-in-95 duration-150"
                 onClick={(e) => e.stopPropagation()}
             >
+                {/* Top specular highlight reflection */}
+                <div
+                    className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"
+                    aria-hidden="true"
+                />
+
                 <Command
                     label="Command Menu"
                     className="flex flex-col"
                     filter={filterCommand}
                 >
-                    <div className="flex items-center gap-3 border-b border-white/[0.08] px-4 py-3.5">
-                        <Search className="h-4 w-4 shrink-0 text-violet-400" />
+                    <div className="flex items-center gap-3 border-b border-zinc-800/80 bg-[#090a0f]/80 px-4 py-3.5">
+                        <Search className="h-4 w-4 shrink-0 text-zinc-400" />
                         <Command.Input
                             value={search}
                             onValueChange={setSearch}
                             placeholder="Type to search tickets or jump to page..."
-                            className="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none"
+                            className="w-full bg-transparent text-sm text-zinc-100 placeholder:text-zinc-500 border-none outline-none focus:outline-none focus:ring-0 focus:border-transparent p-0 shadow-none"
                             autoFocus
                         />
                         {loading && (
-                            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-violet-400" />
+                            <Loader2 className="h-4 w-4 shrink-0 animate-spin text-zinc-400" />
                         )}
-                        <kbd className="flex h-5 items-center gap-0.5 rounded border border-white/[0.1] bg-white/[0.04] px-1.5 text-[10px] font-mono text-zinc-400">
+                        <kbd className="flex h-5 items-center gap-0.5 rounded-md border border-zinc-750 bg-zinc-850 px-1.5 text-[10px] font-mono text-zinc-400 shadow-sm">
                             ESC
                         </kbd>
                     </div>
 
-                    <Command.List className="custom-scroll max-h-[360px] overflow-y-auto p-2 text-xs">
+                    <Command.List className="custom-scroll max-h-[380px] overflow-y-auto p-2 text-xs">
                         {/* Matching Search Results: Tickets */}
                         {searchResults.requests.length > 0 && (
-                            <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400">Matching Tickets ({searchResults.requests.length})</span>}>
+                            <Command.Group heading={<span className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Matching Tickets ({searchResults.requests.length})</span>}>
                                 {searchResults.requests.map((req) => (
                                     <Command.Item
                                         key={`req-${req.id}`}
                                         value={`server:req-${req.id} #${req.id} REQ-${req.id} ${req.title}`}
                                         keywords={['ticket', 'request', String(req.id), `REQ-${req.id}`, `#${req.id}`, req.title, req.project?.name || '']}
                                         onSelect={() => navigate(`/requests/${req.id}`)}
-                                        className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                        className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                                     >
                                         <div className="flex items-center gap-2.5 min-w-0">
-                                            <span className="font-mono text-xs font-bold text-violet-400 shrink-0">
+                                            <span className="font-mono text-xs font-semibold text-zinc-300 shrink-0">
                                                 #REQ-{req.id}
                                             </span>
                                             <span
@@ -263,23 +269,23 @@ export default function CommandPalette({
 
                         {/* Matching Search Results: Projects */}
                         {searchResults.projects.length > 0 && (
-                            <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-indigo-400">Projects ({searchResults.projects.length})</span>}>
+                            <Command.Group heading={<span className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Projects ({searchResults.projects.length})</span>}>
                                 {searchResults.projects.map((proj) => (
                                     <Command.Item
                                         key={`search-proj-${proj.id}`}
                                         value={`server:proj-${proj.id} project ${proj.name}`}
                                         keywords={['project', 'projects', proj.name]}
                                         onSelect={() => navigate(route('requests.index', { project: String(proj.id) }))}
-                                        className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                        className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                                     >
                                         <div className="flex items-center gap-2.5">
                                             <span
                                                 className="h-2.5 w-2.5 rounded-full"
                                                 style={{ backgroundColor: proj.color || '#6366f1' }}
                                             />
-                                            <span className="font-medium">{proj.name}</span>
+                                            <span className="font-medium text-zinc-200">{proj.name}</span>
                                         </div>
-                                        <span className="text-[10px] text-zinc-500">Jump to project</span>
+                                        <span className="rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">Jump to project</span>
                                     </Command.Item>
                                 ))}
                             </Command.Group>
@@ -287,19 +293,20 @@ export default function CommandPalette({
 
                         {/* Actionable Linear Command Group (Visible when a ticket is open) */}
                         {Boolean(ticketId) && (
-                            <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400">{`Ticket Actions (#REQ-${ticketId})`}</span>}>
+                            <Command.Group heading={<span className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">{`Ticket Actions (#REQ-${ticketId})`}</span>}>
                             {usersList.slice(0, 4).map((member) => (
                                 <Command.Item
                                     key={`assign-${member.id}`}
                                     value={`Assign to ${member.name || member.username}`}
+                                    keywords={['assign', member.name, member.username]}
                                     onSelect={() => handleTicketAction({ assignee_id: member.id }, `Assigned to ${member.name || member.username}`)}
-                                    className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                    className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                                 >
                                     <div className="flex items-center gap-2.5">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                        <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                             <UserCheck className="h-3.5 w-3.5" />
                                         </div>
-                                        <span className="font-semibold">Assign to {member.name || member.username}</span>
+                                        <span className="font-medium text-zinc-200">Assign to {member.name || member.username}</span>
                                     </div>
                                     <span className="text-[10px] font-mono text-zinc-400">{member.username ? `@${member.username}` : ''}</span>
                                 </Command.Item>
@@ -307,165 +314,176 @@ export default function CommandPalette({
 
                             <Command.Item
                                 value="Unassign ticket"
+                                keywords={['unassign', 'remove', 'assignee']}
                                 onSelect={() => handleTicketAction({ assignee_id: null }, 'Unassigned ticket')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-700/40 text-zinc-400">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
                                         <UserCheck className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Unassign ticket</span>
+                                    <span className="font-medium text-zinc-200">Unassign ticket</span>
                                 </div>
-                                <span className="text-[10px] text-zinc-500">None</span>
+                                <span className="rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">None</span>
                             </Command.Item>
 
                             <Command.Item
                                 value="Set priority: Urgent"
+                                keywords={['priority', 'urgent', 'p1']}
                                 onSelect={() => handleTicketAction({ priority: 'urgent' }, 'Priority set to Urgent')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-rose-500/20 text-rose-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-rose-400 shadow-sm">
                                         <Flame className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Set priority: Urgent</span>
+                                    <span className="font-medium text-zinc-200">Set priority: Urgent</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 1</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 1</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Set priority: High"
+                                keywords={['priority', 'high', 'p2']}
                                 onSelect={() => handleTicketAction({ priority: 'high' }, 'Priority set to High')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-amber-400 shadow-sm">
                                         <Flame className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Set priority: High</span>
+                                    <span className="font-medium text-zinc-200">Set priority: High</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 2</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 2</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Set priority: Normal"
+                                keywords={['priority', 'normal', 'p3']}
                                 onSelect={() => handleTicketAction({ priority: 'normal' }, 'Priority set to Normal')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-800 text-zinc-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
                                         <Flame className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Set priority: Normal</span>
+                                    <span className="font-medium text-zinc-200">Set priority: Normal</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 3</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">P 3</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Change status: Doing"
+                                keywords={['status', 'doing', 'in progress', 's1']}
                                 onSelect={() => handleTicketAction({ status: 'doing' }, 'Moved to Doing')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-amber-400 shadow-sm">
                                         <Clock className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Change status: Doing</span>
+                                    <span className="font-medium text-zinc-200">Change status: Doing</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 1</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 1</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Change status: Review"
+                                keywords={['status', 'review', 's2']}
                                 onSelect={() => handleTicketAction({ status: 'review' }, 'Moved to Review')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-purple-400 shadow-sm">
                                         <CheckCircle2 className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Change status: Review</span>
+                                    <span className="font-medium text-zinc-200">Change status: Review</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 2</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 2</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Change status: Done"
+                                keywords={['status', 'done', 'completed', 's3']}
                                 onSelect={() => handleTicketAction({ status: 'done' }, 'Moved to Done')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-emerald-400 shadow-sm">
                                         <CheckCircle2 className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Change status: Done</span>
+                                    <span className="font-medium text-zinc-200">Change status: Done</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 3</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">S 3</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Set due date: Tomorrow"
+                                keywords={['due', 'date', 'tomorrow']}
                                 onSelect={() => handleTicketAction({ due_date: getTomorrowStr() }, 'Due date set to Tomorrow')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <Calendar className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Set due date: Tomorrow</span>
+                                    <span className="font-medium text-zinc-200">Set due date: Tomorrow</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">D T</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">D T</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Set due date: Next week"
+                                keywords={['due', 'date', 'next week']}
                                 onSelect={() => handleTicketAction({ due_date: getNextWeekStr() }, 'Due date set to Next week')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-500/20 text-blue-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <Calendar className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Set due date: Next week</span>
+                                    <span className="font-medium text-zinc-200">Set due date: Next week</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">D W</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">D W</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="Copy ticket link"
+                                keywords={['copy', 'ticket', 'link', 'share']}
                                 onSelect={copyTicketLink}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <Copy className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Copy ticket link</span>
+                                    <span className="font-medium text-zinc-200">Copy ticket link</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">⌘ ⇧ C</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">⌘ ⇧ C</kbd>
                             </Command.Item>
 
                             <Command.Item
                                 value="View Keyboard Shortcuts (?)"
+                                keywords={['keyboard', 'shortcuts', 'help', '?']}
                                 onSelect={() => {
                                     setOpen(false);
                                     onOpenShortcuts?.();
                                 }}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <Keyboard className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">View Keyboard Shortcuts (?)</span>
+                                    <span className="font-medium text-zinc-200">View Keyboard Shortcuts (?)</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">?</kbd>
+                                <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">?</kbd>
                             </Command.Item>
                         </Command.Group>
                     )}
 
                         {/* Actions */}
-                        <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Actions</span>}>
+                        <Command.Group heading={<span className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Actions</span>}>
                             {onOpenCreate && (
                                 <Command.Item
                                     value="Create New Work Request ticket issue task"
@@ -474,15 +492,15 @@ export default function CommandPalette({
                                         setOpen(false);
                                         onOpenCreate();
                                     }}
-                                    className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                    className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                                 >
                                     <div className="flex items-center gap-2.5">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300">
+                                        <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                             <Plus className="h-3.5 w-3.5" />
                                         </div>
-                                        <span className="font-semibold">Create New Work Request</span>
+                                        <span className="font-medium text-zinc-200">Create New Work Request</span>
                                     </div>
-                                    <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">C</kbd>
+                                    <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">C</kbd>
                                 </Command.Item>
                             )}
 
@@ -490,15 +508,15 @@ export default function CommandPalette({
                                 value="Create New Project area initiative settings"
                                 keywords={['create', 'new', 'project', 'projects', 'area', 'initiative', 'settings']}
                                 onSelect={() => navigate(route('settings.index'))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <FolderKanban className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Create New Project</span>
+                                    <span className="font-medium text-zinc-200">Create New Project</span>
                                 </div>
-                                <span className="text-[11px] text-zinc-500">Settings</span>
+                                <span className="rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">Settings</span>
                             </Command.Item>
 
                             {onOpenShortcuts && (
@@ -509,15 +527,15 @@ export default function CommandPalette({
                                         setOpen(false);
                                         onOpenShortcuts();
                                     }}
-                                    className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                    className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                                 >
                                     <div className="flex items-center gap-2.5">
-                                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-emerald-300">
+                                        <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                             <Keyboard className="h-3.5 w-3.5" />
                                         </div>
-                                        <span className="font-semibold">Keyboard Shortcuts Cheat-sheet</span>
+                                        <span className="font-medium text-zinc-200">Keyboard Shortcuts Cheat-sheet</span>
                                     </div>
-                                    <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">?</kbd>
+                                    <kbd className="rounded-md border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">?</kbd>
                                 </Command.Item>
                             )}
 
@@ -534,77 +552,79 @@ export default function CommandPalette({
                                         toast.error('Failed to mark notifications as read');
                                     }
                                 }}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-amber-500/20 text-amber-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <CheckCheck className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Mark All Notifications as Read</span>
+                                    <span className="font-medium text-zinc-200">Mark All Notifications as Read</span>
                                 </div>
-                                <span className="text-[11px] text-zinc-500">Inbox</span>
+                                <span className="rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">Inbox</span>
                             </Command.Item>
                         </Command.Group>
 
                         {/* Quick Filters */}
-                        <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Quick Filters</span>}>
+                        <Command.Group heading={<span className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Quick Filters</span>}>
                             <Command.Item
                                 value="My Assigned Tasks filter work mine tickets"
                                 keywords={['my', 'assigned', 'tasks', 'tickets', 'mine', 'filter', 'work']}
                                 onSelect={() => navigate(route('requests.index', { my_work: '1' }))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-violet-500/20 text-violet-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <User className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">My Assigned Tasks</span>
+                                    <span className="font-medium text-zinc-200">My Assigned Tasks</span>
                                 </div>
-                                <span className="text-[11px] text-zinc-500">Filter work</span>
+                                <span className="rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">Filter work</span>
                             </Command.Item>
 
                             <Command.Item
                                 value="Review & Sign-Off Queue pending approval review"
                                 keywords={['review', 'sign-off', 'queue', 'pending', 'approval']}
                                 onSelect={() => navigate(route('requests.index', { status: 'review' }))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-purple-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
                                         <Clock className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Review & Sign-Off Queue</span>
+                                    <span className="font-medium text-zinc-200">Review & Sign-Off Queue</span>
                                 </div>
-                                <span className="text-[11px] text-zinc-500">Pending sign-off</span>
+                                <span className="rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">Pending sign-off</span>
                             </Command.Item>
 
                             <Command.Item
                                 value="Urgent Priority Items high priority flame critical"
                                 keywords={['urgent', 'priority', 'items', 'high', 'critical', 'flame']}
                                 onSelect={() => navigate(route('requests.index', { priority: 'urgent' }))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-rose-500/20 text-rose-300">
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-rose-400 shadow-sm">
                                         <Flame className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Urgent Priority Items</span>
+                                    <span className="font-medium text-zinc-200">Urgent Priority Items</span>
                                 </div>
-                                <span className="text-[11px] text-zinc-500">High priority</span>
+                                <span className="rounded-md border border-rose-500/20 bg-rose-500/10 px-2 py-0.5 text-[10px] font-mono text-rose-400">High priority</span>
                             </Command.Item>
                         </Command.Group>
 
                         {/* Navigation */}
-                        <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Navigation</span>}>
+                        <Command.Group heading={<span className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Navigation</span>}>
                             <Command.Item
                                 value="Dashboard Overview home metrics stats"
                                 keywords={['dashboard', 'overview', 'home', 'stats', 'metrics']}
                                 onSelect={() => navigate(route('dashboard'))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <LayoutDashboard className="h-4 w-4 text-zinc-400" />
-                                    <span>Dashboard / Overview</span>
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
+                                        <LayoutDashboard className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-medium text-zinc-200">Dashboard / Overview</span>
                                 </div>
                                 <ArrowRight className="h-3 w-3 text-zinc-600" />
                             </Command.Item>
@@ -613,11 +633,13 @@ export default function CommandPalette({
                                 value="Live Kanban Board requests tickets issues tasks"
                                 keywords={['kanban', 'board', 'requests', 'tickets', 'issues', 'tasks']}
                                 onSelect={() => navigate(route('requests.index'))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <KanbanSquare className="h-4 w-4 text-zinc-400" />
-                                    <span>Live Kanban Board</span>
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
+                                        <KanbanSquare className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-medium text-zinc-200">Live Kanban Board</span>
                                 </div>
                                 <ArrowRight className="h-3 w-3 text-zinc-600" />
                             </Command.Item>
@@ -626,11 +648,13 @@ export default function CommandPalette({
                                 value="Settings & Workspaces team config members roles"
                                 keywords={['settings', 'workspaces', 'config', 'team', 'members', 'roles']}
                                 onSelect={() => navigate(route('settings.index'))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <Settings className="h-4 w-4 text-zinc-400" />
-                                    <span>Settings & Workspaces</span>
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
+                                        <Settings className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-medium text-zinc-200">Settings & Workspaces</span>
                                 </div>
                                 <ArrowRight className="h-3 w-3 text-zinc-600" />
                             </Command.Item>
@@ -639,11 +663,13 @@ export default function CommandPalette({
                                 value="Integrations & Webhooks Discord GitHub Mail email connect"
                                 keywords={['integrations', 'webhooks', 'discord', 'github', 'mail', 'email']}
                                 onSelect={() => navigate(route('integrations.index'))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <Radio className="h-4 w-4 text-zinc-400" />
-                                    <span>Integrations & Webhooks (Discord · Mail)</span>
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
+                                        <Radio className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-medium text-zinc-200">Integrations & Webhooks (Discord · Mail)</span>
                                 </div>
                                 <ArrowRight className="h-3 w-3 text-zinc-600" />
                             </Command.Item>
@@ -652,11 +678,13 @@ export default function CommandPalette({
                                 value="Notifications alerts inbox unread"
                                 keywords={['notifications', 'alerts', 'inbox', 'unread']}
                                 onSelect={() => navigate(route('notifications.index'))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <Bell className="h-4 w-4 text-zinc-400" />
-                                    <span>Notifications</span>
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
+                                        <Bell className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-medium text-zinc-200">Notifications</span>
                                 </div>
                                 <ArrowRight className="h-3 w-3 text-zinc-600" />
                             </Command.Item>
@@ -665,11 +693,13 @@ export default function CommandPalette({
                                 value="Profile & Account user password 2fa security"
                                 keywords={['profile', 'account', 'user', 'password', '2fa', 'security']}
                                 onSelect={() => navigate(route('profile.edit'))}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <User className="h-4 w-4 text-zinc-400" />
-                                    <span>Profile & Account</span>
+                                    <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-400 shadow-sm">
+                                        <User className="h-3.5 w-3.5" />
+                                    </div>
+                                    <span className="font-medium text-zinc-200">Profile & Account</span>
                                 </div>
                                 <ArrowRight className="h-3 w-3 text-zinc-600" />
                             </Command.Item>
@@ -677,39 +707,41 @@ export default function CommandPalette({
 
                         {/* Projects from Props / Workspace */}
                         {availableProjects.length > 0 && searchResults.projects.length === 0 && (
-                            <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500">Jump to Project</span>}>
+                            <Command.Group heading={<span className="px-2 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">Jump to Project</span>}>
                                 {availableProjects.map((proj) => (
                                     <Command.Item
                                         key={`avail-proj-${proj.id}`}
                                         value={`project ${proj.name}`}
                                         keywords={['project', 'projects', 'jump', 'view', 'board', proj.name]}
                                         onSelect={() => navigate(route('requests.index', { project: String(proj.id) }))}
-                                        className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                        className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2 text-zinc-300 transition-colors aria-selected:bg-zinc-800/70 aria-selected:text-white hover:bg-zinc-800/40"
                                     >
                                         <div className="flex items-center gap-2.5">
-                                            <FolderKanban className="h-3.5 w-3.5 text-indigo-400" />
-                                            <span>{proj.name}</span>
+                                            <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-800 bg-[#121318] text-zinc-300 shadow-sm">
+                                                <FolderKanban className="h-3.5 w-3.5" />
+                                            </div>
+                                            <span className="font-medium text-zinc-200">{proj.name}</span>
                                         </div>
-                                        <span className="text-[10px] text-zinc-500">View Board</span>
+                                        <span className="rounded-md border border-zinc-800 bg-zinc-850 px-2 py-0.5 text-[10px] font-mono text-zinc-400">View Board</span>
                                     </Command.Item>
                                 ))}
                             </Command.Group>
                         )}
 
                         {/* Empty State when no results found */}
-                        <Command.Empty className="py-10 text-center">
-                            <Search className="mx-auto h-5 w-5 text-zinc-600 mb-2" />
+                        <Command.Empty className="py-12 text-center">
+                            <Search className="mx-auto h-5 w-5 text-zinc-600 mb-2.5" />
                             <p className="text-sm font-medium text-zinc-300">No results found for &ldquo;{search.trim()}&rdquo;</p>
-                            <p className="text-xs text-zinc-500 mt-1">Try searching by ticket ID (#101), title, project name, or command</p>
+                            <p className="text-xs text-zinc-400 mt-1">Try searching by ticket ID (#101), title, project name, or command</p>
                         </Command.Empty>
                     </Command.List>
 
-                    <div className="flex items-center justify-between border-t border-white/[0.06] bg-[#07090e]/60 px-4 py-2 text-[11px] text-zinc-500">
+                    <div className="flex items-center justify-between border-t border-zinc-800/80 bg-[#090a0f]/80 px-4 py-2.5 text-[11px] text-zinc-400">
                         <div className="flex items-center gap-3">
-                            <span>Navigate <kbd className="rounded border border-white/[0.1] px-1 py-0.5 font-mono text-[9px] text-zinc-400">↑↓</kbd></span>
-                            <span>Select <kbd className="rounded border border-white/[0.1] px-1 py-0.5 font-mono text-[9px] text-zinc-400">↵</kbd></span>
+                            <span>Navigate <kbd className="rounded border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 font-mono text-[9px] text-zinc-400">↑↓</kbd></span>
+                            <span>Select <kbd className="rounded border border-zinc-750 bg-zinc-850 px-1.5 py-0.5 font-mono text-[9px] text-zinc-400">↵</kbd></span>
                         </div>
-                        <span className="text-[10px] text-violet-400">Relay Command Studio</span>
+                        <span className="font-mono text-[10px] text-zinc-400 font-medium">Relay Command Studio</span>
                     </div>
                 </Command>
             </div>
