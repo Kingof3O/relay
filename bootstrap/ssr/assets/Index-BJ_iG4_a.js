@@ -1,4 +1,4 @@
-import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout--RwczYuP.js";
+import { D as Modal, _ as notifyError, t as Authenticated, v as notifySuccess } from "./AuthenticatedLayout-Cj2veziU.js";
 import { a as DiscordWebhookCard, r as EmailTemplateCard } from "./Integrations-ei35FbPM.js";
 import { t as TeamManagementCard } from "./TeamManagementCard-DpiBL_MV.js";
 import { Head, router } from "@inertiajs/react";
@@ -663,13 +663,16 @@ function MemberFormModal({ show, onClose, roles, editingMember, onSaved }) {
 			password: "",
 			role_id: editingMember.role_id ? String(editingMember.role_id) : roles[0]?.id ? String(roles[0].id) : ""
 		});
-		else setMember({
-			name: "",
-			username: "",
-			email: "",
-			password: "",
-			role_id: roles[0]?.id ? String(roles[0].id) : ""
-		});
+		else {
+			const defaultRole = roles.find((r) => r.name === "Developer") || roles.find((r) => r.name === "Member") || roles[0];
+			setMember({
+				name: "",
+				username: "",
+				email: "",
+				password: "",
+				role_id: defaultRole?.id ? String(defaultRole.id) : ""
+			});
+		}
 		setTeamError("");
 	}, [
 		editingMember,
