@@ -3,6 +3,7 @@ import { usePage } from '@inertiajs/react';
 import { PageProps } from '@/types';
 import { WorkspaceUser } from '@/types/workspace';
 import { Users, Eye } from 'lucide-react';
+import { getInitials } from '@/Utils/avatar';
 
 interface PresenceUser {
     id: number;
@@ -74,10 +75,7 @@ export default function LivePresenceAvatars({ requestId, className = '' }: LiveP
         <div className={`flex items-center gap-2.5 ${className}`} title="Active viewers on this request">
             <div className="flex -space-x-2 overflow-hidden items-center py-1">
                 {viewers.slice(0, 4).map((viewer, index) => {
-                    const initials = viewer.name
-                        ? viewer.name.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase()
-                        : viewer.username?.slice(0, 2).toUpperCase() || 'U';
-
+                    const initials = getInitials(viewer.name, viewer.username);
                     const colorClass = viewer.color || AVATAR_COLORS[index % AVATAR_COLORS.length];
 
                     return (

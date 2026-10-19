@@ -16,6 +16,8 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
+import ConfirmDialog from '@/Components/ConfirmDialog';
+import EmptyState from '@/Components/EmptyState';
 
 export interface TokenItem {
     id: number;
@@ -42,6 +44,7 @@ export default function PersonalAccessTokensCard({
     const [abilities, setAbilities] = useState<string[]>(['*']);
     const [loading, setLoading] = useState(false);
     const [revokingId, setRevokingId] = useState<number | null>(null);
+    const [tokenToRevoke, setTokenToRevoke] = useState<TokenItem | null>(null);
     const [newToken, setNewToken] = useState<string | null>(null);
     const [copiedToken, setCopiedToken] = useState(false);
 
@@ -109,12 +112,18 @@ export default function PersonalAccessTokensCard({
         }
     };
 
-    const handleRevokeToken = async (tokenId: number) => {
-        setRevokingId(tokenId);
+    const handleRevokeToken = (token: TokenItem) => {
+        setTokenToRevoke(token);
+    };
+
+    const confirmRevokeToken = async () => {
+        if (!tokenToRevoke) return;
+        setRevokingId(tokenToRevoke.id);
         try {
-            await axios.delete(`/tokens/${tokenId}`);
-            setTokens((prev) => prev.filter((t) => t.id !== tokenId));
+            await axios.delete(`/tokens/${tokenToRevoke.id}`);
+            setTokens((prev) => prev.filter((t) => t.id !== tokenToRevoke.id));
             toast.success('Token revoked.');
+            setTokenToRevoke(null);
         } catch (err: any) {
             toast.error(err.response?.data?.message || 'Failed to revoke token.');
         } finally {
@@ -295,12 +304,12 @@ export default function PersonalAccessTokensCard({
             {/* Tokens List */}
             <div className="mt-6">
                 {tokens.length === 0 ? (
-                    <div className="rounded-xl border border-zinc-800/60 bg-zinc-900/30 py-8 text-center">
-                        <Key className="mx-auto h-6 w-6 text-zinc-600" />
-                        <p className="mt-2 text-xs text-zinc-400">
-                            No personal access tokens generated yet.
-                        </p>
-                    </div>
+                    <EmptyState
+                        icon={Key}
+                        title="No personal access tokens"
+                        description="Generate an API token to securely authenticate scripts, integrations, and tools with Relay Studio."
+                        className="py-10"
+                    />
                 ) : (
                     <div className="divide-y divide-zinc-800/60 rounded-xl border border-zinc-800/80 bg-zinc-900/40">
                         {tokens.map((token) => {
@@ -325,7 +334,7 @@ export default function PersonalAccessTokensCard({
                                                 <div className="flex flex-wrap gap-1">
                                                     {token.abilities.map((ability) => (
                                                         <span
-                                                            key={ability}
+                                                             key={ability}
                                                             className="rounded bg-zinc-800 px-1.5 py-0.5 font-mono text-[10px] text-zinc-400"
                                                         >
                                                             {ability}
@@ -343,7 +352,7 @@ export default function PersonalAccessTokensCard({
 
                                     <button
                                         type="button"
-                                        onClick={() => handleRevokeToken(token.id)}
+                                        onClick={() => handleRevokeToken(token)}
                                         disabled={revokingId === token.id}
                                         className="inline-flex items-center gap-1.5 self-start sm:self-center rounded-lg border border-red-500/20 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-400 transition-all hover:bg-red-500/20 hover:border-red-500/40 disabled:opacity-50"
                                     >
@@ -356,6 +365,17 @@ export default function PersonalAccessTokensCard({
                     </div>
                 )}
             </div>
+
+            <ConfirmDialog
+                open={Boolean(tokenToRevoke)}
+                onClose={() => setTokenToRevoke(null)}
+                onConfirm={confirmRevokeToken}
+                title={`Revoke token "${tokenToRevoke?.name}"?`}
+                description="Any application or script utilizing this token will immediately lose access to your workspace."
+                confirmLabel="Revoke Token"
+                variant="danger"
+                loading={Boolean(revokingId)}
+            />
         </div>
     );
 }

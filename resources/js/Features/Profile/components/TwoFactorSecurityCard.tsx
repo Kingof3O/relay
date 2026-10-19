@@ -19,6 +19,7 @@ import SecondaryButton from '@/Components/SecondaryButton';
 import TextInput from '@/Components/TextInput';
 import InputLabel from '@/Components/InputLabel';
 import InputError from '@/Components/InputError';
+import ConfirmDialog from '@/Components/ConfirmDialog';
 
 interface TwoFactorSecurityCardProps {
     initialEnabled?: boolean;
@@ -40,6 +41,7 @@ export default function TwoFactorSecurityCard({
     const [showRecoveryModal, setShowRecoveryModal] = useState<boolean>(false);
     const [copiedSecret, setCopiedSecret] = useState<boolean>(false);
     const [copiedCodes, setCopiedCodes] = useState<boolean>(false);
+    const [showDisableDialog, setShowDisableDialog] = useState<boolean>(false);
 
     const handleStartEnable = async () => {
         setLoading(true);
@@ -83,17 +85,18 @@ export default function TwoFactorSecurityCard({
         }
     };
 
-    const handleDisable = async () => {
-        if (!confirm('Are you sure you want to disable two-factor authentication? This reduces your account security.')) {
-            return;
-        }
+    const handleDisable = () => {
+        setShowDisableDialog(true);
+    };
 
+    const confirmDisable = async () => {
         setLoading(true);
         try {
             await axios.delete(route('two-factor.disable'));
             setEnabled(false);
             setIsSettingUp(false);
             setRecoveryCodes([]);
+            setShowDisableDialog(false);
             toast.success('Two-factor authentication disabled.');
         } catch (err: any) {
             toast.error(err.response?.data?.message || 'Failed to disable two-factor authentication.');
@@ -395,6 +398,17 @@ export default function TwoFactorSecurityCard({
                     </div>
                 </div>
             )}
+
+            <ConfirmDialog
+                open={showDisableDialog}
+                onClose={() => setShowDisableDialog(false)}
+                onConfirm={confirmDisable}
+                title="Disable Two-Factor Authentication?"
+                description="Disabling two-factor authentication significantly reduces your account security against unauthorized access."
+                confirmLabel="Disable 2FA"
+                variant="danger"
+                loading={loading}
+            />
         </section>
     );
 }

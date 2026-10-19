@@ -1,5 +1,6 @@
-import React from 'react';
-import Badge from '@/Components/Badge';
+import StatusBadge from '@/Components/StatusBadge';
+import PriorityBadge from '@/Components/PriorityBadge';
+import EmptyState from '@/Components/EmptyState';
 import { WorkRequestCard } from '@/types/workspace';
 import { getChecklistStats } from '@/Components/MarkdownViewer';
 import {
@@ -10,6 +11,7 @@ import {
     AlertTriangle,
     ChevronUp,
     ChevronDown,
+    Inbox,
 } from 'lucide-react';
 
 interface RequestListViewProps {
@@ -20,14 +22,6 @@ interface RequestListViewProps {
     onToggleSelect?: (id: number) => void;
     onSelectAll?: (ids: number[]) => void;
 }
-
-const statusTone: Record<string, 'violet' | 'blue' | 'amber' | 'emerald' | 'zinc'> = {
-    new: 'zinc',
-    ready: 'blue',
-    doing: 'amber',
-    review: 'violet',
-    done: 'emerald',
-};
 
 export default function RequestListView({
     requests,
@@ -115,12 +109,11 @@ export default function RequestListView({
 
                                         {/* Status */}
                                         <td className="py-3 px-3">
-                                            <Badge
-                                                variant={statusTone[req.status] ?? 'zinc'}
-                                                className="text-[10px] font-medium"
-                                            >
-                                                {req.status_label ?? req.status}
-                                            </Badge>
+                                            <StatusBadge
+                                                status={req.status}
+                                                label={req.status_label}
+                                                className="text-[10px]"
+                                            />
                                         </td>
 
                                         {/* Title & Checklist info */}
@@ -221,13 +214,11 @@ export default function RequestListView({
 
                                         {/* Priority */}
                                         <td className="py-3 px-3">
-                                            <Badge
-                                                variant={req.priority === 'urgent' ? 'rose' : 'zinc'}
-                                                dot={req.priority === 'urgent'}
+                                            <PriorityBadge
+                                                priority={req.priority}
+                                                label={req.priority_label}
                                                 className="text-[10px]"
-                                            >
-                                                {req.priority_label}
-                                            </Badge>
+                                            />
                                         </td>
 
                                         {/* Assignee */}
@@ -267,8 +258,12 @@ export default function RequestListView({
                             })
                         ) : (
                             <tr>
-                                <td colSpan={9} className="py-12 text-center text-zinc-500">
-                                    No requests found in this view.
+                                <td colSpan={9} className="py-8">
+                                    <EmptyState
+                                        icon={Inbox}
+                                        title="No requests found in this view"
+                                        description="Try adjusting your filters or create a new request."
+                                    />
                                 </td>
                             </tr>
                         )}

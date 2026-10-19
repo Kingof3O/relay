@@ -5,6 +5,7 @@ import { PageProps } from '@/types';
 import { WorkspaceProject, WorkspaceUser } from '@/types/workspace';
 import { Head } from '@inertiajs/react';
 import { FolderKanban, Users, Sparkles, Activity, ShieldCheck, Radio } from 'lucide-react';
+import SegmentedTabs, { TabItem } from '@/Components/SegmentedTabs';
 import {
     ProjectsManagementCard,
     TeamManagementCard,
@@ -87,144 +88,17 @@ export default function Settings({
             <div className="mx-auto max-w-[1600px] space-y-6">
                 {/* Modern Obsidian Tab Switcher */}
                 <div className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-800/80 pb-3">
-                    <nav className="flex flex-wrap items-center gap-1.5 rounded-xl border border-zinc-800 bg-[#111216] p-1.5 shadow-sm">
-                        {/* 1. Projects Tab */}
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('projects')}
-                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
-                                activeTab === 'projects'
-                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
-                            }`}
-                        >
-                            <FolderKanban
-                                className={`h-3.5 w-3.5 ${
-                                    activeTab === 'projects' ? 'text-zinc-200' : 'text-zinc-500'
-                                }`}
-                            />
-                            <span>Projects</span>
-                            <span
-                                className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
-                                    activeTab === 'projects'
-                                        ? 'bg-zinc-750 text-zinc-300'
-                                        : 'bg-zinc-850 text-zinc-500'
-                                }`}
-                            >
-                                {activeProjectsCount}
-                            </span>
-                        </button>
-
-                        {/* 2. Team & Roles Tab */}
-                        {canManageTeam && (
-                            <button
-                                type="button"
-                                onClick={() => setActiveTab('team')}
-                                className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
-                                    activeTab === 'team'
-                                        ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
-                                        : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
-                                }`}
-                            >
-                                <Users
-                                    className={`h-3.5 w-3.5 ${
-                                        activeTab === 'team' ? 'text-zinc-200' : 'text-zinc-500'
-                                    }`}
-                                />
-                                <span>Team & Roles</span>
-                                <span
-                                    className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
-                                        activeTab === 'team'
-                                            ? 'bg-zinc-750 text-zinc-300'
-                                            : 'bg-zinc-850 text-zinc-500'
-                                    }`}
-                                >
-                                    {teamCount}
-                                </span>
-                            </button>
-                        )}
-
-                        {/* 3. Authentication Tab */}
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('auth')}
-                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
-                                activeTab === 'auth'
-                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
-                            }`}
-                        >
-                            <ShieldCheck
-                                className={`h-3.5 w-3.5 ${
-                                    activeTab === 'auth' ? 'text-zinc-200' : 'text-zinc-500'
-                                }`}
-                            />
-                            <span>Authentication</span>
-                            <span
-                                className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
-                                    activeTab === 'auth'
-                                        ? 'bg-zinc-750 text-zinc-300'
-                                        : 'bg-zinc-850 text-zinc-500'
-                                }`}
-                            >
-                                Security
-                            </span>
-                        </button>
-
-                        {/* 4. Integrations & Alerts Tab */}
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('integrations')}
-                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
-                                activeTab === 'integrations'
-                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
-                            }`}
-                        >
-                            <Radio
-                                className={`h-3.5 w-3.5 ${
-                                    activeTab === 'integrations' ? 'text-zinc-200' : 'text-zinc-500'
-                                }`}
-                            />
-                            <span>Integrations & Alerts</span>
-                            <span
-                                className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
-                                    activeTab === 'integrations'
-                                        ? 'bg-zinc-750 text-zinc-300'
-                                        : 'bg-zinc-850 text-zinc-500'
-                                }`}
-                            >
-                                Discord + Mail
-                            </span>
-                        </button>
-
-                        {/* 5. Workspace Snapshot Tab */}
-                        <button
-                            type="button"
-                            onClick={() => setActiveTab('snapshot')}
-                            className={`flex items-center gap-2.5 rounded-lg px-4 py-2 text-xs font-semibold tracking-wide transition-all duration-150 ${
-                                activeTab === 'snapshot'
-                                    ? 'border border-zinc-700 bg-zinc-800 text-white shadow-sm'
-                                    : 'border border-transparent text-zinc-400 hover:border-zinc-750 hover:bg-[#14161c] hover:text-zinc-200'
-                            }`}
-                        >
-                            <Sparkles
-                                className={`h-3.5 w-3.5 ${
-                                    activeTab === 'snapshot' ? 'text-zinc-200' : 'text-zinc-500'
-                                }`}
-                            />
-                            <span>Workspace Snapshot</span>
-                            <span
-                                className={`rounded-full px-2 py-0.5 font-mono text-[10px] font-bold ${
-                                    activeTab === 'snapshot'
-                                        ? 'bg-zinc-750 text-zinc-300'
-                                        : 'bg-zinc-850 text-zinc-500'
-                                }`}
-                            >
-                                Live
-                            </span>
-                        </button>
-                    </nav>
+                    <SegmentedTabs<'projects' | 'team' | 'auth' | 'integrations' | 'snapshot'>
+                        tabs={[
+                            { key: 'projects', label: 'Projects', count: activeProjectsCount, icon: FolderKanban },
+                            ...(canManageTeam ? [{ key: 'team' as const, label: 'Team & Roles', count: teamCount, icon: Users }] : []),
+                            { key: 'auth', label: 'Authentication', count: 'Security', icon: ShieldCheck },
+                            { key: 'integrations', label: 'Integrations & Alerts', count: 'Discord + Mail', icon: Radio },
+                            { key: 'snapshot', label: 'Workspace Snapshot', count: 'Live', icon: Sparkles },
+                        ]}
+                        activeTab={activeTab}
+                        onChange={(tab) => setActiveTab(tab)}
+                    />
 
                     <div className="hidden lg:flex items-center gap-2 text-[11px] text-zinc-500 font-mono">
                         <span>Workspace Scope: Global</span>

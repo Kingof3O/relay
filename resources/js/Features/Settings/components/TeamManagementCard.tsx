@@ -14,6 +14,7 @@ import {
     Shield,
     Sparkles,
 } from 'lucide-react';
+import EmptyState from '@/Components/EmptyState';
 
 export interface TeamManagementCardProps {
     users: WorkspaceUser[];
@@ -379,22 +380,26 @@ export default function TeamManagementCard({
             {/* High-Density Responsive Team Roster Grid: grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4 */}
             <div className="mt-5 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
                 {filteredUsers.length === 0 ? (
-                    <div className="col-span-full flex flex-col items-center justify-center rounded-xl border border-zinc-800 bg-[#0c0d12] py-16 text-center">
-                        <Users className="h-8 w-8 text-zinc-600 mb-2" />
-                        <p className="text-xs font-semibold text-zinc-300">No team members match your filter.</p>
-                        <p className="text-[11px] text-zinc-500 mt-1">Try adjusting your search query or role selector.</p>
-                        {(searchQuery || selectedRoleFilter !== 'all') && (
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    setSearchQuery('');
-                                    setSelectedRoleFilter('all');
-                                }}
-                                className="mt-3 rounded-lg border border-zinc-750 bg-zinc-850 px-3 py-1 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
-                            >
-                                Reset Filters
-                            </button>
-                        )}
+                    <div className="col-span-full rounded-xl border border-zinc-800 bg-[#0c0d12]">
+                        <EmptyState
+                            icon={Users}
+                            title="No team members match your filter"
+                            description="Try adjusting your search query or role selector to locate members."
+                            action={
+                                (searchQuery || selectedRoleFilter !== 'all') ? (
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setSearchQuery('');
+                                            setSelectedRoleFilter('all');
+                                        }}
+                                        className="rounded-lg border border-zinc-750 bg-zinc-850 px-3 py-1.5 text-xs text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+                                    >
+                                        Reset Filters
+                                    </button>
+                                ) : undefined
+                            }
+                        />
                     </div>
                 ) : (
                     filteredUsers.map((user) => {

@@ -2,7 +2,8 @@ import { useState, useEffect, FormEvent } from 'react';
 import { Link, router } from '@inertiajs/react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import Badge from '@/Components/Badge';
+import StatusBadge from '@/Components/StatusBadge';
+import PriorityBadge from '@/Components/PriorityBadge';
 import MarkdownViewer from '@/Components/MarkdownViewer';
 import ImageLightbox from '@/Components/ImageLightbox';
 import FileDropZone from './FileDropZone';
@@ -217,6 +218,12 @@ export default function QuickViewDrawer({
                             <span className="truncate text-xs text-zinc-400 font-medium">
                                 {request?.project?.name ?? 'No Project'}
                             </span>
+                            {request && (
+                                <div className="hidden sm:flex items-center gap-1.5 ml-1">
+                                    <StatusBadge status={request.status} className="text-[10px]" />
+                                    <PriorityBadge priority={request.priority} className="text-[10px]" />
+                                </div>
+                            )}
                         </div>
 
                         <div className="flex items-center gap-1.5">

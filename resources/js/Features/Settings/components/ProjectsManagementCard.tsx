@@ -18,6 +18,7 @@ import {
     LayoutGrid,
     List,
 } from 'lucide-react';
+import ConfirmDialog from '@/Components/ConfirmDialog';
 
 export interface ProjectsManagementCardProps {
     projects: WorkspaceProject[];
@@ -51,6 +52,8 @@ export default function ProjectsManagementCard({
     const [searchQuery, setSearchQuery] = useState('');
     const [filterState, setFilterState] = useState<'all' | 'active' | 'archived'>('all');
     const [viewMode, setViewMode] = useState<'grid' | 'table'>('grid');
+    const [projectToArchive, setProjectToArchive] = useState<WorkspaceProject | null>(null);
+    const [archiving, setArchiving] = useState(false);
 
     const addProject = async () => {
         if (!newProject.trim() || adding) return;
@@ -129,25 +132,30 @@ export default function ProjectsManagementCard({
         }
     };
 
-    const archiveProject = async (project: WorkspaceProject) => {
-        if (!window.confirm(`Archive "${project.name}"? Active requests will remain preserved.`)) {
-            return;
-        }
+    const archiveProject = (project: WorkspaceProject) => {
+        setProjectToArchive(project);
+    };
 
+    const confirmArchiveProject = async () => {
+        if (!projectToArchive) return;
+        setArchiving(true);
         try {
-            await axios.delete(route('settings.projects.destroy', project.id));
+            await axios.delete(route('settings.projects.destroy', projectToArchive.id));
             setProjects((current) =>
                 current.map((item) =>
-                    item.id === project.id ? { ...item, archived_at: new Date().toISOString() } : item
+                    item.id === projectToArchive.id ? { ...item, archived_at: new Date().toISOString() } : item
                 )
             );
             setProjectError('');
+            setProjectToArchive(null);
         } catch (exception: unknown) {
             setProjectError(
                 isAxiosError(exception)
                     ? (exception.response?.data?.message ?? 'Could not archive the project.')
                     : 'Could not archive the project.'
             );
+        } finally {
+            setArchiving(false);
         }
     };
 
@@ -809,6 +817,17 @@ export default function ProjectsManagementCard({
                     </table>
                 </div>
             )}
+
+            <ConfirmDialog
+                open={Boolean(projectToArchive)}
+                onClose={() => setProjectToArchive(null)}
+                onConfirm={confirmArchiveProject}
+                title={`Archive "${projectToArchive?.name}"?`}
+                description="Active work requests will remain preserved in the system. You can restore this project at any time."
+                confirmLabel="Archive Project"
+                variant="danger"
+                loading={archiving}
+            />
         </div>
     );
 }

@@ -2,6 +2,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PageHeader from '@/Components/PageHeader';
 import ImageLightbox from '@/Components/ImageLightbox';
 import LivePresenceAvatars from '@/Components/LivePresenceAvatars';
+import ConfirmDialog from '@/Components/ConfirmDialog';
 import {
     RequestHeroHeader,
     RequestBlockerBanner,
@@ -54,6 +55,8 @@ export default function Show({
     const [error, setError] = useState<string | null>(null);
     const [conflict, setConflict] = useState<{ message: string; showDiff?: boolean } | null>(null);
     const [lightboxSrc, setLightboxSrc] = useState<string | null>(null);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [deleting, setDeleting] = useState(false);
 
     const update = async (changes: Record<string, unknown>) => {
         setSaving(true);
@@ -132,11 +135,23 @@ export default function Show({
         }
     };
 
-    const remove = async () => {
-        if (!window.confirm('Permanently delete this request, its activity, and its media? They cannot be recovered.')) return;
-        await axios.delete(route('requests.destroy', request.id));
-        toast.success('Request deleted');
-        router.visit(route('requests.index'));
+    const remove = () => {
+        setShowDeleteDialog(true);
+    };
+
+    const confirmDelete = async () => {
+        setDeleting(true);
+        try {
+            await axios.delete(route('requests.destroy', request.id));
+            toast.success('Request deleted');
+            setShowDeleteDialog(false);
+            router.visit(route('requests.index'));
+        } catch (err: unknown) {
+            const msg = isAxiosError(err) ? (err.response?.data?.message ?? 'Could not delete request.') : 'Could not delete request.';
+            toast.error(msg);
+        } finally {
+            setDeleting(false);
+        }
     };
 
     const handleReloadFresh = () => {
@@ -266,6 +281,17 @@ export default function Show({
             </div>
 
             <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
+
+            <ConfirmDialog
+                open={showDeleteDialog}
+                onClose={() => setShowDeleteDialog(false)}
+                onConfirm={confirmDelete}
+                title={`Delete work request "#REQ-${request.id}"?`}
+                description="This will permanently delete this work request, its activity history, and uploaded attachments. This action cannot be undone."
+                confirmLabel="Delete Request"
+                variant="danger"
+                loading={deleting}
+            />
         </AuthenticatedLayout>
     );
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Bot, Mail, CheckCircle2, XCircle, Clock, Activity, Search } from 'lucide-react';
+import { Bot, Mail, CheckCircle2, XCircle, Clock, Activity, Search, Inbox } from 'lucide-react';
 import type { DeliveryLogItem } from '../types';
+import EmptyState from '@/Components/EmptyState';
 
 interface Props {
     logs: DeliveryLogItem[];
@@ -110,8 +111,12 @@ export function DeliveryLogTable({ logs }: Props) {
                     <tbody className="divide-y divide-zinc-800/50">
                         {filteredLogs.length === 0 ? (
                             <tr>
-                                <td colSpan={6} className="py-8 text-center text-zinc-500">
-                                    No notification logs match your current filter criteria.
+                                <td colSpan={6} className="py-6">
+                                    <EmptyState
+                                        icon={Inbox}
+                                        title="No delivery logs found"
+                                        description="No notification delivery logs match your current filter criteria."
+                                    />
                                 </td>
                             </tr>
                         ) : (

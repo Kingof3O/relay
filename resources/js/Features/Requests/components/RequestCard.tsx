@@ -1,18 +1,10 @@
-import Badge from '@/Components/Badge';
+import PriorityBadge from '@/Components/PriorityBadge';
 import { WorkRequestCard } from '@/types/workspace';
 import { Link, router } from '@inertiajs/react';
 import { AlertTriangle, Paperclip, Play, Send, Check, Copy } from 'lucide-react';
 import { Draggable } from '@hello-pangea/dnd';
 import { getChecklistStats } from '@/Components/MarkdownViewer';
 import { toast } from 'sonner';
-
-const statusTone: Record<string, 'violet' | 'blue' | 'amber' | 'emerald' | 'zinc'> = {
-    new: 'zinc',
-    ready: 'blue',
-    doing: 'amber',
-    review: 'violet',
-    done: 'emerald',
-};
 
 export default function RequestCard({
     request,
@@ -159,17 +151,11 @@ export default function RequestCard({
                                         Rolled
                                     </span>
                                 )}
-                                <Badge
-                                    variant={
-                                        request.priority === 'urgent'
-                                            ? 'rose'
-                                            : statusTone[request.status] ?? 'zinc'
-                                    }
-                                    dot={request.priority === 'urgent'}
+                                <PriorityBadge
+                                    priority={request.priority}
+                                    label={request.priority === 'urgent' ? 'Urgent' : request.priority_label}
                                     className="shrink-0"
-                                >
-                                    {request.priority === 'urgent' ? 'Urgent' : request.priority_label}
-                                </Badge>
+                                />
                             </div>
                         </div>
 

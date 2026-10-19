@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Inbox, Plus, Loader2 } from 'lucide-react';
 import { WorkRequestCard, PageProps } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
+import EmptyState from '@/Components/EmptyState';
 import RequestCard from './RequestCard';
 
 interface KanbanBoardProps {
@@ -280,29 +281,27 @@ export default function KanbanBoard({
     // Empty Pipeline State (0 tickets)
     if (requests.length === 0) {
         return (
-            <div className="flex min-h-[520px] w-full flex-col items-center justify-center rounded-2xl border border-dashed border-white/[0.08] bg-[#0c0d12]/50 p-12 text-center backdrop-blur-sm animate-in fade-in duration-200">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/[0.1] bg-[#121318] text-violet-400 shadow-2xl ring-1 ring-white/[0.04]">
-                    <Inbox className="h-7 w-7" />
-                </div>
-                <h3 className="mt-4 text-base font-bold text-white tracking-tight">No work requests in pipeline</h3>
-                <p className="mt-1.5 max-w-sm text-xs text-zinc-400 leading-relaxed">
-                    The pipeline is currently clear. Create a new work request or adjust your active board filters to inspect backlog items.
-                </p>
-                <div className="mt-6 flex items-center gap-3">
-                    <button
-                        type="button"
-                        onClick={() => {
-                            if (typeof window !== 'undefined') {
-                                window.dispatchEvent(new CustomEvent('open-quick-create'));
-                            }
-                        }}
-                        className="flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-xs font-semibold text-zinc-950 shadow-md transition-all hover:bg-zinc-200 active:scale-[0.98]"
-                    >
-                        <Plus className="h-3.5 w-3.5" />
-                        <span>Create Work Request</span>
-                        <kbd className="rounded bg-zinc-200 px-1 py-0.5 text-[9px] font-mono text-zinc-800">C</kbd>
-                    </button>
-                </div>
+            <div className="flex min-h-[480px] w-full items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-[#0c0d12]/50 p-12 text-center backdrop-blur-sm animate-in fade-in duration-200">
+                <EmptyState
+                    icon={Inbox}
+                    title="No work requests in pipeline"
+                    description="The pipeline is currently clear. Create a new work request or adjust your active board filters to inspect backlog items."
+                    action={
+                        <button
+                            type="button"
+                            onClick={() => {
+                                if (typeof window !== 'undefined') {
+                                    window.dispatchEvent(new CustomEvent('open-quick-create'));
+                                }
+                            }}
+                            className="flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-semibold text-zinc-950 shadow-md transition-all hover:bg-zinc-200 active:scale-[0.98]"
+                        >
+                            <Plus className="h-3.5 w-3.5" />
+                            <span>Create Work Request</span>
+                            <kbd className="rounded bg-zinc-200 px-1 py-0.5 text-[9px] font-mono text-zinc-800">C</kbd>
+                        </button>
+                    }
+                />
             </div>
         );
     }

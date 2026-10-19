@@ -3,6 +3,7 @@ import { usePage, router } from '@inertiajs/react';
 import type { PageProps, Workspace } from '@/types';
 import { Check, ChevronsUpDown, Plus, Building2, X } from 'lucide-react';
 import Modal from '@/Components/Modal';
+import { getInitials } from '@/Utils/avatar';
 
 interface WorkspaceSwitcherProps {
     collapsed?: boolean;
@@ -38,11 +39,7 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
     }, [isOpen]);
 
     const activeWorkspaceName = currentWorkspace?.name ?? 'Relay Studio';
-    const activeInitials = (
-        currentWorkspace?.name
-            ? currentWorkspace.name.trim().split(/\s+/).map((word: string) => word[0]).join('').slice(0, 2).toUpperCase()
-            : 'RS'
-    );
+    const activeInitials = getInitials(currentWorkspace?.name, 'RS');
 
     const handleSwitch = (workspace: Workspace) => {
         if (workspace.id === currentWorkspace?.id) {
@@ -147,13 +144,7 @@ export default function WorkspaceSwitcher({ collapsed = false }: WorkspaceSwitch
                         {userWorkspaces.length > 0 ? (
                             userWorkspaces.map((ws) => {
                                 const isActive = ws.id === currentWorkspace?.id;
-                                const wsInitials = ws.name
-                                    .trim()
-                                    .split(/\s+/)
-                                    .map((w: string) => w[0])
-                                    .join('')
-                                    .slice(0, 2)
-                                    .toUpperCase();
+                                const wsInitials = getInitials(ws.name);
 
                                 return (
                                     <button

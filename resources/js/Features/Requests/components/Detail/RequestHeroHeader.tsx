@@ -1,4 +1,6 @@
 import Badge from '@/Components/Badge';
+import PriorityBadge from '@/Components/PriorityBadge';
+import ConfirmDialog from '@/Components/ConfirmDialog';
 import { WorkRequestDetail } from '@/types/workspace';
 import { router } from '@inertiajs/react';
 import { useState } from 'react';
@@ -48,6 +50,7 @@ export default function RequestHeroHeader({
 }: RequestHeroHeaderProps) {
     const [copied, setCopied] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
+    const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
 
     const handleCopyLink = () => {
         navigator.clipboard.writeText(window.location.href);
@@ -57,11 +60,15 @@ export default function RequestHeroHeader({
     };
 
     const handleDuplicate = () => {
-        if (!window.confirm(`Duplicate work request "#REQ-${request.id}"?`)) return;
+        setShowDuplicateDialog(true);
+    };
+
+    const confirmDuplicate = () => {
         setDuplicating(true);
         router.post(route('requests.clone', request.id), {}, {
             onSuccess: () => {
                 toast.success('Work request duplicated successfully');
+                setShowDuplicateDialog(false);
             },
             onError: () => {
                 toast.error('Failed to duplicate work request');
@@ -176,12 +183,10 @@ export default function RequestHeroHeader({
             <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                        <Badge
-                            variant={request.priority === 'urgent' ? 'rose' : 'violet'}
-                            dot={request.priority === 'urgent'}
-                        >
-                            {request.priority_label}
-                        </Badge>
+                        <PriorityBadge
+                            priority={request.priority}
+                            label={request.priority_label}
+                        />
                         <span className="rounded-md border border-white/[0.08] bg-white/[0.04] px-2 py-0.5 font-mono text-[10px] font-bold text-zinc-300">
                             {request.project?.name ?? 'No project'}
                         </span>
@@ -238,6 +243,17 @@ export default function RequestHeroHeader({
                     </div>
                 </div>
             </div>
+
+            <ConfirmDialog
+                open={showDuplicateDialog}
+                onClose={() => setShowDuplicateDialog(false)}
+                onConfirm={confirmDuplicate}
+                title={`Duplicate work request "#REQ-${request.id}"?`}
+                description="This will create a new work request with identical attributes, tags, and description in your workspace."
+                confirmLabel="Duplicate Request"
+                variant="primary"
+                loading={duplicating}
+            />
         </div>
     );
 }

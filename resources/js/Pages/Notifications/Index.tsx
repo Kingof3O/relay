@@ -4,6 +4,8 @@ import axios from 'axios';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PageHeader from '@/Components/PageHeader';
 import { PageProps } from '@/types';
+import KpiTile from '@/Components/KpiTile';
+import EmptyState from '@/Components/EmptyState';
 import {
     Activity,
     Inbox,
@@ -344,43 +346,18 @@ export default function Index({
             <div className="mx-auto max-w-[1600px] space-y-6">
                 {/* 1. Top KPI Metric Row (Dashboard High-Density Obsidian Style) */}
                 <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
-                    {kpiMetrics.map((metric) => {
-                        const Icon = metric.icon;
-                        const isActive = currentTab === metric.tab;
-
-                        return (
-                            <button
-                                key={metric.label}
-                                type="button"
-                                onClick={() => setCurrentTab(metric.tab)}
-                                className={`group relative flex flex-col justify-between rounded-xl border p-4 text-left transition-all duration-150 ${
-                                    isActive
-                                        ? 'border-violet-500/50 bg-[#161720] shadow-[0_0_20px_rgba(139,92,246,0.15)] ring-1 ring-violet-500/30'
-                                        : 'border-white/[0.07] bg-[#111216] hover:border-zinc-700 hover:bg-[#14161c]'
-                                }`}
-                            >
-                                <div className="flex items-center justify-between gap-3 w-full">
-                                    <div
-                                        className={`flex h-8 w-8 items-center justify-center rounded-lg border ${
-                                            isActive
-                                                ? 'border-violet-500/40 bg-violet-500/20 text-violet-300'
-                                                : 'border-zinc-800 bg-zinc-850 text-zinc-300'
-                                        }`}
-                                    >
-                                        <Icon className="h-4 w-4" />
-                                    </div>
-                                    <div>{metric.badge}</div>
-                                </div>
-                                <div className="mt-4">
-                                    <p className="text-xs font-medium text-zinc-400">{metric.label}</p>
-                                    <p className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-white tabular-nums">
-                                        {metric.value}
-                                    </p>
-                                    <p className="mt-1 text-[11px] text-zinc-500">{metric.detail}</p>
-                                </div>
-                            </button>
-                        );
-                    })}
+                    {kpiMetrics.map((metric) => (
+                        <KpiTile
+                            key={metric.label}
+                            label={metric.label}
+                            value={metric.value}
+                            icon={metric.icon}
+                            detail={metric.detail}
+                            badge={metric.badge}
+                            onClick={() => setCurrentTab(metric.tab)}
+                            active={currentTab === metric.tab}
+                        />
+                    ))}
                 </section>
 
                 {/* 2. Expansive 12-Column Triage Layout */}
@@ -669,16 +646,11 @@ export default function Index({
                                 </div>
                             ) : (
                                 /* Sleek Obsidian Zero-Inbox State Card */
-                                <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-                                    <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-emerald-500/30 bg-[#0c0d12] text-emerald-400 shadow-[0_0_30px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/20 mb-4">
-                                        <CheckCircle2 className="h-8 w-8" />
-                                    </div>
-
-                                    <h3 className="text-base font-bold text-white tracking-tight">
-                                        {searchQuery ? 'No matching notifications' : 'All caught up'}
-                                    </h3>
-                                    <p className="mt-1 max-w-sm text-xs text-zinc-400 leading-relaxed">
-                                        {searchQuery
+                                <EmptyState
+                                    icon={CheckCircle2}
+                                    title={searchQuery ? 'No matching notifications' : 'All caught up'}
+                                    description={
+                                        searchQuery
                                             ? `No notifications found matching "${searchQuery}".`
                                             : currentTab === 'assignments'
                                             ? 'No assignment updates requiring your attention right now.'
@@ -686,20 +658,19 @@ export default function Index({
                                             ? 'No pending review alerts or sign-off requests.'
                                             : currentTab === 'inbox'
                                             ? 'No unread notifications. You are all caught up!'
-                                            : 'No notifications found in this list.'}
-                                    </p>
-
-                                    {searchQuery ? (
-                                        <button
-                                            type="button"
-                                            onClick={() => setSearchQuery('')}
-                                            className="mt-5 inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
-                                        >
-                                            <X className="h-3.5 w-3.5" />
-                                            <span>Clear search filter</span>
-                                        </button>
-                                    ) : (
-                                        <div className="mt-6 flex flex-col sm:flex-row items-center gap-3">
+                                            : 'No notifications found in this list.'
+                                    }
+                                    action={
+                                        searchQuery ? (
+                                            <button
+                                                type="button"
+                                                onClick={() => setSearchQuery('')}
+                                                className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-4 py-2 text-xs font-semibold text-zinc-300 transition-colors hover:bg-white/[0.08] hover:text-white"
+                                            >
+                                                <X className="h-3.5 w-3.5" />
+                                                <span>Clear search filter</span>
+                                            </button>
+                                        ) : (
                                             <Link
                                                 href={route('requests.index')}
                                                 className="flex items-center gap-1.5 rounded-xl border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-xs font-semibold text-violet-300 transition-all hover:bg-violet-500/20 hover:text-white shadow-sm"
@@ -707,9 +678,10 @@ export default function Index({
                                                 <span>Go to Kanban Board</span>
                                                 <ArrowRight className="h-3.5 w-3.5" />
                                             </Link>
-                                        </div>
-                                    )}
-                                </div>
+                                        )
+                                    }
+                                    className="py-20"
+                                />
                             )}
                         </div>
                     </div>

@@ -2,6 +2,8 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PageHeader from '@/Components/PageHeader';
 import CycleBurndownChart from '@/Components/Cycles/CycleBurndownChart';
 import Badge from '@/Components/Badge';
+import ConfirmDialog from '@/Components/ConfirmDialog';
+import EmptyState from '@/Components/EmptyState';
 import { PageProps, WorkRequestCard } from '@/types';
 import { Head, Link, router } from '@inertiajs/react';
 import {
@@ -64,19 +66,23 @@ export default function CyclesIndex({
     tickets,
 }: CyclesIndexProps) {
     const [rollingOver, setRollingOver] = useState(false);
+    const [showRolloverDialog, setShowRolloverDialog] = useState(false);
     const [filterStatus, setFilterStatus] = useState<string>('all');
 
     const handleRollover = () => {
-        if (!confirm(`Are you sure you want to rollover Cycle #${currentCycle.number}? Unfinished tickets will be rolled over to the next cycle.`)) {
-            return;
-        }
+        setShowRolloverDialog(true);
+    };
 
+    const confirmRollover = () => {
         setRollingOver(true);
         router.post(
             route('cycles.rollover', currentCycle.id),
             {},
             {
-                onSuccess: () => toast.success('Cycle rolled over successfully!'),
+                onSuccess: () => {
+                    toast.success('Cycle rolled over successfully!');
+                    setShowRolloverDialog(false);
+                },
                 onError: () => toast.error('Could not rollover cycle.'),
                 onFinish: () => setRollingOver(false),
             }
@@ -324,12 +330,26 @@ export default function CyclesIndex({
                                 </div>
                             ))
                         ) : (
-                            <div className="py-8 text-center text-xs text-zinc-500">
-                                No tasks found for this cycle and filter.
-                            </div>
+                            <EmptyState
+                                icon={Calendar}
+                                title="No tasks found"
+                                description="No tasks found for this cycle and filter criteria."
+                                className="py-10"
+                            />
                         )}
                     </div>
                 </div>
+
+                <ConfirmDialog
+                    open={showRolloverDialog}
+                    onClose={() => setShowRolloverDialog(false)}
+                    onConfirm={confirmRollover}
+                    title={`Rollover Cycle #${currentCycle.number}?`}
+                    description="Unfinished tickets will be rolled over to the next active cycle. Historical burndown metrics will be saved."
+                    confirmLabel="Rollover Cycle"
+                    variant="warning"
+                    loading={rollingOver}
+                />
             </div>
         </AuthenticatedLayout>
     );

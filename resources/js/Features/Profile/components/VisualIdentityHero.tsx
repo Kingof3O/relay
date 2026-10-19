@@ -10,20 +10,13 @@ import {
     Sparkles,
     TrendingUp,
 } from 'lucide-react';
+import { getInitials } from '@/Utils/avatar';
 
 export interface VisualIdentityHeroProps {
     stats?: {
         assigned_count: number;
         completed_count: number;
     };
-}
-
-function getInitials(name: string): string {
-    const parts = name.trim().split(/\s+/);
-    if (parts.length >= 2) {
-        return (parts[0][0] + parts[1][0]).toUpperCase();
-    }
-    return name.slice(0, 2).toUpperCase();
 }
 
 function formatJoined(dateStr?: string | null): string {
