@@ -1,5 +1,5 @@
 import { i as InputError, n as PrimaryButton, r as InputLabel, t as TextInput_default } from "./TextInput-CMpMv42q.js";
-import { t as Authenticated } from "./AuthenticatedLayout-CmuF4Gg9.js";
+import { t as Authenticated } from "./AuthenticatedLayout--RwczYuP.js";
 import { n as getAvatarPalette, r as getRoleBadgeStyle } from "./TeamManagementCard-DpiBL_MV.js";
 import { Head, Link, useForm, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";

@@ -1,4 +1,4 @@
-import { t as Authenticated } from "./AuthenticatedLayout-CmuF4Gg9.js";
+import { t as Authenticated } from "./AuthenticatedLayout--RwczYuP.js";
 import { Head, Link, router } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useMemo, useState } from "react";

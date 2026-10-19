@@ -17,6 +17,11 @@ export default {
                 mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
             },
             colors: {
+                zinc: {
+                    750: '#333338',
+                    850: '#1f1f23',
+                    925: '#111114',
+                },
                 obsidian: {
                     DEFAULT: '#07090e',
                     50: '#f8fafc',

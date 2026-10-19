@@ -23,10 +23,13 @@ final class IntegrationController extends Controller
     public function index(Request $request): Response|JsonResponse
     {
         $user = $request->user();
+        $activeWorkspace = $user?->currentWorkspace();
+        $workspaceId = $activeWorkspace?->id;
         $channelFilter = $request->input('channel');
         $statusFilter = $request->input('status');
 
         $logsQuery = IntegrationDeliveryLog::query()
+            ->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))
             ->when($channelFilter, fn ($q) => $q->where('channel', $channelFilter))
             ->when($statusFilter, fn ($q) => $q->where('status', $statusFilter))
             ->latest('id');
@@ -44,13 +47,19 @@ final class IntegrationController extends Controller
             'created_human' => $log->created_at?->diffForHumans(),
         ]);
 
+        $baseKpisQuery = IntegrationDeliveryLog::query()
+            ->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId));
+
+        $totalDispatches = (clone $baseKpisQuery)->count();
+        $successCount = (clone $baseKpisQuery)->where('status', 'success')->count();
+
         $kpis = [
-            'total_dispatches' => IntegrationDeliveryLog::query()->count(),
-            'discord_count' => IntegrationDeliveryLog::query()->where('channel', 'discord')->count(),
-            'email_count' => IntegrationDeliveryLog::query()->where('channel', 'email')->count(),
-            'failed_count' => IntegrationDeliveryLog::query()->where('status', 'failed')->count(),
-            'success_rate' => IntegrationDeliveryLog::query()->count() > 0
-                ? (int) round((IntegrationDeliveryLog::query()->where('status', 'success')->count() / max(IntegrationDeliveryLog::query()->count(), 1)) * 100)
+            'total_dispatches' => $totalDispatches,
+            'discord_count' => (clone $baseKpisQuery)->where('channel', 'discord')->count(),
+            'email_count' => (clone $baseKpisQuery)->where('channel', 'email')->count(),
+            'failed_count' => (clone $baseKpisQuery)->where('status', 'failed')->count(),
+            'success_rate' => $totalDispatches > 0
+                ? (int) round(($successCount / max($totalDispatches, 1)) * 100)
                 : 100,
         ];
 

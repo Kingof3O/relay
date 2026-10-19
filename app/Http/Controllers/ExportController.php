@@ -17,7 +17,8 @@ class ExportController extends Controller
         $activeWorkspace = $user?->currentWorkspace();
 
         $query = WorkRequest::query()
-            ->when($activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
+            ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
+            ->when(! $activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('requester_id', $user?->id)->orWhere('assignee_id', $user?->id)->orWhereNull('workspace_id')))
             ->with(['area', 'assignee', 'requester'])
             ->filter($request->all(), $request->user())
             ->orderBy('id', 'desc');
@@ -68,7 +69,7 @@ class ExportController extends Controller
             }, 200, $headers);
         }
 
-        // CSV Export (default)
+        // CSV Export (default) with formula injection sanitization
         $headers = [
             'Content-Type' => 'text/csv',
             'Content-Disposition' => 'attachment; filename="relay-backlog-export.csv"',
@@ -77,7 +78,16 @@ class ExportController extends Controller
             'Expires' => '0',
         ];
 
-        return new StreamedResponse(function () use ($query): void {
+        $sanitizeCsv = static function (mixed $value): string {
+            $str = (string) ($value ?? '');
+            if ($str !== '' && in_array($str[0], ['=', '+', '-', '@', "\t", "\r"], true)) {
+                return "'".$str;
+            }
+
+            return $str;
+        };
+
+        return new StreamedResponse(function () use ($query, $sanitizeCsv): void {
             $handle = fopen('php://output', 'w');
             fwrite($handle, "ID,Title,Project,Status,Priority,Assignee,Requester,Due Date,Created At\n");
 
@@ -91,14 +101,14 @@ class ExportController extends Controller
 
                 fputcsv($handle, [
                     $req->id,
-                    $req->title,
-                    $req->area?->name ?? 'Unassigned',
-                    $status,
-                    $priority,
-                    $req->assignee?->name ?? 'Unassigned',
-                    $req->requester?->name ?? 'System',
-                    $dueDate,
-                    $createdAt,
+                    $sanitizeCsv($req->title),
+                    $sanitizeCsv($req->area?->name ?? 'Unassigned'),
+                    $sanitizeCsv($status),
+                    $sanitizeCsv($priority),
+                    $sanitizeCsv($req->assignee?->name ?? 'Unassigned'),
+                    $sanitizeCsv($req->requester?->name ?? 'System'),
+                    $sanitizeCsv($dueDate),
+                    $sanitizeCsv($createdAt),
                 ]);
             }
 

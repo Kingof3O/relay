@@ -9,8 +9,8 @@ use App\Models\WorkspaceInvitation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -50,21 +50,47 @@ class InvitationAcceptController extends Controller
         /** @var User|null $user */
         $user = User::query()->where('email', $invitation->email)->first();
 
+        if ($user) {
+            // Existing user: NEVER overwrite password, active status, or 2FA credentials
+            if (Auth::check() && Auth::id() === $user->id) {
+                // User is already logged in as this user
+            } else {
+                $validated = $request->validate([
+                    'password' => ['required', 'string'],
+                ]);
+
+                if (! Hash::check($validated['password'], $user->password)) {
+                    return back()->withErrors([
+                        'password' => 'The provided password does not match your existing account password.',
+                    ]);
+                }
+            }
+
+            DB::transaction(function () use ($invitation, $user): void {
+                $invitation->workspace->users()->syncWithoutDetaching([
+                    $user->id => ['role_id' => $invitation->role_id],
+                ]);
+
+                $invitation->delete();
+            });
+
+            session(['active_workspace_id' => $invitation->workspace_id]);
+
+            if (! Auth::check()) {
+                Auth::login($user);
+            }
+
+            return redirect()->route('dashboard');
+        }
+
+        // New user registration
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user?->id)],
+            'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
 
-        if ($user) {
-            $user->update([
-                'name' => $validated['name'],
-                'username' => $validated['username'],
-                'password' => Hash::make($validated['password']),
-                'active' => true,
-                'force_password_reset' => false,
-            ]);
-        } else {
+        $user = DB::transaction(function () use ($validated, $invitation): User {
             $user = User::query()->create([
                 'name' => $validated['name'],
                 'username' => $validated['username'],
@@ -74,15 +100,17 @@ class InvitationAcceptController extends Controller
                 'active' => true,
                 'force_password_reset' => false,
             ]);
-        }
 
-        $invitation->workspace->users()->syncWithoutDetaching([
-            $user->id => ['role_id' => $invitation->role_id],
-        ]);
+            $invitation->workspace->users()->syncWithoutDetaching([
+                $user->id => ['role_id' => $invitation->role_id],
+            ]);
+
+            $invitation->delete();
+
+            return $user;
+        });
 
         session(['active_workspace_id' => $invitation->workspace_id]);
-
-        $invitation->delete();
 
         Auth::login($user);
 

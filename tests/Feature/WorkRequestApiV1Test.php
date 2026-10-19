@@ -8,6 +8,7 @@ use App\Models\Area;
 use App\Models\RequestRelation;
 use App\Models\User;
 use App\Models\WorkRequest;
+use App\Models\Workspace;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -28,8 +29,18 @@ final class WorkRequestApiV1Test extends TestCase
         $this->seed(IndependentWorkspaceSeeder::class);
 
         $this->user = User::query()->where('username', 'robin')->firstOrFail();
+        $workspace = Workspace::query()->firstOrCreate(
+            ['slug' => 'test-workspace'],
+            ['name' => 'Test Workspace', 'owner_id' => $this->user->id]
+        );
+        $this->user->workspaces()->syncWithoutDetaching([$workspace->id => ['role_id' => $this->user->role_id]]);
+        session(['active_workspace_id' => $workspace->id]);
+
         $this->token = $this->user->createToken('test-api-token')->plainTextToken;
-        $this->area = Area::query()->firstOrFail();
+        $this->area = Area::query()->firstOrCreate(
+            ['slug' => 'default-area'],
+            ['name' => 'Default Area', 'workspace_id' => $workspace->id, 'color' => '#8B5CF6']
+        );
     }
 
     public function test_api_endpoints_require_authentication(): void
@@ -264,6 +275,28 @@ final class WorkRequestApiV1Test extends TestCase
         $this->assertSoftDeleted('requests', ['id' => $ticket->id]);
     }
 
+    public function test_restoring_soft_deleted_work_request(): void
+    {
+        $ticket = WorkRequest::query()->create([
+            'area_id' => $this->area->id,
+            'title' => 'Ticket to Restore',
+            'requester_id' => $this->user->id,
+            'status' => 'new',
+            'priority' => 'normal',
+        ]);
+        $ticket->delete();
+        $this->assertSoftDeleted('requests', ['id' => $ticket->id]);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->postJson("/api/v1/work-requests/{$ticket->id}/restore");
+
+        $response->assertOk()
+            ->assertJsonPath('restored', true)
+            ->assertJsonPath('data.id', $ticket->id);
+
+        $this->assertNotSoftDeleted('requests', ['id' => $ticket->id]);
+    }
+
     public function test_listing_active_projects(): void
     {
         Area::query()->create([
@@ -292,5 +325,71 @@ final class WorkRequestApiV1Test extends TestCase
 
         $names = collect($response->json('data'))->pluck('name');
         $this->assertFalse($names->contains('Archived Initiative'));
+    }
+
+    public function test_token_ability_enforcement_prevents_read_only_token_from_mutating(): void
+    {
+        $readToken = $this->user->createToken('read-only-token', ['requests:read'])->plainTextToken;
+
+        // Reading is allowed
+        $this->withHeader('Authorization', 'Bearer '.$readToken)
+            ->getJson('/api/v1/work-requests')
+            ->assertOk();
+
+        $this->withHeader('Authorization', 'Bearer '.$readToken)
+            ->getJson('/api/v1/projects')
+            ->assertOk();
+
+        // Writing is forbidden (403)
+        $this->withHeader('Authorization', 'Bearer '.$readToken)
+            ->postJson('/api/v1/work-requests', [
+                'title' => 'Disallowed Create',
+                'area_id' => $this->area->id,
+            ])
+            ->assertForbidden();
+
+        $ticket = WorkRequest::query()->create([
+            'title' => 'Test Ticket',
+            'area_id' => $this->area->id,
+            'requester_id' => $this->user->id,
+            'status' => 'new',
+            'priority' => 'normal',
+        ]);
+
+        $this->withHeader('Authorization', 'Bearer '.$readToken)
+            ->patchJson("/api/v1/work-requests/{$ticket->id}", [
+                'title' => 'Disallowed Patch',
+            ])
+            ->assertForbidden();
+
+        $this->withHeader('Authorization', 'Bearer '.$readToken)
+            ->deleteJson("/api/v1/work-requests/{$ticket->id}")
+            ->assertForbidden();
+    }
+
+    public function test_cross_tenant_reference_injection_is_rejected(): void
+    {
+        $otherWorkspace = Workspace::query()->create([
+            'name' => 'Foreign Workspace',
+            'slug' => 'foreign-workspace',
+            'owner_id' => $this->user->id,
+        ]);
+
+        $foreignArea = Area::query()->create([
+            'workspace_id' => $otherWorkspace->id,
+            'name' => 'Foreign Area',
+            'slug' => 'foreign-area',
+            'color' => '#10B981',
+            'sort_order' => 1,
+        ]);
+
+        $response = $this->withHeader('Authorization', 'Bearer '.$this->token)
+            ->postJson('/api/v1/work-requests', [
+                'title' => 'Attempted Injection',
+                'area_id' => $foreignArea->id,
+            ]);
+
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['area_id']);
     }
 }

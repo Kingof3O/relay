@@ -175,7 +175,9 @@ final class WorkRequestPresenter
                 ->values()
                 ->all();
         } else {
-            $request->loadCount('files');
+            if (! isset($request->files_count)) {
+                $request->loadCount('files');
+            }
             $payload['files_count'] = (int) $request->files_count;
             $payload['file_states'] = $request->relationLoaded('files')
                 ? $request->files->pluck('processing_status')->map(fn ($status) => $status?->value ?? (string) $status)->values()->all()

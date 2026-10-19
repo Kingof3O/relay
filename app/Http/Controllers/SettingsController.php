@@ -7,7 +7,6 @@ namespace App\Http\Controllers;
 use App\Enums\RoleName;
 use App\Models\Area;
 use App\Models\Role;
-use App\Models\User;
 use App\Models\WorkspaceAudit;
 use App\Services\AuditService;
 use App\Services\DiscordNotificationService;
@@ -90,10 +89,8 @@ final class SettingsController extends Controller
                     'active_count' => $area->requests_count,
                     'archived_at' => $area->archived_at?->toIso8601String(),
                 ]),
-            'users' => $user->hasPermission('manage_team')
-                ? ($activeWorkspace && $activeWorkspace->users()->exists()
-                    ? $activeWorkspace->users()->with('role:id,name')->orderBy('name')->get(['users.id', 'users.name', 'users.username', 'users.email', 'users.role_id', 'users.active', 'users.created_at'])
-                    : User::query()->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'email', 'role_id', 'active', 'created_at']))
+            'users' => $user->hasPermission('manage_team') && $activeWorkspace
+                ? $activeWorkspace->users()->with('role:id,name')->orderBy('name')->get(['users.id', 'users.name', 'users.username', 'users.email', 'users.role_id', 'users.active', 'users.created_at'])
                 : [],
             'roles' => $user->hasPermission('manage_team')
                 ? Role::query()->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value])->orderBy('name')->get(['id', 'name'])

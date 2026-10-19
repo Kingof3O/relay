@@ -74,6 +74,19 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if ($user !== null && $user->hasTwoFactorEnabled()) {
+            Auth::guard('web')->logout();
+
+            $this->session()->put([
+                'login.id' => $user->getKey(),
+                'login.remember' => $this->boolean('remember'),
+            ]);
+
+            RateLimiter::clear($this->throttleKey());
+
+            return;
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

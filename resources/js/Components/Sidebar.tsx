@@ -18,11 +18,17 @@ import {
     CalendarRange,
     Bookmark,
     Radio,
+    X,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { PageProps, WorkspaceProject, WorkspaceNotification } from '@/types';
 
-export default function Sidebar() {
+interface SidebarProps {
+    mobileOpen?: boolean;
+    onCloseMobile?: () => void;
+}
+
+export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarProps = {}) {
     const pageProps = usePage<PageProps<{ workspaceProjects?: WorkspaceProject[] }>>().props;
     const user = pageProps.auth?.user ?? { name: 'User' };
     const roleName = pageProps.auth?.role?.name ?? 'Member';
@@ -118,50 +124,71 @@ export default function Sidebar() {
     ];
 
     return (
-        <aside
-            className={`sticky top-0 z-30 flex h-screen shrink-0 flex-col justify-between border-r border-zinc-800/80 bg-[#0c0d12] transition-all duration-200 ease-in-out select-none ${
-                collapsed ? 'w-[76px] p-3' : 'w-[280px] p-4'
-            }`}
-        >
-            {/* Top Fixed Header: Brand Logo & Workspace Card */}
-            <div className="shrink-0 space-y-3 pb-3">
-                {/* Brand Logo Header */}
+        <>
+            {mobileOpen && (
                 <div
-                    className={`flex items-center border-b border-zinc-800/80 pb-3 ${
-                        collapsed ? 'justify-center px-0 flex-col gap-2' : 'justify-between px-1'
-                    }`}
-                >
-                    <Link
-                        href={route('dashboard')}
-                        prefetch="hover"
-                        cacheFor="30s"
-                        className="group flex items-center gap-2.5 rounded-xl p-1 transition-colors hover:bg-zinc-850/60"
-                        title="Relay Studio"
+                    className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden transition-opacity"
+                    onClick={onCloseMobile}
+                />
+            )}
+            <aside
+                className={`fixed inset-y-0 left-0 z-50 flex h-full shrink-0 flex-col justify-between border-r border-zinc-800/80 bg-[#0c0d12] transition-transform duration-200 ease-in-out select-none lg:static lg:h-screen lg:top-0 lg:z-30 lg:translate-x-0 ${
+                    mobileOpen ? 'translate-x-0 shadow-2xl' : '-translate-x-full'
+                } ${
+                    collapsed ? 'lg:w-[76px] lg:p-3 w-[280px] p-4' : 'w-[280px] p-4'
+                }`}
+            >
+                {/* Top Fixed Header: Brand Logo & Workspace Card */}
+                <div className="shrink-0 space-y-3 pb-3">
+                    {/* Brand Logo Header */}
+                    <div
+                        className={`flex items-center border-b border-zinc-800/80 pb-3 ${
+                            collapsed ? 'justify-center px-0 flex-col gap-2' : 'justify-between px-1'
+                        }`}
                     >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-750 bg-[#121318] text-white shadow-sm transition-all group-hover:border-zinc-650 group-hover:bg-[#181920]">
-                            <ApplicationLogo className="h-5 w-5 text-white" />
-                        </div>
-                        {!collapsed && (
-                            <div className="flex items-center gap-2">
-                                <span className="text-[15px] font-bold tracking-tight text-white">Relay</span>
-                                <span className="rounded-md border border-zinc-800 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400">
-                                    Studio
-                                </span>
-                            </div>
-                        )}
-                    </Link>
-
-                    {!collapsed && (
-                        <button
-                            type="button"
-                            onClick={toggleCollapsed}
-                            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
-                            title="Collapse sidebar (⌘[)"
+                        <Link
+                            href={route('dashboard')}
+                            prefetch="hover"
+                            cacheFor="30s"
+                            className="group flex items-center gap-2.5 rounded-xl p-1 transition-colors hover:bg-zinc-850/60"
+                            title="Relay Studio"
                         >
-                            <ChevronLeft className="h-4 w-4" />
-                        </button>
-                    )}
-                </div>
+                            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-750 bg-[#121318] text-white shadow-sm transition-all group-hover:border-zinc-650 group-hover:bg-[#181920]">
+                                <ApplicationLogo className="h-5 w-5 text-white" />
+                            </div>
+                            {(!collapsed || mobileOpen) && (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[15px] font-bold tracking-tight text-white">Relay</span>
+                                    <span className="rounded-md border border-zinc-800 bg-zinc-850 px-1.5 py-0.5 text-[10px] font-mono font-medium text-zinc-400">
+                                        Studio
+                                    </span>
+                                </div>
+                            )}
+                        </Link>
+
+                        <div className="flex items-center gap-1">
+                            {!collapsed && (
+                                <button
+                                    type="button"
+                                    onClick={toggleCollapsed}
+                                    className="hidden lg:flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white"
+                                    title="Collapse sidebar (⌘[)"
+                                >
+                                    <ChevronLeft className="h-4 w-4" />
+                                </button>
+                            )}
+                            {onCloseMobile && (
+                                <button
+                                    type="button"
+                                    onClick={onCloseMobile}
+                                    className="flex lg:hidden h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white"
+                                    title="Close navigation"
+                                >
+                                    <X className="h-5 w-5" />
+                                </button>
+                            )}
+                        </div>
+                    </div>
 
                 {collapsed && (
                     <div className="flex justify-center pt-1 pb-1">
@@ -434,5 +461,6 @@ export default function Sidebar() {
                 </Dropdown>
             </div>
         </aside>
+        </>
     );
 }

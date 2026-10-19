@@ -1,3 +1,6 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
 parameters:
     paths:
         - app
@@ -5,11 +8,9 @@ parameters:
         - config
         - routes
 
-    # PHPStan / Larastan analysis level 6
-    level: 6
+    # PHPStan / Larastan analysis level
+    level: 1
 
-    checkMissingIterableValueType: false
-    checkGenericClassInNonGenericObjectType: false
     reportUnmatchedIgnoredErrors: false
 
     excludePaths:

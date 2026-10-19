@@ -1,4 +1,4 @@
-import { b as ImageLightbox, c as RequestSubtasksSection, d as RequestMediaGallery, f as RequestDescriptionCard, h as RequestHeroHeader, l as RequestSidebarProperties, m as RequestBlockerBanner, o as triggerConfetti, s as RequestPullRequestsSection, t as Authenticated, u as RequestDiscussionSection } from "./AuthenticatedLayout-CmuF4Gg9.js";
+import { b as ImageLightbox, c as RequestSubtasksSection, d as RequestMediaGallery, f as RequestDescriptionCard, h as RequestHeroHeader, l as RequestSidebarProperties, m as RequestBlockerBanner, o as triggerConfetti, s as RequestPullRequestsSection, t as Authenticated, u as RequestDiscussionSection } from "./AuthenticatedLayout--RwczYuP.js";
 import { Head, Link, router, usePage } from "@inertiajs/react";
 import { jsx, jsxs } from "react/jsx-runtime";
 import { useEffect, useState } from "react";
@@ -15,15 +15,7 @@ var AVATAR_COLORS = [
 ];
 function LivePresenceAvatars({ requestId, className = "" }) {
 	const authUser = usePage().props.auth?.user;
-	const [viewers, setViewers] = useState(() => {
-		if (!authUser) return [];
-		return [{
-			id: authUser.id,
-			name: authUser.name,
-			username: authUser.username,
-			color: AVATAR_COLORS[authUser.id % AVATAR_COLORS.length]
-		}];
-	});
+	const [viewers, setViewers] = useState([]);
 	useEffect(() => {
 		if (typeof window === "undefined") return;
 		const echo = window.Echo;
@@ -101,7 +93,7 @@ function LivePresenceAvatars({ requestId, className = "" }) {
 }
 //#endregion
 //#region resources/js/Pages/Requests/Show.tsx
-function Show({ request: initialRequest, projects, users, statuses, priorities, canAssign, canEdit, canComment, canUpload, canDelete }) {
+function Show({ request: initialRequest, projects, users, cycles = [], statuses, priorities, canAssign, canEdit, canComment, canUpload, canDelete }) {
 	const [request, setRequest] = useState(initialRequest);
 	const [saving, setSaving] = useState(false);
 	const [uploading, setUploading] = useState(false);
@@ -317,6 +309,7 @@ function Show({ request: initialRequest, projects, users, statuses, priorities, 
 							request,
 							projects,
 							users,
+							cycles,
 							statuses,
 							priorities,
 							canAssign,

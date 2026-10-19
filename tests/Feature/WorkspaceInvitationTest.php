@@ -314,12 +314,16 @@ final class WorkspaceInvitationTest extends TestCase
             'expires_at' => now()->addDays(7),
         ]);
 
-        // Existing user accepts invitation retaining their existing username
+        // Attempt with wrong password must be rejected without mutating password
+        $failedResponse = $this->post(route('invitations.store', $invitation->token), [
+            'password' => 'wrongpass123',
+        ]);
+        $failedResponse->assertSessionHasErrors(['password']);
+        $this->assertTrue(Hash::check('password', $existingUser->fresh()->password));
+
+        // Existing user accepts invitation with their valid password without password mutation
         $response = $this->post(route('invitations.store', $invitation->token), [
-            'name' => 'Hussien Updated',
-            'username' => 'hussien',
-            'password' => 'newsecurepass123',
-            'password_confirmation' => 'newsecurepass123',
+            'password' => 'password',
         ]);
 
         $response->assertRedirect(route('dashboard'));
@@ -330,6 +334,9 @@ final class WorkspaceInvitationTest extends TestCase
             'role_id' => $developerRole->id,
         ]);
         $this->assertSame($workspace2->id, session('active_workspace_id'));
+
+        // Assert that the existing user's password remained unchanged
+        $this->assertTrue(Hash::check('password', $existingUser->fresh()->password));
     }
 
     public function test_cannot_invite_user_who_is_already_a_member_of_the_workspace(): void

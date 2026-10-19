@@ -3,7 +3,7 @@ import CommandPalette from '@/Components/CommandPalette';
 import { QuickCreateModal } from '@/Features/Requests';
 import { NotificationPopover } from '@/Features/Notifications';
 import { Link, router, usePage } from '@inertiajs/react';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, Menu } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
 import { Toaster } from 'sonner';
 
@@ -20,6 +20,7 @@ export default function Authenticated({
     const [commandOpen, setCommandOpen] = useState(false);
     const [createOpen, setCreateOpen] = useState(false);
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
+    const [mobileNavOpen, setMobileNavOpen] = useState(false);
     const [currentTime, setCurrentTime] = useState('');
 
     useEffect(() => {
@@ -102,11 +103,21 @@ export default function Authenticated({
     return (
         <div className="relay-shell relative flex min-h-screen font-sans text-zinc-100 antialiased selection:bg-zinc-700/60 selection:text-white">
             <div className="relay-grid pointer-events-none fixed inset-0 z-0 opacity-40" />
-            <Sidebar />
+            <Sidebar mobileOpen={mobileNavOpen} onCloseMobile={() => setMobileNavOpen(false)} />
             <div className="relative z-10 flex min-w-0 flex-1 flex-col">
                 {/* Modern Precision Navbar */}
-                <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between gap-5 border-b border-zinc-800/80 bg-[#090a0f]/90 px-7 backdrop-blur-xl sm:px-9">
-                    <div className="min-w-0 flex-1">{header}</div>
+                <header className="sticky top-0 z-20 flex h-[72px] items-center justify-between gap-4 border-b border-zinc-800/80 bg-[#090a0f]/90 px-4 sm:px-7 backdrop-blur-xl">
+                    <div className="flex items-center gap-3 min-w-0 flex-1">
+                        <button
+                            type="button"
+                            onClick={() => setMobileNavOpen(true)}
+                            className="flex lg:hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-[#121318] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors"
+                            title="Open navigation"
+                        >
+                            <Menu className="h-5 w-5" />
+                        </button>
+                        <div className="min-w-0 flex-1">{header}</div>
+                    </div>
 
                     <div className="flex items-center gap-3">
                         {/* Live Studio Status Pill */}

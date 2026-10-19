@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Models\IntegrationDeliveryLog;
 use App\Models\Webhook;
 use App\Models\WorkRequest;
+use App\Support\UrlSecurity;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
@@ -25,6 +26,10 @@ final class DiscordNotificationService
 
     public static function isEnabled(): bool
     {
+        if (! config('relay.integrations.discord_enabled', true)) {
+            return false;
+        }
+
         $override = Cache::get(self::CACHE_KEY_ENABLED);
         if ($override !== null) {
             return (bool) $override;
@@ -237,7 +242,7 @@ final class DiscordNotificationService
         }
 
         $webhookUrl = self::getWebhookUrl();
-        if (empty($webhookUrl)) {
+        if (empty($webhookUrl) || ! UrlSecurity::isSafeDiscordWebhookUrl($webhookUrl)) {
             return false;
         }
 
@@ -318,6 +323,13 @@ final class DiscordNotificationService
             ];
         }
 
+        if (! UrlSecurity::isSafeDiscordWebhookUrl($webhookUrl)) {
+            return [
+                'success' => false,
+                'message' => 'Invalid Discord Webhook URL. URL must be a valid, public Discord webhook (https://discord.com/api/webhooks/...).',
+            ];
+        }
+
         $payload = [
             'username' => self::getBotName(),
             'avatar_url' => self::getAvatarUrl(),
@@ -340,6 +352,8 @@ final class DiscordNotificationService
             ],
         ];
 
+        $workspaceId = auth()->user()?->currentWorkspace()?->id;
+
         try {
             $response = Http::timeout(6)
                 ->asJson()
@@ -347,6 +361,7 @@ final class DiscordNotificationService
 
             if ($response->successful()) {
                 IntegrationDeliveryLog::query()->create([
+                    'workspace_id' => $workspaceId,
                     'channel' => 'discord',
                     'event' => 'test.ping',
                     'status' => 'success',
@@ -361,8 +376,9 @@ final class DiscordNotificationService
                 ];
             }
 
-            $errMsg = "HTTP {$response->status()}: {$response->body()}";
+            $errMsg = "HTTP {$response->status()}";
             IntegrationDeliveryLog::query()->create([
+                'workspace_id' => $workspaceId,
                 'channel' => 'discord',
                 'event' => 'test.ping',
                 'status' => 'failed',
@@ -378,6 +394,7 @@ final class DiscordNotificationService
             ];
         } catch (\Throwable $e) {
             IntegrationDeliveryLog::query()->create([
+                'workspace_id' => $workspaceId,
                 'channel' => 'discord',
                 'event' => 'test.ping',
                 'status' => 'failed',

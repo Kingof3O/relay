@@ -31,7 +31,8 @@ class GlobalSearchController extends Controller
         $activeWorkspace = $user?->currentWorkspace();
 
         $requests = WorkRequest::query()
-            ->when($activeWorkspace, fn ($query) => $query->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
+            ->when($activeWorkspace, fn ($query) => $query->where('workspace_id', $activeWorkspace->id))
+            ->when(! $activeWorkspace, fn ($query) => $query->where(fn ($sub) => $sub->where('requester_id', $user?->id)->orWhere('assignee_id', $user?->id)->orWhereNull('workspace_id')))
             ->with(['area'])
             ->where(function ($query) use ($q, $numericId): void {
                 $query->where('title', 'like', "%{$q}%")
@@ -56,7 +57,8 @@ class GlobalSearchController extends Controller
             ]);
 
         $projects = Area::query()
-            ->when($activeWorkspace, fn ($query) => $query->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
+            ->when($activeWorkspace, fn ($query) => $query->where('workspace_id', $activeWorkspace->id))
+            ->when(! $activeWorkspace, fn ($query) => $query->whereNull('workspace_id'))
             ->where('name', 'like', "%{$q}%")
             ->limit(4)
             ->get(['id', 'name', 'color']);

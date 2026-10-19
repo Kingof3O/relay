@@ -41,10 +41,12 @@ Route::middleware(['auth', 'active'])->group(function (): void {
     Route::post('/requests/bulk', [WorkRequestController::class, 'bulk'])->name('requests.bulk');
     Route::patch('/requests/{request}', [WorkRequestController::class, 'update'])->name('requests.update');
     Route::delete('/requests/{request}', [WorkRequestController::class, 'destroy'])->name('requests.destroy');
+    Route::post('/requests/{request}/restore', [WorkRequestController::class, 'restore'])->name('requests.restore')->withTrashed();
     Route::post('/requests/{request}/comments', [RequestCommentController::class, 'store'])->name('requests.comments.store');
     Route::post('/requests/{request}/files', [RequestFileController::class, 'store'])->name('requests.files.store');
     Route::get('/requests/{request}/files/{file}', [RequestFileController::class, 'show'])->name('requests.files.show');
     Route::get('/requests/{request}/files/{file}/preview', [RequestFileController::class, 'preview'])->name('requests.files.preview');
+    Route::post('/requests/{request}/files/{file}/retry', [RequestFileController::class, 'retry'])->name('requests.files.retry');
     Route::get('/requests/export', [ExportController::class, 'export'])->name('requests.export');
     Route::post('/requests/{workRequest}/clone', [RequestCloneController::class, 'store'])->name('requests.clone');
     Route::post('/requests/{request}/relations', [RequestRelationController::class, 'store'])->name('requests.relations.store');

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\RoleName;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -143,20 +142,34 @@ class User extends Authenticatable
 
     public function hasPermission(string $permission): bool
     {
-        if ($this->role_id === null) {
+        // 1. Resolve role from active workspace membership if available
+        $effectiveRole = null;
+        $workspace = $this->currentWorkspace();
+
+        if ($workspace) {
+            // Workspace owner inherently possesses all permissions
+            if ($workspace->owner_id === $this->id) {
+                return true;
+            }
+
+            $membership = $this->workspaces()->where('workspaces.id', $workspace->id)->first();
+            if ($membership && $membership->pivot?->role_id) {
+                $effectiveRole = Role::query()->find($membership->pivot->role_id);
+            }
+        }
+
+        $effectiveRole = $effectiveRole ?? $this->role;
+        if (! $effectiveRole) {
             return false;
         }
 
-        // Owner role inherently possesses all permissions
-        $roleName = $this->role?->name;
+        $roleName = $effectiveRole->name;
         if ($roleName === 'Owner' || $roleName === RoleName::Owner->value) {
             return true;
         }
 
-        $exists = $this->role()
-            ->whereHas('permissions', function (Builder $query) use ($permission): void {
-                $query->where('name', $permission);
-            })
+        $exists = $effectiveRole->permissions()
+            ->where('name', $permission)
             ->exists();
 
         if ($exists) {

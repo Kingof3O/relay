@@ -19,8 +19,11 @@ final class EdgeCasesAndRaceConditionsTest extends TestCase
     use DatabaseTransactions;
 
     private User $owner;
+
     private Area $area;
+
     private Workspace $workspaceA;
+
     private Workspace $workspaceB;
 
     protected function setUp(): void
@@ -232,7 +235,7 @@ final class EdgeCasesAndRaceConditionsTest extends TestCase
         $inactivePayload = [
             'From' => 'inactive@example.com',
             'To' => "reply+req-{$ticket->id}@inbound.relay.studio",
-            'Subject' => "Re: Updates",
+            'Subject' => 'Re: Updates',
             'StrippedTextReply' => 'I am disabled but trying to comment.',
         ];
         $resp1 = $this->postJson(route('api.webhooks.inbound-email'), $inactivePayload);
@@ -243,7 +246,7 @@ final class EdgeCasesAndRaceConditionsTest extends TestCase
         $outsiderPayload = [
             'From' => 'outsider@example.com',
             'To' => "reply+req-{$ticket->id}@inbound.relay.studio",
-            'Subject' => "Re: Updates",
+            'Subject' => 'Re: Updates',
             'StrippedTextReply' => 'I belong to no workspace.',
         ];
         $resp2 = $this->postJson(route('api.webhooks.inbound-email'), $outsiderPayload);

@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Models\Webhook;
 use App\Models\WorkRequest;
+use App\Support\UrlSecurity;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,6 +28,10 @@ class DispatchOutgoingWebhook implements ShouldQueue
 
     public function handle(): void
     {
+        if (! config('relay.integrations.outgoing_webhooks_enabled', true)) {
+            return;
+        }
+
         $workRequest = WorkRequest::query()
             ->with(['area', 'assignee', 'requester'])
             ->find($this->requestId);
@@ -96,16 +101,33 @@ class DispatchOutgoingWebhook implements ShouldQueue
             ],
         ];
 
-        // Gather destination URLs and secrets
+        // Gather destination URLs and secrets scoped to the request workspace
         $destinations = [];
         if ($this->targetUrl) {
-            $matchingWebhook = Webhook::query()->where('url', $this->targetUrl)->first();
+            $matchingWebhook = Webhook::query()
+                ->where('url', $this->targetUrl)
+                ->where(function ($q) use ($workRequest) {
+                    if ($workRequest->workspace_id) {
+                        $q->where('workspace_id', $workRequest->workspace_id)
+                            ->orWhereNull('workspace_id');
+                    }
+                })
+                ->first();
             $destinations[] = [
                 'url' => $this->targetUrl,
                 'secret' => $matchingWebhook?->secret,
             ];
         } else {
-            $activeWebhooks = Webhook::query()->where('is_active', true)->get();
+            $activeWebhooks = Webhook::query()
+                ->where('is_active', true)
+                ->where(function ($q) use ($workRequest) {
+                    if ($workRequest->workspace_id) {
+                        $q->where('workspace_id', $workRequest->workspace_id)
+                            ->orWhereNull('workspace_id');
+                    }
+                })
+                ->get();
+
             foreach ($activeWebhooks as $webhook) {
                 $destinations[] = [
                     'url' => $webhook->url,
@@ -117,6 +139,12 @@ class DispatchOutgoingWebhook implements ShouldQueue
         foreach ($destinations as $destination) {
             $url = $destination['url'];
             $secret = $destination['secret'];
+
+            if (! UrlSecurity::isSafeOutgoingUrl($url)) {
+                Log::warning("Blocked unsafe outgoing webhook URL: {$url}");
+
+                continue;
+            }
 
             try {
                 $isDiscord = str_contains($url, 'discord.com/api/webhooks');

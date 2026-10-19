@@ -11,7 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 
 final class RequestFileController extends Controller
 {
@@ -69,7 +69,7 @@ final class RequestFileController extends Controller
         ]);
     }
 
-    public function show(WorkRequest $request, RequestFile $file): BinaryFileResponse
+    public function show(WorkRequest $request, RequestFile $file): Response
     {
         $this->authorize('view', $request);
         $this->ensureBelongsToRequest($request, $file);
@@ -84,13 +84,12 @@ final class RequestFileController extends Controller
             abort(404);
         }
 
-        return response()->file($disk->path($file->stored_path), [
+        return $disk->response($file->stored_path, $file->original_name, [
             'Content-Type' => $file->mime_type,
-            'Content-Disposition' => 'inline; filename="'.addslashes($file->original_name).'"',
-        ]);
+        ], 'inline');
     }
 
-    public function preview(WorkRequest $request, RequestFile $file): BinaryFileResponse
+    public function preview(WorkRequest $request, RequestFile $file): Response
     {
         $this->authorize('view', $request);
         $this->ensureBelongsToRequest($request, $file);
@@ -105,7 +104,9 @@ final class RequestFileController extends Controller
             abort(404);
         }
 
-        return response()->file($disk->path($file->preview_path), ['Content-Type' => 'image/jpeg']);
+        return $disk->response($file->preview_path, basename($file->preview_path), [
+            'Content-Type' => 'image/jpeg',
+        ], 'inline');
     }
 
     public function retry(Request $httpRequest, WorkRequest $request, RequestFile $file): JsonResponse

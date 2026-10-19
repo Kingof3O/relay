@@ -305,46 +305,178 @@ export function useKanbanBoard({
     };
 
     const handleBulkUpdateStatus = async (ids: number[], status: string) => {
+        const snapshot = [...boardRequestsRef.current];
+
         setBoardRequests((prev) =>
             prev.map((r) =>
                 ids.includes(r.id) ? { ...r, status: status as RequestStatus, status_label: statuses[status] ?? status } : r
             )
         );
-        toast.success(`Updated ${ids.length} requests`);
-        if (status === 'done') {
-            triggerCelebration();
-        }
 
-        await Promise.all(
-            ids.map((id) => axios.patch(route('requests.update', id), { status }).catch(() => {}))
+        const results = await Promise.allSettled(
+            ids.map(async (id) => {
+                const card = snapshot.find((r) => r.id === id);
+                const res = await axios.patch(route('requests.update', id), {
+                    status,
+                    lock_version: card?.lock_version,
+                });
+                return { id, updated: res.data?.request };
+            })
         );
+
+        let successCount = 0;
+        let failCount = 0;
+        const failedIds: number[] = [];
+
+        results.forEach((res, idx) => {
+            const id = ids[idx];
+            if (res.status === 'fulfilled') {
+                successCount++;
+                if (res.value.updated) {
+                    handleCardUpdated(res.value.updated);
+                }
+            } else {
+                failCount++;
+                failedIds.push(id);
+            }
+        });
+
+        if (failCount > 0) {
+            setBoardRequests((prev) =>
+                prev.map((r) => {
+                    if (failedIds.includes(r.id)) {
+                        const old = snapshot.find((s) => s.id === r.id);
+                        return old || r;
+                    }
+                    return r;
+                })
+            );
+            if (successCount === 0) {
+                toast.error(`Failed to update ${failCount} request(s). Changes reverted.`);
+            } else {
+                toast.warning(`Updated ${successCount} request(s), but ${failCount} failed and were reverted.`);
+            }
+        } else {
+            toast.success(`Updated ${successCount} requests`);
+            if (status === 'done') {
+                triggerCelebration();
+            }
+        }
     };
 
     const handleBulkUpdatePriority = async (ids: number[], priority: string) => {
+        const snapshot = [...boardRequestsRef.current];
+
         setBoardRequests((prev) =>
             prev.map((r) =>
                 ids.includes(r.id) ? { ...r, priority: priority as RequestPriority, priority_label: priorities[priority] ?? priority } : r
             )
         );
-        toast.success(`Updated priority for ${ids.length} requests`);
 
-        await Promise.all(
-            ids.map((id) => axios.patch(route('requests.update', id), { priority }).catch(() => {}))
+        const results = await Promise.allSettled(
+            ids.map(async (id) => {
+                const card = snapshot.find((r) => r.id === id);
+                const res = await axios.patch(route('requests.update', id), {
+                    priority,
+                    lock_version: card?.lock_version,
+                });
+                return { id, updated: res.data?.request };
+            })
         );
+
+        let successCount = 0;
+        let failCount = 0;
+        const failedIds: number[] = [];
+
+        results.forEach((res, idx) => {
+            const id = ids[idx];
+            if (res.status === 'fulfilled') {
+                successCount++;
+                if (res.value.updated) {
+                    handleCardUpdated(res.value.updated);
+                }
+            } else {
+                failCount++;
+                failedIds.push(id);
+            }
+        });
+
+        if (failCount > 0) {
+            setBoardRequests((prev) =>
+                prev.map((r) => {
+                    if (failedIds.includes(r.id)) {
+                        const old = snapshot.find((s) => s.id === r.id);
+                        return old || r;
+                    }
+                    return r;
+                })
+            );
+            if (successCount === 0) {
+                toast.error(`Failed to update priority for ${failCount} request(s).`);
+            } else {
+                toast.warning(`Updated priority for ${successCount} request(s), but ${failCount} failed and were reverted.`);
+            }
+        } else {
+            toast.success(`Updated priority for ${successCount} requests`);
+        }
     };
 
     const handleBulkUpdateAssignee = async (ids: number[], assigneeId: number | null) => {
+        const snapshot = [...boardRequestsRef.current];
         const assignedUser = users.find((u) => u.id === assigneeId) ?? null;
+
         setBoardRequests((prev) =>
             prev.map((r) =>
                 ids.includes(r.id) ? { ...r, assignee_id: assigneeId, assignee: assignedUser } : r
             )
         );
-        toast.success(`Reassigned ${ids.length} requests`);
 
-        await Promise.all(
-            ids.map((id) => axios.patch(route('requests.update', id), { assignee_id: assigneeId }).catch(() => {}))
+        const results = await Promise.allSettled(
+            ids.map(async (id) => {
+                const card = snapshot.find((r) => r.id === id);
+                const res = await axios.patch(route('requests.update', id), {
+                    assignee_id: assigneeId,
+                    lock_version: card?.lock_version,
+                });
+                return { id, updated: res.data?.request };
+            })
         );
+
+        let successCount = 0;
+        let failCount = 0;
+        const failedIds: number[] = [];
+
+        results.forEach((res, idx) => {
+            const id = ids[idx];
+            if (res.status === 'fulfilled') {
+                successCount++;
+                if (res.value.updated) {
+                    handleCardUpdated(res.value.updated);
+                }
+            } else {
+                failCount++;
+                failedIds.push(id);
+            }
+        });
+
+        if (failCount > 0) {
+            setBoardRequests((prev) =>
+                prev.map((r) => {
+                    if (failedIds.includes(r.id)) {
+                        const old = snapshot.find((s) => s.id === r.id);
+                        return old || r;
+                    }
+                    return r;
+                })
+            );
+            if (successCount === 0) {
+                toast.error(`Failed to reassign ${failCount} request(s).`);
+            } else {
+                toast.warning(`Reassigned ${successCount} request(s), but ${failCount} failed and were reverted.`);
+            }
+        } else {
+            toast.success(`Reassigned ${successCount} requests`);
+        }
     };
 
     return {

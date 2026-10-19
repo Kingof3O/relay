@@ -92,6 +92,12 @@ final class CycleController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
+        abort_unless(
+            $request->user()?->hasPermission('manage_workspace') || $request->user()?->hasPermission('manage_areas'),
+            403,
+            'Unauthorized to create cycles.'
+        );
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'start_date' => ['required', 'date'],
@@ -122,8 +128,19 @@ final class CycleController extends Controller
         return redirect()->route('cycles.index', ['cycle_id' => $cycle->id]);
     }
 
-    public function rollover(Cycle $cycle): RedirectResponse
+    public function rollover(Request $request, Cycle $cycle): RedirectResponse
     {
+        abort_unless(
+            $request->user()?->hasPermission('manage_workspace') || $request->user()?->hasPermission('manage_areas'),
+            403,
+            'Unauthorized to manage cycles.'
+        );
+
+        $activeWorkspace = $request->user()?->currentWorkspace();
+        if ($cycle->workspace_id !== null && $activeWorkspace && $cycle->workspace_id !== $activeWorkspace->id) {
+            abort(403, 'Unauthorized access to cycle.');
+        }
+
         $nextCycle = $this->cycles->rollover($cycle);
 
         return redirect()->route('cycles.index', ['cycle_id' => $nextCycle->id]);

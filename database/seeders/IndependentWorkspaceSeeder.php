@@ -14,6 +14,10 @@ final class IndependentWorkspaceSeeder extends Seeder
 {
     public function run(): void
     {
+        if (app()->isProduction()) {
+            return;
+        }
+
         $permissions = [
             'view_requests',
             'manage_workspace',
@@ -96,7 +100,8 @@ final class IndependentWorkspaceSeeder extends Seeder
             $email = env("STM_{$prefix}_EMAIL") ?: $account['email'];
             $password = env("STM_{$prefix}_PASSWORD") ?: 'password';
 
-            $user = User::query()->updateOrCreate(
+            // Security: Never overwrite password of existing accounts on re-seed
+            $user = User::query()->firstOrCreate(
                 ['username' => $username],
                 [
                     'name' => $name,
@@ -107,11 +112,13 @@ final class IndependentWorkspaceSeeder extends Seeder
                 ],
             );
 
-            if ($user->role_id !== $account['role']->id || $user->active !== true) {
-                $user->forceFill([
+            if (! $user->wasRecentlyCreated) {
+                $user->update([
+                    'name' => $name,
+                    'email' => $email,
                     'role_id' => $account['role']->id,
                     'active' => true,
-                ])->save();
+                ]);
             }
         }
 

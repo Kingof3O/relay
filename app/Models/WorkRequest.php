@@ -54,6 +54,19 @@ class WorkRequest extends Model
         ];
     }
 
+    protected static function booted(): void
+    {
+        static::creating(function (WorkRequest $request): void {
+            if ($request->workspace_id === null) {
+                $user = auth()->user() ?? ($request->requester_id ? User::find($request->requester_id) : null);
+                $workspaceId = $user?->currentWorkspace()?->id ?? $user?->workspaces()->first()?->id;
+                if ($workspaceId) {
+                    $request->workspace_id = $workspaceId;
+                }
+            }
+        });
+    }
+
     public function workspace(): BelongsTo
     {
         return $this->belongsTo(Workspace::class);

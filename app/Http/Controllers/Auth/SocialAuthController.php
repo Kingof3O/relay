@@ -53,9 +53,11 @@ final class SocialAuthController extends Controller
             }
         }
 
-        // 3. Create new user if not found
+        // 3. Create new user if not found with restricted Designer role
         if (! $user) {
-            $role = Role::query()->where('name', 'Developer')->first() ?? Role::query()->first();
+            $role = Role::query()->where('name', 'Designer')->first()
+                ?? Role::query()->where('name', 'Developer')->first()
+                ?? Role::query()->first();
 
             $rawUsername = $socialUser->getNickname() ?: $socialUser->getName() ?: 'user';
             $baseUsername = Str::slug($rawUsername, '_') ?: 'user';
@@ -82,6 +84,15 @@ final class SocialAuthController extends Controller
             return redirect()->route('login')->withErrors([
                 'username' => 'Your account is deactivated or missing an assigned role.',
             ]);
+        }
+
+        if ($user->hasTwoFactorEnabled()) {
+            request()->session()->put([
+                'login.id' => $user->getKey(),
+                'login.remember' => false,
+            ]);
+
+            return redirect()->route('two-factor.login');
         }
 
         Auth::login($user);

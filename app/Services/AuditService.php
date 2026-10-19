@@ -21,9 +21,16 @@ class AuditService
         string $event,
         ?Model $auditable = null,
         array $old = [],
-        array $new = []
+        array $new = [],
+        ?int $workspaceId = null
     ): WorkspaceAudit {
+        $wsId = $workspaceId
+            ?? (isset($new['workspace_id']) ? (int) $new['workspace_id'] : null)
+            ?? ($auditable && isset($auditable->workspace_id) ? (int) $auditable->workspace_id : null)
+            ?? $actor?->currentWorkspace()?->id;
+
         return WorkspaceAudit::query()->create([
+            'workspace_id' => $wsId,
             'user_id' => $actor?->id,
             'event' => $event,
             'auditable_type' => $auditable ? get_class($auditable) : null,

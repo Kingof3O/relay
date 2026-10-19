@@ -15,19 +15,6 @@ import {
     Loader2,
 } from 'lucide-react';
 
-interface DemoPersona {
-    username: string;
-    name: string;
-    role: string;
-}
-
-const DEMO_PERSONAS: DemoPersona[] = [
-    { username: 'robin', name: 'Robin', role: 'Owner' },
-    { username: 'hussien', name: 'Hussien', role: 'Lead Dev' },
-    { username: 'brother', name: 'Brother', role: 'Developer' },
-    { username: 'designer-1', name: 'Maya', role: 'Design' },
-];
-
 interface LoginProps {
     socialProviders?: {
         github: boolean;
@@ -47,7 +34,6 @@ export default function Login({
     });
 
     const [showPassword, setShowPassword] = useState(false);
-    const [activePersona, setActivePersona] = useState<string | null>(null);
 
     const hasSocialProviders = Boolean(socialProviders?.github || socialProviders?.google);
     const bothEnabled = Boolean(socialProviders?.github && socialProviders?.google);
@@ -57,15 +43,6 @@ export default function Login({
 
         post(route('login'), {
             onFinish: () => reset('password'),
-        });
-    };
-
-    const selectPersona = (persona: DemoPersona) => {
-        setActivePersona(persona.username);
-        setData({
-            ...data,
-            username: persona.username,
-            password: 'password',
         });
     };
 
@@ -218,12 +195,9 @@ export default function Login({
                                     value={data.username}
                                     className="block w-full pl-9"
                                     autoComplete="username"
-                                    placeholder="robin or robin@relay.studio"
+                                    placeholder="username or email"
                                     isFocused={true}
-                                    onChange={(e) => {
-                                        setData('username', e.target.value);
-                                        setActivePersona(null);
-                                    }}
+                                    onChange={(e) => setData('username', e.target.value)}
                                     required
                                 />
                             </div>
@@ -234,6 +208,12 @@ export default function Login({
                         <div>
                             <div className="flex items-center justify-between">
                                 <InputLabel htmlFor="password" value="Password" />
+                                <Link
+                                    href={route('password.request')}
+                                    className="text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
+                                >
+                                    Forgot password?
+                                </Link>
                             </div>
                             <div className="relative mt-1.5">
                                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-zinc-500">
@@ -303,37 +283,6 @@ export default function Login({
                                     </>
                                 )}
                             </PrimaryButton>
-                        </div>
-
-                        {/* Discreet Demo Account Selector */}
-                        <div className="mt-6 border-t border-zinc-800/80 pt-4">
-                            <div className="mb-2 flex items-center justify-between text-[11px] text-zinc-500">
-                                <span>Quick demo accounts:</span>
-                                <span className="font-mono text-[10px]">password: password</span>
-                            </div>
-
-                            <div className="flex flex-wrap gap-1.5">
-                                {DEMO_PERSONAS.map((persona) => {
-                                    const isSelected = activePersona === persona.username;
-                                    return (
-                                        <button
-                                            key={persona.username}
-                                            type="button"
-                                            onClick={() => selectPersona(persona)}
-                                            className={`rounded-lg border px-2.5 py-1 text-xs transition-colors duration-150 ${
-                                                isSelected
-                                                    ? 'border-indigo-500/50 bg-indigo-500/10 text-white'
-                                                    : 'border-zinc-800/80 bg-[#121318] text-zinc-400 hover:border-zinc-700 hover:text-zinc-200'
-                                            }`}
-                                        >
-                                            <span className="font-medium">{persona.name}</span>
-                                            <span className="ml-1 text-[10px] text-zinc-500">
-                                                ({persona.role})
-                                            </span>
-                                        </button>
-                                    );
-                                })}
-                            </div>
                         </div>
                     </form>
                 </div>

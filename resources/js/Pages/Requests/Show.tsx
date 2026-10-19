@@ -24,6 +24,7 @@ type ShowProps = PageProps<{
     request: WorkRequestDetail;
     projects: WorkspaceProject[];
     users: WorkspaceUser[];
+    cycles?: Array<{ id: number; number: number; name: string; is_active?: boolean }>;
     statuses: Record<string, string>;
     priorities: Record<string, string>;
     canAssign: boolean;
@@ -37,6 +38,7 @@ export default function Show({
     request: initialRequest,
     projects,
     users,
+    cycles = [],
     statuses,
     priorities,
     canAssign,
@@ -252,7 +254,7 @@ export default function Show({
                     </div>
 
                     <RequestSidebarProperties
-                        request={request} projects={projects} users={users} statuses={statuses}
+                        request={request} projects={projects} users={users} cycles={cycles} statuses={statuses}
                         priorities={priorities} canAssign={canAssign} canEdit={canEdit} onUpdate={update}
                         onRequestChange={(updated: WorkRequestDetail) => setRequest(updated)}
                     />

@@ -1,8 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,9 +13,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call([
-            IndependentWorkspaceSeeder::class,
-            DemoWorkspaceSeeder::class,
-        ]);
+        // 1. Mandatory production roles and permissions (clean, no demo data)
+        $this->call(RolesAndPermissionsSeeder::class);
+
+        // 2. Demo workspace and sample accounts are strictly excluded in production
+        if (! app()->isProduction()) {
+            $this->call([
+                IndependentWorkspaceSeeder::class,
+                DemoWorkspaceSeeder::class,
+            ]);
+        }
     }
 }

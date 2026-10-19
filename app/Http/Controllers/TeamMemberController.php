@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\RoleName;
 use App\Mail\WorkspaceInvitationMail;
+use App\Models\Role;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceInvitation;
@@ -108,17 +109,39 @@ final class TeamMemberController extends Controller
     public function update(Request $request, User $user): JsonResponse
     {
         $this->ensureCanManage($request);
+
+        $activeWorkspace = $request->user()->currentWorkspace();
+        if ($activeWorkspace) {
+            abort_unless(
+                $activeWorkspace->users()->where('users.id', $user->id)->exists(),
+                404,
+                'User is not a member of this workspace.'
+            );
+        }
+
         $validated = $request->validate([
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'username' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
             'role_id' => ['sometimes', 'required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value]))],
             'active' => ['sometimes', 'boolean'],
-            'password' => ['sometimes', 'nullable', 'string', 'min:8', 'max:255'],
         ]);
 
-        if (blank($validated['password'] ?? null)) {
-            unset($validated['password']);
+        // Security: Passwords cannot be modified via team member management endpoint
+        unset($validated['password']);
+
+        // Self role-change prevention
+        if ($user->id === $request->user()->id && isset($validated['role_id']) && (int) $validated['role_id'] !== (int) $user->role_id) {
+            return response()->json(['message' => 'You cannot change your own role.'], 422);
+        }
+
+        // Protect last remaining Owner in workspace
+        $ownerRoleId = (int) Role::query()->where('name', 'Owner')->value('id');
+        if (isset($validated['role_id']) && (int) $validated['role_id'] !== $ownerRoleId && (int) $user->role_id === $ownerRoleId && $activeWorkspace) {
+            $ownerCount = $activeWorkspace->users()->wherePivot('role_id', $ownerRoleId)->count();
+            if ($ownerCount <= 1) {
+                return response()->json(['message' => 'Cannot demote the last remaining Owner of the workspace.'], 422);
+            }
         }
 
         $oldRoleId = $user->role_id;
@@ -126,13 +149,18 @@ final class TeamMemberController extends Controller
 
         $user->update($validated);
 
+        if ($activeWorkspace && isset($validated['role_id'])) {
+            $activeWorkspace->users()->updateExistingPivot($user->id, ['role_id' => $validated['role_id']]);
+        }
+
         $event = ($user->role_id !== $oldRoleId) ? 'member.role_updated' : 'member.updated';
         app(AuditService::class)->log(
             $request->user(),
             $event,
             $user,
             $oldValues,
-            $user->only(['name', 'username', 'email', 'role_id', 'active'])
+            $user->only(['name', 'username', 'email', 'role_id', 'active']),
+            $activeWorkspace?->id
         );
 
         return response()->json(['user' => $user->fresh()->load('role:id,name')]);
@@ -144,22 +172,42 @@ final class TeamMemberController extends Controller
 
         abort_if($user->id === $request->user()->id, 422, 'You cannot remove your own account.');
 
-        if ($user->requestedWork()->exists()) {
-            return response()->json(['message' => 'This account requested work and cannot be removed. Deactivate it instead.'], 422);
+        $activeWorkspace = $request->user()->currentWorkspace() ?? $request->user()->workspaces()->first();
+        if (! $activeWorkspace) {
+            abort(404, 'No active workspace found.');
         }
 
+        abort_unless(
+            $activeWorkspace->users()->where('users.id', $user->id)->exists(),
+            404,
+            'User is not a member of this workspace.'
+        );
+
+        // Protect last remaining Owner
+        $ownerRoleId = (int) Role::query()->where('name', 'Owner')->value('id');
+        $userPivotRole = (int) ($activeWorkspace->users()->where('users.id', $user->id)->first()?->pivot?->role_id ?? $user->role_id);
+        if (($userPivotRole === $ownerRoleId || (int) $activeWorkspace->owner_id === $user->id)) {
+            $ownerCount = $activeWorkspace->users()->wherePivot('role_id', $ownerRoleId)->count();
+            if ($ownerCount <= 1) {
+                return response()->json(['message' => 'Cannot remove the last remaining Owner of the workspace.'], 422);
+            }
+        }
+
+        // Secure detachment from workspace; NEVER delete global user account
+        $activeWorkspace->users()->detach($user->id);
+
         $oldValues = $user->only(['id', 'name', 'username', 'email']);
-        $user->delete();
 
         app(AuditService::class)->log(
             $request->user(),
             'member.removed',
             $user,
             $oldValues,
-            []
+            ['workspace_id' => $activeWorkspace?->id],
+            $activeWorkspace?->id
         );
 
-        return response()->json(['deleted' => true]);
+        return response()->json(['deleted' => true, 'detached' => true]);
     }
 
     /** @return array<string, mixed> */

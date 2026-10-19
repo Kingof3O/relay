@@ -1,6 +1,6 @@
 import Card from '@/Components/Card';
 import { WorkspaceProject, WorkspaceUser, WorkRequestDetail } from '@/types/workspace';
-import { Sliders, Calendar, Tag, X, Plus, Link2, ExternalLink, Trash2 } from 'lucide-react';
+import { Sliders, Calendar, Tag, X, Plus, Link2, ExternalLink, Trash2, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
 import { Link, router } from '@inertiajs/react';
 import axios, { isAxiosError } from 'axios';
@@ -10,6 +10,7 @@ interface RequestSidebarPropertiesProps {
     request: WorkRequestDetail;
     projects: WorkspaceProject[];
     users: WorkspaceUser[];
+    cycles?: Array<{ id: number; number: number; name: string; is_active?: boolean }>;
     statuses: Record<string, string>;
     priorities: Record<string, string>;
     canAssign: boolean;
@@ -22,6 +23,7 @@ export default function RequestSidebarProperties({
     request,
     projects,
     users,
+    cycles = [],
     statuses,
     priorities,
     canAssign,
@@ -196,6 +198,31 @@ export default function RequestSidebarProperties({
                         {users.map((user) => (
                             <option key={user.id} value={user.id}>
                                 {user.name}
+                            </option>
+                        ))}
+                    </select>
+                </label>
+
+                {/* Sprint Cycle Selector */}
+                <label className="block border-t border-white/[0.06] pt-3">
+                    <span className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-400">
+                        <RefreshCw className="h-3 w-3 text-indigo-400" />
+                        <span>Sprint Cycle</span>
+                    </span>
+                    <select
+                        disabled={!canEdit}
+                        value={request.cycle?.id ?? request.cycle_id ?? ''}
+                        onChange={(e) =>
+                            onUpdate({
+                                cycle_id: e.target.value ? Number(e.target.value) : null,
+                            })
+                        }
+                        className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e] px-3 py-2 text-xs text-zinc-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50"
+                    >
+                        <option value="">No cycle (Backlog)</option>
+                        {cycles.map((cycle) => (
+                            <option key={cycle.id} value={cycle.id}>
+                                {cycle.name || `Cycle ${cycle.number}`}{cycle.is_active ? ' (Active)' : ''}
                             </option>
                         ))}
                     </select>

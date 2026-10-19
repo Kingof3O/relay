@@ -9,7 +9,7 @@ use App\Enums\RequestStatus;
 use App\Http\Requests\WorkRequest\BulkWorkRequestRequest;
 use App\Http\Requests\WorkRequest\UpdateWorkRequestRequest;
 use App\Models\Area;
-use App\Models\User;
+use App\Models\Cycle;
 use App\Models\WorkRequest;
 use App\Services\RequestFileService;
 use App\Services\WorkRequestPresenter;
@@ -44,6 +44,7 @@ final class WorkRequestController extends Controller
             ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
             ->filter($filterValues, $request->user())
             ->with(['area', 'requester', 'assignee', 'cycle', 'subtasks'])
+            ->withCount('files')
             ->orderByDesc('is_blocked')
             ->orderByRaw("CASE priority WHEN 'urgent' THEN 1 WHEN 'high' THEN 2 WHEN 'normal' THEN 3 WHEN 'low' THEN 4 ELSE 5 END")
             ->orderByDesc('updated_at')
@@ -52,6 +53,13 @@ final class WorkRequestController extends Controller
             ->map(fn (WorkRequest $workRequest): array => $this->presenter->card($workRequest))
             ->values()
             ->all();
+
+        $workspaceUsers = $activeWorkspace
+            ? $activeWorkspace->users()->where('users.active', true)->whereNotNull('users.role_id')->with('role:id,name')->orderBy('users.name')->get(['users.id', 'users.name', 'users.username', 'users.role_id'])
+            : collect();
+
+        $workspaceProjects = Inertia::getShared('workspaceProjects')
+            ?? ($activeWorkspace ? Area::query()->where('workspace_id', $activeWorkspace->id)->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']) : collect());
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -64,8 +72,8 @@ final class WorkRequestController extends Controller
         return Inertia::render('Requests/Index', [
             'requests' => $requests,
             'limit' => $effectiveLimit,
-            'projects' => Inertia::getShared('workspaceProjects') ?? Area::query()->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
-            'users' => User::query()->where('active', true)->whereNotNull('role_id')->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'role_id']),
+            'projects' => $workspaceProjects,
+            'users' => $workspaceUsers,
             'statuses' => RequestStatus::options(),
             'priorities' => RequestPriority::options(),
             'filters' => $request->only(['project', 'owner', 'requester', 'status', 'priority', 'search', 'my_work']),
@@ -79,10 +87,22 @@ final class WorkRequestController extends Controller
 
         $request->load(['files.uploader', 'activities.user', 'area', 'requester', 'assignee']);
 
+        $activeWorkspace = request()->user()?->currentWorkspace();
+        $workspaceUsers = $activeWorkspace
+            ? $activeWorkspace->users()->where('users.active', true)->whereNotNull('users.role_id')->with('role:id,name')->orderBy('users.name')->get(['users.id', 'users.name', 'users.username', 'users.role_id'])
+            : collect();
+
+        $workspaceProjects = Inertia::getShared('workspaceProjects')
+            ?? ($activeWorkspace ? Area::query()->where('workspace_id', $activeWorkspace->id)->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']) : collect());
+
         return Inertia::render('Requests/Show', [
             'request' => $this->presenter->detail($request),
-            'projects' => Inertia::getShared('workspaceProjects') ?? Area::query()->whereNull('archived_at')->orderBy('sort_order')->orderBy('name')->get(['id', 'name', 'color']),
-            'users' => User::query()->where('active', true)->whereNotNull('role_id')->with('role:id,name')->orderBy('name')->get(['id', 'name', 'username', 'role_id']),
+            'projects' => $workspaceProjects,
+            'users' => $workspaceUsers,
+            'cycles' => Cycle::query()
+                ->when(request()->user()?->currentWorkspace(), fn ($q, $ws) => $q->where('workspace_id', $ws->id))
+                ->orderByDesc('number')
+                ->get(['id', 'number', 'name', 'is_active']),
             'statuses' => RequestStatus::options(),
             'priorities' => RequestPriority::options(),
             'canAssign' => request()->user()?->can('assign', $request) ?? false,
@@ -153,5 +173,20 @@ final class WorkRequestController extends Controller
         }
 
         return redirect()->route('requests.index');
+    }
+
+    public function restore(Request $httpRequest, WorkRequest $request): JsonResponse|RedirectResponse
+    {
+        $this->authorize('delete', $request);
+        $request->restore();
+
+        if ($httpRequest->expectsJson()) {
+            return response()->json([
+                'restored' => true,
+                'request' => $this->presenter->detail($request->fresh()),
+            ]);
+        }
+
+        return redirect()->route('requests.show', $request);
     }
 }

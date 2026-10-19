@@ -14,28 +14,6 @@ function Checkbox({ className = "", ...props }) {
 }
 //#endregion
 //#region resources/js/Pages/Auth/Login.tsx
-var DEMO_PERSONAS = [
-	{
-		username: "robin",
-		name: "Robin",
-		role: "Owner"
-	},
-	{
-		username: "hussien",
-		name: "Hussien",
-		role: "Lead Dev"
-	},
-	{
-		username: "brother",
-		name: "Brother",
-		role: "Developer"
-	},
-	{
-		username: "designer-1",
-		name: "Maya",
-		role: "Design"
-	}
-];
 function Login({ socialProviders = {
 	github: true,
 	google: true
@@ -46,20 +24,11 @@ function Login({ socialProviders = {
 		remember: false
 	});
 	const [showPassword, setShowPassword] = useState(false);
-	const [activePersona, setActivePersona] = useState(null);
 	const hasSocialProviders = Boolean(socialProviders?.github || socialProviders?.google);
 	const bothEnabled = Boolean(socialProviders?.github && socialProviders?.google);
 	const submit = (e) => {
 		e.preventDefault();
 		post(route("login"), { onFinish: () => reset("password") });
-	};
-	const selectPersona = (persona) => {
-		setActivePersona(persona.username);
-		setData({
-			...data,
-			username: persona.username,
-			password: "password"
-		});
 	};
 	return /* @__PURE__ */ jsxs("div", {
 		className: "relative flex min-h-screen w-full bg-[#08090d] text-zinc-100 selection:bg-indigo-500/30 selection:text-white",
@@ -236,12 +205,9 @@ function Login({ socialProviders = {
 											value: data.username,
 											className: "block w-full pl-9",
 											autoComplete: "username",
-											placeholder: "robin or robin@relay.studio",
+											placeholder: "username or email",
 											isFocused: true,
-											onChange: (e) => {
-												setData("username", e.target.value);
-												setActivePersona(null);
-											},
+											onChange: (e) => setData("username", e.target.value),
 											required: true
 										})]
 									}),
@@ -251,12 +217,16 @@ function Login({ socialProviders = {
 									})
 								] }),
 								/* @__PURE__ */ jsxs("div", { children: [
-									/* @__PURE__ */ jsx("div", {
+									/* @__PURE__ */ jsxs("div", {
 										className: "flex items-center justify-between",
-										children: /* @__PURE__ */ jsx(InputLabel, {
+										children: [/* @__PURE__ */ jsx(InputLabel, {
 											htmlFor: "password",
 											value: "Password"
-										})
+										}), /* @__PURE__ */ jsx(Link, {
+											href: route("password.request"),
+											className: "text-xs text-zinc-400 hover:text-zinc-200 transition-colors",
+											children: "Forgot password?"
+										})]
 									}),
 									/* @__PURE__ */ jsxs("div", {
 										className: "relative mt-1.5",
@@ -311,37 +281,6 @@ function Login({ socialProviders = {
 										disabled: processing,
 										children: processing ? /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx(Loader2, { className: "h-4 w-4 animate-spin text-zinc-950" }), /* @__PURE__ */ jsx("span", { children: "Signing in…" })] }) : /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("span", { children: "Continue" }), /* @__PURE__ */ jsx(ArrowRight, { className: "h-4 w-4" })] })
 									})
-								}),
-								/* @__PURE__ */ jsxs("div", {
-									className: "mt-6 border-t border-zinc-800/80 pt-4",
-									children: [/* @__PURE__ */ jsxs("div", {
-										className: "mb-2 flex items-center justify-between text-[11px] text-zinc-500",
-										children: [/* @__PURE__ */ jsx("span", { children: "Quick demo accounts:" }), /* @__PURE__ */ jsx("span", {
-											className: "font-mono text-[10px]",
-											children: "password: password"
-										})]
-									}), /* @__PURE__ */ jsx("div", {
-										className: "flex flex-wrap gap-1.5",
-										children: DEMO_PERSONAS.map((persona) => {
-											const isSelected = activePersona === persona.username;
-											return /* @__PURE__ */ jsxs("button", {
-												type: "button",
-												onClick: () => selectPersona(persona),
-												className: `rounded-lg border px-2.5 py-1 text-xs transition-colors duration-150 ${isSelected ? "border-indigo-500/50 bg-indigo-500/10 text-white" : "border-zinc-800/80 bg-[#121318] text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"}`,
-												children: [/* @__PURE__ */ jsx("span", {
-													className: "font-medium",
-													children: persona.name
-												}), /* @__PURE__ */ jsxs("span", {
-													className: "ml-1 text-[10px] text-zinc-500",
-													children: [
-														"(",
-														persona.role,
-														")"
-													]
-												})]
-											}, persona.username);
-										})
-									})]
 								})
 							]
 						})

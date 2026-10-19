@@ -26,10 +26,11 @@ final class WorkRequestApiController extends Controller
         $this->authorize('viewAny', WorkRequest::class);
 
         $user = $request->user();
-        $activeWorkspace = $user?->currentWorkspace();
+        $activeWorkspace = $user?->currentWorkspace() ?? $user?->workspaces()->first();
 
         $query = WorkRequest::query()
-            ->when($activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
+            ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
+            ->when(! $activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('requester_id', $user?->id)->orWhere('assignee_id', $user?->id)->orWhereNull('workspace_id')))
             ->when($request->filled('status'), fn ($q) => $q->where('status', (string) $request->input('status')))
             ->when($request->filled('priority'), fn ($q) => $q->where('priority', (string) $request->input('priority')))
             ->when($request->filled('area_id'), fn ($q) => $q->where('area_id', (int) $request->input('area_id')))
@@ -47,22 +48,47 @@ final class WorkRequestApiController extends Controller
         $this->authorize('create', WorkRequest::class);
 
         $user = $request->user();
+        $activeWorkspace = $user?->currentWorkspace() ?? $user?->workspaces()->first();
+        if (! $activeWorkspace) {
+            abort(403, 'User does not belong to an active workspace.');
+        }
+        $workspaceId = $activeWorkspace->id;
 
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'area_id' => ['required', 'integer', 'exists:areas,id'],
+            'area_id' => [
+                'required',
+                'integer',
+                Rule::exists('areas', 'id')->where(fn ($q) => $workspaceId ? $q->where('workspace_id', $workspaceId)->whereNull('archived_at') : $q->whereNull('archived_at')),
+            ],
             'priority' => ['nullable', 'string', Rule::enum(RequestPriority::class)],
             'description' => ['nullable', 'string'],
             'status' => ['nullable', 'string', Rule::enum(RequestStatus::class)],
-            'assignee_id' => ['nullable', 'integer', 'exists:users,id'],
+            'assignee_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(fn ($q) => $workspaceId ? $q->whereIn('id', fn ($sub) => $sub->select('user_id')->from('workspace_user')->where('workspace_id', $workspaceId))->where('active', true) : $q->where('active', true)),
+            ],
             'story_points' => ['nullable', 'integer', 'min:0'],
-            'parent_id' => ['nullable', 'integer', 'exists:requests,id'],
-            'cycle_id' => ['nullable', 'integer', 'exists:cycles,id'],
+            'parent_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('requests', 'id')->where(fn ($q) => $workspaceId ? $q->where('workspace_id', $workspaceId) : $q),
+            ],
+            'cycle_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('cycles', 'id')->where(fn ($q) => $workspaceId ? $q->where('workspace_id', $workspaceId) : $q),
+            ],
             'is_blocked' => ['nullable', 'boolean'],
             'blocked_reason' => ['nullable', 'string'],
             'due_date' => ['nullable', 'date'],
             'tags' => ['nullable', 'array'],
         ]);
+
+        if ($activeWorkspace) {
+            $validated['workspace_id'] = $activeWorkspace->id;
+        }
 
         $workRequest = $this->service->create($user, $validated);
 
@@ -89,23 +115,48 @@ final class WorkRequestApiController extends Controller
         $this->authorize('update', $workRequest);
 
         $user = $request->user();
+        $workspaceId = $workRequest->workspace_id;
 
         $validated = $request->validate([
             'title' => ['sometimes', 'string', 'max:255'],
-            'area_id' => ['sometimes', 'integer', 'exists:areas,id'],
+            'area_id' => [
+                'sometimes',
+                'integer',
+                Rule::exists('areas', 'id')->where(fn ($q) => $workspaceId ? $q->where('workspace_id', $workspaceId)->whereNull('archived_at') : $q->whereNull('archived_at')),
+            ],
             'priority' => ['sometimes', 'string', Rule::enum(RequestPriority::class)],
             'description' => ['nullable', 'string'],
             'status' => ['sometimes', 'string', Rule::enum(RequestStatus::class)],
-            'assignee_id' => ['nullable', 'integer', 'exists:users,id'],
+            'assignee_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(fn ($q) => $workspaceId ? $q->whereIn('id', fn ($sub) => $sub->select('user_id')->from('workspace_user')->where('workspace_id', $workspaceId))->where('active', true) : $q->where('active', true)),
+            ],
             'story_points' => ['nullable', 'integer', 'min:0'],
-            'parent_id' => ['nullable', 'integer', 'exists:requests,id'],
-            'cycle_id' => ['nullable', 'integer', 'exists:cycles,id'],
+            'parent_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('requests', 'id')->where(fn ($q) => $workspaceId ? $q->where('workspace_id', $workspaceId) : $q),
+            ],
+            'cycle_id' => [
+                'nullable',
+                'integer',
+                Rule::exists('cycles', 'id')->where(fn ($q) => $workspaceId ? $q->where('workspace_id', $workspaceId) : $q),
+            ],
             'is_blocked' => ['nullable', 'boolean'],
             'blocked_reason' => ['nullable', 'string'],
             'due_date' => ['nullable', 'date'],
             'tags' => ['nullable', 'array'],
             'lock_version' => ['nullable', 'integer'],
         ]);
+
+        if (array_key_exists('status', $validated)) {
+            $this->authorize('changeStatus', $workRequest);
+        }
+
+        if (array_key_exists('assignee_id', $validated)) {
+            $this->authorize('assign', $workRequest);
+        }
 
         $updated = $this->service->update($workRequest, $user, $validated);
 
@@ -123,6 +174,21 @@ final class WorkRequestApiController extends Controller
         return response()->json([
             'message' => 'Work request deleted successfully.',
             'deleted' => true,
+        ]);
+    }
+
+    public function restore(Request $request, int $id): JsonResponse
+    {
+        $workRequest = WorkRequest::withTrashed()->findOrFail($id);
+
+        $this->authorize('delete', $workRequest);
+
+        $workRequest->restore();
+
+        return response()->json([
+            'message' => 'Work request restored successfully.',
+            'restored' => true,
+            'data' => new WorkRequestResource($workRequest->fresh(['area', 'requester', 'assignee', 'subtasks', 'pullRequests'])),
         ]);
     }
 }

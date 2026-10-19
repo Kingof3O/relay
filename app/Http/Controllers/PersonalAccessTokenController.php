@@ -5,21 +5,26 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Laravel\Sanctum\PersonalAccessToken;
 
 final class PersonalAccessTokenController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request): JsonResponse|RedirectResponse
     {
         $tokens = $request->user()->tokens()
             ->latest('created_at')
             ->get(['id', 'name', 'abilities', 'last_used_at', 'expires_at', 'created_at']);
 
-        return response()->json([
-            'tokens' => $tokens,
-        ]);
+        if ($request->wantsJson() || $request->expectsJson()) {
+            return response()->json([
+                'tokens' => $tokens,
+            ]);
+        }
+
+        return redirect()->route('profile.edit');
     }
 
     public function store(Request $request): JsonResponse
@@ -32,7 +37,7 @@ final class PersonalAccessTokenController extends Controller
         ]);
 
         $abilities = ! empty($validated['abilities']) ? $validated['abilities'] : ['*'];
-        $expiresAt = ! empty($validated['expires_at']) ? Carbon::parse($validated['expires_at']) : null;
+        $expiresAt = ! empty($validated['expires_at']) ? Carbon::parse($validated['expires_at']) : Carbon::now()->addDays(90);
 
         $tokenResult = $request->user()->createToken(
             $validated['name'],

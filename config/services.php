@@ -53,4 +53,8 @@ return [
         'avatar_url' => env('DISCORD_BOT_AVATAR_URL'),
     ],
 
+    'inbound_email' => [
+        'webhook_secret' => env('INBOUND_EMAIL_WEBHOOK_SECRET'),
+    ],
+
 ];

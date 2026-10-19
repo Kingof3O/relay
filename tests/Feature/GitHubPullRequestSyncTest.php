@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\WorkRequest;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 use Tests\TestCase;
 
 final class GitHubPullRequestSyncTest extends TestCase
@@ -20,10 +21,14 @@ final class GitHubPullRequestSyncTest extends TestCase
 
     private WorkRequest $ticket;
 
+    private const GITHUB_SECRET = 'gh-test-secret-key-12345';
+
     protected function setUp(): void
     {
         parent::setUp();
         $this->seed(IndependentWorkspaceSeeder::class);
+
+        config(['services.github.webhook_secret' => self::GITHUB_SECRET]);
 
         $this->user = User::query()->where('username', 'robin')->firstOrFail();
         $area = Area::query()->firstOrFail();
@@ -37,23 +42,73 @@ final class GitHubPullRequestSyncTest extends TestCase
         ]);
     }
 
+    private function postGitHubWebhook(array $payload, string $event = 'pull_request', ?string $customSecret = self::GITHUB_SECRET): TestResponse
+    {
+        $rawPayload = (string) json_encode($payload);
+        $headers = [
+            'CONTENT_TYPE' => 'application/json',
+            'HTTP_X_GITHUB_EVENT' => $event,
+        ];
+
+        if ($customSecret !== null) {
+            $headers['HTTP_X_HUB_SIGNATURE_256'] = 'sha256='.hash_hmac('sha256', $rawPayload, $customSecret);
+        }
+
+        return $this->call('POST', route('api.webhooks.github'), [], [], [], $headers, $rawPayload);
+    }
+
+    public function test_github_webhook_rejects_missing_signature_with_401(): void
+    {
+        $response = $this->postGitHubWebhook([
+            'action' => 'opened',
+            'pull_request' => ['number' => 1],
+        ], 'pull_request', null);
+
+        $response->assertStatus(401)
+            ->assertJsonPath('error', 'Unauthorized: Missing X-Hub-Signature-256 header.');
+    }
+
+    public function test_github_webhook_rejects_invalid_signature_with_401(): void
+    {
+        $response = $this->postGitHubWebhook([
+            'action' => 'opened',
+            'pull_request' => ['number' => 1],
+        ], 'pull_request', 'wrong-secret');
+
+        $response->assertStatus(401)
+            ->assertJsonPath('error', 'Unauthorized: Invalid signature.');
+    }
+
+    public function test_github_webhook_fails_closed_when_secret_is_unconfigured(): void
+    {
+        config(['services.github.webhook_secret' => null]);
+        $this->app->detectEnvironment(fn () => 'production');
+
+        $response = $this->postGitHubWebhook([
+            'action' => 'opened',
+            'pull_request' => ['number' => 1],
+        ], 'pull_request', self::GITHUB_SECRET);
+
+        $response->assertStatus(401)
+            ->assertJsonPath('error', 'GitHub webhook secret is not configured.');
+    }
+
     public function test_github_webhook_links_pr_to_work_request(): void
     {
-        $response = $this->withHeader('X-GitHub-Event', 'pull_request')
-            ->postJson(route('api.webhooks.github'), [
-                'action' => 'opened',
-                'pull_request' => [
-                    'number' => 42,
-                    'title' => "feat: implement feature #REQ-{$this->ticket->id}",
-                    'body' => "Fixes #REQ-{$this->ticket->id} in full.",
-                    'html_url' => 'https://github.com/relay/studio/pull/42',
-                    'state' => 'open',
-                    'draft' => false,
-                    'review_status' => 'pending',
-                    'head' => ['ref' => "feature/req-{$this->ticket->id}"],
-                    'base' => ['ref' => 'main'],
-                ],
-            ]);
+        $response = $this->postGitHubWebhook([
+            'action' => 'opened',
+            'pull_request' => [
+                'number' => 42,
+                'title' => "feat: implement feature #REQ-{$this->ticket->id}",
+                'body' => "Fixes #REQ-{$this->ticket->id} in full.",
+                'html_url' => 'https://github.com/relay/studio/pull/42',
+                'state' => 'open',
+                'draft' => false,
+                'review_status' => 'pending',
+                'head' => ['ref' => "feature/req-{$this->ticket->id}"],
+                'base' => ['ref' => 'main'],
+            ],
+        ]);
 
         $response->assertOk()
             ->assertJsonPath('status', 'success')
@@ -77,21 +132,20 @@ final class GitHubPullRequestSyncTest extends TestCase
     {
         $this->assertEquals('doing', $this->ticket->status->value);
 
-        $response = $this->withHeader('X-GitHub-Event', 'pull_request')
-            ->postJson(route('api.webhooks.github'), [
-                'action' => 'closed',
-                'pull_request' => [
-                    'number' => 42,
-                    'title' => "feat: PR ready for main #REQ-{$this->ticket->id}",
-                    'body' => "Closes #REQ-{$this->ticket->id}",
-                    'html_url' => 'https://github.com/relay/studio/pull/42',
-                    'state' => 'closed',
-                    'merged' => true,
-                    'draft' => false,
-                    'head' => ['ref' => "feature/req-{$this->ticket->id}"],
-                    'base' => ['ref' => 'main'],
-                ],
-            ]);
+        $response = $this->postGitHubWebhook([
+            'action' => 'closed',
+            'pull_request' => [
+                'number' => 42,
+                'title' => "feat: PR ready for main #REQ-{$this->ticket->id}",
+                'body' => "Closes #REQ-{$this->ticket->id}",
+                'html_url' => 'https://github.com/relay/studio/pull/42',
+                'state' => 'closed',
+                'merged' => true,
+                'draft' => false,
+                'head' => ['ref' => "feature/req-{$this->ticket->id}"],
+                'base' => ['ref' => 'main'],
+            ],
+        ]);
 
         $response->assertOk()
             ->assertJsonPath('status', 'success')
@@ -116,21 +170,20 @@ final class GitHubPullRequestSyncTest extends TestCase
     {
         $this->assertEquals('doing', $this->ticket->status->value);
 
-        $response = $this->withHeader('X-GitHub-Event', 'pull_request')
-            ->postJson(route('api.webhooks.github'), [
-                'action' => 'closed',
-                'pull_request' => [
-                    'number' => 99,
-                    'title' => "WIP discarded #REQ-{$this->ticket->id}",
-                    'body' => "fixes #REQ-{$this->ticket->id}",
-                    'html_url' => 'https://github.com/relay/studio/pull/99',
-                    'state' => 'closed',
-                    'merged' => false,
-                    'draft' => false,
-                    'head' => ['ref' => "feature/req-{$this->ticket->id}"],
-                    'base' => ['ref' => 'main'],
-                ],
-            ]);
+        $response = $this->postGitHubWebhook([
+            'action' => 'closed',
+            'pull_request' => [
+                'number' => 99,
+                'title' => "WIP discarded #REQ-{$this->ticket->id}",
+                'body' => "fixes #REQ-{$this->ticket->id}",
+                'html_url' => 'https://github.com/relay/studio/pull/99',
+                'state' => 'closed',
+                'merged' => false,
+                'draft' => false,
+                'head' => ['ref' => "feature/req-{$this->ticket->id}"],
+                'base' => ['ref' => 'main'],
+            ],
+        ]);
 
         $response->assertOk();
 

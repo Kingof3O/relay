@@ -11,13 +11,17 @@ use App\Models\Role;
 use App\Models\User;
 use App\Models\WorkRequest;
 use App\Models\Workspace;
-use App\Notifications\RequestDatabaseNotification;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Collection;
 
 final class DemoWorkspaceSeeder extends Seeder
 {
     public function run(): void
     {
+        if (app()->isProduction()) {
+            return;
+        }
+
         $users = User::query()
             ->whereIn('username', ['robin', 'hussien', 'brother', 'designer-1', 'designer-2'])
             ->get()
@@ -482,9 +486,9 @@ final class DemoWorkspaceSeeder extends Seeder
     }
 
     /**
-     * @param \Illuminate\Support\Collection<string, Area> $projects
-     * @param \Illuminate\Support\Collection<string, User> $users
-     * @param array<int, array<string, mixed>> $tickets
+     * @param  Collection<string, Area>  $projects
+     * @param  Collection<string, User>  $users
+     * @param  array<int, array<string, mixed>>  $tickets
      */
     private function seedTickets(Workspace $workspace, $projects, $users, array $tickets): void
     {

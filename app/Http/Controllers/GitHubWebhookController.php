@@ -16,11 +16,23 @@ class GitHubWebhookController extends Controller
 {
     public function __invoke(Request $request, WorkRequestService $service): JsonResponse
     {
+        if (! config('relay.integrations.github_sync_enabled', true)) {
+            return response()->json(['message' => 'GitHub integration is disabled in configuration.'], 200);
+        }
+
         $secret = config('services.github.webhook_secret')
             ?: Webhook::query()->where('name', 'github')->value('secret');
 
-        if (! empty($secret)) {
+        if (empty($secret)) {
+            if (app()->isProduction()) {
+                return response()->json(['error' => 'GitHub webhook secret is not configured.'], 401);
+            }
+        } else {
             $signature = (string) $request->header('X-Hub-Signature-256', '');
+            if ($signature === '') {
+                return response()->json(['error' => 'Unauthorized: Missing X-Hub-Signature-256 header.'], 401);
+            }
+
             $expectedSignature = 'sha256='.hash_hmac('sha256', $request->getContent(), (string) $secret);
 
             if (! hash_equals($expectedSignature, $signature)) {

@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use App\Models\Area;
 use App\Models\SavedView;
+use App\Models\Workspace;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
@@ -48,7 +49,7 @@ class HandleInertiaRequests extends Middleware
             'currentWorkspace' => fn (): ?\App\Models\Workspace => $user?->currentWorkspace(),
             'userWorkspaces' => fn (): array => $user === null
                 ? []
-                : \App\Models\Workspace::query()
+                : Workspace::query()
                     ->whereHas('users', fn ($q) => $q->where('users.id', $user->id))
                     ->orWhere('owner_id', $user->id)
                     ->distinct()

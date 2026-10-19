@@ -6,7 +6,6 @@ use App\Models\Area;
 use App\Services\AuditService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 final class AreaController extends Controller
 {
@@ -45,8 +44,13 @@ final class AreaController extends Controller
     public function update(Request $request, Area $area): JsonResponse
     {
         $this->ensureCanManage($request);
+        $activeWorkspace = $request->user()?->currentWorkspace();
+        if ($area->workspace_id !== null && $activeWorkspace && $area->workspace_id !== $activeWorkspace->id) {
+            abort(403, 'Unauthorized access to project.');
+        }
+
         $validated = $request->validate([
-            'name' => ['sometimes', 'required', 'string', 'max:80', Rule::unique('areas', 'name')->ignore($area->id)],
+            'name' => ['sometimes', 'required', 'string', 'max:80'],
             'color' => ['sometimes', 'nullable', 'string', 'max:20'],
             'archived' => ['sometimes', 'boolean'],
         ]);
@@ -54,8 +58,8 @@ final class AreaController extends Controller
         if (array_key_exists('name', $validated)) {
             $slug = str($validated['name'])->slug()->toString();
 
-            if (Area::query()->where('slug', $slug)->where('id', '!=', $area->id)->exists()) {
-                return response()->json(['message' => 'A project with that name already exists.'], 422);
+            if (Area::query()->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))->where('slug', $slug)->where('id', '!=', $area->id)->exists()) {
+                return response()->json(['message' => 'A project with that name already exists in this workspace.'], 422);
             }
 
             $validated['slug'] = $slug;
@@ -79,8 +83,12 @@ final class AreaController extends Controller
             'order.*' => ['integer', 'distinct', 'exists:areas,id'],
         ]);
 
+        $activeWorkspace = $request->user()?->currentWorkspace();
         foreach ($validated['order'] as $index => $areaId) {
-            Area::query()->whereKey($areaId)->update(['sort_order' => $index]);
+            Area::query()
+                ->when($activeWorkspace, fn ($q) => $q->where('workspace_id', $activeWorkspace->id))
+                ->whereKey($areaId)
+                ->update(['sort_order' => $index]);
         }
 
         return response()->json(['saved' => true]);
@@ -89,6 +97,11 @@ final class AreaController extends Controller
     public function destroy(Request $request, Area $area): JsonResponse
     {
         $this->ensureCanManage($request);
+        $activeWorkspace = $request->user()?->currentWorkspace();
+        if ($area->workspace_id !== null && $activeWorkspace && $area->workspace_id !== $activeWorkspace->id) {
+            abort(403, 'Unauthorized access to project.');
+        }
+
         $oldValues = ['archived_at' => $area->archived_at?->toIso8601String()];
         $area->update(['archived_at' => now()]);
 

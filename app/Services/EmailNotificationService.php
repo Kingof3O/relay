@@ -137,18 +137,21 @@ final class EmailNotificationService
         $sampleRequest = WorkRequest::query()->with(['area', 'requester', 'assignee'])->first()
             ?? self::getSampleRequest($recipient);
 
+        $wsId = $recipient->currentWorkspace()?->id;
+
         $payload = [
             'event' => $event,
             'request_id' => $sampleRequest->id ?? 101,
             'request_title' => $sampleRequest->title ?? 'Optimize Redis caching pipeline for Kanban boards',
             'message' => "This is a test notification dispatched to {$recipient->email} to verify email template rendering.",
-            'url' => route('requests.show', $sampleRequest->id ?? 1),
+            'url' => url('/requests/'.($sampleRequest->id ?? 101)),
         ];
 
         try {
             Mail::to($recipient->email)->send(new WorkRequestNotificationMail($recipient, $sampleRequest, $payload));
 
             IntegrationDeliveryLog::query()->create([
+                'workspace_id' => $wsId,
                 'channel' => 'email',
                 'event' => 'test.email',
                 'status' => 'success',
@@ -163,6 +166,7 @@ final class EmailNotificationService
             ];
         } catch (\Throwable $e) {
             IntegrationDeliveryLog::query()->create([
+                'workspace_id' => $wsId,
                 'channel' => 'email',
                 'event' => 'test.email',
                 'status' => 'failed',
@@ -217,8 +221,8 @@ final class EmailNotificationService
         $req->id = 101;
         $req->title = 'Optimize Redis caching pipeline for Kanban boards';
         $req->description = 'Improve serialization speed on high-frequency Kanban board loads and sync state with Reverb.';
-        $req->status = 'in_progress';
-        $req->priority = 'high';
+        $req->status = 'doing';
+        $req->priority = 'normal';
         $req->due_date = now()->addDays(2);
         $req->is_blocked = false;
 

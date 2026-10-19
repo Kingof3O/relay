@@ -14,11 +14,16 @@ final class ProjectApiController extends Controller
 {
     public function index(Request $request): AnonymousResourceCollection
     {
-        $activeWorkspace = $request->user()?->currentWorkspace();
+        $user = $request->user();
+        $activeWorkspace = $user?->currentWorkspace() ?? $user?->workspaces()->first();
+
+        if (! $activeWorkspace) {
+            return AreaResource::collection(collect());
+        }
 
         $projects = Area::query()
+            ->where('workspace_id', $activeWorkspace->id)
             ->whereNull('archived_at')
-            ->when($activeWorkspace, fn ($q) => $q->where(fn ($sub) => $sub->where('workspace_id', $activeWorkspace->id)->orWhereNull('workspace_id')))
             ->orderBy('sort_order')
             ->orderBy('name')
             ->get();

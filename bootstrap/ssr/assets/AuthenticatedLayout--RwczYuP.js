@@ -2,7 +2,7 @@ import { t as ApplicationLogo } from "./ApplicationLogo-BVzx5-Vz.js";
 import { Link, router, usePage } from "@inertiajs/react";
 import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, GitMerge, GitPullRequest, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, MessageSquare, Paperclip, Play, Plus, Quote, Radio, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
+import { AlertCircle, AlertOctagon, AlertTriangle, Archive, ArrowRight, ArrowRightLeft, AtSign, Bell, Bold, Bookmark, BookmarkPlus, Building2, Calendar, CalendarRange, Check, CheckCheck, CheckCircle2, CheckSquare, ChevronDown, ChevronLeft, ChevronRight, ChevronsUpDown, Circle, Clock, Code, Copy, Download, Edit3, ExternalLink, FileCode, FileSpreadsheet, FileText, Flame, FolderKanban, GitMerge, GitPullRequest, Heading2, Heading3, Inbox, Italic, KanbanSquare, Keyboard, LayoutDashboard, Link2, List, ListFilter, Loader2, LogOut, Mail, Maximize2, Menu, MessageSquare, Paperclip, Play, Plus, Quote, Radio, RefreshCw, Repeat, RotateCcw, Search, Send, Settings, Shield, Sliders, SlidersHorizontal, Sparkles, Table, Tag, Trash2, UploadCloud, User, UserCheck, X, Zap, ZoomIn, ZoomOut } from "lucide-react";
 import { Dialog, DialogPanel, Transition, TransitionChild } from "@headlessui/react";
 import { Command } from "cmdk";
 import axios, { isAxiosError } from "axios";
@@ -348,7 +348,7 @@ function WorkspaceSwitcher({ collapsed = false }) {
 }
 //#endregion
 //#region resources/js/Components/Sidebar.tsx
-function Sidebar() {
+function Sidebar({ mobileOpen = false, onCloseMobile } = {}) {
 	const pageProps = usePage().props;
 	const user = pageProps.auth?.user ?? { name: "User" };
 	const roleName = pageProps.auth?.role?.name ?? "Member";
@@ -432,8 +432,11 @@ function Sidebar() {
 			badge: null
 		}
 	];
-	return /* @__PURE__ */ jsxs("aside", {
-		className: `sticky top-0 z-30 flex h-screen shrink-0 flex-col justify-between border-r border-zinc-800/80 bg-[#0c0d12] transition-all duration-200 ease-in-out select-none ${collapsed ? "w-[76px] p-3" : "w-[280px] p-4"}`,
+	return /* @__PURE__ */ jsxs(Fragment, { children: [mobileOpen && /* @__PURE__ */ jsx("div", {
+		className: "fixed inset-0 z-40 bg-black/70 backdrop-blur-sm lg:hidden transition-opacity",
+		onClick: onCloseMobile
+	}), /* @__PURE__ */ jsxs("aside", {
+		className: `fixed inset-y-0 left-0 z-50 flex h-full shrink-0 flex-col justify-between border-r border-zinc-800/80 bg-[#0c0d12] transition-transform duration-200 ease-in-out select-none lg:static lg:h-screen lg:top-0 lg:z-30 lg:translate-x-0 ${mobileOpen ? "translate-x-0 shadow-2xl" : "-translate-x-full"} ${collapsed ? "lg:w-[76px] lg:p-3 w-[280px] p-4" : "w-[280px] p-4"}`,
 		children: [
 			/* @__PURE__ */ jsxs("div", {
 				className: "shrink-0 space-y-3 pb-3",
@@ -449,7 +452,7 @@ function Sidebar() {
 							children: [/* @__PURE__ */ jsx("div", {
 								className: "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-750 bg-[#121318] text-white shadow-sm transition-all group-hover:border-zinc-650 group-hover:bg-[#181920]",
 								children: /* @__PURE__ */ jsx(ApplicationLogo, { className: "h-5 w-5 text-white" })
-							}), !collapsed && /* @__PURE__ */ jsxs("div", {
+							}), (!collapsed || mobileOpen) && /* @__PURE__ */ jsxs("div", {
 								className: "flex items-center gap-2",
 								children: [/* @__PURE__ */ jsx("span", {
 									className: "text-[15px] font-bold tracking-tight text-white",
@@ -459,12 +462,21 @@ function Sidebar() {
 									children: "Studio"
 								})]
 							})]
-						}), !collapsed && /* @__PURE__ */ jsx("button", {
-							type: "button",
-							onClick: toggleCollapsed,
-							className: "flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white",
-							title: "Collapse sidebar (⌘[)",
-							children: /* @__PURE__ */ jsx(ChevronLeft, { className: "h-4 w-4" })
+						}), /* @__PURE__ */ jsxs("div", {
+							className: "flex items-center gap-1",
+							children: [!collapsed && /* @__PURE__ */ jsx("button", {
+								type: "button",
+								onClick: toggleCollapsed,
+								className: "hidden lg:flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white",
+								title: "Collapse sidebar (⌘[)",
+								children: /* @__PURE__ */ jsx(ChevronLeft, { className: "h-4 w-4" })
+							}), onCloseMobile && /* @__PURE__ */ jsx("button", {
+								type: "button",
+								onClick: onCloseMobile,
+								className: "flex lg:hidden h-8 w-8 items-center justify-center rounded-lg text-zinc-400 hover:bg-zinc-800 hover:text-white",
+								title: "Close navigation",
+								children: /* @__PURE__ */ jsx(X, { className: "h-5 w-5" })
+							})]
 						})]
 					}),
 					collapsed && /* @__PURE__ */ jsx("div", {
@@ -683,7 +695,7 @@ function Sidebar() {
 				})] })
 			})
 		]
-	});
+	})] });
 }
 //#endregion
 //#region resources/js/Components/CommandPalette.tsx
@@ -699,8 +711,6 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 	const activeRequest = pageProps.request;
 	const pathTicketId = typeof window !== "undefined" ? window.location.pathname.match(/\/requests\/(\d+)/)?.[1] : null;
 	const ticketId = activeRequest?.id ?? (pathTicketId ? parseInt(pathTicketId, 10) : null);
-	const robinUser = usersList.find((u) => u.username?.toLowerCase() === "robin" || u.name?.toLowerCase().includes("robin"));
-	const hussienUser = usersList.find((u) => u.username?.toLowerCase() === "hussien" || u.name?.toLowerCase().includes("hussien"));
 	const handleTicketAction = async (payload, successMsg) => {
 		setOpen(false);
 		if (!ticketId) {
@@ -874,40 +884,40 @@ function CommandPalette({ open, setOpen, onOpenCreate, onOpenShortcuts, projects
 									children: ticketId ? `Ticket Actions (#REQ-${ticketId})` : "Linear Ticket Actions"
 								}),
 								children: [
-									/* @__PURE__ */ jsxs(Command.Item, {
-										value: "Assign to Robin",
-										onSelect: () => handleTicketAction({ assignee_id: robinUser?.id || 1 }, "Assigned to Robin"),
+									usersList.slice(0, 4).map((member) => /* @__PURE__ */ jsxs(Command.Item, {
+										value: `Assign to ${member.name || member.username}`,
+										onSelect: () => handleTicketAction({ assignee_id: member.id }, `Assigned to ${member.name || member.username}`),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
 											className: "flex items-center gap-2.5",
 											children: [/* @__PURE__ */ jsx("div", {
 												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300",
 												children: /* @__PURE__ */ jsx(UserCheck, { className: "h-3.5 w-3.5" })
-											}), /* @__PURE__ */ jsx("span", {
+											}), /* @__PURE__ */ jsxs("span", {
 												className: "font-semibold",
-												children: "Assign to Robin"
+												children: ["Assign to ", member.name || member.username]
 											})]
-										}), /* @__PURE__ */ jsx("kbd", {
-											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
-											children: "A R"
+										}), /* @__PURE__ */ jsx("span", {
+											className: "text-[10px] font-mono text-zinc-400",
+											children: member.username ? `@${member.username}` : ""
 										})]
-									}),
+									}, `assign-${member.id}`)),
 									/* @__PURE__ */ jsxs(Command.Item, {
-										value: "Assign to Hussien",
-										onSelect: () => handleTicketAction({ assignee_id: hussienUser?.id || 2 }, "Assigned to Hussien"),
+										value: "Unassign ticket",
+										onSelect: () => handleTicketAction({ assignee_id: null }, "Unassigned ticket"),
 										className: "flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white",
 										children: [/* @__PURE__ */ jsxs("div", {
 											className: "flex items-center gap-2.5",
 											children: [/* @__PURE__ */ jsx("div", {
-												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300",
+												className: "flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-700/40 text-zinc-400",
 												children: /* @__PURE__ */ jsx(UserCheck, { className: "h-3.5 w-3.5" })
 											}), /* @__PURE__ */ jsx("span", {
 												className: "font-semibold",
-												children: "Assign to Hussien"
+												children: "Unassign ticket"
 											})]
-										}), /* @__PURE__ */ jsx("kbd", {
-											className: "rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400",
-											children: "A H"
+										}), /* @__PURE__ */ jsx("span", {
+											className: "text-[10px] text-zinc-500",
+											children: "None"
 										})]
 									}),
 									/* @__PURE__ */ jsxs(Command.Item, {
@@ -5516,7 +5526,7 @@ function RequestDiscussionSection({ activities, canComment, saving, onAddComment
 }
 //#endregion
 //#region resources/js/Features/Requests/components/Detail/RequestSidebarProperties.tsx
-function RequestSidebarProperties({ request, projects, users, statuses, priorities, canAssign, canEdit, onUpdate, onRequestChange }) {
+function RequestSidebarProperties({ request, projects, users, cycles = [], statuses, priorities, canAssign, canEdit, onUpdate, onRequestChange }) {
 	const [tagInput, setTagInput] = useState("");
 	const [relationTicketId, setRelationTicketId] = useState("");
 	const [relationType, setRelationType] = useState("blocks");
@@ -5655,6 +5665,25 @@ function RequestSidebarProperties({ request, projects, users, statuses, prioriti
 								value: user.id,
 								children: user.name
 							}, user.id))]
+						})]
+					}),
+					/* @__PURE__ */ jsxs("label", {
+						className: "block border-t border-white/[0.06] pt-3",
+						children: [/* @__PURE__ */ jsxs("span", {
+							className: "flex items-center gap-1.5 text-[11px] font-semibold text-zinc-400",
+							children: [/* @__PURE__ */ jsx(RefreshCw, { className: "h-3 w-3 text-indigo-400" }), /* @__PURE__ */ jsx("span", { children: "Sprint Cycle" })]
+						}), /* @__PURE__ */ jsxs("select", {
+							disabled: !canEdit,
+							value: request.cycle?.id ?? request.cycle_id ?? "",
+							onChange: (e) => onUpdate({ cycle_id: e.target.value ? Number(e.target.value) : null }),
+							className: "mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e] px-3 py-2 text-xs text-zinc-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500 disabled:opacity-50",
+							children: [/* @__PURE__ */ jsx("option", {
+								value: "",
+								children: "No cycle (Backlog)"
+							}), cycles.map((cycle) => /* @__PURE__ */ jsxs("option", {
+								value: cycle.id,
+								children: [cycle.name || `Cycle ${cycle.number}`, cycle.is_active ? " (Active)" : ""]
+							}, cycle.id))]
 						})]
 					}),
 					/* @__PURE__ */ jsxs("div", {
@@ -6446,33 +6475,125 @@ function useKanbanBoard({ initialRequests, statuses, priorities = {}, users = []
 		}
 	};
 	const handleBulkUpdateStatus = async (ids, status) => {
+		const snapshot = [...boardRequestsRef.current];
 		setBoardRequests((prev) => prev.map((r) => ids.includes(r.id) ? {
 			...r,
 			status,
 			status_label: statuses[status] ?? status
 		} : r));
-		toast.success(`Updated ${ids.length} requests`);
-		if (status === "done") triggerCelebration();
-		await Promise.all(ids.map((id) => axios.patch(route("requests.update", id), { status }).catch(() => {})));
+		const results = await Promise.allSettled(ids.map(async (id) => {
+			const card = snapshot.find((r) => r.id === id);
+			return {
+				id,
+				updated: (await axios.patch(route("requests.update", id), {
+					status,
+					lock_version: card?.lock_version
+				})).data?.request
+			};
+		}));
+		let successCount = 0;
+		let failCount = 0;
+		const failedIds = [];
+		results.forEach((res, idx) => {
+			const id = ids[idx];
+			if (res.status === "fulfilled") {
+				successCount++;
+				if (res.value.updated) handleCardUpdated(res.value.updated);
+			} else {
+				failCount++;
+				failedIds.push(id);
+			}
+		});
+		if (failCount > 0) {
+			setBoardRequests((prev) => prev.map((r) => {
+				if (failedIds.includes(r.id)) return snapshot.find((s) => s.id === r.id) || r;
+				return r;
+			}));
+			if (successCount === 0) toast.error(`Failed to update ${failCount} request(s). Changes reverted.`);
+			else toast.warning(`Updated ${successCount} request(s), but ${failCount} failed and were reverted.`);
+		} else {
+			toast.success(`Updated ${successCount} requests`);
+			if (status === "done") triggerCelebration();
+		}
 	};
 	const handleBulkUpdatePriority = async (ids, priority) => {
+		const snapshot = [...boardRequestsRef.current];
 		setBoardRequests((prev) => prev.map((r) => ids.includes(r.id) ? {
 			...r,
 			priority,
 			priority_label: priorities[priority] ?? priority
 		} : r));
-		toast.success(`Updated priority for ${ids.length} requests`);
-		await Promise.all(ids.map((id) => axios.patch(route("requests.update", id), { priority }).catch(() => {})));
+		const results = await Promise.allSettled(ids.map(async (id) => {
+			const card = snapshot.find((r) => r.id === id);
+			return {
+				id,
+				updated: (await axios.patch(route("requests.update", id), {
+					priority,
+					lock_version: card?.lock_version
+				})).data?.request
+			};
+		}));
+		let successCount = 0;
+		let failCount = 0;
+		const failedIds = [];
+		results.forEach((res, idx) => {
+			const id = ids[idx];
+			if (res.status === "fulfilled") {
+				successCount++;
+				if (res.value.updated) handleCardUpdated(res.value.updated);
+			} else {
+				failCount++;
+				failedIds.push(id);
+			}
+		});
+		if (failCount > 0) {
+			setBoardRequests((prev) => prev.map((r) => {
+				if (failedIds.includes(r.id)) return snapshot.find((s) => s.id === r.id) || r;
+				return r;
+			}));
+			if (successCount === 0) toast.error(`Failed to update priority for ${failCount} request(s).`);
+			else toast.warning(`Updated priority for ${successCount} request(s), but ${failCount} failed and were reverted.`);
+		} else toast.success(`Updated priority for ${successCount} requests`);
 	};
 	const handleBulkUpdateAssignee = async (ids, assigneeId) => {
+		const snapshot = [...boardRequestsRef.current];
 		const assignedUser = users.find((u) => u.id === assigneeId) ?? null;
 		setBoardRequests((prev) => prev.map((r) => ids.includes(r.id) ? {
 			...r,
 			assignee_id: assigneeId,
 			assignee: assignedUser
 		} : r));
-		toast.success(`Reassigned ${ids.length} requests`);
-		await Promise.all(ids.map((id) => axios.patch(route("requests.update", id), { assignee_id: assigneeId }).catch(() => {})));
+		const results = await Promise.allSettled(ids.map(async (id) => {
+			const card = snapshot.find((r) => r.id === id);
+			return {
+				id,
+				updated: (await axios.patch(route("requests.update", id), {
+					assignee_id: assigneeId,
+					lock_version: card?.lock_version
+				})).data?.request
+			};
+		}));
+		let successCount = 0;
+		let failCount = 0;
+		const failedIds = [];
+		results.forEach((res, idx) => {
+			const id = ids[idx];
+			if (res.status === "fulfilled") {
+				successCount++;
+				if (res.value.updated) handleCardUpdated(res.value.updated);
+			} else {
+				failCount++;
+				failedIds.push(id);
+			}
+		});
+		if (failCount > 0) {
+			setBoardRequests((prev) => prev.map((r) => {
+				if (failedIds.includes(r.id)) return snapshot.find((s) => s.id === r.id) || r;
+				return r;
+			}));
+			if (successCount === 0) toast.error(`Failed to reassign ${failCount} request(s).`);
+			else toast.warning(`Reassigned ${successCount} request(s), but ${failCount} failed and were reverted.`);
+		} else toast.success(`Reassigned ${successCount} requests`);
 	};
 	return {
 		boardRequests,
@@ -7123,6 +7244,7 @@ function Authenticated({ header, children }) {
 	const [commandOpen, setCommandOpen] = useState(false);
 	const [createOpen, setCreateOpen] = useState(false);
 	const [shortcutsOpen, setShortcutsOpen] = useState(false);
+	const [mobileNavOpen, setMobileNavOpen] = useState(false);
 	const [currentTime, setCurrentTime] = useState("");
 	useEffect(() => {
 		const updateTime = () => {
@@ -7195,14 +7317,26 @@ function Authenticated({ header, children }) {
 		className: "relay-shell relative flex min-h-screen font-sans text-zinc-100 antialiased selection:bg-zinc-700/60 selection:text-white",
 		children: [
 			/* @__PURE__ */ jsx("div", { className: "relay-grid pointer-events-none fixed inset-0 z-0 opacity-40" }),
-			/* @__PURE__ */ jsx(Sidebar, {}),
+			/* @__PURE__ */ jsx(Sidebar, {
+				mobileOpen: mobileNavOpen,
+				onCloseMobile: () => setMobileNavOpen(false)
+			}),
 			/* @__PURE__ */ jsxs("div", {
 				className: "relative z-10 flex min-w-0 flex-1 flex-col",
 				children: [/* @__PURE__ */ jsxs("header", {
-					className: "sticky top-0 z-20 flex h-[72px] items-center justify-between gap-5 border-b border-zinc-800/80 bg-[#090a0f]/90 px-7 backdrop-blur-xl sm:px-9",
-					children: [/* @__PURE__ */ jsx("div", {
-						className: "min-w-0 flex-1",
-						children: header
+					className: "sticky top-0 z-20 flex h-[72px] items-center justify-between gap-4 border-b border-zinc-800/80 bg-[#090a0f]/90 px-4 sm:px-7 backdrop-blur-xl",
+					children: [/* @__PURE__ */ jsxs("div", {
+						className: "flex items-center gap-3 min-w-0 flex-1",
+						children: [/* @__PURE__ */ jsx("button", {
+							type: "button",
+							onClick: () => setMobileNavOpen(true),
+							className: "flex lg:hidden h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-zinc-800 bg-[#121318] text-zinc-400 hover:text-white hover:border-zinc-700 transition-colors",
+							title: "Open navigation",
+							children: /* @__PURE__ */ jsx(Menu, { className: "h-5 w-5" })
+						}), /* @__PURE__ */ jsx("div", {
+							className: "min-w-0 flex-1",
+							children: header
+						})]
 					}), /* @__PURE__ */ jsxs("div", {
 						className: "flex items-center gap-3",
 						children: [

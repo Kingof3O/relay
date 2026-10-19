@@ -27,15 +27,7 @@ const AVATAR_COLORS = [
 
 export default function LivePresenceAvatars({ requestId, className = '' }: LivePresenceAvatarsProps) {
     const authUser = usePage<PageProps>().props.auth?.user;
-    const [viewers, setViewers] = useState<PresenceUser[]>(() => {
-        if (!authUser) return [];
-        return [{
-            id: authUser.id,
-            name: authUser.name,
-            username: authUser.username,
-            color: AVATAR_COLORS[authUser.id % AVATAR_COLORS.length],
-        }];
-    });
+    const [viewers, setViewers] = useState<PresenceUser[]>([]);
 
     useEffect(() => {
         if (typeof window === 'undefined') return;

@@ -65,9 +65,6 @@ export default function CommandPalette({
     const pathTicketId = typeof window !== 'undefined' ? window.location.pathname.match(/\/requests\/(\d+)/)?.[1] : null;
     const ticketId = activeRequest?.id ?? (pathTicketId ? parseInt(pathTicketId, 10) : null);
 
-    const robinUser = usersList.find((u) => u.username?.toLowerCase() === 'robin' || u.name?.toLowerCase().includes('robin'));
-    const hussienUser = usersList.find((u) => u.username?.toLowerCase() === 'hussien' || u.name?.toLowerCase().includes('hussien'));
-
     const handleTicketAction = async (payload: Record<string, unknown>, successMsg: string) => {
         setOpen(false);
         if (!ticketId) {
@@ -252,32 +249,35 @@ export default function CommandPalette({
 
                         {/* Actionable Linear Command Group */}
                         <Command.Group heading={<span className="px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-violet-400">{ticketId ? `Ticket Actions (#REQ-${ticketId})` : 'Linear Ticket Actions'}</span>}>
-                            <Command.Item
-                                value="Assign to Robin"
-                                onSelect={() => handleTicketAction({ assignee_id: robinUser?.id || 1 }, 'Assigned to Robin')}
-                                className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
-                            >
-                                <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
-                                        <UserCheck className="h-3.5 w-3.5" />
+                            {usersList.slice(0, 4).map((member) => (
+                                <Command.Item
+                                    key={`assign-${member.id}`}
+                                    value={`Assign to ${member.name || member.username}`}
+                                    onSelect={() => handleTicketAction({ assignee_id: member.id }, `Assigned to ${member.name || member.username}`)}
+                                    className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
+                                >
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                            <UserCheck className="h-3.5 w-3.5" />
+                                        </div>
+                                        <span className="font-semibold">Assign to {member.name || member.username}</span>
                                     </div>
-                                    <span className="font-semibold">Assign to Robin</span>
-                                </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">A R</kbd>
-                            </Command.Item>
+                                    <span className="text-[10px] font-mono text-zinc-400">{member.username ? `@${member.username}` : ''}</span>
+                                </Command.Item>
+                            ))}
 
                             <Command.Item
-                                value="Assign to Hussien"
-                                onSelect={() => handleTicketAction({ assignee_id: hussienUser?.id || 2 }, 'Assigned to Hussien')}
+                                value="Unassign ticket"
+                                onSelect={() => handleTicketAction({ assignee_id: null }, 'Unassigned ticket')}
                                 className="flex cursor-pointer items-center justify-between rounded-xl px-3 py-2.5 text-zinc-300 transition-colors aria-selected:bg-violet-500/15 aria-selected:text-white"
                             >
                                 <div className="flex items-center gap-2.5">
-                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-500/20 text-indigo-300">
+                                    <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-zinc-700/40 text-zinc-400">
                                         <UserCheck className="h-3.5 w-3.5" />
                                     </div>
-                                    <span className="font-semibold">Assign to Hussien</span>
+                                    <span className="font-semibold">Unassign ticket</span>
                                 </div>
-                                <kbd className="rounded border border-white/[0.1] bg-white/[0.04] px-1.5 py-0.5 text-[10px] font-mono text-zinc-400">A H</kbd>
+                                <span className="text-[10px] text-zinc-500">None</span>
                             </Command.Item>
 
                             <Command.Item

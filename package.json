@@ -43,7 +43,9 @@
         "@tiptap/react": "^3.32.0",
         "@tiptap/starter-kit": "^3.32.0",
         "cmdk": "^1.1.1",
+        "laravel-echo": "^2.6.1",
         "lucide-react": "^1.31.0",
+        "pusher-js": "^8.6.0",
         "react-is": "^19.3.1",
         "recharts": "^3.10.1",
         "sonner": "^2.0.8"

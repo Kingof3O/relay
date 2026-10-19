@@ -23,6 +23,8 @@ class RequestRelationController extends Controller
             abort(404);
         }
 
+        $this->authorize('update', $target);
+
         $validated = $httpRequest->validate([
             'related_id' => [
                 'required',
@@ -43,25 +45,21 @@ class RequestRelationController extends Controller
                     'error' => 'Cannot link requests from different workspaces.',
                 ], 422);
             }
+
             return back()->withErrors(['related_id' => 'Cannot link requests from different workspaces.']);
         }
 
-        // Circular blocking dependency prevention
+        // Circular blocking dependency prevention (including multi-hop transitive cycles)
         if ($type === 'blocks') {
-            $isReverseBlocker = RequestRelation::query()
-                ->where('request_id', $validated['related_id'])
-                ->where('related_id', $target->id)
-                ->where('type', 'blocks')
-                ->exists();
-
-            if ($isReverseBlocker) {
+            if ($this->createsCircularDependency($target->id, (int) $validated['related_id'])) {
                 if ($httpRequest->expectsJson()) {
                     return response()->json([
-                        'message' => "Circular dependency detected: #REQ-{$target->id} already blocks #REQ-{$validated['related_id']}.",
-                        'error' => "Circular dependency detected: #REQ-{$target->id} already blocks #REQ-{$validated['related_id']}.",
+                        'message' => "Circular dependency detected: #REQ-{$target->id} already directly or transitively blocks #REQ-{$validated['related_id']}.",
+                        'error' => "Circular dependency detected: #REQ-{$target->id} already directly or transitively blocks #REQ-{$validated['related_id']}.",
                     ], 422);
                 }
-                return back()->withErrors(['related_id' => "Circular dependency detected: #REQ-{$target->id} already blocks #REQ-{$validated['related_id']}."]);
+
+                return back()->withErrors(['related_id' => "Circular dependency detected: #REQ-{$target->id} already directly or transitively blocks #REQ-{$validated['related_id']}."]);
             }
         }
 
@@ -108,6 +106,8 @@ class RequestRelationController extends Controller
             abort(404);
         }
 
+        $this->authorize('update', $target);
+
         // Resolve relation
         $rel = $relation instanceof RequestRelation
             ? $relation
@@ -150,5 +150,45 @@ class RequestRelationController extends Controller
         }
 
         return back();
+    }
+
+    /**
+     * Check if candidateBlockerId is already blocked by targetId (directly or transitively).
+     * If targetId directly or transitively blocks candidateBlockerId, adding candidateBlockerId
+     * as a blocker of targetId would create a circular dependency.
+     */
+    private function createsCircularDependency(int $targetId, int $candidateBlockerId): bool
+    {
+        if ($targetId === $candidateBlockerId) {
+            return true;
+        }
+
+        $visited = [];
+        $queue = [$targetId];
+
+        while (! empty($queue)) {
+            $current = array_shift($queue);
+            if (isset($visited[$current])) {
+                continue;
+            }
+            $visited[$current] = true;
+
+            $blockedTasks = RequestRelation::query()
+                ->where('related_id', $current)
+                ->where('type', 'blocks')
+                ->pluck('request_id')
+                ->all();
+
+            foreach ($blockedTasks as $blockedId) {
+                if ($blockedId === $candidateBlockerId) {
+                    return true;
+                }
+                if (! isset($visited[$blockedId])) {
+                    $queue[] = $blockedId;
+                }
+            }
+        }
+
+        return false;
     }
 }

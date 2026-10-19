@@ -14,6 +14,27 @@ final class InboundEmailWebhookController extends Controller
 {
     public function __invoke(Request $request, WorkRequestService $service): JsonResponse
     {
+        if (! config('relay.integrations.inbound_email_enabled', true)) {
+            return response()->json(['message' => 'Inbound email webhook is disabled in configuration.'], 200);
+        }
+
+        // 0. Verify Webhook Secret (Fail closed)
+        $configuredSecret = config('services.inbound_email.webhook_secret');
+        if (empty($configuredSecret)) {
+            if (app()->isProduction()) {
+                return response()->json(['error' => 'Inbound email webhook is not configured.'], 401);
+            }
+        } else {
+            $providedSecret = $request->header('X-Inbound-Secret')
+                ?? $request->header('X-Webhook-Secret')
+                ?? $request->query('secret')
+                ?? $request->bearerToken();
+
+            if (! $providedSecret || ! hash_equals((string) $configuredSecret, (string) $providedSecret)) {
+                return response()->json(['error' => 'Unauthorized: Invalid inbound email webhook secret.'], 401);
+            }
+        }
+
         // 1. Extract sender email
         $rawFrom = $request->input('From')
             ?? $request->input('FromFull.Email')
@@ -87,11 +108,11 @@ final class InboundEmailWebhookController extends Controller
         }
 
         if (! $author->active) {
-            return response()->json(['error' => "User account is inactive."], 403);
+            return response()->json(['error' => 'User account is inactive.'], 403);
         }
 
         if ($ticket->workspace_id !== null && ! $author->belongsToWorkspace($ticket->workspace_id)) {
-            return response()->json(['error' => "User does not belong to this workspace."], 403);
+            return response()->json(['error' => 'User does not belong to this workspace.'], 403);
         }
 
         // 5. Extract Comment Body
@@ -107,7 +128,8 @@ final class InboundEmailWebhookController extends Controller
             ?? ''
         );
 
-        $body = trim($body);
+        $cleanBody = preg_replace('/<(script|style)\b[^>]*>(.*?)<\/\1>/is', '', $body);
+        $body = trim(strip_tags((string) $cleanBody));
         if ($body === '') {
             $body = 'Empty email comment';
         }
