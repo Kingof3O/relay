@@ -93,7 +93,7 @@ final class SettingsController extends Controller
                 ? $activeWorkspace->users()->with('role:id,name')->orderBy('name')->get(['users.id', 'users.name', 'users.username', 'users.email', 'users.role_id', 'users.active', 'users.created_at'])
                 : [],
             'roles' => $user->hasPermission('manage_team')
-                ? Role::query()->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value])->orderBy('name')->get(['id', 'name'])
+                ? Role::query()->orderBy('id')->get(['id', 'name'])
                 : [],
             'canManageAreas' => $user->hasPermission('manage_areas'),
             'canManageTeam' => $user->hasPermission('manage_team'),

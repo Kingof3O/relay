@@ -50,12 +50,13 @@ export default function MemberFormModal({
                 role_id: editingMember.role_id ? String(editingMember.role_id) : (roles[0]?.id ? String(roles[0].id) : ''),
             });
         } else {
+            const defaultRole = roles.find((r) => r.name === 'Developer') || roles.find((r) => r.name === 'Member') || roles[0];
             setMember({
                 name: '',
                 username: '',
                 email: '',
                 password: '',
-                role_id: roles[0]?.id ? String(roles[0].id) : '',
+                role_id: defaultRole?.id ? String(defaultRole.id) : '',
             });
         }
         setTeamError('');

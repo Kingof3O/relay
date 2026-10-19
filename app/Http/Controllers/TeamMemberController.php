@@ -24,7 +24,7 @@ final class TeamMemberController extends Controller
 
         $validated = $request->validate([
             'email' => ['required', 'email', 'max:255'],
-            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value]))],
+            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')],
         ]);
 
         $activeWorkspace = $request->user()->currentWorkspace();
@@ -123,7 +123,7 @@ final class TeamMemberController extends Controller
             'name' => ['sometimes', 'required', 'string', 'max:255'],
             'username' => ['sometimes', 'required', 'string', 'max:255', Rule::unique('users', 'username')->ignore($user->id)],
             'email' => ['sometimes', 'nullable', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'role_id' => ['sometimes', 'required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value]))],
+            'role_id' => ['sometimes', 'required', 'integer', Rule::exists('roles', 'id')],
             'active' => ['sometimes', 'boolean'],
         ]);
 
@@ -218,7 +218,7 @@ final class TeamMemberController extends Controller
             'username' => ['required', 'string', 'max:255', 'unique:users,username'],
             'email' => ['nullable', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'max:255'],
-            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')->where(fn (Builder $query) => $query->whereIn('name', [RoleName::Owner->value, RoleName::Developer->value, RoleName::Designer->value]))],
+            'role_id' => ['required', 'integer', Rule::exists('roles', 'id')],
             'active' => ['sometimes', 'boolean'],
         ];
     }
