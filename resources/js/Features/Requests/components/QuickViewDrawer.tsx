@@ -42,9 +42,11 @@ interface QuickViewDrawerProps {
 
 type DrawerRequest = WorkRequestCard & {
     area_id?: number | null;
+    project_id?: number | null;
     assignee_id?: number | null;
     files?: RequestFileItem[];
     comments?: RequestActivityItem[];
+    activities?: RequestActivityItem[];
 };
 
 export default function QuickViewDrawer({
@@ -129,16 +131,42 @@ export default function QuickViewDrawer({
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const handlePatch = async (changes: Record<string, unknown>) => {
+    const handlePatch = async (
+        changes: Record<string, unknown>,
+        optimisticPatch?: Partial<DrawerRequest>
+    ) => {
         if (!request) return;
         setSaving(true);
+        const previousState = request;
+        if (optimisticPatch) {
+            const patched = { ...request, ...optimisticPatch };
+            setRequest(patched);
+            if (onUpdated) onUpdated(patched);
+        }
         try {
             const res = await axios.patch(route('requests.update', request.id), changes);
-            const updated = res.data.request ?? { ...request, ...changes };
-            setRequest(updated);
-            if (onUpdated) onUpdated(updated);
+            const serverUpdated = res.data.request;
+            const finalUpdated: DrawerRequest = serverUpdated
+                ? {
+                      ...request,
+                      ...serverUpdated,
+                      area_id: serverUpdated.area_id ?? serverUpdated.project?.id ?? (changes.area_id as number) ?? request.area_id,
+                      project_id: serverUpdated.project_id ?? serverUpdated.area_id ?? serverUpdated.project?.id ?? request.project_id,
+                      assignee_id: serverUpdated.assignee_id ?? serverUpdated.assignee?.id ?? (changes.assignee_id as number) ?? request.assignee_id,
+                      project: serverUpdated.project ?? (optimisticPatch as any)?.project ?? request.project,
+                      area: serverUpdated.area ?? serverUpdated.project ?? (optimisticPatch as any)?.area ?? request.area,
+                      assignee: serverUpdated.assignee ?? (optimisticPatch as any)?.assignee ?? request.assignee,
+                  }
+                : { ...request, ...changes, ...optimisticPatch };
+
+            setRequest(finalUpdated);
+            if (onUpdated) onUpdated(finalUpdated);
             toast.success('Updated');
         } catch (err: any) {
+            if (optimisticPatch) {
+                setRequest(previousState);
+                if (onUpdated) onUpdated(previousState);
+            }
             toast.error(err?.response?.data?.message ?? 'Failed to update');
         } finally {
             setSaving(false);
@@ -217,6 +245,16 @@ export default function QuickViewDrawer({
 
     if (!requestId) return null;
 
+    const currentAssigneeId = request ? (request.assignee_id ?? request.assignee?.id ?? '') : '';
+    const currentAreaId = request
+        ? (request.area_id ?? request.project_id ?? request.project?.id ?? request.area?.id ?? '')
+        : '';
+    const commentsList = request
+        ? (request.comments && request.comments.length > 0
+              ? request.comments
+              : (request.activities ?? []).filter((a) => a.type === 'comment' || Boolean(a.body)))
+        : [];
+
     return (
         <div className="fixed inset-0 z-50 overflow-hidden">
             {/* Backdrop */}
@@ -233,7 +271,12 @@ export default function QuickViewDrawer({
                             <span className="text-xs font-mono font-medium text-zinc-400">#{requestId}</span>
                             <span className="text-zinc-600">·</span>
                             <span className="truncate text-xs text-zinc-400 font-medium">
-                                {request?.project?.name ?? 'No Project'}
+                                {request?.project?.name ??
+                                    request?.area?.name ??
+                                    projects.find(
+                                        (p) => p.id === (request?.area_id ?? request?.project_id ?? request?.project?.id)
+                                    )?.name ??
+                                    'No Project'}
                             </span>
                             {request && (
                                 <div className="hidden sm:flex items-center gap-1.5 ml-1">
@@ -298,7 +341,14 @@ export default function QuickViewDrawer({
                                         </label>
                                         <select
                                             value={request.status}
-                                            onChange={(e) => handlePatch({ status: e.target.value })}
+                                            onChange={(e) => {
+                                                const nextStatus = e.target.value as any;
+                                                const nextLabel = statuses[nextStatus] ?? nextStatus;
+                                                handlePatch(
+                                                    { status: nextStatus },
+                                                    { status: nextStatus, status_label: nextLabel }
+                                                );
+                                            }}
                                             className="w-full rounded-lg border border-zinc-700 bg-zinc-850 px-2.5 py-1 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:ring-0"
                                         >
                                             {Object.entries(statuses).map(([val, label]) => (
@@ -316,7 +366,14 @@ export default function QuickViewDrawer({
                                         </label>
                                         <select
                                             value={request.priority}
-                                            onChange={(e) => handlePatch({ priority: e.target.value })}
+                                            onChange={(e) => {
+                                                const nextPriority = e.target.value as any;
+                                                const nextLabel = priorities[nextPriority] ?? nextPriority;
+                                                handlePatch(
+                                                    { priority: nextPriority },
+                                                    { priority: nextPriority, priority_label: nextLabel }
+                                                );
+                                            }}
                                             className="w-full rounded-lg border border-zinc-700 bg-zinc-850 px-2.5 py-1 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:ring-0"
                                         >
                                             {Object.entries(priorities).map(([val, label]) => (
@@ -333,12 +390,20 @@ export default function QuickViewDrawer({
                                             Assignee
                                         </label>
                                         <select
-                                            value={request.assignee_id ?? ''}
-                                            onChange={(e) =>
-                                                handlePatch({
-                                                    assignee_id: e.target.value ? Number(e.target.value) : null,
-                                                })
-                                            }
+                                            value={currentAssigneeId}
+                                            onChange={(e) => {
+                                                const val = e.target.value ? Number(e.target.value) : null;
+                                                const targetUser = users.find((u) => u.id === val) ?? null;
+                                                handlePatch(
+                                                    { assignee_id: val },
+                                                    {
+                                                        assignee_id: val,
+                                                        assignee: targetUser
+                                                            ? { id: targetUser.id, name: targetUser.name, username: targetUser.username }
+                                                            : null,
+                                                    }
+                                                );
+                                            }}
                                             className="w-full rounded-lg border border-zinc-700 bg-zinc-850 px-2.5 py-1 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:ring-0"
                                         >
                                             <option value="">Unassigned</option>
@@ -356,15 +421,28 @@ export default function QuickViewDrawer({
                                             Project
                                         </label>
                                         <select
-                                            value={request.area_id ?? ''}
-                                            onChange={(e) =>
-                                                handlePatch({
-                                                    area_id: e.target.value ? Number(e.target.value) : null,
-                                                })
-                                            }
+                                            value={currentAreaId}
+                                            onChange={(e) => {
+                                                const val = e.target.value ? Number(e.target.value) : null;
+                                                if (!val) return;
+                                                const targetProject = projects.find((p) => p.id === val) ?? null;
+                                                handlePatch(
+                                                    { area_id: val },
+                                                    {
+                                                        area_id: val,
+                                                        project_id: val,
+                                                        project: targetProject
+                                                            ? { id: targetProject.id, name: targetProject.name, color: targetProject.color }
+                                                            : null,
+                                                        area: targetProject
+                                                            ? { id: targetProject.id, name: targetProject.name, color: targetProject.color }
+                                                            : null,
+                                                    }
+                                                );
+                                            }}
                                             className="w-full rounded-lg border border-zinc-700 bg-zinc-850 px-2.5 py-1 text-xs font-medium text-zinc-200 focus:border-zinc-500 focus:ring-0"
                                         >
-                                            <option value="">No Project</option>
+                                            {projects.length === 0 && <option value="">No Project</option>}
                                             {projects.map((p) => (
                                                 <option key={p.id} value={p.id}>
                                                     {p.name}
@@ -517,9 +595,9 @@ export default function QuickViewDrawer({
                                         <span className="text-xs font-semibold text-zinc-300">Comments & Activity</span>
                                     </div>
 
-                                    {request.comments && request.comments.length > 0 ? (
+                                    {commentsList && commentsList.length > 0 ? (
                                         <div className="space-y-2.5">
-                                            {request.comments.map((c: RequestActivityItem) => (
+                                            {commentsList.map((c: RequestActivityItem) => (
                                                 <div
                                                     key={c.id}
                                                     className="rounded-xl border border-zinc-850 bg-[#121318]/70 p-3 text-xs"

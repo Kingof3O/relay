@@ -33,11 +33,14 @@ final class WorkRequestQuickViewTest extends TestCase
             ['name' => 'Test Project']
         );
 
+        $assignee = User::query()->where('username', 'batman')->first() ?? $user;
+
         $workRequest = WorkRequest::query()->create([
             'title' => 'Quick View Test Task',
             'workspace_id' => $workspace->id,
             'area_id' => $area->id,
             'requester_id' => $user->id,
+            'assignee_id' => $assignee->id,
             'status' => 'ready',
             'priority' => 'normal',
             'description' => 'Detailed description for quick view modal.',
@@ -50,6 +53,11 @@ final class WorkRequestQuickViewTest extends TestCase
             ->assertJsonPath('request.id', $workRequest->id)
             ->assertJsonPath('request.title', 'Quick View Test Task')
             ->assertJsonPath('request.description', 'Detailed description for quick view modal.')
-            ->assertJsonPath('request.status', 'ready');
+            ->assertJsonPath('request.status', 'ready')
+            ->assertJsonPath('request.area_id', $area->id)
+            ->assertJsonPath('request.project_id', $area->id)
+            ->assertJsonPath('request.project.name', 'Test Project')
+            ->assertJsonPath('request.assignee_id', $assignee->id)
+            ->assertJsonPath('request.assignee.name', $assignee->name);
     }
 }

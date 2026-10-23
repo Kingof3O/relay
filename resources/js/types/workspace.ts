@@ -113,8 +113,13 @@ export interface WorkRequestCard {
     tags: string[];
     deleted_at: string | null;
     relations?: RequestRelationItem[];
+    area_id?: number | null;
+    project_id?: number | null;
     project?: WorkspaceProject | null;
+    area?: WorkspaceProject | null;
+    requester_id?: number | null;
     requester?: WorkspaceUser | null;
+    assignee_id?: number | null;
     assignee?: WorkspaceUser | null;
     files_count?: number;
     file_states?: string[];

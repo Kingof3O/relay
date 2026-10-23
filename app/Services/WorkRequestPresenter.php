@@ -93,8 +93,13 @@ final class WorkRequestPresenter
             'is_overdue' => $isOverdue,
             'tags' => is_array($request->tags) ? array_values($request->tags) : [],
             'deleted_at' => $request->deleted_at?->toIso8601String(),
+            'area_id' => $request->area_id !== null ? (int) $request->area_id : null,
+            'project_id' => $request->area_id !== null ? (int) $request->area_id : null,
             'project' => $request->area?->only(['id', 'name', 'color']),
+            'area' => $request->area?->only(['id', 'name', 'color']),
+            'requester_id' => $request->requester_id !== null ? (int) $request->requester_id : null,
             'requester' => $request->requester?->only(['id', 'name', 'username']),
+            'assignee_id' => $request->assignee_id !== null ? (int) $request->assignee_id : null,
             'assignee' => $request->assignee?->only(['id', 'name', 'username']),
             'lock_version' => (int) ($request->lock_version ?? 1),
             'created_at' => $request->created_at?->toIso8601String(),
@@ -153,6 +158,10 @@ final class WorkRequestPresenter
                     'user' => $activity->user?->only(['id', 'name', 'username']),
                     'created_at' => $activity->created_at?->toIso8601String(),
                 ])
+                ->all();
+            $payload['comments'] = collect($payload['activities'])
+                ->filter(fn (array $act): bool => ($act['type'] ?? '') === 'comment' || ! empty($act['body']))
+                ->values()
                 ->all();
 
             $payload['relations'] = $request->relations
