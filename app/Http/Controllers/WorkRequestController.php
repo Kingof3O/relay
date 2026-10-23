@@ -81,11 +81,17 @@ final class WorkRequestController extends Controller
         ]);
     }
 
-    public function show(WorkRequest $request): Response
+    public function show(WorkRequest $request): Response|JsonResponse
     {
         $this->authorize('view', $request);
 
-        $request->load(['files.uploader', 'activities.user', 'area', 'requester', 'assignee']);
+        $request->load(['files.uploader', 'activities.user', 'area', 'requester', 'assignee', 'subtasks']);
+
+        if (request()->wantsJson() && ! request()->header('X-Inertia')) {
+            return response()->json([
+                'request' => $this->presenter->detail($request),
+            ]);
+        }
 
         $activeWorkspace = request()->user()?->currentWorkspace();
         $workspaceUsers = $activeWorkspace

@@ -9,8 +9,9 @@
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
   <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
+  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/Model_Context_Protocol-MCP_Ready-8B5CF6?style=for-the-badge&logo=anthropic&logoColor=white" alt="MCP Ready" /></a>
   <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-Production_Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" /></a>
-  <a href="https://pestphp.com/"><img src="https://img.shields.io/badge/Tests-234_Passing-10B981?style=for-the-badge&logo=pest&logoColor=white" alt="Tests" /></a>
+  <a href="https://pestphp.com/"><img src="https://img.shields.io/badge/Tests-244_Passing-10B981?style=for-the-badge&logo=pest&logoColor=white" alt="Tests" /></a>
 </p>
 
 <p align="center">
@@ -21,6 +22,7 @@
   <a href="#-overview">Overview</a> •
   <a href="#-why-relay-studio-competitive-breakdown">Competitive Breakdown</a> •
   <a href="#-core-capabilities">Capabilities</a> •
+  <a href="#-model-context-protocol-mcp--autonomous-ai-agents">AI &amp; MCP Integration</a> •
   <a href="#-interface-showcase">Interface Showcase</a> •
   <a href="#-system-architecture">Architecture</a> •
   <a href="#-quickstart-guide">Quickstart</a> •
@@ -40,6 +42,7 @@ While commercial issue trackers trap engineering workflows inside proprietary cl
 
 * **Sub-Second Latency:** Inertia.js SPA hydration powered by Laravel 13 and React 19 with zero full page reloads.
 * **Keyboard-First Ergonomics:** Seamless `⌘K` command launcher, quick-capture drawers, and Vim cursor navigation (`j`/`k`/`Enter`/`c`).
+* **Autonomous AI Integration:** First-party Model Context Protocol (MCP) server enables Antigravity, Cursor, and Claude Desktop agents to fetch morning briefings, triage tasks, transition Kanban cards, and post comments.
 * **Complete Self-Hosting Control:** Zero phone-home telemetry, full multi-tenancy, and turnkey Docker orchestration with automated backup tooling.
 * **Real-Time Collaboration:** Laravel Reverb WebSocket presence and live issue synchronization without third-party SaaS dependencies.
 
@@ -59,6 +62,7 @@ How does Relay Studio compare against industry standards and open-source alterna
 | **Agile Cycles & Auto-Rollover** | **Automated & Idempotent** | Native Cycles | Manual Sprints | Sprints Module | Milestones only |
 | **Disaster Recovery & CLI Backups** | **Built-in (`relay:backup`)** | Cloud Export (JSON) | Paid Add-on / Manual | Docker DB Dump | Git Export |
 | **Tech Stack Architecture** | **Laravel 13 + React 19** | Custom React Stack | Java / OSGi Legacy | Next.js + Django | Rails + Web Components |
+| **AI Agent MCP Integration** | **Native 1st-Party MCP Server** | Community plugins only | Atlassian Forge only | Limited REST | Copilot only |
 | **Memory Footprint (App runtime)** | **~180 MB RAM** | N/A (Closed source) | 4 GB – 8 GB RAM min | 1.5 GB – 3 GB RAM | N/A (Closed source) |
 | **Data Privacy & Telemetry** | **0 Telemetry / Air-Gappable** | Closed telemetry | Extensive Tracking | Community telemetry | Microsoft Telemetry |
 
@@ -101,6 +105,12 @@ How does Relay Studio compare against industry standards and open-source alterna
 * **Two-Factor Authentication (2FA):** Time-based One-Time Passwords (TOTP via Google Authenticator / 1Password) with emergency recovery codes.
 * **Sanctum Personal Access Tokens (PAT):** Scoped REST API tokens with individual revocation (`/profile/tokens`).
 * **Audit Trails:** Immutable audit logs capturing every ticket transition, assignment modification, and workspace setting update.
+
+### 7. Autonomous AI & Model Context Protocol (MCP)
+* **First-Party MCP Server (`@relay/mcp-server`):** Standard stdio JSON-RPC implementation for AI assistants.
+* **The Morning Catch-Up:** `relay_get_daily_briefing` provides an instant morning summary of urgent blockers, overnight tickets, and sprint velocity.
+* **Bi-Directional Action:** Agents can autonomously move tasks (`relay_update_task`), post progress comments (`relay_add_comment`), and create bug tickets (`relay_create_task`).
+* **Multi-Client Ready:** Turnkey support for Antigravity, Cursor, Claude Desktop, and Windsurf (see [MCP Integration Guide](docs/mcp-integration.md)).
 
 ---
 
@@ -148,6 +158,8 @@ flowchart TD
     Client["Client Browser (React 19 + TypeScript)"]
     Inertia["Inertia.js SPA Bridge"]
     Echo["Laravel Echo (WebSockets)"]
+    Agent["AI Coding Agents (Antigravity / Cursor / Claude)"]
+    MCP["Relay MCP Server (stdio / JSON-RPC)"]
     
     Reverb["Laravel Reverb Server"]
     Nginx["Nginx Web Server"]
@@ -165,6 +177,9 @@ flowchart TD
     Client -->|Inertia Navigation| Inertia
     Client -->|Live Presence & Events| Echo
     Echo <-->|WebSocket ws://| Reverb
+    
+    Agent <-->|stdio JSON-RPC| MCP
+    MCP -->|HTTPS REST API / Token Auth| Nginx
     
     Inertia -->|HTTPS Requests| Nginx
     Nginx --> Controller
@@ -184,7 +199,34 @@ flowchart TD
 * **WebSocket Server:** [Laravel Reverb](https://reverb.laravel.com/)
 * **Database Compatibility:** MySQL 8.4+, PostgreSQL 15+, SQLite 3
 * **Cache & Queues:** Redis 7
-* **Testing Engine:** Pest PHP & PHPUnit (234 passing tests)
+* **Testing Engine:** Pest PHP & PHPUnit (244 passing tests)
+
+---
+
+## 🤖 Model Context Protocol (MCP) & Autonomous AI Agents
+
+Relay Studio ships with a first-party **Model Context Protocol (MCP)** server (`mcp-server/`), allowing AI coding agents in **Antigravity**, **Cursor**, **Claude Desktop**, and **Windsurf** to act as autonomous technical peers.
+
+### 🌅 The Morning Catch-Up Workflow
+Ask your agent: *"Good morning! What's new in Relay today?"*
+The agent calls `relay_get_daily_briefing` and provides:
+1. 🚨 **Urgent & Blocked Tasks:** Immediate items needing engineering attention.
+2. 📥 **Overnight Tickets:** New requests created in the last 24 hours.
+3. 🏁 **Active Sprint Status:** Points delivered, remaining tasks, and cycle end countdown.
+4. 📬 **Assigned & Mentions:** Tasks assigned to you or mentioning your username.
+
+### 🛠️ Core MCP Tools
+| Tool | Description |
+| :--- | :--- |
+| **`relay_get_daily_briefing`** | Fetches the full morning digest in one roundtrip |
+| **`relay_list_tasks`** | Filters tasks by status (`ready`, `doing`, `review`, etc.), priority, or project |
+| **`relay_get_task`** | Retrieves complete ticket details, description, subtasks & blockers |
+| **`relay_update_task`** | Moves cards across board stages and updates properties |
+| **`relay_add_comment`** | Adds technical progress comments and notifies `@mentions` |
+| **`relay_create_task`** | Creates new tasks, bugs, or subtasks under any project |
+| **`relay_get_active_cycle`** | Retrieves active sprint velocity and burndown progress |
+
+For complete configuration instructions, client setup examples, and security details, see the **[MCP Integration Guide](docs/mcp-integration.md)**.
 
 ---
 
@@ -313,6 +355,12 @@ php artisan relay:discord-test
 php artisan relay:oauth
 ```
 
+### 6. Personal Access Token Generation (`relay:token`)
+Instantly generate an API token for your MCP agent or REST integrations:
+```bash
+php artisan relay:token <username> "agent-mcp"
+```
+
 ---
 
 ## 🔌 REST API v1 & Webhooks
@@ -320,7 +368,7 @@ php artisan relay:oauth
 Relay Studio exposes a complete REST API (v1) authenticated via **Laravel Sanctum Personal Access Tokens (PAT)**.
 
 ### Authenticating API Requests
-Create a token under **Profile > API Tokens** (`/profile/tokens`), then pass it via the `Authorization` header:
+Create a token under **Profile > API Tokens** (`/profile/tokens`) or via `php artisan relay:token <username>`, then pass it via the `Authorization` header:
 
 ```bash
 curl -X GET "http://localhost:8080/api/v1/work-requests" \
@@ -332,13 +380,18 @@ curl -X GET "http://localhost:8080/api/v1/work-requests" \
 
 | Method | Endpoint | Description | Query / Body Parameters |
 | :--- | :--- | :--- | :--- |
+| `GET` | `/api/v1/briefing` | Instant morning briefing (metrics, urgent blockers, overnight requests, active sprint, notifications) | `since_hours` (default: 24) |
 | `GET` | `/api/v1/work-requests` | Paginated list of issues with filter criteria | `status`, `priority`, `area_id`, `search`, `page` |
 | `POST` | `/api/v1/work-requests` | Create a new work request / issue | `title`, `description`, `status`, `priority`, `area_id`, `story_points`, `due_date`, `tags` |
 | `GET` | `/api/v1/work-requests/{id}` | Retrieve complete issue details with relations, subtasks, activities & attachments | `{id}` (issue ID) |
 | `PATCH` | `/api/v1/work-requests/{id}` | Update issue properties with optimistic locking | `lock_version`, `title`, `description`, `status`, `priority`, `story_points`, `due_date`, `tags` |
 | `DELETE` | `/api/v1/work-requests/{id}` | Soft-delete a work request | `{id}` (issue ID) |
 | `POST` | `/api/v1/work-requests/{id}/restore` | Restore a soft-deleted work request | `{id}` (issue ID) |
+| `GET` | `/api/v1/work-requests/{id}/comments` | Retrieve full chronological discussion history | `{id}` (issue ID) |
+| `POST` | `/api/v1/work-requests/{id}/comments` | Add comment / technical note with `@mention` notifications | `body` |
 | `GET` | `/api/v1/projects` | List all active workspace areas / projects | — |
+| `GET` | `/api/v1/cycles` | List recent agile cycles / sprints | — |
+| `GET` | `/api/v1/cycles/current` | Retrieve current active cycle, burndown & status breakdown | — |
 | `GET` | `/api/search` | Fast global search across issues & projects | `q` (search query) |
 
 ### GitHub Push Auto-Close Webhook
@@ -358,7 +411,7 @@ Link GitHub commits directly to Relay tickets:
 The codebase undergoes rigorous static analysis and automated regression testing before every release:
 
 ```bash
-# 1. Run automated test suite (234/234 passing)
+# 1. Run automated test suite (244/244 passing)
 php artisan test
 
 # 2. Run static analysis (Level max, 0 errors across 124 files)

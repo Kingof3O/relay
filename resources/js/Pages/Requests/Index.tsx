@@ -53,6 +53,10 @@ export default function Index({
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [drawerRequestId, setDrawerRequestId] = useState<number | null>(null);
+
+    const activeDrawerCard = drawerRequestId
+        ? filterState.filteredRequests.find((r) => r.id === drawerRequestId) ?? null
+        : null;
     const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
 
     const handleToggleSelect = (id: number) => {
@@ -131,6 +135,7 @@ export default function Index({
 
             <QuickViewDrawer
                 requestId={drawerRequestId}
+                initialRequest={activeDrawerCard}
                 onClose={() => setDrawerRequestId(null)}
                 onUpdated={handleCardUpdated}
                 projects={projects}

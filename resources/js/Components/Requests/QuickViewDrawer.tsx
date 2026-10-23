@@ -24,6 +24,7 @@ import {
 
 interface QuickViewDrawerProps {
     requestId: number | null;
+    initialRequest?: WorkRequestCard | null;
     onClose: () => void;
     onUpdated?: (updated: WorkRequestCard) => void;
     projects: WorkspaceProject[];
@@ -34,6 +35,7 @@ interface QuickViewDrawerProps {
 
 export default function QuickViewDrawer({
     requestId,
+    initialRequest,
     onClose,
     onUpdated,
     projects,
@@ -41,7 +43,9 @@ export default function QuickViewDrawer({
     statuses,
     priorities,
 }: QuickViewDrawerProps) {
-    const [request, setRequest] = useState<any | null>(null);
+    const [request, setRequest] = useState<any | null>(
+        initialRequest && initialRequest.id === requestId ? initialRequest : null
+    );
     const [loading, setLoading] = useState(false);
     const [saving, setSaving] = useState(false);
     const [copied, setCopied] = useState(false);
@@ -54,7 +58,14 @@ export default function QuickViewDrawer({
     useEffect(() => {
         if (!requestId) {
             setRequest(null);
+            setDescriptionDraft('');
             return;
+        }
+
+        // Immediately seed from initialRequest if available to prevent any blank flash
+        if (initialRequest && initialRequest.id === requestId) {
+            setRequest((prev: any) => (prev?.id === requestId ? prev : initialRequest));
+            setDescriptionDraft(initialRequest.description ?? '');
         }
 
         let isMounted = true;
@@ -64,9 +75,15 @@ export default function QuickViewDrawer({
             .get(route('requests.show', requestId), { headers: { Accept: 'application/json' } })
             .then((res) => {
                 if (isMounted) {
-                    const data = res.data.props?.request ?? res.data.request ?? res.data;
-                    setRequest(data);
-                    setDescriptionDraft(data.description ?? '');
+                    const data =
+                        res.data?.request ??
+                        res.data?.props?.request ??
+                        (typeof res.data === 'object' && res.data !== null ? res.data : null);
+
+                    if (data && typeof data === 'object' && 'id' in data) {
+                        setRequest(data);
+                        setDescriptionDraft(data.description ?? '');
+                    }
                 }
             })
             .catch(() => {
@@ -79,7 +96,7 @@ export default function QuickViewDrawer({
         return () => {
             isMounted = false;
         };
-    }, [requestId]);
+    }, [requestId, initialRequest]);
 
     // Handle Escape key
     useEffect(() => {
