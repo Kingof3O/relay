@@ -180,7 +180,10 @@ export default function MarkdownViewer({
 }: MarkdownViewerProps) {
     if (!content) return null;
 
-    const rawLines = content.split('\n');
+    const normalizedContent = content.includes('\n')
+        ? content
+        : content.replace(/(?<=\S)\s+(\d+\.)/g, '\n$1');
+    const rawLines = normalizedContent.split('\n');
 
     const handleCheckboxToggle = (lineIndex: number, currentChecked: boolean) => {
         if (!onToggleChecklist) return;
@@ -310,6 +313,23 @@ export default function MarkdownViewer({
                                 }`}
                             >
                                 {formatInline(itemText)}
+                            </span>
+                        </div>
+                    );
+                }
+
+                // Numbered list item: `1. ` or `1) ` or `1.`
+                const numberedMatch = trimmed.match(/^(\d+)[.)]\s*(.*)$/);
+                if (numberedMatch) {
+                    const num = numberedMatch[1];
+                    const itemText = numberedMatch[2];
+                    return (
+                        <div key={idx} className="flex items-start gap-2 pl-1 py-0.5">
+                            <span className="font-mono text-[11px] font-semibold text-violet-400 shrink-0 min-w-[1.25rem]">
+                                {num}.
+                            </span>
+                            <span className="flex-1 text-zinc-200">
+                                {itemText ? formatInline(itemText) : ''}
                             </span>
                         </div>
                     );

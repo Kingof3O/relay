@@ -87,12 +87,18 @@ export default function SingleRequestForm({
         setQuickError(null);
 
         try {
+            const cleanDesc = description.trim()
+                ? (description.includes('\n')
+                      ? description.trim()
+                      : description.trim().replace(/(?<=\S)\s+(\d+\.)/g, '\n$1'))
+                : null;
+
             const payload = {
                 requests: [
                     {
                         client_index: 0,
                         title: title.trim(),
-                        description: description.trim() || null,
+                        description: cleanDesc,
                         area_id: parseInt(areaId, 10),
                         priority,
                         assignee_id: assigneeId ? parseInt(assigneeId, 10) : null,
@@ -139,6 +145,110 @@ export default function SingleRequestForm({
         if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
             e.preventDefault();
             submitQuick();
+        }
+    };
+
+    const handleDescriptionKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        // Meta+Enter submits the form
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            e.preventDefault();
+            submitQuick();
+            return;
+        }
+
+        // Handle Enter key for smart list continuation
+        if (e.key === 'Enter' && !e.shiftKey) {
+            const textarea = e.currentTarget;
+            const pos = textarea.selectionStart;
+            const val = textarea.value;
+            const lineStart = val.lastIndexOf('\n', pos - 1) + 1;
+            const currentLine = val.slice(lineStart, pos);
+
+            // Match numbered list: `1. ` or `1.`
+            const numMatch = currentLine.match(/^(\s*)(\d+)\.\s*(.*)$/);
+            if (numMatch) {
+                e.preventDefault();
+                const indent = numMatch[1];
+                const currentNum = parseInt(numMatch[2], 10);
+                const itemText = numMatch[3];
+
+                // If line has no text, exit the list
+                if (!itemText.trim()) {
+                    const before = val.slice(0, lineStart);
+                    const after = val.slice(pos);
+                    setDescription(`${before}${after}`);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = lineStart;
+                    }, 0);
+                    return;
+                }
+
+                const nextPrefix = `\n${indent}${currentNum + 1}. `;
+                const before = val.slice(0, pos);
+                const after = val.slice(pos);
+                setDescription(`${before}${nextPrefix}${after}`);
+                setTimeout(() => {
+                    const newPos = pos + nextPrefix.length;
+                    textarea.selectionStart = textarea.selectionEnd = newPos;
+                }, 0);
+                return;
+            }
+
+            // Match checklist: `- [ ] ` or `- [x] `
+            const checkMatch = currentLine.match(/^(\s*)-\s*\[([ xX])?\]\s*(.*)$/);
+            if (checkMatch) {
+                e.preventDefault();
+                const indent = checkMatch[1];
+                const itemText = checkMatch[3];
+
+                if (!itemText.trim()) {
+                    const before = val.slice(0, lineStart);
+                    const after = val.slice(pos);
+                    setDescription(`${before}${after}`);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = lineStart;
+                    }, 0);
+                    return;
+                }
+
+                const nextPrefix = `\n${indent}- [ ] `;
+                const before = val.slice(0, pos);
+                const after = val.slice(pos);
+                setDescription(`${before}${nextPrefix}${after}`);
+                setTimeout(() => {
+                    const newPos = pos + nextPrefix.length;
+                    textarea.selectionStart = textarea.selectionEnd = newPos;
+                }, 0);
+                return;
+            }
+
+            // Match bullet: `- ` or `* `
+            const bulletMatch = currentLine.match(/^(\s*)[-*]\s+(.*)$/);
+            if (bulletMatch) {
+                e.preventDefault();
+                const indent = bulletMatch[1];
+                const itemText = bulletMatch[2];
+
+                if (!itemText.trim()) {
+                    const before = val.slice(0, lineStart);
+                    const after = val.slice(pos);
+                    setDescription(`${before}${after}`);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = lineStart;
+                    }, 0);
+                    return;
+                }
+
+                const nextPrefix = `\n${indent}- `;
+                const before = val.slice(0, pos);
+                const after = val.slice(pos);
+                setDescription(`${before}${nextPrefix}${after}`);
+                setTimeout(() => {
+                    const newPos = pos + nextPrefix.length;
+                    textarea.selectionStart = textarea.selectionEnd = newPos;
+                }, 0);
+                return;
+            }
         }
     };
 
@@ -243,15 +353,50 @@ export default function SingleRequestForm({
 
             {/* Description */}
             <div>
-                <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                    Description & Details (Optional)
-                </label>
+                <div className="flex items-center justify-between">
+                    <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
+                        Description & Details (Optional)
+                    </label>
+                    <div className="flex items-center gap-1.5 text-[10px]">
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setDescription((prev) => (prev ? `${prev.trimEnd()}\n1. ` : '1. '));
+                            }}
+                            className="rounded px-1.5 py-0.5 font-mono text-zinc-400 hover:bg-white/[0.06] hover:text-white transition-colors border border-white/[0.06]"
+                            title="Insert numbered point"
+                        >
+                            1. Points
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setDescription((prev) => (prev ? `${prev.trimEnd()}\n- [ ] ` : '- [ ] '));
+                            }}
+                            className="rounded px-1.5 py-0.5 font-mono text-zinc-400 hover:bg-white/[0.06] hover:text-white transition-colors border border-white/[0.06]"
+                            title="Insert checklist task"
+                        >
+                            - [ ] Checklist
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setDescription((prev) => (prev ? `${prev.trimEnd()}\n- ` : '- '));
+                            }}
+                            className="rounded px-1.5 py-0.5 font-mono text-zinc-400 hover:bg-white/[0.06] hover:text-white transition-colors border border-white/[0.06]"
+                            title="Insert bullet point"
+                        >
+                            • Bullet
+                        </button>
+                    </div>
+                </div>
                 <textarea
-                    rows={3}
+                    rows={4}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Describe acceptance criteria or replication steps..."
-                    className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 p-3 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 shadow-specular transition-all"
+                    onKeyDown={handleDescriptionKeyDown}
+                    placeholder="Describe points or checklist tasks (press Enter to auto-continue lists)..."
+                    className="mt-1.5 w-full rounded-xl border border-white/[0.08] bg-[#07090e]/90 p-3 text-xs text-zinc-100 placeholder:text-zinc-600 focus:border-violet-500 focus:outline-none focus:ring-1 focus:ring-violet-500 shadow-specular transition-all font-sans leading-relaxed"
                 />
             </div>
 

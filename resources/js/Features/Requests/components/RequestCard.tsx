@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import PriorityBadge from '@/Components/PriorityBadge';
 import { WorkRequestCard } from '@/types/workspace';
 import { Link, router } from '@inertiajs/react';
@@ -24,6 +25,17 @@ export default function RequestCard({
     isKeyboardFocused?: boolean;
 }) {
     const checklist = getChecklistStats(request.description);
+
+    const descriptionPoints = useMemo(() => {
+        if (!request.description) return null;
+        let desc = request.description.trim();
+        // If inline numbered items like "1. Something 2. Another", split onto separate lines
+        if (!desc.includes('\n') && /\d+\.\s+/.test(desc)) {
+            desc = desc.replace(/(?<=\S)\s+(\d+\.)/g, '\n$1');
+        }
+        const lines = desc.split('\n').map((l) => l.trim()).filter(Boolean);
+        return lines.length > 0 ? lines : null;
+    }, [request.description]);
 
     const nextAction =
         request.status === 'ready'
@@ -159,10 +171,25 @@ export default function RequestCard({
                             </div>
                         </div>
 
-                        {request.description && (
-                            <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-zinc-400">
-                                {request.description}
-                            </p>
+                        {descriptionPoints && descriptionPoints.length > 0 && (
+                            descriptionPoints.length > 1 ? (
+                                <div className="mt-2 space-y-1 text-[11px] leading-relaxed text-zinc-400">
+                                    {descriptionPoints.slice(0, 3).map((pt, i) => (
+                                        <div key={i} className="flex items-start gap-1.5 min-w-0">
+                                            <span className="truncate flex-1 text-zinc-300/90">{pt}</span>
+                                        </div>
+                                    ))}
+                                    {descriptionPoints.length > 3 && (
+                                        <span className="text-[10px] text-zinc-500 font-mono">
+                                            +{descriptionPoints.length - 3} more points
+                                        </span>
+                                    )}
+                                </div>
+                            ) : (
+                                <p className="mt-2 line-clamp-2 text-[11px] leading-relaxed text-zinc-400 whitespace-pre-line">
+                                    {descriptionPoints[0]}
+                                </p>
+                            )
                         )}
 
                         {/* Hierarchical Subtasks Micro Completion Ring */}

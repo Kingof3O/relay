@@ -175,8 +175,114 @@ export default function QuickViewDrawer({
 
     const handleSaveDescription = async () => {
         setIsEditingDescription(false);
-        if (request && descriptionDraft !== request.description) {
-            await handlePatch({ description: descriptionDraft });
+        const cleaned = descriptionDraft.trim()
+            ? (descriptionDraft.includes('\n')
+                  ? descriptionDraft.trim()
+                  : descriptionDraft.trim().replace(/(?<=\S)\s+(\d+\.)/g, '\n$1'))
+            : '';
+        if (request && cleaned !== request.description) {
+            await handlePatch({ description: cleaned });
+        }
+    };
+
+    const handleDescriptionKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+            e.preventDefault();
+            handleSaveDescription();
+            return;
+        }
+
+        if (e.key === 'Enter' && !e.shiftKey) {
+            const textarea = e.currentTarget;
+            const pos = textarea.selectionStart;
+            const val = textarea.value;
+            const lineStart = val.lastIndexOf('\n', pos - 1) + 1;
+            const currentLine = val.slice(lineStart, pos);
+
+            // Match numbered list: `1. ` or `1.`
+            const numMatch = currentLine.match(/^(\s*)(\d+)\.\s*(.*)$/);
+            if (numMatch) {
+                e.preventDefault();
+                const indent = numMatch[1];
+                const currentNum = parseInt(numMatch[2], 10);
+                const itemText = numMatch[3];
+
+                if (!itemText.trim()) {
+                    const before = val.slice(0, lineStart);
+                    const after = val.slice(pos);
+                    setDescriptionDraft(`${before}${after}`);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = lineStart;
+                    }, 0);
+                    return;
+                }
+
+                const nextPrefix = `\n${indent}${currentNum + 1}. `;
+                const before = val.slice(0, pos);
+                const after = val.slice(pos);
+                setDescriptionDraft(`${before}${nextPrefix}${after}`);
+                setTimeout(() => {
+                    const newPos = pos + nextPrefix.length;
+                    textarea.selectionStart = textarea.selectionEnd = newPos;
+                }, 0);
+                return;
+            }
+
+            // Match checklist: `- [ ] ` or `- [x] `
+            const checkMatch = currentLine.match(/^(\s*)-\s*\[([ xX])?\]\s*(.*)$/);
+            if (checkMatch) {
+                e.preventDefault();
+                const indent = checkMatch[1];
+                const itemText = checkMatch[3];
+
+                if (!itemText.trim()) {
+                    const before = val.slice(0, lineStart);
+                    const after = val.slice(pos);
+                    setDescriptionDraft(`${before}${after}`);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = lineStart;
+                    }, 0);
+                    return;
+                }
+
+                const nextPrefix = `\n${indent}- [ ] `;
+                const before = val.slice(0, pos);
+                const after = val.slice(pos);
+                setDescriptionDraft(`${before}${nextPrefix}${after}`);
+                setTimeout(() => {
+                    const newPos = pos + nextPrefix.length;
+                    textarea.selectionStart = textarea.selectionEnd = newPos;
+                }, 0);
+                return;
+            }
+
+            // Match bullet: `- ` or `* `
+            const bulletMatch = currentLine.match(/^(\s*)[-*]\s+(.*)$/);
+            if (bulletMatch) {
+                e.preventDefault();
+                const indent = bulletMatch[1];
+                const itemText = bulletMatch[2];
+
+                if (!itemText.trim()) {
+                    const before = val.slice(0, lineStart);
+                    const after = val.slice(pos);
+                    setDescriptionDraft(`${before}${after}`);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = lineStart;
+                    }, 0);
+                    return;
+                }
+
+                const nextPrefix = `\n${indent}- `;
+                const before = val.slice(0, pos);
+                const after = val.slice(pos);
+                setDescriptionDraft(`${before}${nextPrefix}${after}`);
+                setTimeout(() => {
+                    const newPos = pos + nextPrefix.length;
+                    textarea.selectionStart = textarea.selectionEnd = newPos;
+                }, 0);
+                return;
+            }
         }
     };
 
@@ -488,11 +594,47 @@ export default function QuickViewDrawer({
 
                                     {isEditingDescription ? (
                                         <div className="space-y-2">
+                                            <div className="flex items-center justify-between text-[10px]">
+                                                <span className="text-zinc-500">Press Enter for next item</span>
+                                                <div className="flex items-center gap-1.5">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setDescriptionDraft((prev) => (prev ? `${prev.trimEnd()}\n1. ` : '1. '));
+                                                        }}
+                                                        className="rounded px-1.5 py-0.5 font-mono text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors border border-zinc-700"
+                                                        title="Insert numbered point"
+                                                    >
+                                                        1. Points
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setDescriptionDraft((prev) => (prev ? `${prev.trimEnd()}\n- [ ] ` : '- [ ] '));
+                                                        }}
+                                                        className="rounded px-1.5 py-0.5 font-mono text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors border border-zinc-700"
+                                                        title="Insert checklist task"
+                                                    >
+                                                        - [ ] Checklist
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            setDescriptionDraft((prev) => (prev ? `${prev.trimEnd()}\n- ` : '- '));
+                                                        }}
+                                                        className="rounded px-1.5 py-0.5 font-mono text-zinc-400 hover:bg-zinc-800 hover:text-white transition-colors border border-zinc-700"
+                                                        title="Insert bullet point"
+                                                    >
+                                                        • Bullet
+                                                    </button>
+                                                </div>
+                                            </div>
                                             <textarea
                                                 rows={5}
                                                 value={descriptionDraft}
                                                 onChange={(e) => setDescriptionDraft(e.target.value)}
-                                                className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-xs text-zinc-200 focus:border-zinc-500 focus:ring-0 font-sans"
+                                                onKeyDown={handleDescriptionKeyDown}
+                                                className="w-full rounded-xl border border-zinc-700 bg-zinc-900 p-3 text-xs text-zinc-200 focus:border-zinc-500 focus:ring-0 font-sans leading-relaxed"
                                                 placeholder="Add Markdown description or checklist tasks with '- [ ] Task name'..."
                                             />
                                             <div className="flex justify-end gap-2">

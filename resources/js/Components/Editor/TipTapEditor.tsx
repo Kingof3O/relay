@@ -109,6 +109,13 @@ function markdownToHtml(md: string): string {
             continue;
         }
 
+        // Numbered ordered lists
+        const olMatch = line.match(/^(\d+)\.\s*(.*)$/);
+        if (olMatch) {
+            result.push(`<ol start="${olMatch[1]}"><li><p>${olMatch[2]}</p></li></ol>`);
+            continue;
+        }
+
         if (!line.trim()) {
             result.push('<p></p>');
             continue;
