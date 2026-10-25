@@ -3,11 +3,13 @@
 namespace App\Mail;
 
 use App\Enums\RequestPriority;
+use App\Models\Area;
 use App\Models\User;
 use App\Models\WorkRequest;
 use App\Services\EmailNotificationService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
@@ -53,7 +55,7 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
     }
 
     /**
-     * @param array<string, mixed> $values
+     * @param  array<string, mixed>  $values
      */
     public function __unserialize(array $values): void
     {
@@ -63,7 +65,7 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
 
         try {
             $this->traitUnserialize($values);
-        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException) {
+        } catch (ModelNotFoundException) {
             $this->workRequest = EmailNotificationService::getSampleRequest($this->recipient);
         }
 
@@ -72,8 +74,8 @@ final class WorkRequestNotificationMail extends Mailable implements ShouldQueue
             if (isset($raw['attributes']['id'])) {
                 $req->id = (int) $raw['attributes']['id'];
             }
-            if (!empty($raw['area_attributes']) && is_array($raw['area_attributes'])) {
-                $area = new \App\Models\Area($raw['area_attributes']);
+            if (! empty($raw['area_attributes']) && is_array($raw['area_attributes'])) {
+                $area = new Area($raw['area_attributes']);
                 if (isset($raw['area_attributes']['id'])) {
                     $area->id = (int) $raw['area_attributes']['id'];
                 }

@@ -12,6 +12,7 @@ use App\Services\DiscordNotificationService;
 use App\Services\WorkRequestService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
 
 final class DiscordNotificationTest extends TestCase
@@ -113,11 +114,159 @@ final class DiscordNotificationTest extends TestCase
     {
         DiscordNotificationService::updateSettings([
             'webhook_url' => '',
+            'webhook_urls' => [],
         ]);
-        config(['services.discord.webhook_url' => null]);
+        config(['services.discord.webhook_url' => null, 'services.discord.webhook_urls' => null]);
 
         $this->artisan('relay:discord-test')
             ->expectsOutputToContain('Error: No Discord Webhook URL configured.')
             ->assertExitCode(1);
+    }
+
+    public function test_discord_notification_broadcasts_to_multiple_webhooks(): void
+    {
+        Http::fake([
+            'https://discord.com/api/webhooks/channel-one/*' => Http::response(null, 204),
+            'https://discord.com/api/webhooks/channel-two/*' => Http::response(null, 204),
+        ]);
+
+        DiscordNotificationService::updateSettings([
+            'enabled' => true,
+            'webhook_urls' => [
+                'https://discord.com/api/webhooks/channel-one/token-1',
+                'https://discord.com/api/webhooks/channel-two/token-2',
+            ],
+            'bot_name' => 'Multi Bot',
+        ]);
+
+        $request = WorkRequest::query()->first();
+
+        (new SendDiscordNotification($request->id, [
+            'event' => 'status_changed',
+            'request_id' => $request->id,
+            'request_title' => $request->title,
+            'message' => 'Status changed from New to Ready.',
+        ]))->handle();
+
+        Http::assertSent(fn ($req) => str_contains($req->url(), 'channel-one/token-1'));
+        Http::assertSent(fn ($req) => str_contains($req->url(), 'channel-two/token-2'));
+
+        $this->assertDatabaseHas('integration_delivery_logs', [
+            'channel' => 'discord',
+            'event' => 'status_changed',
+            'status' => 'success',
+            'target' => DiscordNotificationService::maskUrl('https://discord.com/api/webhooks/channel-one/token-1'),
+        ]);
+        $this->assertDatabaseHas('integration_delivery_logs', [
+            'channel' => 'discord',
+            'event' => 'status_changed',
+            'status' => 'success',
+            'target' => DiscordNotificationService::maskUrl('https://discord.com/api/webhooks/channel-two/token-2'),
+        ]);
+    }
+
+    public function test_discord_ping_multiple_webhooks(): void
+    {
+        Http::fake([
+            'https://discord.com/api/webhooks/chan1/*' => Http::response(null, 204),
+            'https://discord.com/api/webhooks/chan2/*' => Http::response(null, 204),
+        ]);
+
+        $result = DiscordNotificationService::ping([
+            'https://discord.com/api/webhooks/chan1/abc',
+            'https://discord.com/api/webhooks/chan2/def',
+        ]);
+
+        $this->assertTrue($result['success']);
+        $this->assertStringContainsString('all 2 Discord channels', $result['message']);
+        Http::assertSent(fn ($req) => str_contains($req->url(), 'chan1/abc'));
+        Http::assertSent(fn ($req) => str_contains($req->url(), 'chan2/def'));
+    }
+
+    public function test_moving_ticket_through_kanban_statuses_dispatches_notifications(): void
+    {
+        Queue::fake([SendDiscordNotification::class]);
+
+        $actor = User::query()->first();
+        $project = Area::query()->first();
+        $service = app(WorkRequestService::class);
+
+        $request = $service->create($actor, [
+            'area_id' => $project->id,
+            'title' => 'Status Transition Lifecycle Ticket',
+            'description' => 'Testing all Kanban moves',
+            'status' => 'new',
+        ]);
+
+        // Move new -> ready
+        $service->update($request, $actor, ['status' => 'ready']);
+        Queue::assertPushed(SendDiscordNotification::class, function ($job) use ($request) {
+            return $job->workRequestId === $request->id && $job->payload['event'] === 'status_changed'
+                && str_contains($job->payload['message'], 'changed status from New to Ready');
+        });
+
+        // Move ready -> doing
+        $service->update($request, $actor, ['status' => 'doing']);
+        Queue::assertPushed(SendDiscordNotification::class, function ($job) use ($request) {
+            return $job->workRequestId === $request->id && $job->payload['event'] === 'status_changed'
+                && str_contains($job->payload['message'], 'changed status from Ready to Doing');
+        });
+
+        // Move doing -> review
+        $service->update($request, $actor, ['status' => 'review']);
+        Queue::assertPushed(SendDiscordNotification::class, function ($job) use ($request) {
+            return $job->workRequestId === $request->id && $job->payload['event'] === 'review';
+        });
+
+        // Move review -> done
+        $service->update($request, $actor, ['status' => 'done']);
+        Queue::assertPushed(SendDiscordNotification::class, function ($job) use ($request) {
+            return $job->workRequestId === $request->id && $job->payload['event'] === 'done';
+        });
+
+        // Reopen done -> doing
+        $service->update($request, $actor, ['status' => 'doing']);
+        Queue::assertPushed(SendDiscordNotification::class, function ($job) use ($request) {
+            return $job->workRequestId === $request->id && $job->payload['event'] === 'reopened';
+        });
+    }
+
+    public function test_integration_controller_endpoints_handle_multiple_webhooks(): void
+    {
+        Http::fake([
+            'https://discord.com/api/webhooks/*' => Http::response(null, 204),
+        ]);
+
+        $user = User::query()->where('username', 'robin')->firstOrFail();
+
+        $urls = [
+            'https://discord.com/api/webhooks/dev-channel/abc12345678901234567890',
+            'https://discord.com/api/webhooks/ops-channel/xyz12345678901234567890',
+        ];
+
+        // Test endpoint
+        $testResponse = $this->actingAs($user)->postJson(route('integrations.discord.test'), [
+            'webhook_urls' => $urls,
+        ]);
+
+        $testResponse->assertOk()
+            ->assertJson(['success' => true]);
+
+        // Save settings endpoint
+        $saveResponse = $this->actingAs($user)->postJson(route('integrations.discord.update'), [
+            'enabled' => true,
+            'webhook_urls' => $urls,
+            'bot_name' => 'MultiBot',
+            'avatar_url' => null,
+            'events' => [
+                'ticket_created' => true,
+                'ticket_status' => true,
+            ],
+        ]);
+
+        $saveResponse->assertOk()
+            ->assertJsonPath('discord.configured', true)
+            ->assertJsonCount(2, 'discord.webhook_urls')
+            ->assertJsonCount(2, 'discord.masked_webhook_urls');
     }
 }

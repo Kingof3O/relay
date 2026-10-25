@@ -3,6 +3,8 @@ export interface DiscordConfig {
     configured: boolean;
     webhook_url: string | null;
     masked_webhook_url: string | null;
+    webhook_urls?: string[];
+    masked_webhook_urls?: string[];
     bot_name: string;
     avatar_url: string | null;
     events: {

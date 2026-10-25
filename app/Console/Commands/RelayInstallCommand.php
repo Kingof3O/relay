@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Console\Commands;
 
-use App\Models\Permission;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Workspace;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
@@ -191,7 +191,7 @@ ASCII;
         $this->components->info('Step 4/5: Initial Administrator / Owner Setup');
 
         // Ensure all core system roles (Owner, Admin, Developer, Designer, Member) and permissions exist
-        Artisan::call('db:seed', ['--class' => \Database\Seeders\RolesAndPermissionsSeeder::class, '--force' => true]);
+        Artisan::call('db:seed', ['--class' => RolesAndPermissionsSeeder::class, '--force' => true]);
 
         /** @var Role $ownerRole */
         $ownerRole = Role::query()->firstOrCreate(['name' => 'Owner']);

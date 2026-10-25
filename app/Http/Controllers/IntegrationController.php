@@ -89,12 +89,14 @@ final class IntegrationController extends Controller
         $validated = $request->validated();
         DiscordNotificationService::updateSettings($validated);
 
+        $hasWebhook = ! empty($validated['webhook_url']) || ! empty($validated['webhook_urls']);
+
         $audit->log(
             $request->user(),
             'integration.discord_updated',
             null,
             [],
-            ['enabled' => $validated['enabled'], 'has_webhook' => ! empty($validated['webhook_url'])]
+            ['enabled' => $validated['enabled'], 'has_webhook' => $hasWebhook]
         );
 
         return response()->json([
@@ -105,8 +107,8 @@ final class IntegrationController extends Controller
 
     public function testDiscord(TestDiscordRequest $request): JsonResponse
     {
-        $customUrl = $request->input('webhook_url');
-        $result = DiscordNotificationService::ping($customUrl);
+        $custom = $request->input('webhook_urls') ?? $request->input('webhook_url');
+        $result = DiscordNotificationService::ping($custom);
 
         return response()->json($result, $result['success'] ? 200 : 422);
     }

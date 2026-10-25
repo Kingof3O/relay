@@ -2,14 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\RoleName;
 use App\Mail\WorkspaceInvitationMail;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceInvitation;
 use App\Services\AuditService;
-use Illuminate\Database\Query\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;

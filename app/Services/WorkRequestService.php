@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Enums\RequestStatus;
 use App\Events\WorkRequestCommented;
 use App\Events\WorkRequestMoved;
 use App\Http\Requests\WorkRequest\BulkWorkRequestRequest;
@@ -126,6 +127,15 @@ final class WorkRequestService
                     $this->resolveBlockedDependencies($request, $actor);
                 } elseif ($type === 'reopened') {
                     $this->notifyRelevantUsers($request, 'reopened', "{$actor->name} reopened this request.", $actor);
+                } else {
+                    $statusLabel = $request->status?->label() ?? ucfirst(str_replace('_', ' ', $newStatus));
+                    $oldStatusLabel = RequestStatus::tryFrom($oldStatus)?->label() ?? ucfirst(str_replace('_', ' ', $oldStatus));
+                    $this->notifyRelevantUsers(
+                        $request,
+                        'status_changed',
+                        "{$actor->name} changed status from {$oldStatusLabel} to {$statusLabel}.",
+                        $actor
+                    );
                 }
             }
 

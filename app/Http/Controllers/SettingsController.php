@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use App\Enums\RoleName;
 use App\Models\Area;
 use App\Models\Role;
 use App\Models\WorkspaceAudit;

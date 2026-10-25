@@ -18,11 +18,65 @@ final class DiscordNotificationService
 
     public const CACHE_KEY_WEBHOOK_URL = 'integration.discord.webhook_url';
 
+    public const CACHE_KEY_WEBHOOK_URLS = 'integration.discord.webhook_urls';
+
     public const CACHE_KEY_BOT_NAME = 'integration.discord.bot_name';
 
     public const CACHE_KEY_AVATAR_URL = 'integration.discord.avatar_url';
 
     public const CACHE_KEY_EVENTS = 'integration.discord.events';
+
+    /**
+     * Parse a string or array into an array of distinct, trimmed webhook URLs.
+     *
+     * @param  string|array<mixed>|null  $input
+     * @return array<int, string>
+     */
+    public static function parseUrls(string|array|null $input): array
+    {
+        if (blank($input)) {
+            return [];
+        }
+
+        if (is_string($input)) {
+            $raw = preg_split('/[\r\n,]+/', $input) ?: [];
+        } elseif (is_array($input)) {
+            $raw = [];
+            foreach ($input as $item) {
+                if (is_string($item)) {
+                    foreach (preg_split('/[\r\n,]+/', $item) ?: [] as $sub) {
+                        $raw[] = $sub;
+                    }
+                }
+            }
+        } else {
+            $raw = [];
+        }
+
+        $urls = [];
+        foreach ($raw as $candidate) {
+            $trimmed = trim((string) $candidate);
+            if ($trimmed !== '' && ! in_array($trimmed, $urls, true)) {
+                $urls[] = $trimmed;
+            }
+        }
+
+        return $urls;
+    }
+
+    /**
+     * Mask a webhook token for display.
+     */
+    public static function maskUrl(?string $url): ?string
+    {
+        if (blank($url)) {
+            return null;
+        }
+
+        return strlen($url) > 30
+            ? substr($url, 0, 32).'••••'.substr($url, -6)
+            : $url;
+    }
 
     public static function isEnabled(): bool
     {
@@ -43,25 +97,55 @@ final class DiscordNotificationService
         return false;
     }
 
+    /**
+     * Get all configured Discord Webhook URLs.
+     *
+     * @return array<int, string>
+     */
+    public static function getWebhookUrls(): array
+    {
+        $urls = [];
+
+        $cachedUrls = Cache::get(self::CACHE_KEY_WEBHOOK_URLS);
+        if (! blank($cachedUrls)) {
+            $urls = array_merge($urls, self::parseUrls($cachedUrls));
+        }
+
+        $cachedSingle = Cache::get(self::CACHE_KEY_WEBHOOK_URL);
+        if (! blank($cachedSingle)) {
+            $urls = array_merge($urls, self::parseUrls($cachedSingle));
+        }
+
+        $configUrls = config('services.discord.webhook_urls');
+        if (! blank($configUrls)) {
+            $urls = array_merge($urls, self::parseUrls($configUrls));
+        }
+
+        $configSingle = config('services.discord.webhook_url');
+        if (! blank($configSingle)) {
+            $urls = array_merge($urls, self::parseUrls($configSingle));
+        }
+
+        if (empty($urls)) {
+            $matching = Webhook::query()
+                ->where('is_active', true)
+                ->where('url', 'like', '%discord.com/api/webhooks%')
+                ->pluck('url')
+                ->all();
+
+            $urls = array_merge($urls, self::parseUrls($matching));
+        }
+
+        $unique = array_values(array_unique($urls));
+
+        return array_values(array_filter($unique, fn (string $u): bool => UrlSecurity::isSafeDiscordWebhookUrl($u)));
+    }
+
     public static function getWebhookUrl(): ?string
     {
-        $cached = Cache::get(self::CACHE_KEY_WEBHOOK_URL);
-        if (! blank($cached)) {
-            return (string) $cached;
-        }
+        $urls = self::getWebhookUrls();
 
-        $configured = config('services.discord.webhook_url');
-        if (! blank($configured)) {
-            return (string) $configured;
-        }
-
-        // Check if there is an active Discord webhook record in webhooks table
-        $matching = Webhook::query()
-            ->where('is_active', true)
-            ->where('url', 'like', '%discord.com/api/webhooks%')
-            ->first();
-
-        return $matching?->url;
+        return $urls[0] ?? null;
     }
 
     public static function getBotName(): string
@@ -106,8 +190,14 @@ final class DiscordNotificationService
             Cache::forever(self::CACHE_KEY_ENABLED, (bool) $settings['enabled']);
         }
 
-        if (array_key_exists('webhook_url', $settings)) {
-            Cache::forever(self::CACHE_KEY_WEBHOOK_URL, (string) ($settings['webhook_url'] ?? ''));
+        if (array_key_exists('webhook_urls', $settings)) {
+            $parsed = self::parseUrls($settings['webhook_urls']);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $parsed);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $parsed[0] ?? '');
+        } elseif (array_key_exists('webhook_url', $settings)) {
+            $parsed = self::parseUrls($settings['webhook_url']);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $parsed);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $parsed[0] ?? '');
         }
 
         if (array_key_exists('bot_name', $settings)) {
@@ -130,16 +220,17 @@ final class DiscordNotificationService
      */
     public static function getStatus(): array
     {
-        $url = self::getWebhookUrl();
-        $maskedUrl = ! empty($url) && strlen($url) > 30
-            ? substr($url, 0, 32).'••••'.substr($url, -6)
-            : $url;
+        $urls = self::getWebhookUrls();
+        $maskedUrls = array_values(array_filter(array_map([self::class, 'maskUrl'], $urls)));
+        $primaryUrl = $urls[0] ?? null;
 
         return [
             'enabled' => self::isEnabled(),
-            'configured' => ! empty($url),
-            'webhook_url' => $url,
-            'masked_webhook_url' => $maskedUrl,
+            'configured' => ! empty($urls),
+            'webhook_urls' => $urls,
+            'masked_webhook_urls' => $maskedUrls,
+            'webhook_url' => $primaryUrl,
+            'masked_webhook_url' => self::maskUrl($primaryUrl),
             'bot_name' => self::getBotName(),
             'avatar_url' => self::getAvatarUrl(),
             'events' => self::getSubscribedEvents(),
@@ -176,7 +267,8 @@ final class DiscordNotificationService
             $workRequest->is_blocked || $priority === 'urgent' => 0xE11D48, // Rose/Red
             $status === 'done' => 0x10B981,                                // Emerald/Green
             $status === 'review' || $event === 'mention' => 0x8B5CF6,      // Violet/Purple
-            $event === 'assignment' || $status === 'in_progress' => 0x0284C7, // Sky/Blue
+            $event === 'assignment' || $status === 'in_progress' || $status === 'doing' => 0x0284C7, // Sky/Blue
+            $status === 'ready' => 0x6366F1,                               // Indigo
             $event === 'comment' || $priority === 'high' => 0xF59E0B,     // Amber/Orange
             default => 0x71717A,                                           // Zinc
         };
@@ -231,7 +323,7 @@ final class DiscordNotificationService
     }
 
     /**
-     * Dispatch notification to Discord webhook synchronously or via queued job.
+     * Dispatch notification to all configured Discord webhooks.
      *
      * @param  array<string, mixed>  $payload
      */
@@ -241,8 +333,8 @@ final class DiscordNotificationService
             return false;
         }
 
-        $webhookUrl = self::getWebhookUrl();
-        if (empty($webhookUrl) || ! UrlSecurity::isSafeDiscordWebhookUrl($webhookUrl)) {
+        $webhookUrls = self::getWebhookUrls();
+        if (empty($webhookUrls)) {
             return false;
         }
 
@@ -269,65 +361,74 @@ final class DiscordNotificationService
         }
 
         $discordPayload = self::buildEmbed($workRequest, $payload);
+        $deliveredCount = 0;
 
-        try {
-            $response = Http::timeout(6)
-                ->asJson()
-                ->post($webhookUrl, $discordPayload);
+        foreach ($webhookUrls as $webhookUrl) {
+            try {
+                $response = Http::timeout(6)
+                    ->asJson()
+                    ->post($webhookUrl, $discordPayload);
 
-            $isSuccess = $response->successful();
+                $isSuccess = $response->successful();
+                if ($isSuccess) {
+                    $deliveredCount++;
+                }
 
-            IntegrationDeliveryLog::query()->create([
-                'workspace_id' => $workRequest->workspace_id,
-                'channel' => 'discord',
-                'event' => $event,
-                'status' => $isSuccess ? 'success' : 'failed',
-                'target' => substr($webhookUrl, 0, 32).'••••',
-                'summary' => "#REQ-{$workRequest->id}: {$workRequest->title} ({$event})",
-                'payload' => $discordPayload,
-                'error_message' => $isSuccess ? null : "HTTP {$response->status()}: {$response->body()}",
-            ]);
+                IntegrationDeliveryLog::query()->create([
+                    'workspace_id' => $workRequest->workspace_id,
+                    'channel' => 'discord',
+                    'event' => $event,
+                    'status' => $isSuccess ? 'success' : 'failed',
+                    'target' => self::maskUrl($webhookUrl),
+                    'summary' => "#REQ-{$workRequest->id}: {$workRequest->title} ({$event})",
+                    'payload' => $discordPayload,
+                    'error_message' => $isSuccess ? null : "HTTP {$response->status()}: {$response->body()}",
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning("Discord webhook dispatch failed for {$webhookUrl}: {$e->getMessage()}");
 
-            return $isSuccess;
-        } catch (\Throwable $e) {
-            Log::warning("Discord webhook dispatch failed: {$e->getMessage()}");
-
-            IntegrationDeliveryLog::query()->create([
-                'workspace_id' => $workRequest->workspace_id,
-                'channel' => 'discord',
-                'event' => $event,
-                'status' => 'failed',
-                'target' => substr($webhookUrl, 0, 32).'••••',
-                'summary' => "#REQ-{$workRequest->id}: {$workRequest->title} ({$event})",
-                'payload' => $discordPayload,
-                'error_message' => $e->getMessage(),
-            ]);
-
-            return false;
+                IntegrationDeliveryLog::query()->create([
+                    'workspace_id' => $workRequest->workspace_id,
+                    'channel' => 'discord',
+                    'event' => $event,
+                    'status' => 'failed',
+                    'target' => self::maskUrl($webhookUrl),
+                    'summary' => "#REQ-{$workRequest->id}: {$workRequest->title} ({$event})",
+                    'payload' => $discordPayload,
+                    'error_message' => $e->getMessage(),
+                ]);
+            }
         }
+
+        return $deliveredCount > 0;
     }
 
     /**
-     * Send a test ping message to the specified (or configured) webhook URL.
+     * Send a test ping message to the specified (or configured) webhook URL(s).
      *
+     * @param  string|array<mixed>|null  $customUrls
      * @return array{success: bool, message: string}
      */
-    public static function ping(?string $customUrl = null): array
+    public static function ping(string|array|null $customUrls = null): array
     {
-        $webhookUrl = $customUrl ?: self::getWebhookUrl();
+        $urls = ! blank($customUrls)
+            ? self::parseUrls($customUrls)
+            : self::getWebhookUrls();
 
-        if (empty($webhookUrl)) {
+        if (empty($urls)) {
             return [
                 'success' => false,
-                'message' => 'No Discord Webhook URL configured. Please provide a valid webhook URL.',
+                'message' => 'No Discord Webhook URL configured. Please provide at least one valid webhook URL.',
             ];
         }
 
-        if (! UrlSecurity::isSafeDiscordWebhookUrl($webhookUrl)) {
-            return [
-                'success' => false,
-                'message' => 'Invalid Discord Webhook URL. URL must be a valid, public Discord webhook (https://discord.com/api/webhooks/...).',
-            ];
+        foreach ($urls as $url) {
+            if (! UrlSecurity::isSafeDiscordWebhookUrl($url)) {
+                return [
+                    'success' => false,
+                    'message' => 'Invalid Discord Webhook URL. All URLs must be valid, public Discord webhooks (https://discord.com/api/webhooks/...).',
+                ];
+            }
         }
 
         $payload = [
@@ -353,61 +454,75 @@ final class DiscordNotificationService
         ];
 
         $workspaceId = auth()->user()?->currentWorkspace()?->id;
+        $successCount = 0;
+        $errors = [];
 
-        try {
-            $response = Http::timeout(6)
-                ->asJson()
-                ->post($webhookUrl, $payload);
+        foreach ($urls as $url) {
+            try {
+                $response = Http::timeout(6)
+                    ->asJson()
+                    ->post($url, $payload);
 
-            if ($response->successful()) {
+                if ($response->successful()) {
+                    $successCount++;
+                    IntegrationDeliveryLog::query()->create([
+                        'workspace_id' => $workspaceId,
+                        'channel' => 'discord',
+                        'event' => 'test.ping',
+                        'status' => 'success',
+                        'target' => self::maskUrl($url),
+                        'summary' => 'Discord Webhook Connection Ping Test',
+                        'payload' => $payload,
+                    ]);
+                } else {
+                    $errMsg = "HTTP {$response->status()}";
+                    $errors[] = $errMsg;
+                    IntegrationDeliveryLog::query()->create([
+                        'workspace_id' => $workspaceId,
+                        'channel' => 'discord',
+                        'event' => 'test.ping',
+                        'status' => 'failed',
+                        'target' => self::maskUrl($url),
+                        'summary' => 'Discord Webhook Connection Ping Test',
+                        'payload' => $payload,
+                        'error_message' => $errMsg,
+                    ]);
+                }
+            } catch (\Throwable $e) {
+                $errors[] = $e->getMessage();
                 IntegrationDeliveryLog::query()->create([
                     'workspace_id' => $workspaceId,
                     'channel' => 'discord',
                     'event' => 'test.ping',
-                    'status' => 'success',
-                    'target' => substr($webhookUrl, 0, 32).'••••',
+                    'status' => 'failed',
+                    'target' => self::maskUrl($url),
                     'summary' => 'Discord Webhook Connection Ping Test',
                     'payload' => $payload,
+                    'error_message' => $e->getMessage(),
                 ]);
-
-                return [
-                    'success' => true,
-                    'message' => 'Test notification successfully delivered to Discord channel!',
-                ];
             }
+        }
 
-            $errMsg = "HTTP {$response->status()}";
-            IntegrationDeliveryLog::query()->create([
-                'workspace_id' => $workspaceId,
-                'channel' => 'discord',
-                'event' => 'test.ping',
-                'status' => 'failed',
-                'target' => substr($webhookUrl, 0, 32).'••••',
-                'summary' => 'Discord Webhook Connection Ping Test',
-                'payload' => $payload,
-                'error_message' => $errMsg,
-            ]);
-
+        $total = count($urls);
+        if ($successCount === $total) {
             return [
-                'success' => false,
-                'message' => "Discord returned error: {$errMsg}",
-            ];
-        } catch (\Throwable $e) {
-            IntegrationDeliveryLog::query()->create([
-                'workspace_id' => $workspaceId,
-                'channel' => 'discord',
-                'event' => 'test.ping',
-                'status' => 'failed',
-                'target' => substr($webhookUrl, 0, 32).'••••',
-                'summary' => 'Discord Webhook Connection Ping Test',
-                'payload' => $payload,
-                'error_message' => $e->getMessage(),
-            ]);
-
-            return [
-                'success' => false,
-                'message' => "Connection failed: {$e->getMessage()}",
+                'success' => true,
+                'message' => $total > 1
+                    ? "Test notification successfully delivered to all {$total} Discord channels!"
+                    : 'Test notification successfully delivered to Discord channel!',
             ];
         }
+
+        if ($successCount > 0) {
+            return [
+                'success' => true,
+                'message' => "Delivered to {$successCount} of {$total} Discord channels. Some failed: ".implode(', ', array_unique($errors)),
+            ];
+        }
+
+        return [
+            'success' => false,
+            'message' => 'Discord test delivery failed: '.implode(', ', array_unique($errors)),
+        ];
     }
 }

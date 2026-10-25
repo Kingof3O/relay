@@ -238,4 +238,3 @@ final class ExpandedFileUploadTest extends TestCase
         $this->assertDatabaseMissing('requests', ['id' => $request->id]);
     }
 }
-

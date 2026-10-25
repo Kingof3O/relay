@@ -6,6 +6,7 @@ use App\Mail\WorkRequestNotificationMail;
 use App\Models\Area;
 use App\Models\User;
 use App\Models\WorkRequest;
+use App\Services\EmailNotificationService;
 use App\Services\WorkRequestService;
 use Database\Seeders\IndependentWorkspaceSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -237,7 +238,7 @@ final class WorkRequestEmailTest extends TestCase
     public function test_mailable_can_serialize_and_unserialize_unpersisted_sample_request_without_database_lookup(): void
     {
         $owner = User::query()->where('username', 'robin')->firstOrFail();
-        $sampleReq = \App\Services\EmailNotificationService::getSampleRequest($owner);
+        $sampleReq = EmailNotificationService::getSampleRequest($owner);
 
         // Ensure sample model is not saved in database
         $this->assertFalse($sampleReq->exists);
