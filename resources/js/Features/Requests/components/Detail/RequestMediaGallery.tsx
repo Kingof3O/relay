@@ -13,6 +13,7 @@ import {
     Archive,
     Download,
     Trash2,
+    Volume2,
 } from 'lucide-react';
 
 interface RequestMediaGalleryProps {
@@ -69,7 +70,7 @@ export default function RequestMediaGallery({
                             Media & Attachments
                         </h2>
                         <p className="mt-0.5 text-[11px] text-zinc-500">
-                            Documents, PDFs, logs, archives, images, and videos · Up to 500MB
+                            Documents, PDFs, logs, archives, audio, images, and videos · Up to 64MB
                         </p>
                     </div>
                     {canUpload && (
@@ -78,7 +79,7 @@ export default function RequestMediaGallery({
                             <input
                                 type="file"
                                 multiple
-                                accept="image/*,video/*,application/pdf,text/*,application/json,application/zip,application/x-zip-compressed,.pdf,.log,.txt,.json,.zip,.csv,.doc,.docx"
+                                accept="image/*,video/*,audio/*,application/pdf,text/*,application/json,application/zip,application/x-zip-compressed,.pdf,.log,.txt,.json,.zip,.rar,.7z,.tar,.gz,.csv,.doc,.docx,.mp3,.wav,.ogg,.m4a,.aac,.flac"
                                 className="hidden"
                                 onChange={(event) => {
                                     const selected = Array.from(event.target.files ?? []);
@@ -95,6 +96,10 @@ export default function RequestMediaGallery({
                     {files.length ? (
                         files.map((file) => {
                             const nameLower = file.original_name.toLowerCase();
+                            const isAudio =
+                                file.type === 'audio' ||
+                                file.mime_type?.startsWith('audio/') ||
+                                /\.(mp3|wav|ogg|m4a|aac|flac|weba|wma|opus)$/i.test(nameLower);
                             const isPdf = file.mime_type === 'application/pdf' || nameLower.endsWith('.pdf');
                             const isCodeOrLog =
                                 nameLower.endsWith('.log') ||
@@ -108,7 +113,13 @@ export default function RequestMediaGallery({
                                 nameLower.endsWith('.zip') ||
                                 nameLower.endsWith('.tar') ||
                                 nameLower.endsWith('.gz') ||
-                                file.mime_type?.includes('zip');
+                                nameLower.endsWith('.rar') ||
+                                nameLower.endsWith('.7z') ||
+                                nameLower.endsWith('.bz2') ||
+                                nameLower.endsWith('.xz') ||
+                                file.mime_type?.includes('zip') ||
+                                file.mime_type?.includes('compressed') ||
+                                file.mime_type?.includes('archive');
 
                             return (
                                 <div
@@ -141,8 +152,57 @@ export default function RequestMediaGallery({
                                         </video>
                                     )}
 
+                                    {/* Audio Player */}
+                                    {file.processing_status === 'ready' && isAudio && file.url && (
+                                        <div className="flex flex-col justify-between p-4 bg-zinc-900/40 border-b border-white/[0.06] min-h-[110px]">
+                                            <div className="flex items-start gap-3">
+                                                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                                                    <Volume2 className="h-5 w-5" />
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <div className="flex items-center gap-1.5 flex-wrap">
+                                                        <span className="rounded bg-emerald-500/20 px-1.5 py-0.5 text-[9px] font-bold text-emerald-300 uppercase tracking-wide border border-emerald-500/30">
+                                                            AUDIO
+                                                        </span>
+                                                        <span className="text-[10px] text-zinc-500">
+                                                            {formatBytes(file.size)}
+                                                        </span>
+                                                    </div>
+                                                    <p
+                                                        className="mt-1 truncate text-xs font-medium text-zinc-200"
+                                                        title={file.original_name}
+                                                    >
+                                                        {file.original_name}
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            <div className="mt-3 flex flex-col gap-2">
+                                                <audio controls preload="metadata" className="w-full h-8 accent-emerald-500">
+                                                    <source src={file.url} type={file.mime_type || 'audio/mpeg'} />
+                                                    Your browser does not support audio playback.
+                                                </audio>
+
+                                                <div className="flex items-center justify-end gap-2">
+                                                    {file.url && (
+                                                        <a
+                                                            href={file.url}
+                                                            download={file.original_name}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[11px] font-medium text-zinc-300 transition-colors hover:border-emerald-400 hover:bg-emerald-500/10 hover:text-white"
+                                                        >
+                                                            <Download className="h-3 w-3" />
+                                                            <span>Download</span>
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
+
                                     {/* Document Card */}
-                                    {file.type === 'document' && (
+                                    {file.type !== 'image' && file.type !== 'video' && !isAudio && (
                                         <div className="flex flex-col justify-between p-4 bg-zinc-900/40 border-b border-white/[0.06] min-h-[110px]">
                                             <div className="flex items-start gap-3">
                                                 <div

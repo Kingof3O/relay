@@ -43,7 +43,7 @@ export default function RequestMediaGallery({
                             <input
                                 type="file"
                                 multiple
-                                accept="image/*,video/*"
+                                accept="image/*,video/*,audio/*,.zip,.rar,.7z,.tar,.gz,.pdf,.doc,.docx,.txt,.csv,.json,.log,.md"
                                 className="hidden"
                                 onChange={(event) => {
                                     const selected = Array.from(event.target.files ?? []);

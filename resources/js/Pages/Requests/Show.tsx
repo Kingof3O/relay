@@ -113,7 +113,21 @@ export default function Show({
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
             setRequest(data.request);
-            toast.success(`Uploaded ${files.length} file(s)`);
+
+            const results: any[] = data.results ?? [];
+            const failed = results.filter((r) => !r.success);
+            const successful = results.filter((r) => r.success);
+
+            if (failed.length > 0) {
+                const failDetails = failed
+                    .map((f) => `${f.name}: ${Object.values(f.errors || {}).flat().join(', ')}`)
+                    .join('; ');
+                toast.error(`Failed to upload ${failed.length} file(s): ${failDetails}`);
+            }
+
+            if (successful.length > 0) {
+                toast.success(`Uploaded ${successful.length} file(s)`);
+            }
         } catch (err: unknown) {
             const msg = isAxiosError(err) ? (err.response?.data?.message ?? 'Could not upload the files.') : 'Could not upload the files.';
             setError(msg);

@@ -39,7 +39,7 @@ export interface WorkspaceUser {
 export interface RequestFileItem {
     id: number;
     original_name: string;
-    type: 'image' | 'video' | 'document';
+    type: 'image' | 'video' | 'document' | 'audio';
     mime_type: string | null;
     original_mime_type?: string | null;
     size: number;

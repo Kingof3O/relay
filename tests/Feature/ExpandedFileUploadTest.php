@@ -88,6 +88,87 @@ final class ExpandedFileUploadTest extends TestCase
         ]);
     }
 
+    public function test_uploading_zip_archive_creates_ready_document_record(): void
+    {
+        Storage::fake(config('workspace.storage_disk'));
+
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $area = Area::query()->firstOrFail();
+
+        $request = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'title' => 'Zip upload test',
+            'requester_id' => $owner->id,
+        ]);
+
+        $service = app(RequestFileService::class);
+        $zipFile = UploadedFile::fake()->create('project-assets.zip', 500, 'application/zip');
+
+        $file = $service->upload($request, $owner, $zipFile);
+
+        $this->assertEquals('document', $file->type);
+        $this->assertEquals(RequestFileProcessingStatus::Ready, $file->processing_status);
+        $this->assertNotNull($file->stored_path);
+        Storage::disk(config('workspace.storage_disk'))->assertExists($file->stored_path);
+
+        // Download via HTTP
+        $response = $this->actingAs($owner)->get(route('requests.files.show', [$request, $file]));
+        $response->assertOk();
+
+        // Also test controller HTTP endpoint with octet-stream mime for .zip
+        $rawZip = UploadedFile::fake()->create('archive.zip', 300, 'application/octet-stream');
+        $httpRes = $this->actingAs($owner)->postJson(route('requests.files.store', $request), [
+            'files' => [$rawZip],
+        ]);
+        $httpRes->assertOk();
+        $this->assertDatabaseHas('request_files', [
+            'request_id' => $request->id,
+            'original_name' => 'archive.zip',
+            'type' => 'document',
+        ]);
+    }
+
+    public function test_uploading_audio_file_creates_ready_audio_record_and_plays_via_http(): void
+    {
+        Storage::fake(config('workspace.storage_disk'));
+
+        $owner = User::query()->where('username', 'robin')->firstOrFail();
+        $area = Area::query()->firstOrFail();
+
+        $request = WorkRequest::query()->create([
+            'area_id' => $area->id,
+            'title' => 'Audio upload test',
+            'requester_id' => $owner->id,
+        ]);
+
+        $service = app(RequestFileService::class);
+        $mp3File = UploadedFile::fake()->create('voice-note.mp3', 250, 'audio/mpeg');
+
+        $file = $service->upload($request, $owner, $mp3File);
+
+        $this->assertEquals('audio', $file->type);
+        $this->assertEquals(RequestFileProcessingStatus::Ready, $file->processing_status);
+        $this->assertNotNull($file->stored_path);
+        Storage::disk(config('workspace.storage_disk'))->assertExists($file->stored_path);
+
+        // Can stream / play audio via HTTP
+        $response = $this->actingAs($owner)->get(route('requests.files.show', [$request, $file]));
+        $response->assertOk();
+        $this->assertStringContainsString('audio', $response->headers->get('Content-Type') ?? '');
+
+        // Test controller HTTP endpoint for audio (wav)
+        $wavFile = UploadedFile::fake()->create('sound-effect.wav', 120, 'audio/wav');
+        $httpRes = $this->actingAs($owner)->postJson(route('requests.files.store', $request), [
+            'files' => [$wavFile],
+        ]);
+        $httpRes->assertOk();
+        $this->assertDatabaseHas('request_files', [
+            'request_id' => $request->id,
+            'original_name' => 'sound-effect.wav',
+            'type' => 'audio',
+        ]);
+    }
+
     public function test_deleting_file_attachment_removes_record_and_purges_stored_file_from_disk(): void
     {
         Storage::fake(config('workspace.storage_disk'));

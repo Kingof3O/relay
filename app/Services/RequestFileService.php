@@ -31,7 +31,9 @@ final class RequestFileService
             ]);
         }
 
-        $mime = (string) ($uploadedFile->getMimeType() ?: $uploadedFile->getClientMimeType());
+        $detectedMime = (string) ($uploadedFile->getMimeType() ?: '');
+        $clientMime = (string) ($uploadedFile->getClientMimeType() ?: '');
+        $mime = $detectedMime !== '' && $detectedMime !== 'application/octet-stream' ? $detectedMime : ($clientMime ?: $detectedMime);
         $extension = strtolower((string) ($uploadedFile->getClientOriginalExtension() ?: pathinfo($uploadedFile->getClientOriginalName(), PATHINFO_EXTENSION)));
 
         $documentMimes = [
@@ -40,36 +42,107 @@ final class RequestFileService
             'application/json',
             'application/zip',
             'application/x-zip-compressed',
+            'application/x-zip',
+            'application/x-rar-compressed',
+            'application/vnd.rar',
+            'application/x-7z-compressed',
+            'application/x-tar',
+            'application/gzip',
+            'application/x-gzip',
+            'application/x-bzip2',
             'text/csv',
             'text/markdown',
             'text/x-log',
             'application/msword',
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.ms-excel',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.ms-powerpoint',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
             'application/xml',
             'text/xml',
+            'text/yaml',
+            'application/x-yaml',
         ];
 
-        $documentExtensions = ['pdf', 'log', 'txt', 'text', 'json', 'zip', 'csv', 'md', 'markdown', 'doc', 'docx', 'xml'];
+        $documentExtensions = [
+            'pdf', 'log', 'txt', 'text', 'json', 'zip', 'rar', '7z', 'tar', 'gz', 'tgz', 'bz2', 'xz',
+            'csv', 'md', 'markdown', 'doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'xml', 'yaml', 'yml',
+        ];
+
+        $audioExtensions = [
+            'mp3', 'wav', 'ogg', 'm4a', 'aac', 'flac', 'weba', 'wma', 'opus', 'aiff', 'aif', 'mid', 'midi',
+        ];
+
+        $audioMimes = [
+            'audio/mpeg',
+            'audio/mp3',
+            'audio/wav',
+            'audio/x-wav',
+            'audio/wave',
+            'audio/ogg',
+            'audio/x-m4a',
+            'audio/m4a',
+            'audio/aac',
+            'audio/flac',
+            'audio/x-flac',
+            'audio/webm',
+            'audio/x-ms-wma',
+            'audio/midi',
+            'audio/x-midi',
+            'audio/aiff',
+            'audio/x-aiff',
+            'audio/opus',
+        ];
 
         if (str_starts_with($mime, 'image/')) {
             $type = 'image';
         } elseif (str_starts_with($mime, 'video/')) {
             $type = 'video';
+        } elseif (str_starts_with($mime, 'audio/') || in_array($mime, $audioMimes, true) || in_array($extension, $audioExtensions, true)) {
+            $type = 'audio';
+            if (! str_starts_with($mime, 'audio/')) {
+                $mime = match ($extension) {
+                    'mp3' => 'audio/mpeg',
+                    'wav' => 'audio/wav',
+                    'ogg' => 'audio/ogg',
+                    'm4a' => 'audio/mp4',
+                    'aac' => 'audio/aac',
+                    'flac' => 'audio/flac',
+                    'weba' => 'audio/webm',
+                    'opus' => 'audio/opus',
+                    default => 'audio/mpeg',
+                };
+            }
         } elseif (in_array($mime, $documentMimes, true) || in_array($extension, $documentExtensions, true)) {
             $type = 'document';
+            if ($mime === 'application/octet-stream' || blank($mime)) {
+                $mime = match ($extension) {
+                    'zip' => 'application/zip',
+                    'rar' => 'application/x-rar-compressed',
+                    '7z' => 'application/x-7z-compressed',
+                    'tar' => 'application/x-tar',
+                    'gz', 'tgz' => 'application/gzip',
+                    'pdf' => 'application/pdf',
+                    'json' => 'application/json',
+                    'csv' => 'text/csv',
+                    'txt', 'log' => 'text/plain',
+                    default => 'application/octet-stream',
+                };
+            }
         } else {
             $type = null;
         }
 
         if ($type === null) {
             throw ValidationException::withMessages([
-                'file' => 'Only image, video, and document files are supported.',
+                'file' => 'Only image, video, audio, and document/archive files are supported.',
             ]);
         }
 
         $diskName = config('workspace.storage_disk');
 
-        if ($type === 'document') {
+        if ($type === 'document' || $type === 'audio') {
             $token = (string) str()->uuid();
             $extSuffix = $extension !== '' ? ".{$extension}" : '';
             $destinationPath = "requests/{$request->id}/{$token}{$extSuffix}";
@@ -84,7 +157,7 @@ final class RequestFileService
                 'stored_path' => $destinationPath,
                 'mime_type' => $mime,
                 'original_mime_type' => $mime,
-                'type' => 'document',
+                'type' => $type,
                 'size' => (int) ($uploadedFile->getSize() ?: 0),
                 'processing_status' => RequestFileProcessingStatus::Ready,
             ]);
@@ -94,7 +167,7 @@ final class RequestFileService
                 $uploader,
                 'file_uploaded',
                 "{$storedFile->original_name} attached.",
-                ['file_id' => $storedFile->id, 'type' => 'document'],
+                ['file_id' => $storedFile->id, 'type' => $type],
             );
 
             return $storedFile;

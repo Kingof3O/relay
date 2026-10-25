@@ -115,9 +115,22 @@ export default function SingleRequestForm({
                 if (files.length > 0) {
                     const formData = new FormData();
                     files.forEach((file) => formData.append('files[]', file));
-                    await axios.post(route('requests.files.store', first.request.id), formData, {
-                        headers: { 'Content-Type': 'multipart/form-data' },
-                    });
+                    try {
+                        const fileRes = await axios.post(route('requests.files.store', first.request.id), formData, {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                        });
+                        const fileResults: any[] = fileRes.data.results ?? [];
+                        const failed = fileResults.filter((r) => !r.success);
+                        if (failed.length > 0) {
+                            const failDetails = failed
+                                .map((f) => `${f.name}: ${Object.values(f.errors || {}).flat().join(', ')}`)
+                                .join('; ');
+                            notifyError('Some attachments failed to upload', failDetails);
+                        }
+                    } catch (fileErr) {
+                        console.error('Failed to attach files to request', fileErr);
+                        notifyError('Attachments could not be uploaded');
+                    }
                 }
 
                 notifySuccess(
@@ -404,7 +417,7 @@ export default function SingleRequestForm({
             <div>
                 <div className="flex items-center justify-between">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-zinc-400">
-                        Visual Attachments
+                        Attachments
                     </label>
                     <span className="text-[10px] text-zinc-500">Tip: Paste screenshot with ⌘V</span>
                 </div>
@@ -415,7 +428,7 @@ export default function SingleRequestForm({
                         <input
                             type="file"
                             multiple
-                            accept="image/*,video/*"
+                            accept="image/*,video/*,audio/*,.zip,.rar,.7z,.tar,.gz,.pdf,.doc,.docx,.txt,.csv,.json,.log,.md"
                             className="hidden"
                             onChange={(e) => setFiles((prev) => [...prev, ...Array.from(e.target.files ?? [])])}
                         />

@@ -27,6 +27,10 @@ import {
     User as UserIcon,
     Calendar,
     ChevronDown,
+    Volume2,
+    Archive,
+    FileText,
+    Video,
 } from 'lucide-react';
 
 interface QuickViewDrawerProps {
@@ -306,7 +310,21 @@ export default function QuickViewDrawer({
             };
             setRequest(updated);
             if (onUpdated) onUpdated(updated);
-            toast.success(`Uploaded ${files.length} file(s)`);
+
+            const results: any[] = res.data.results ?? [];
+            const failed = results.filter((r) => !r.success);
+            const successful = results.filter((r) => r.success);
+
+            if (failed.length > 0) {
+                const failDetails = failed
+                    .map((f) => `${f.name}: ${Object.values(f.errors || {}).flat().join(', ')}`)
+                    .join('; ');
+                toast.error(`Failed to upload ${failed.length} file(s): ${failDetails}`);
+            }
+
+            if (successful.length > 0) {
+                toast.success(`Uploaded ${successful.length} file(s)`);
+            }
         } catch (err: any) {
             toast.error(err?.response?.data?.message ?? 'Could not upload files');
         } finally {
@@ -685,6 +703,7 @@ export default function QuickViewDrawer({
                                             <input
                                                 type="file"
                                                 multiple
+                                                accept="image/*,video/*,audio/*,.zip,.rar,.7z,.tar,.gz,.pdf,.doc,.docx,.txt,.csv,.json,.log,.md"
                                                 className="hidden"
                                                 onChange={(e) => uploadFiles(Array.from(e.target.files ?? []))}
                                             />
@@ -694,13 +713,34 @@ export default function QuickViewDrawer({
                                     {request.files && request.files.length > 0 ? (
                                         <div className="grid grid-cols-3 gap-2">
                                             {request.files.map((file: RequestFileItem) => {
-                                                const isImage = file.mime_type?.startsWith('image/');
+                                                const nameLower = (file.original_name || '').toLowerCase();
+                                                const isImage = file.mime_type?.startsWith('image/') || file.type === 'image';
+                                                const isAudio =
+                                                    file.type === 'audio' ||
+                                                    file.mime_type?.startsWith('audio/') ||
+                                                    /\.(mp3|wav|ogg|m4a|aac|flac|weba|wma|opus)$/i.test(nameLower);
+                                                const isVideo = file.type === 'video' || file.mime_type?.startsWith('video/') || /\.(mp4|mov|webm|mkv)$/i.test(nameLower);
+                                                const isArchive =
+                                                    file.mime_type?.includes('zip') ||
+                                                    file.mime_type?.includes('compressed') ||
+                                                    /\.(zip|rar|7z|tar|gz|bz2|xz)$/i.test(nameLower);
+                                                const isPdf = file.mime_type === 'application/pdf' || nameLower.endsWith('.pdf');
+
+                                                const handleClick = () => {
+                                                    if (isImage && file.url) {
+                                                        setLightboxSrc(file.url);
+                                                    } else if (file.url) {
+                                                        window.open(file.url, '_blank');
+                                                    }
+                                                };
+
                                                 return (
                                                     <div
                                                         key={file.id}
-                                                        onClick={() => isImage && file.url && setLightboxSrc(file.url)}
+                                                        onClick={handleClick}
+                                                        title={file.url ? `${file.original_name} (Click to open / download)` : file.original_name}
                                                         className={`group relative rounded-lg border border-zinc-800 bg-zinc-850 overflow-hidden p-2 text-left transition-colors hover:border-zinc-700 ${
-                                                            isImage ? 'cursor-pointer' : ''
+                                                            file.url ? 'cursor-pointer hover:border-violet-500/50 hover:bg-zinc-800/80' : ''
                                                         }`}
                                                     >
                                                         {isImage ? (
@@ -711,8 +751,28 @@ export default function QuickViewDrawer({
                                                                     className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-150"
                                                                 />
                                                             </div>
+                                                        ) : isAudio ? (
+                                                            <div className="h-16 w-full rounded bg-emerald-950/30 border border-emerald-500/20 mb-1.5 flex flex-col items-center justify-center text-emerald-400 group-hover:bg-emerald-900/40 transition-colors">
+                                                                <Volume2 className="h-6 w-6" />
+                                                                <span className="text-[9px] font-semibold uppercase tracking-wider text-emerald-400/80 mt-1">Audio</span>
+                                                            </div>
+                                                        ) : isArchive ? (
+                                                            <div className="h-16 w-full rounded bg-amber-950/30 border border-amber-500/20 mb-1.5 flex flex-col items-center justify-center text-amber-400 group-hover:bg-amber-900/40 transition-colors">
+                                                                <Archive className="h-6 w-6" />
+                                                                <span className="text-[9px] font-semibold uppercase tracking-wider text-amber-400/80 mt-1">Archive</span>
+                                                            </div>
+                                                        ) : isVideo ? (
+                                                            <div className="h-16 w-full rounded bg-indigo-950/30 border border-indigo-500/20 mb-1.5 flex flex-col items-center justify-center text-indigo-400 group-hover:bg-indigo-900/40 transition-colors">
+                                                                <Video className="h-6 w-6" />
+                                                                <span className="text-[9px] font-semibold uppercase tracking-wider text-indigo-400/80 mt-1">Video</span>
+                                                            </div>
+                                                        ) : isPdf ? (
+                                                            <div className="h-16 w-full rounded bg-rose-950/30 border border-rose-500/20 mb-1.5 flex flex-col items-center justify-center text-rose-400 group-hover:bg-rose-900/40 transition-colors">
+                                                                <FileText className="h-6 w-6" />
+                                                                <span className="text-[9px] font-semibold uppercase tracking-wider text-rose-400/80 mt-1">PDF</span>
+                                                            </div>
                                                         ) : (
-                                                            <div className="h-16 w-full rounded bg-zinc-900 mb-1.5 flex items-center justify-center text-zinc-500">
+                                                            <div className="h-16 w-full rounded bg-zinc-900 mb-1.5 flex items-center justify-center text-zinc-400 group-hover:text-zinc-200 transition-colors">
                                                                 <Paperclip className="h-5 w-5" />
                                                             </div>
                                                         )}

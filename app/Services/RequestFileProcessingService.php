@@ -45,7 +45,7 @@ final class RequestFileProcessingService
                     'duration' => null,
                     'source_path' => null,
                 ])->save();
-            } else {
+            } elseif ($file->type === 'video') {
                 $storedPath = "{$directory}/{$token}.mp4";
                 $previewPath = "{$directory}/{$token}.jpg";
                 [$storedPath, $previewPath, $width, $height, $duration] = $this->processVideo(
@@ -66,6 +66,13 @@ final class RequestFileProcessingService
                     'duration' => $duration,
                     'source_path' => null,
                 ])->save();
+            } else {
+                $file->forceFill([
+                    'processing_status' => RequestFileProcessingStatus::Ready,
+                    'processing_error' => null,
+                ])->save();
+
+                return;
             }
 
             $disk->delete($sourcePath);
