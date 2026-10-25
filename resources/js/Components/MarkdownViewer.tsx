@@ -190,10 +190,23 @@ export default function MarkdownViewer({
         const newLines = [...rawLines];
         const targetLine = newLines[lineIndex];
 
-        if (currentChecked) {
-            newLines[lineIndex] = targetLine.replace(/- \[[xX]\]/, '- [ ]');
-        } else {
-            newLines[lineIndex] = targetLine.replace(/- \[ \]/, '- [x]');
+        // 1. Dash checklist: `- [x]` or `- [ ]`
+        if (/^(\s*)[-*]\s*\[([ xX])\]/.test(targetLine)) {
+            newLines[lineIndex] = currentChecked
+                ? targetLine.replace(/^(\s*[-*]\s*)\[[xX]\]\s*/, '$1[ ] ')
+                : targetLine.replace(/^(\s*[-*]\s*)\[ \]\s*/, '$1[x] ');
+        }
+        // 2. Numbered checklist: `1. [x]` or `1. [ ]`
+        else if (/^(\s*\d+[.)]\s*)\[([ xX])\]/.test(targetLine)) {
+            newLines[lineIndex] = currentChecked
+                ? targetLine.replace(/^(\s*\d+[.)]\s*)\[[xX]\]\s*/, '$1[ ] ')
+                : targetLine.replace(/^(\s*\d+[.)]\s*)\[ \]\s*/, '$1[x] ');
+        }
+        // 3. Regular numbered list: `1. Item text`
+        else if (/^(\s*)(\d+[.)])\s+(.*)$/.test(targetLine)) {
+            newLines[lineIndex] = currentChecked
+                ? targetLine.replace(/^(\s*\d+[.)])\s+/, '$1 [ ] ')
+                : targetLine.replace(/^(\s*\d+[.)])\s+/, '$1 [x] ');
         }
 
         onToggleChecklist(newLines.join('\n'));
@@ -277,38 +290,57 @@ export default function MarkdownViewer({
         });
     }
 
+    let listCounter = 0;
+
     return (
         <div className={`space-y-1.5 text-xs leading-relaxed text-zinc-300 select-text ${className}`}>
             {blocks.map((block, idx) => {
                 if (block.type === 'code') {
+                    listCounter = 0;
                     return <CodeBlock key={idx} code={block.code} language={block.language} />;
                 }
 
                 const { line, originalIndex } = block;
                 const trimmed = line.trim();
 
-                // Checklist item: `- [ ]` or `- [x]`
-                const checkMatch = line.match(/^(\s*)-\s*\[([ xX])\]\s*(.*)$/);
+                // Reset list counter on empty lines or headings
+                if (!trimmed || trimmed.startsWith('#')) {
+                    listCounter = 0;
+                }
+
+                // 1. Dash checklist item: `- [ ]` or `- [x]` or `* [ ]` or `* [x]`
+                const checkMatch = line.match(/^(\s*)[-*]\s*\[([ xX])\]\s*(.*)$/);
                 if (checkMatch) {
+                    listCounter = 0;
                     const isChecked = checkMatch[2].toLowerCase() === 'x';
                     const itemText = checkMatch[3];
 
                     return (
                         <div
                             key={idx}
-                            className="flex items-start gap-2.5 py-0.5 group/item cursor-pointer"
-                            onClick={() => handleCheckboxToggle(originalIndex, isChecked)}
+                            className="group/item flex items-start gap-2.5 rounded-lg py-1 px-1.5 -mx-1.5 transition-colors hover:bg-white/[0.03]"
                         >
-                            <input
-                                type="checkbox"
-                                checked={isChecked}
-                                onChange={() => handleCheckboxToggle(originalIndex, isChecked)}
-                                className="mt-0.5 h-3.5 w-3.5 rounded border-zinc-700 bg-zinc-900 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 transition-colors"
-                            />
-                            <span
-                                className={`flex-1 transition-colors ${
+                            <button
+                                type="button"
+                                disabled={!onToggleChecklist}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCheckboxToggle(originalIndex, isChecked);
+                                }}
+                                className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all ${
                                     isChecked
-                                        ? 'line-through text-zinc-500'
+                                        ? 'border-emerald-500/60 bg-emerald-500/20 text-emerald-400 shadow-sm shadow-emerald-500/20'
+                                        : 'border-white/20 bg-white/[0.04] text-transparent hover:border-violet-400 hover:bg-violet-500/10'
+                                } ${onToggleChecklist ? 'cursor-pointer' : 'cursor-default'}`}
+                                title={isChecked ? 'Mark incomplete' : 'Mark complete / correct'}
+                            >
+                                <Check className={`h-3 w-3 stroke-[3] transition-transform ${isChecked ? 'scale-100' : 'scale-0'}`} />
+                            </button>
+                            <span
+                                onClick={() => onToggleChecklist && handleCheckboxToggle(originalIndex, isChecked)}
+                                className={`flex-1 transition-all ${onToggleChecklist ? 'cursor-pointer' : ''} ${
+                                    isChecked
+                                        ? 'line-through text-zinc-500 selection:bg-zinc-800'
                                         : 'text-zinc-200 group-hover/item:text-white'
                                 }`}
                             >
@@ -318,17 +350,91 @@ export default function MarkdownViewer({
                     );
                 }
 
-                // Numbered list item: `1. ` or `1) ` or `1.`
+                // 2. Numbered checklist item: `1. [ ]` or `1. [x]`
+                const numCheckMatch = line.match(/^(\s*)(\d+)[.)]\s*\[([ xX])\]\s*(.*)$/);
+                if (numCheckMatch) {
+                    listCounter++;
+                    const parsedNum = parseInt(numCheckMatch[2], 10);
+                    const displayNum = parsedNum > 1 && parsedNum >= listCounter ? parsedNum : listCounter;
+                    const isChecked = numCheckMatch[3].toLowerCase() === 'x';
+                    const itemText = numCheckMatch[4];
+
+                    return (
+                        <div
+                            key={idx}
+                            className="group/item flex items-start gap-2.5 rounded-lg py-1 px-1.5 -mx-1.5 transition-colors hover:bg-white/[0.03]"
+                        >
+                            <button
+                                type="button"
+                                disabled={!onToggleChecklist}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCheckboxToggle(originalIndex, isChecked);
+                                }}
+                                className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all ${
+                                    isChecked
+                                        ? 'border-emerald-500/60 bg-emerald-500/20 text-emerald-400 shadow-sm shadow-emerald-500/20'
+                                        : 'border-white/20 bg-white/[0.04] text-transparent hover:border-violet-400 hover:bg-violet-500/10'
+                                } ${onToggleChecklist ? 'cursor-pointer' : 'cursor-default'}`}
+                                title={isChecked ? 'Mark incomplete' : 'Mark complete / correct'}
+                            >
+                                <Check className={`h-3 w-3 stroke-[3] transition-transform ${isChecked ? 'scale-100' : 'scale-0'}`} />
+                            </button>
+                            <span className={`font-mono text-[11px] font-semibold shrink-0 min-w-[1.25rem] transition-colors ${
+                                isChecked ? 'text-zinc-500 line-through' : 'text-violet-400'
+                            }`}>
+                                {displayNum}.
+                            </span>
+                            <span
+                                onClick={() => onToggleChecklist && handleCheckboxToggle(originalIndex, isChecked)}
+                                className={`flex-1 transition-all ${onToggleChecklist ? 'cursor-pointer' : ''} ${
+                                    isChecked
+                                        ? 'line-through text-zinc-500 selection:bg-zinc-800'
+                                        : 'text-zinc-200 group-hover/item:text-white'
+                                }`}
+                            >
+                                {itemText ? formatInline(itemText) : ''}
+                            </span>
+                        </div>
+                    );
+                }
+
+                // 3. Regular numbered list item: `1. ` or `1) `
                 const numberedMatch = trimmed.match(/^(\d+)[.)]\s*(.*)$/);
                 if (numberedMatch) {
-                    const num = numberedMatch[1];
+                    listCounter++;
+                    const parsedNum = parseInt(numberedMatch[1], 10);
+                    const displayNum = parsedNum > 1 && parsedNum >= listCounter ? parsedNum : listCounter;
                     const itemText = numberedMatch[2];
+
                     return (
-                        <div key={idx} className="flex items-start gap-2 pl-1 py-0.5">
+                        <div
+                            key={idx}
+                            className="group/item flex items-start gap-2.5 rounded-lg py-1 px-1.5 -mx-1.5 transition-colors hover:bg-white/[0.03]"
+                        >
+                            <button
+                                type="button"
+                                disabled={!onToggleChecklist}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleCheckboxToggle(originalIndex, false);
+                                }}
+                                className={`mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all border-white/20 bg-white/[0.04] text-transparent hover:border-violet-400 hover:bg-violet-500/10 ${
+                                    onToggleChecklist ? 'cursor-pointer' : 'cursor-default'
+                                }`}
+                                title="Mark complete / correct"
+                            >
+                                <Check className="h-3 w-3 stroke-[3] scale-0 transition-transform" />
+                            </button>
                             <span className="font-mono text-[11px] font-semibold text-violet-400 shrink-0 min-w-[1.25rem]">
-                                {num}.
+                                {displayNum}.
                             </span>
-                            <span className="flex-1 text-zinc-200">
+                            <span
+                                onClick={() => onToggleChecklist && handleCheckboxToggle(originalIndex, false)}
+                                className={`flex-1 text-zinc-200 transition-colors group-hover/item:text-white ${
+                                    onToggleChecklist ? 'cursor-pointer' : ''
+                                }`}
+                            >
                                 {itemText ? formatInline(itemText) : ''}
                             </span>
                         </div>
@@ -337,10 +443,11 @@ export default function MarkdownViewer({
 
                 // Bullet point: `- ` or `* `
                 if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+                    listCounter = 0;
                     return (
-                        <div key={idx} className="flex items-start gap-2 pl-1 py-0.2">
+                        <div key={idx} className="flex items-start gap-2 pl-1 py-0.5">
                             <span className="h-1.5 w-1.5 rounded-full bg-zinc-500 mt-1.5 shrink-0" />
-                            <span>{formatInline(trimmed.slice(2))}</span>
+                            <span className="text-zinc-200">{formatInline(trimmed.slice(2))}</span>
                         </div>
                     );
                 }
@@ -351,6 +458,24 @@ export default function MarkdownViewer({
                         <h4 key={idx} className="mt-2 text-xs font-bold text-zinc-100 uppercase tracking-wider">
                             {trimmed.slice(4)}
                         </h4>
+                    );
+                }
+
+                // Heading 2
+                if (trimmed.startsWith('## ')) {
+                    return (
+                        <h3 key={idx} className="mt-2.5 text-sm font-bold text-zinc-100 tracking-wide">
+                            {trimmed.slice(3)}
+                        </h3>
+                    );
+                }
+
+                // Heading 1
+                if (trimmed.startsWith('# ')) {
+                    return (
+                        <h2 key={idx} className="mt-3 text-base font-bold text-white tracking-wide">
+                            {trimmed.slice(2)}
+                        </h2>
                     );
                 }
 
@@ -375,11 +500,41 @@ export default function MarkdownViewer({
  */
 export function getChecklistStats(content?: string | null) {
     if (!content) return null;
-    const matches = content.match(/- \[[ xX]\]/g);
-    if (!matches || matches.length === 0) return null;
 
-    const total = matches.length;
-    const completed = matches.filter((m) => m.toLowerCase().includes('x')).length;
+    const normalized = content.includes('\n')
+        ? content
+        : content.replace(/(?<=\S)\s+(\d+\.)/g, '\n$1');
+    const lines = normalized.split('\n').map((l) => l.trim()).filter(Boolean);
+
+    let total = 0;
+    let completed = 0;
+
+    for (const line of lines) {
+        // Dash checklist: `- [x]` or `- [ ]`
+        const dashMatch = line.match(/^[-*]\s*\[([ xX])\]/);
+        if (dashMatch) {
+            total++;
+            if (dashMatch[1].toLowerCase() === 'x') completed++;
+            continue;
+        }
+
+        // Numbered checklist: `1. [x]` or `1. [ ]`
+        const numCheckMatch = line.match(/^\d+[.)]\s*\[([ xX])\]/);
+        if (numCheckMatch) {
+            total++;
+            if (numCheckMatch[1].toLowerCase() === 'x') completed++;
+            continue;
+        }
+
+        // Regular numbered item: `1. `
+        const regularNumMatch = line.match(/^\d+[.)]\s+(.+)$/);
+        if (regularNumMatch) {
+            total++;
+            continue;
+        }
+    }
+
+    if (total === 0) return null;
     const percentage = Math.round((completed / total) * 100);
 
     return { completed, total, percentage };

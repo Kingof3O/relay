@@ -174,11 +174,17 @@ export default function RequestCard({
                         {descriptionPoints && descriptionPoints.length > 0 && (
                             descriptionPoints.length > 1 ? (
                                 <div className="mt-2 space-y-1 text-[11px] leading-relaxed text-zinc-400">
-                                    {descriptionPoints.slice(0, 3).map((pt, i) => (
-                                        <div key={i} className="flex items-start gap-1.5 min-w-0">
-                                            <span className="truncate flex-1 text-zinc-300/90">{pt}</span>
-                                        </div>
-                                    ))}
+                                    {descriptionPoints.slice(0, 3).map((pt, i) => {
+                                        const isPtChecked = /\[[xX]\]/.test(pt);
+                                        const cleanPt = pt.replace(/^(\s*(?:\d+[.)]|[-*])\s*)\[[ xX]\]\s*/, '$1');
+                                        return (
+                                            <div key={i} className="flex items-start gap-1.5 min-w-0">
+                                                <span className={`truncate flex-1 ${isPtChecked ? 'line-through text-zinc-500' : 'text-zinc-300/90'}`}>
+                                                    {cleanPt}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
                                     {descriptionPoints.length > 3 && (
                                         <span className="text-[10px] text-zinc-500 font-mono">
                                             +{descriptionPoints.length - 3} more points

@@ -203,6 +203,35 @@ export default function QuickViewDrawer({
             const lineStart = val.lastIndexOf('\n', pos - 1) + 1;
             const currentLine = val.slice(lineStart, pos);
 
+            // Match numbered checklist: `1. [ ] ` or `1. [x] `
+            const numCheckMatch = currentLine.match(/^(\s*)(\d+)\.\s*\[([ xX])?\]\s*(.*)$/);
+            if (numCheckMatch) {
+                e.preventDefault();
+                const indent = numCheckMatch[1];
+                const currentNum = parseInt(numCheckMatch[2], 10);
+                const itemText = numCheckMatch[4];
+
+                if (!itemText.trim()) {
+                    const before = val.slice(0, lineStart);
+                    const after = val.slice(pos);
+                    setDescriptionDraft(`${before}${after}`);
+                    setTimeout(() => {
+                        textarea.selectionStart = textarea.selectionEnd = lineStart;
+                    }, 0);
+                    return;
+                }
+
+                const nextPrefix = `\n${indent}${currentNum + 1}. [ ] `;
+                const before = val.slice(0, pos);
+                const after = val.slice(pos);
+                setDescriptionDraft(`${before}${nextPrefix}${after}`);
+                setTimeout(() => {
+                    const newPos = pos + nextPrefix.length;
+                    textarea.selectionStart = textarea.selectionEnd = newPos;
+                }, 0);
+                return;
+            }
+
             // Match numbered list: `1. ` or `1.`
             const numMatch = currentLine.match(/^(\s*)(\d+)\.\s*(.*)$/);
             if (numMatch) {

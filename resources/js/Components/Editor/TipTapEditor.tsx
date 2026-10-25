@@ -64,8 +64,8 @@ function markdownToHtml(md: string): string {
             continue;
         }
 
-        // Task items: - [ ] or - [x]
-        const taskMatch = line.match(/^(\s*)-\s*\[([ xX])\]\s*(.*)$/);
+        // Task items: - [ ] or - [x] or 1. [ ] or 1. [x]
+        const taskMatch = line.match(/^(\s*)(?:[-*]|\d+[.)])\s*\[([ xX])\]\s*(.*)$/);
         if (taskMatch) {
             if (!inTaskList) {
                 inTaskList = true;
