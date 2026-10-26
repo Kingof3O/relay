@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Enums\RequestStatus;
 use App\Events\WorkRequestCommented;
+use App\Events\WorkRequestCreated;
+use App\Events\WorkRequestDeleted;
 use App\Events\WorkRequestMoved;
 use App\Http\Requests\WorkRequest\BulkWorkRequestRequest;
 use App\Jobs\DispatchOutgoingWebhook;
@@ -66,6 +68,8 @@ final class WorkRequestService
             if (($request->priority?->value ?? (string) $request->priority) === 'urgent' || $request->is_blocked) {
                 DispatchOutgoingWebhook::dispatch($request->id)->afterCommit();
             }
+
+            WorkRequestCreated::dispatch($request, $actor->id);
 
             return $request;
         });
@@ -249,8 +253,10 @@ final class WorkRequestService
         SendDiscordNotification::dispatch($request->id, $payload)->afterCommit();
     }
 
-    public function delete(WorkRequest $request, RequestFileService $fileService): void
+    public function delete(WorkRequest $request, RequestFileService $fileService, ?int $actorId = null): void
     {
+        $requestId = $request->id;
+        $workspaceId = $request->workspace_id;
         $request->loadMissing('files');
 
         DB::transaction(function () use ($request, $fileService): void {
@@ -260,6 +266,8 @@ final class WorkRequestService
 
             $request->forceDelete();
         });
+
+        WorkRequestDeleted::dispatch($requestId, $workspaceId, $actorId);
     }
 
     /**

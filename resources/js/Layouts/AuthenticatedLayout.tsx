@@ -5,7 +5,7 @@ import { NotificationPopover } from '@/Features/Notifications';
 import { Link, router, usePage } from '@inertiajs/react';
 import { Search, Plus, Menu } from 'lucide-react';
 import { PropsWithChildren, ReactNode, useEffect, useState } from 'react';
-import { Toaster } from 'sonner';
+import { toast, Toaster } from 'sonner';
 
 import ShortcutsModal from '@/Components/ShortcutsModal';
 
@@ -14,6 +14,7 @@ export default function Authenticated({
     children,
 }: PropsWithChildren<{ header?: ReactNode }>) {
     const props = usePage().props as any;
+    const authUser = props.auth?.user;
     const projects = props.workspaceProjects ?? props.projects ?? [];
     const users = props.users ?? [];
 
@@ -31,6 +32,62 @@ export default function Authenticated({
         const timer = setInterval(updateTime, 10000);
         return () => clearInterval(timer);
     }, []);
+
+    // Real-time private notification channel for authenticated user
+    useEffect(() => {
+        const echo = (window as unknown as { Echo?: any }).Echo;
+        if (!echo || !authUser?.id) return;
+
+        try {
+            const channelName = `App.Models.User.${authUser.id}`;
+            const channel = echo.private(channelName);
+            const handledIds = new Set<string>();
+
+            const handleNotification = (notification: any) => {
+                const notifId = String(
+                    notification?.id ||
+                    notification?.data?.id ||
+                    `${Date.now()}-${Math.random()}`
+                );
+                if (handledIds.has(notifId)) return;
+                handledIds.add(notifId);
+                setTimeout(() => handledIds.delete(notifId), 5000);
+
+                const message =
+                    notification?.message ||
+                    notification?.data?.message ||
+                    'New notification';
+                const targetUrl =
+                    notification?.url ||
+                    notification?.data?.url;
+
+                toast.info(message, {
+                    action: targetUrl
+                        ? {
+                              label: 'View',
+                              onClick: () => router.visit(targetUrl),
+                          }
+                        : undefined,
+                });
+
+                const eventDetail = { detail: notification };
+                window.dispatchEvent(new CustomEvent('notification-received', eventDetail));
+                window.dispatchEvent(new CustomEvent('relay:notification-received', eventDetail));
+            };
+
+            channel.notification(handleNotification);
+            channel.listen(
+                '.Illuminate\\Notifications\\Events\\BroadcastNotificationCreated',
+                handleNotification
+            );
+
+            return () => {
+                echo.leave(channelName);
+            };
+        } catch {
+            // Graceful fallback
+        }
+    }, [authUser?.id]);
 
     // Global keyboard shortcuts: 'C' (Create), '?' (Help), and 'G' navigation sequence
     useEffect(() => {

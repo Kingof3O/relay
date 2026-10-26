@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from 'react';
-import { WorkspaceProject, WorkspaceUser } from '@/types/workspace';
+import { WorkspaceProject, WorkspaceUser, WorkRequestCard } from '@/types/workspace';
 import axios, { isAxiosError } from 'axios';
 import { notifySuccess, notifyError } from '@/lib/toast';
 import {
@@ -14,7 +14,7 @@ export interface SingleRequestFormProps {
     projects: WorkspaceProject[];
     users: WorkspaceUser[];
     onClose: () => void;
-    onFinished: () => void;
+    onFinished: (request?: WorkRequestCard) => void;
     show?: boolean;
 }
 
@@ -138,7 +138,7 @@ export default function SingleRequestForm({
                     `#REQ-${first.request.id}: ${title.trim().slice(0, 45)}`
                 );
                 resetQuickForm();
-                onFinished();
+                onFinished(first.request);
                 onClose();
             } else {
                 const err = first?.errors ? Object.values(first.errors).flat().join(', ') : 'Failed to create request.';

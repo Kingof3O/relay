@@ -82,6 +82,7 @@ export interface RequestRelationItem {
 
 export interface WorkRequestCard {
     id: number;
+    workspace_id?: number;
     title: string;
     description?: string | null;
     status: RequestStatus;
@@ -144,6 +145,7 @@ export interface LinkedPullRequest {
 export interface WorkRequestDetail extends WorkRequestCard {
     files: RequestFileItem[];
     activities: RequestActivityItem[];
+    comments?: RequestActivityItem[];
     subtasks?: WorkRequestCard[];
     pull_requests?: LinkedPullRequest[];
 }

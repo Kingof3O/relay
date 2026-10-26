@@ -83,9 +83,11 @@ final class ReverbRealtimeBroadcastTest extends TestCase
         $event = new WorkRequestCommented($workRequest, $activity, $this->owner->id);
 
         $channels = $event->broadcastOn();
-        $this->assertCount(1, $channels);
+        $this->assertCount(2, $channels);
         $this->assertInstanceOf(PrivateChannel::class, $channels[0]);
         $this->assertSame('private-workspace.'.$this->workspace->id, $channels[0]->name);
+        $this->assertInstanceOf(PrivateChannel::class, $channels[1]);
+        $this->assertSame('private-request.'.$workRequest->id, $channels[1]->name);
 
         $payload = $event->broadcastWith();
         $this->assertSame($workRequest->id, $payload['request_id']);

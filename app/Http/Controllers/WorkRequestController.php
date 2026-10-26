@@ -172,7 +172,7 @@ final class WorkRequestController extends Controller
     public function destroy(Request $httpRequest, WorkRequest $request): JsonResponse|RedirectResponse
     {
         $this->authorize('delete', $request);
-        $this->requests->delete($request, $this->files);
+        $this->requests->delete($request, $this->files, $httpRequest->user()?->id);
 
         if ($httpRequest->expectsJson()) {
             return response()->json(['deleted' => true]);

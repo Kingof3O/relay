@@ -98,7 +98,31 @@ export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarPr
         },
     ];
 
-    const unreadCount = pageProps.unreadNotificationsCount ?? notifications.filter((n: WorkspaceNotification) => !n.read_at).length;
+    const initialUnread =
+        pageProps.unreadNotificationsCount ??
+        notifications.filter((n: WorkspaceNotification) => !n.read_at).length;
+    const [unreadCount, setUnreadCount] = useState<number>(initialUnread);
+
+    useEffect(() => {
+        setUnreadCount(
+            pageProps.unreadNotificationsCount ??
+                notifications.filter((n: WorkspaceNotification) => !n.read_at).length
+        );
+    }, [pageProps.unreadNotificationsCount, pageProps.workspaceNotifications]);
+
+    useEffect(() => {
+        const handleNotification = () => {
+            setUnreadCount((prev) => prev + 1);
+        };
+
+        window.addEventListener('notification-received', handleNotification);
+        window.addEventListener('relay:notification-received', handleNotification);
+
+        return () => {
+            window.removeEventListener('notification-received', handleNotification);
+            window.removeEventListener('relay:notification-received', handleNotification);
+        };
+    }, []);
 
     const workspaceLinks = [
         {

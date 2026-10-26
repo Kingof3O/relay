@@ -5,7 +5,7 @@ import Badge from '@/Components/Badge';
 import ConfirmDialog from '@/Components/ConfirmDialog';
 import EmptyState from '@/Components/EmptyState';
 import { PageProps, WorkRequestCard } from '@/types';
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import {
     Calendar,
     Flame,
@@ -16,7 +16,7 @@ import {
     RotateCcw,
     Plus,
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 interface CycleItem {
@@ -59,15 +59,135 @@ interface CyclesIndexProps extends PageProps {
     tickets: WorkRequestCard[];
 }
 
+function recalculateBurndown(currentBurndown: BurndownData, ticketsList: WorkRequestCard[]): BurndownData {
+    const getWeight = (t: WorkRequestCard) => {
+        if (t.story_points !== null && t.story_points !== undefined) {
+            return Math.max(0, Number(t.story_points));
+        }
+        return 1;
+    };
+
+    const totalPoints = ticketsList.reduce((sum, t) => sum + getWeight(t), 0);
+    const totalTickets = ticketsList.length;
+    const completedTicketsList = ticketsList.filter((t) => t.status === 'done');
+    const completedTickets = completedTicketsList.length;
+    const completedPoints = completedTicketsList.reduce((sum, t) => sum + getWeight(t), 0);
+    const remainingPoints = Math.max(0, totalPoints - completedPoints);
+    const rolledOverTickets = ticketsList.filter((t) => Boolean(t.rolled_over_from_cycle_id)).length;
+    const completionPercentage = totalPoints > 0 ? Math.round((completedPoints / totalPoints) * 100) : 0;
+
+    const days = currentBurndown.days ?? [];
+    const nonFutureDays = days.filter((d) => !d.is_future).length;
+    const daysElapsed = Math.max(1, nonFutureDays);
+    const velocity = Number((completedPoints / daysElapsed).toFixed(2));
+
+    const updatedDays = days.map((day) => {
+        if (day.is_today) {
+            return {
+                ...day,
+                actual: remainingPoints,
+            };
+        }
+        return day;
+    });
+
+    return {
+        ...currentBurndown,
+        metrics: {
+            ...(currentBurndown.metrics ?? {}),
+            total_points: totalPoints,
+            completed_points: completedPoints,
+            remaining_points: remainingPoints,
+            total_tickets: totalTickets,
+            completed_tickets: completedTickets,
+            rolled_over_tickets: rolledOverTickets,
+            completion_percentage: completionPercentage,
+            velocity_points_per_day: velocity,
+        },
+        days: updatedDays,
+    };
+}
+
 export default function CyclesIndex({
     currentCycle,
     cycles,
-    burndown,
-    tickets,
+    burndown: initialBurndown,
+    tickets: initialTickets,
 }: CyclesIndexProps) {
+    const pageProps = usePage<PageProps>().props;
+    const currentWorkspace = pageProps.currentWorkspace;
+
+    const [tickets, setTickets] = useState<WorkRequestCard[]>(initialTickets);
+    const [burndown, setBurndown] = useState<BurndownData>(initialBurndown);
     const [rollingOver, setRollingOver] = useState(false);
     const [showRolloverDialog, setShowRolloverDialog] = useState(false);
     const [filterStatus, setFilterStatus] = useState<string>('all');
+
+    useEffect(() => {
+        setTickets(initialTickets);
+        setBurndown(initialBurndown);
+    }, [initialTickets, initialBurndown]);
+
+    // Real-time synchronization via Laravel Echo workspace channel
+    useEffect(() => {
+        const echo = (window as unknown as { Echo?: any }).Echo;
+        if (!echo || !currentWorkspace?.id) return;
+
+        try {
+            const channelName = `workspace.${currentWorkspace.id}`;
+            const channel = echo.private(channelName);
+
+            const handleWorkRequest = (e: { request?: WorkRequestCard }) => {
+                const req = e?.request;
+                if (!req) return;
+
+                const belongsToCycle =
+                    req.cycle_id === currentCycle.id || req.cycle?.id === currentCycle.id;
+
+                setTickets((prevTickets) => {
+                    const existingIndex = prevTickets.findIndex((t) => t.id === req.id);
+                    let updatedTickets: WorkRequestCard[];
+
+                    if (belongsToCycle) {
+                        if (existingIndex >= 0) {
+                            updatedTickets = prevTickets.map((t) => (t.id === req.id ? req : t));
+                        } else {
+                            updatedTickets = [req, ...prevTickets];
+                        }
+                    } else {
+                        if (existingIndex >= 0) {
+                            updatedTickets = prevTickets.filter((t) => t.id !== req.id);
+                        } else {
+                            return prevTickets;
+                        }
+                    }
+
+                    setBurndown((prevBurndown) => recalculateBurndown(prevBurndown, updatedTickets));
+                    return updatedTickets;
+                });
+            };
+
+            const handleDeleted = (e: { request_id: number }) => {
+                if (!e?.request_id) return;
+                setTickets((prevTickets) => {
+                    if (!prevTickets.some((t) => t.id === e.request_id)) return prevTickets;
+                    const updatedTickets = prevTickets.filter((t) => t.id !== e.request_id);
+                    setBurndown((prevBurndown) => recalculateBurndown(prevBurndown, updatedTickets));
+                    return updatedTickets;
+                });
+            };
+
+            channel.listen('.WorkRequestCreated', handleWorkRequest);
+            channel.listen('.WorkRequestMoved', handleWorkRequest);
+            channel.listen('.WorkRequestDeleted', handleDeleted);
+
+            return () => {
+                echo.leave(channelName);
+            };
+        } catch {
+            // Graceful fallback
+        }
+    }, [currentWorkspace?.id, currentCycle.id]);
 
     const handleRollover = () => {
         setShowRolloverDialog(true);

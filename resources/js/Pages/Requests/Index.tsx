@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PageHeader from '@/Components/PageHeader';
@@ -40,6 +40,8 @@ export default function Index({
         handleSetViewMode,
         collapsedColumns,
         toggleColumnCollapse,
+        handleCardCreated,
+        handleCardDeleted,
         handleCardMoved,
         handleDragEnd,
         handleQuickStatus,
@@ -53,6 +55,20 @@ export default function Index({
 
     const [showCreateModal, setShowCreateModal] = useState(false);
     const [drawerRequestId, setDrawerRequestId] = useState<number | null>(null);
+
+    const onCardDeleted = useCallback(
+        (deletedId: number) => {
+            handleCardDeleted(deletedId);
+            setDrawerRequestId((currentId) => (currentId === deletedId ? null : currentId));
+        },
+        [handleCardDeleted]
+    );
+
+    useEffect(() => {
+        if (drawerRequestId !== null && !boardRequests.some((r) => r.id === drawerRequestId)) {
+            setDrawerRequestId(null);
+        }
+    }, [drawerRequestId, boardRequests]);
 
     const activeDrawerCard = drawerRequestId
         ? filterState.filteredRequests.find((r) => r.id === drawerRequestId) ?? null
@@ -126,6 +142,8 @@ export default function Index({
                         onOpenDrawer={(req) => setDrawerRequestId(req.id)}
                         selectedIds={selectedIds}
                         onToggleSelect={handleToggleSelect}
+                        onCardCreated={handleCardCreated}
+                        onCardDeleted={onCardDeleted}
                         onCardMoved={handleCardMoved}
                         collapsedColumns={collapsedColumns}
                         onToggleColumnCollapse={toggleColumnCollapse}
@@ -160,7 +178,17 @@ export default function Index({
                 onClose={() => setShowCreateModal(false)}
                 projects={projects}
                 users={users}
-                onFinished={() => router.reload({ only: ['requests'] })}
+                onFinished={(created) => {
+                    if (created) {
+                        if (Array.isArray(created)) {
+                            created.forEach((c) => handleCardCreated(c));
+                        } else {
+                            handleCardCreated(created);
+                        }
+                    } else {
+                        router.reload({ only: ['requests'] });
+                    }
+                }}
             />
         </AuthenticatedLayout>
     );

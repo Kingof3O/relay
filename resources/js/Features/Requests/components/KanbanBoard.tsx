@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
-import { ChevronLeft, ChevronRight, Inbox, Plus, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Inbox, Plus } from 'lucide-react';
 import { WorkRequestCard, PageProps } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { toast } from 'sonner';
@@ -15,6 +15,8 @@ interface KanbanBoardProps {
     onOpenDrawer: (request: WorkRequestCard) => void;
     selectedIds: Set<number>;
     onToggleSelect: (id: number) => void;
+    onCardCreated?: (card: WorkRequestCard) => void;
+    onCardDeleted?: (requestId: number) => void;
     onCardMoved?: (card: WorkRequestCard) => void;
     collapsedColumns?: string[];
     onToggleColumnCollapse?: (columnKey: string) => void;
@@ -37,6 +39,8 @@ export default function KanbanBoard({
     onOpenDrawer,
     selectedIds,
     onToggleSelect,
+    onCardCreated,
+    onCardDeleted,
     onCardMoved,
     collapsedColumns: propCollapsedColumns,
     onToggleColumnCollapse: propToggleColumnCollapse,
@@ -81,8 +85,24 @@ export default function KanbanBoard({
         try {
             bc = new BroadcastChannel('relay_workspace_live_sync');
             bc.onmessage = (event) => {
-                if (event.data?.type === 'CARD_MOVED' && event.data.card) {
-                    onCardMoved?.(event.data.card);
+                const data = event.data;
+                if (!data) return;
+
+                if (data.type === 'CARD_MOVED') {
+                    const card = data.card || data.request;
+                    if (card) {
+                        onCardMoved?.(card);
+                    }
+                } else if (data.type === 'CARD_CREATED') {
+                    const card = data.card || data.request;
+                    if (card) {
+                        onCardCreated?.(card);
+                    }
+                } else if (data.type === 'CARD_DELETED') {
+                    const requestId = data.requestId ?? data.request_id ?? data.id;
+                    if (requestId) {
+                        onCardDeleted?.(Number(requestId));
+                    }
                 }
             };
         } catch {
@@ -95,7 +115,21 @@ export default function KanbanBoard({
             try {
                 const channel = echo.private(`workspace.${currentWorkspace.id}`);
 
-                channel.listen('.WorkRequestMoved', (e: { request?: WorkRequestCard; actor_id?: number }) => {
+                channel.listen('.WorkRequestCreated', (e: { request: WorkRequestCard; actor_id?: number }) => {
+                    if (e?.request) {
+                        onCardCreated?.(e.request);
+                        toast.info(`New task #${e.request.id} created: ${e.request.title}`);
+                    }
+                });
+
+                channel.listen('.WorkRequestDeleted', (e: { request_id: number; workspace_id: number; actor_id?: number }) => {
+                    if (e?.request_id) {
+                        onCardDeleted?.(e.request_id);
+                        toast.info(`Task #${e.request_id} deleted`);
+                    }
+                });
+
+                channel.listen('.WorkRequestMoved', (e: { request?: WorkRequestCard; actor_id?: number; request_id?: number; status?: string }) => {
                     if (e?.request) {
                         onCardMoved?.(e.request);
                         toast.info(`Card #${e.request.id} moved`, {
@@ -120,7 +154,7 @@ export default function KanbanBoard({
         return () => {
             bc?.close();
         };
-    }, [currentWorkspace?.id, onCardMoved]);
+    }, [currentWorkspace?.id, onCardMoved, onCardCreated, onCardDeleted]);
 
     const columns = useMemo(
         () =>
@@ -245,7 +279,7 @@ export default function KanbanBoard({
     if (isLoading) {
         return (
             <div className="flex min-w-0 gap-3.5 sm:gap-4 overflow-x-auto pb-4 custom-scroll board-scroll pr-4 sm:pr-6 animate-pulse">
-                {Object.entries(statuses).map(([key, label]) => (
+                {Object.keys(statuses).map((key) => (
                     <div
                         key={key}
                         className="flex min-h-[580px] min-w-[260px] flex-1 max-w-[340px] flex-col rounded-xl border border-white/[0.05] bg-[#111216] p-3 shadow-sm space-y-3"

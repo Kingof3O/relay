@@ -63,6 +63,7 @@ final class WorkRequestPresenter
 
         $payload = [
             'id' => $request->id,
+            'workspace_id' => (int) $request->workspace_id,
             'title' => $request->title,
             'description' => $request->description,
             'status' => $request->status?->value ?? (string) $request->getRawOriginal('status'),

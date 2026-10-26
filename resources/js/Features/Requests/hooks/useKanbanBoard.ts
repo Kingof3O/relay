@@ -110,6 +110,19 @@ export function useKanbanBoard({
         });
     };
 
+    const handleCardCreated = useCallback((newCard: WorkRequestCard) => {
+        setBoardRequests((prev) => {
+            if (prev.some((r) => r.id === newCard.id)) {
+                return prev.map((r) => (r.id === newCard.id ? { ...r, ...newCard } : r));
+            }
+            return [newCard, ...prev];
+        });
+    }, []);
+
+    const handleCardDeleted = useCallback((deletedId: number) => {
+        setBoardRequests((prev) => prev.filter((r) => r.id !== deletedId));
+    }, []);
+
     const handleCardMoved = useCallback((updatedCard: WorkRequestCard) => {
         setBoardRequests((prev) => {
             if (!prev.some((r) => r.id === updatedCard.id)) {
@@ -120,9 +133,12 @@ export function useKanbanBoard({
     }, []);
 
     const handleCardUpdated = useCallback((updated: WorkRequestCard) => {
-        setBoardRequests((prev) =>
-            prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r))
-        );
+        setBoardRequests((prev) => {
+            if (!prev.some((r) => r.id === updated.id)) {
+                return [updated, ...prev];
+            }
+            return prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r));
+        });
     }, []);
 
     const handleDragEnd = async (result: DropResult) => {
@@ -486,6 +502,8 @@ export function useKanbanBoard({
         handleSetViewMode,
         collapsedColumns,
         toggleColumnCollapse,
+        handleCardCreated,
+        handleCardDeleted,
         handleCardMoved,
         handleDragEnd,
         handleQuickStatus,

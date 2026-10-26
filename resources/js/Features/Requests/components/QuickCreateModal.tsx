@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Modal from '@/Components/Modal';
-import { WorkspaceProject, WorkspaceUser } from '@/types/workspace';
+import { WorkspaceProject, WorkspaceUser, WorkRequestCard } from '@/types/workspace';
 import { X, Zap, FileSpreadsheet } from 'lucide-react';
 import SingleRequestForm from './Create/SingleRequestForm';
 import BulkSpreadsheetForm from './Create/BulkSpreadsheetForm';
@@ -16,7 +16,7 @@ export default function QuickCreateModal({
     onClose: () => void;
     projects: WorkspaceProject[];
     users: WorkspaceUser[];
-    onFinished: () => void;
+    onFinished?: (created?: WorkRequestCard | WorkRequestCard[]) => void;
 }) {
     const [mode, setMode] = useState<'quick' | 'bulk'>('quick');
 
@@ -89,13 +89,13 @@ export default function QuickCreateModal({
                         projects={projects}
                         users={users}
                         onClose={onClose}
-                        onFinished={onFinished}
+                        onFinished={(card) => onFinished?.(card)}
                     />
                 ) : (
                     <BulkSpreadsheetForm
                         projects={projects}
                         onClose={onClose}
-                        onFinished={onFinished}
+                        onFinished={(cards) => onFinished?.(cards)}
                     />
                 )}
             </div>

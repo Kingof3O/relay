@@ -1,5 +1,5 @@
 import { FormEvent, useState } from 'react';
-import { WorkspaceProject } from '@/types/workspace';
+import { WorkspaceProject, WorkRequestCard } from '@/types/workspace';
 import axios from 'axios';
 import { notifySuccess, notifyError } from '@/lib/toast';
 import {
@@ -40,7 +40,7 @@ export function emptyRow(projects: WorkspaceProject[]): BulkRow {
 export interface BulkSpreadsheetFormProps {
     projects: WorkspaceProject[];
     onClose: () => void;
-    onFinished: () => void;
+    onFinished: (requests?: WorkRequestCard[]) => void;
 }
 
 export default function BulkSpreadsheetForm({
@@ -101,7 +101,10 @@ export default function BulkSpreadsheetForm({
                     'Batch creation complete',
                     `Created all ${results.length} work request(s) successfully.`
                 );
-                onFinished();
+                const createdRequests = results
+                    .filter((entry) => entry.success && entry.request)
+                    .map((entry) => entry.request as unknown as WorkRequestCard);
+                onFinished(createdRequests);
                 onClose();
             } else {
                 notifyError(

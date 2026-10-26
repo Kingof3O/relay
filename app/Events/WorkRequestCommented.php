@@ -33,6 +33,7 @@ final class WorkRequestCommented implements ShouldBroadcast
     {
         return [
             new PrivateChannel('workspace.'.$this->request->workspace_id),
+            new PrivateChannel('request.'.$this->request->id),
         ];
     }
 

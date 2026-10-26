@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Events\SubtaskUpdated;
 use App\Models\WorkRequest;
 use App\Services\WorkRequestPresenter;
 use Illuminate\Http\JsonResponse;
@@ -47,6 +48,8 @@ final class SubtaskController extends Controller
             ]);
         });
 
+        SubtaskUpdated::dispatch($workRequest, $subtask, 'created', $request->user()?->id);
+
         if ($request->expectsJson()) {
             return response()->json([
                 'subtask' => $this->presenter->card($subtask),
@@ -70,6 +73,8 @@ final class SubtaskController extends Controller
 
         $subtask->update(['status' => $newStatus]);
 
+        SubtaskUpdated::dispatch($workRequest, $subtask->fresh(), 'toggled', $request->user()?->id);
+
         if ($request->expectsJson()) {
             return response()->json([
                 'subtask' => $this->presenter->card($subtask->fresh()),
@@ -89,6 +94,8 @@ final class SubtaskController extends Controller
         $this->authorize('delete', $subtask);
 
         $subtask->delete();
+
+        SubtaskUpdated::dispatch($workRequest, $subtask, 'deleted', $request->user()?->id);
 
         if ($request->expectsJson()) {
             return response()->json([
