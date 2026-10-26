@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { Head, router, usePage } from '@inertiajs/react';
+import { toast } from 'sonner';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import PageHeader from '@/Components/PageHeader';
 import { PageProps } from '@/types';
@@ -33,6 +34,7 @@ export default function Index({
     filters: BoardFilters;
 }>) {
     const authUser = usePage<PageProps>().props.auth?.user;
+    const currentWorkspace = usePage<PageProps>().props.currentWorkspace;
 
     const {
         boardRequests,
@@ -63,6 +65,57 @@ export default function Index({
         },
         [handleCardDeleted]
     );
+
+    // Live WebSockets synchronization on /requests
+    useEffect(() => {
+        const echo = (window as unknown as { Echo?: any }).Echo;
+        if (!echo || !currentWorkspace?.id) return;
+
+        try {
+            const channel = echo.private(`workspace.${currentWorkspace.id}`);
+
+            channel.listen('.WorkRequestCreated', (e: { request?: WorkRequestCard; actor_id?: number }) => {
+                if (e?.request) {
+                    handleCardCreated(e.request);
+                    toast.info(`New task #${e.request.id} created: ${e.request.title}`);
+                }
+            });
+
+            channel.listen('.WorkRequestDeleted', (e: { request_id?: number; workspace_id?: number; actor_id?: number }) => {
+                if (e?.request_id) {
+                    onCardDeleted(e.request_id);
+                    toast.info(`Task #${e.request_id} deleted`);
+                }
+            });
+
+            channel.listen('.WorkRequestMoved', (e: { request?: WorkRequestCard; actor_id?: number; request_id?: number; status?: string }) => {
+                if (e?.request) {
+                    handleCardMoved(e.request);
+                    toast.info(`Card #${e.request.id} moved`, {
+                        description: `Status changed to ${e.request.status_label || e.request.status}`,
+                    });
+                }
+            });
+
+            channel.listen('.WorkRequestCommented', (e: { request_id?: number; body?: string }) => {
+                if (e?.request_id) {
+                    toast.info(`New comment on #REQ-${e.request_id}`);
+                }
+            });
+
+            channel.listen('.SubtaskUpdated', (e: { parent_id?: number; subtask?: WorkRequestCard; action?: string }) => {
+                if (e?.subtask) {
+                    handleCardUpdated(e.subtask);
+                }
+            });
+
+            return () => {
+                echo.leave(`workspace.${currentWorkspace.id}`);
+            };
+        } catch {
+            // Graceful fallback
+        }
+    }, [currentWorkspace?.id, handleCardCreated, onCardDeleted, handleCardMoved, handleCardUpdated]);
 
     useEffect(() => {
         if (drawerRequestId !== null && !boardRequests.some((r) => r.id === drawerRequestId)) {

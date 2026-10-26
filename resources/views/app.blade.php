@@ -55,6 +55,12 @@
         <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
         <link rel="shortcut icon" href="/img/favicon.ico">
 
+        <!-- Real-Time Reverb WebSocket Configuration -->
+        <meta name="reverb-key" content="{{ config('reverb.apps.apps.0.key', env('REVERB_APP_KEY', 'relay_app_key_8124')) }}">
+        <meta name="reverb-host" content="{{ config('reverb.apps.apps.0.options.host', env('REVERB_HOST', request()->getHost())) }}">
+        <meta name="reverb-port" content="{{ config('reverb.apps.apps.0.options.port', env('REVERB_PORT', 443)) }}">
+        <meta name="reverb-scheme" content="{{ config('reverb.apps.apps.0.options.scheme', env('REVERB_SCHEME', 'https')) }}">
+
         <!-- Fonts: Preconnect, DNS-prefetch & Critical Subset -->
         <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
         <link rel="dns-prefetch" href="https://fonts.bunny.net">

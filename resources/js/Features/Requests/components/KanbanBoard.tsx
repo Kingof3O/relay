@@ -109,52 +109,10 @@ export default function KanbanBoard({
             // Ignore if BroadcastChannel unsupported
         }
 
-        // 2. Laravel Echo private workspace channel
-        const echo = (window as unknown as { Echo?: any }).Echo;
-        if (echo && currentWorkspace?.id) {
-            try {
-                const channel = echo.private(`workspace.${currentWorkspace.id}`);
-
-                channel.listen('.WorkRequestCreated', (e: { request: WorkRequestCard; actor_id?: number }) => {
-                    if (e?.request) {
-                        onCardCreated?.(e.request);
-                        toast.info(`New task #${e.request.id} created: ${e.request.title}`);
-                    }
-                });
-
-                channel.listen('.WorkRequestDeleted', (e: { request_id: number; workspace_id: number; actor_id?: number }) => {
-                    if (e?.request_id) {
-                        onCardDeleted?.(e.request_id);
-                        toast.info(`Task #${e.request_id} deleted`);
-                    }
-                });
-
-                channel.listen('.WorkRequestMoved', (e: { request?: WorkRequestCard; actor_id?: number; request_id?: number; status?: string }) => {
-                    if (e?.request) {
-                        onCardMoved?.(e.request);
-                        toast.info(`Card #${e.request.id} moved`, {
-                            description: `Status changed to ${e.request.status_label || e.request.status}`,
-                        });
-                    }
-                });
-
-                channel.listen('.WorkRequestCommented', (e: { request_id: number; body?: string }) => {
-                    toast.info(`New comment on #REQ-${e.request_id}`);
-                });
-
-                return () => {
-                    bc?.close();
-                    echo.leave(`workspace.${currentWorkspace.id}`);
-                };
-            } catch {
-                // Graceful fallback
-            }
-        }
-
         return () => {
             bc?.close();
         };
-    }, [currentWorkspace?.id, onCardMoved, onCardCreated, onCardDeleted]);
+    }, [onCardMoved, onCardCreated, onCardDeleted]);
 
     const columns = useMemo(
         () =>

@@ -27,17 +27,28 @@ window.axios.interceptors.response.use(
 window.Pusher = Pusher;
 
 if (typeof window !== 'undefined') {
-    const reverbKey = import.meta.env.VITE_REVERB_APP_KEY;
+    const getMeta = (name: string): string | undefined => {
+        const el = document.querySelector(`meta[name="${name}"]`);
+        return el ? (el.getAttribute('content') || undefined) : undefined;
+    };
+
+    const reverbKey = import.meta.env.VITE_REVERB_APP_KEY || getMeta('reverb-key') || 'relay_app_key_8124';
     const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY;
 
     if (reverbKey) {
+        const wsHost = import.meta.env.VITE_REVERB_HOST || getMeta('reverb-host') || window.location.hostname;
+        const wsScheme = import.meta.env.VITE_REVERB_SCHEME || getMeta('reverb-scheme') || (window.location.protocol === 'https:' ? 'https' : 'http');
+        const forceTLS = wsScheme === 'https' || window.location.protocol === 'https:';
+        const portMeta = import.meta.env.VITE_REVERB_PORT || getMeta('reverb-port');
+        const port = portMeta ? Number(portMeta) : (forceTLS ? 443 : 80);
+
         window.Echo = new Echo({
             broadcaster: 'reverb',
             key: reverbKey,
-            wsHost: import.meta.env.VITE_REVERB_HOST || window.location.hostname,
-            wsPort: import.meta.env.VITE_REVERB_PORT ? Number(import.meta.env.VITE_REVERB_PORT) : 80,
-            wssPort: import.meta.env.VITE_REVERB_PORT ? Number(import.meta.env.VITE_REVERB_PORT) : 443,
-            forceTLS: (import.meta.env.VITE_REVERB_SCHEME ?? 'https') === 'https',
+            wsHost: wsHost,
+            wsPort: port,
+            wssPort: port,
+            forceTLS: forceTLS,
             enabledTransports: ['ws', 'wss'],
         });
     } else if (pusherKey) {
