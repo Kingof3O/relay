@@ -29,17 +29,20 @@ window.Pusher = Pusher;
 if (typeof window !== 'undefined') {
     const getMeta = (name: string): string | undefined => {
         const el = document.querySelector(`meta[name="${name}"]`);
-        return el ? (el.getAttribute('content') || undefined) : undefined;
+        const val = el ? (el.getAttribute('content') || undefined) : undefined;
+        return val && val.trim().length > 0 ? val.trim() : undefined;
     };
 
-    const reverbKey = import.meta.env.VITE_REVERB_APP_KEY || getMeta('reverb-key') || 'relay_app_key_8124';
-    const pusherKey = import.meta.env.VITE_PUSHER_APP_KEY;
+    const isHttps = window.location.protocol === 'https:';
+    const reverbKey = getMeta('reverb-key') || (import.meta.env.VITE_REVERB_APP_KEY as string | undefined);
+    const pusherKey = getMeta('pusher-key') || (import.meta.env.VITE_PUSHER_APP_KEY as string | undefined);
 
     if (reverbKey) {
-        const wsHost = import.meta.env.VITE_REVERB_HOST || getMeta('reverb-host') || window.location.hostname;
-        const wsScheme = import.meta.env.VITE_REVERB_SCHEME || getMeta('reverb-scheme') || (window.location.protocol === 'https:' ? 'https' : 'http');
-        const forceTLS = wsScheme === 'https' || window.location.protocol === 'https:';
-        const portMeta = import.meta.env.VITE_REVERB_PORT || getMeta('reverb-port');
+        // Dynamic runtime discovery: use meta tag if provided, otherwise default to current browser host
+        const wsHost = getMeta('reverb-host') || window.location.hostname;
+        const wsScheme = getMeta('reverb-scheme') || (isHttps ? 'https' : 'http');
+        const forceTLS = wsScheme === 'https' || isHttps;
+        const portMeta = getMeta('reverb-port');
         const port = portMeta ? Number(portMeta) : (forceTLS ? 443 : 80);
 
         window.Echo = new Echo({
@@ -52,14 +55,19 @@ if (typeof window !== 'undefined') {
             enabledTransports: ['ws', 'wss'],
         });
     } else if (pusherKey) {
+        const pusherCluster = getMeta('pusher-cluster') || (import.meta.env.VITE_PUSHER_APP_CLUSTER as string | undefined) || 'mt1';
+        const pusherHost = getMeta('pusher-host') || (import.meta.env.VITE_PUSHER_HOST as string | undefined) || `ws-${pusherCluster}.pusher.com`;
+        const pusherPortMeta = getMeta('pusher-port') || (import.meta.env.VITE_PUSHER_PORT as string | undefined);
+        const pusherPort = pusherPortMeta ? Number(pusherPortMeta) : (isHttps ? 443 : 80);
+
         window.Echo = new Echo({
             broadcaster: 'pusher',
             key: pusherKey,
-            cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-            wsHost: import.meta.env.VITE_PUSHER_HOST || `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-            wsPort: import.meta.env.VITE_PUSHER_PORT ? Number(import.meta.env.VITE_PUSHER_PORT) : 80,
-            wssPort: import.meta.env.VITE_PUSHER_PORT ? Number(import.meta.env.VITE_PUSHER_PORT) : 443,
-            forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
+            cluster: pusherCluster,
+            wsHost: pusherHost,
+            wsPort: pusherPort,
+            wssPort: pusherPort,
+            forceTLS: isHttps,
             enabledTransports: ['ws', 'wss'],
         });
     }
