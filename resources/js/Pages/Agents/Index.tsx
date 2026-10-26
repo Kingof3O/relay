@@ -119,6 +119,20 @@ export default function AgentsIndex({
     ]);
     const [creatingToken, setCreatingToken] = useState(false);
     const [generatedPlainToken, setGeneratedPlainToken] = useState<string | null>(null);
+    const [modalCreatedToken, setModalCreatedToken] = useState<string | null>(null);
+
+    const openCreateTokenModal = (defaultName = 'Claude / Cursor Agent') => {
+        setTokenName(defaultName);
+        setSelectedAbilities(['requests:read', 'requests:write']);
+        setModalCreatedToken(null);
+        setShowCreateTokenModal(true);
+    };
+
+    const closeCreateTokenModal = () => {
+        setShowCreateTokenModal(false);
+        setModalCreatedToken(null);
+        setCreatingToken(false);
+    };
 
     // Token revocation modal
     const [tokenToRevoke, setTokenToRevoke] = useState<AgentToken | null>(null);
@@ -245,6 +259,7 @@ export default function AgentsIndex({
 
             const newToken = response.data.token || response.data.plainTextToken;
             setGeneratedPlainToken(newToken);
+            setModalCreatedToken(newToken);
             toast.success('Agent Token created successfully!');
 
             if (response.data.accessToken) {
@@ -327,10 +342,7 @@ export default function AgentsIndex({
                         <div className="flex items-center gap-2">
                             <button
                                 type="button"
-                                onClick={() => {
-                                    setTokenName('AI Agent Token');
-                                    setShowCreateTokenModal(true);
-                                }}
+                                onClick={() => openCreateTokenModal('AI Agent Token')}
                                 className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-specular transition-all hover:from-violet-500 hover:to-indigo-500"
                             >
                                 <Plus className="h-3.5 w-3.5" />
@@ -385,6 +397,50 @@ export default function AgentsIndex({
                         </div>
                     </div>
                 </div>
+
+                {/* Generated Token Callout if present across all tabs */}
+                {generatedPlainToken && (
+                    <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/25 p-4 sm:p-5 shadow-specular animate-in fade-in duration-200">
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                            <div className="space-y-1">
+                                <div className="flex items-center gap-2">
+                                    <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+                                    <h3 className="text-sm font-bold text-white">
+                                        New Agent Token Ready
+                                    </h3>
+                                </div>
+                                <p className="text-xs text-zinc-400">
+                                    Copy this personal access token now. For your security, this key will not be shown again after you leave or refresh this page.
+                                    The MCP configuration snippets below have also been automatically updated with this token.
+                                </p>
+                                <div className="mt-3 flex flex-wrap items-center gap-2">
+                                    <code className="rounded-lg border border-emerald-500/30 bg-black/60 px-3 py-1.5 font-mono text-xs text-emerald-300 selection:bg-emerald-500 selection:text-black break-all">
+                                        {generatedPlainToken}
+                                    </code>
+                                    <button
+                                        type="button"
+                                        onClick={handleCopyPlainToken}
+                                        className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20 transition-all shrink-0"
+                                    >
+                                        {copiedToken ? (
+                                            <Check className="h-3.5 w-3.5 text-emerald-400" />
+                                        ) : (
+                                            <Copy className="h-3.5 w-3.5" />
+                                        )}
+                                        <span>{copiedToken ? 'Copied!' : 'Copy Token'}</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => setGeneratedPlainToken(null)}
+                                className="text-xs text-zinc-400 hover:text-zinc-200 self-start shrink-0 px-2 py-1"
+                            >
+                                Dismiss
+                            </button>
+                        </div>
+                    </div>
+                )}
 
                 {/* Primary Navigation Tabs */}
                 <div className="flex border-b border-white/[0.08] gap-1">
@@ -442,50 +498,6 @@ export default function AgentsIndex({
                 {/* TAB 1: SETUP & CONFIGURATION */}
                 {activeTab === 'setup' && (
                     <div className="space-y-6 animate-in fade-in duration-200">
-                        {/* Generated Token Callout if present */}
-                        {generatedPlainToken && (
-                            <div className="rounded-2xl border border-emerald-500/40 bg-emerald-950/20 p-5 shadow-specular">
-                                <div className="flex items-start justify-between gap-4">
-                                    <div className="space-y-1">
-                                        <div className="flex items-center gap-2">
-                                            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-                                            <h3 className="text-sm font-bold text-white">
-                                                New Agent Token Ready
-                                            </h3>
-                                        </div>
-                                        <p className="text-xs text-zinc-400">
-                                            Copy this personal access token now. For your security, this key will not be shown again.
-                                            The configuration snippets below have been updated with this token.
-                                        </p>
-                                        <div className="mt-3 flex items-center gap-2">
-                                            <code className="rounded-lg border border-emerald-500/30 bg-black/50 px-3 py-1.5 font-mono text-xs text-emerald-300 selection:bg-emerald-500 selection:text-black">
-                                                {generatedPlainToken}
-                                            </code>
-                                            <button
-                                                type="button"
-                                                onClick={handleCopyPlainToken}
-                                                className="flex items-center gap-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/20 transition-all"
-                                            >
-                                                {copiedToken ? (
-                                                    <Check className="h-3.5 w-3.5 text-emerald-400" />
-                                                ) : (
-                                                    <Copy className="h-3.5 w-3.5" />
-                                                )}
-                                                <span>{copiedToken ? 'Copied!' : 'Copy Token'}</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <button
-                                        type="button"
-                                        onClick={() => setGeneratedPlainToken(null)}
-                                        className="text-xs text-zinc-500 hover:text-zinc-300"
-                                    >
-                                        Dismiss
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
                         {/* Client Selector & Snippet Card */}
                         <Card className="p-5 sm:p-6 space-y-5">
                             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-white/[0.06] pb-4">
@@ -505,7 +517,7 @@ export default function AgentsIndex({
                                 {!generatedPlainToken && (
                                     <button
                                         type="button"
-                                        onClick={() => setShowCreateTokenModal(true)}
+                                        onClick={() => openCreateTokenModal('MCP Agent Config Token')}
                                         className="inline-flex items-center gap-1.5 self-start rounded-xl border border-violet-500/30 bg-violet-500/10 px-3 py-1.5 text-xs font-semibold text-violet-300 hover:bg-violet-500/20 transition-all"
                                     >
                                         <Key className="h-3.5 w-3.5" />
@@ -850,15 +862,20 @@ export default function AgentsIndex({
 
                                 <button
                                     type="button"
-                                    onClick={() => {
-                                        setTokenName('Cursor Agent');
-                                        setShowCreateTokenModal(true);
-                                    }}
+                                    onClick={() => openCreateTokenModal('Cursor Agent')}
                                     className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-specular transition-all hover:from-violet-500 hover:to-indigo-500 self-start"
                                 >
                                     <Plus className="h-3.5 w-3.5" />
                                     <span>New Token</span>
                                 </button>
+                            </div>
+
+                            {/* Security Notice */}
+                            <div className="rounded-xl border border-white/[0.06] bg-[#07090e]/60 p-3 text-xs text-zinc-400 flex items-start gap-2.5">
+                                <Shield className="h-4 w-4 text-violet-400 shrink-0 mt-0.5" />
+                                <span>
+                                    Personal access tokens are securely hashed with SHA-256 upon generation. Plaintext secrets cannot be recovered after creation. If a key is lost or compromised, revoke it and create a new one.
+                                </span>
                             </div>
 
                             {/* Tokens Table */}
@@ -935,98 +952,163 @@ export default function AgentsIndex({
             {/* Create Token Modal */}
             <Modal
                 show={showCreateTokenModal}
-                onClose={() => setShowCreateTokenModal(false)}
+                onClose={closeCreateTokenModal}
                 maxWidth="md"
             >
-                <div className="p-6 space-y-4">
-                    <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3">
-                        <Key className="h-4 w-4 text-violet-400" />
-                        <h3 className="text-base font-bold text-white">Create Agent Access Token</h3>
-                    </div>
-
-                    <p className="text-xs text-zinc-400 leading-relaxed">
-                        Create a scoped personal access token for your AI coding assistant (Cursor, Claude Desktop, Antigravity, or Windsurf).
-                    </p>
-
-                    <div className="space-y-3">
-                        <div>
-                            <InputLabel value="Agent / Token Label" />
-                            <TextInput
-                                value={tokenName}
-                                onChange={(e) => setTokenName(e.target.value)}
-                                placeholder="e.g. Cursor IDE Assistant"
-                                className="mt-1 w-full"
-                            />
-                        </div>
-
-                        <div>
-                            <InputLabel value="Permitted Capabilities" />
-                            <div className="mt-2 space-y-2">
-                                {[
-                                    {
-                                        scope: 'requests:read',
-                                        label: 'Read Requests & Briefings',
-                                        desc: 'Allows reading tasks, sprints, briefing metrics, and task discussions.',
-                                    },
-                                    {
-                                        scope: 'requests:write',
-                                        label: 'Write Requests & Comments',
-                                        desc: 'Allows creating tasks, updating status/blockers, and posting progress comments.',
-                                    },
-                                    {
-                                        scope: '*',
-                                        label: 'Full Workspace Admin Access (*)',
-                                        desc: 'Grants complete read and write access across all tools.',
-                                    },
-                                ].map((item) => {
-                                    const checked = selectedAbilities.includes(item.scope);
-                                    return (
-                                        <label
-                                            key={item.scope}
-                                            className="flex items-start gap-2.5 rounded-lg border border-white/[0.06] bg-[#07090e]/60 p-2.5 cursor-pointer hover:bg-white/[0.02]"
-                                        >
-                                            <input
-                                                type="checkbox"
-                                                checked={checked}
-                                                onChange={(e) => {
-                                                    if (e.target.checked) {
-                                                        setSelectedAbilities([...selectedAbilities, item.scope]);
-                                                    } else {
-                                                        setSelectedAbilities(
-                                                            selectedAbilities.filter((s) => s !== item.scope)
-                                                        );
-                                                    }
-                                                }}
-                                                className="mt-0.5 rounded border-white/20 bg-black text-violet-500 focus:ring-violet-500"
-                                            />
-                                            <div className="text-xs">
-                                                <div className="font-semibold text-zinc-200">
-                                                    {item.label}
-                                                </div>
-                                                <div className="text-[11px] text-zinc-400">{item.desc}</div>
-                                            </div>
-                                        </label>
-                                    );
-                                })}
+                {modalCreatedToken ? (
+                    <div className="p-6 space-y-5 animate-in fade-in duration-200">
+                        <div className="flex items-center gap-3 border-b border-white/[0.08] pb-4">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-400">
+                                <CheckCircle2 className="h-5 w-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-base font-bold text-white">Agent Access Token Generated</h3>
+                                <p className="text-xs text-zinc-400">Copy your secret token now</p>
                             </div>
                         </div>
-                    </div>
 
-                    <div className="flex items-center justify-end gap-2 border-t border-white/[0.08] pt-4">
-                        <SecondaryButton
-                            onClick={() => setShowCreateTokenModal(false)}
-                            disabled={creatingToken}
-                        >
-                            Cancel
-                        </SecondaryButton>
-                        <PrimaryButton
-                            onClick={handleCreateToken}
-                            disabled={creatingToken || !tokenName.trim()}
-                        >
-                            {creatingToken ? 'Generating…' : 'Generate Token'}
-                        </PrimaryButton>
+                        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3.5 text-xs text-amber-200/90 leading-relaxed">
+                            <strong>Security Note:</strong> Make sure to copy this token right now. Relay Studio securely hashes tokens using SHA-256 upon generation, so you will <strong>never</strong> be able to view this secret again after closing this dialog!
+                        </div>
+
+                        <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-zinc-300">Personal Access Secret</label>
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="text"
+                                    readOnly
+                                    value={modalCreatedToken}
+                                    className="flex-1 rounded-xl border border-emerald-500/40 bg-black/60 px-3.5 py-2.5 font-mono text-xs text-emerald-300 selection:bg-emerald-500 selection:text-black focus:outline-none focus:ring-1 focus:ring-emerald-500"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(modalCreatedToken);
+                                        setCopiedToken(true);
+                                        toast.success('Agent token copied to clipboard!');
+                                        setTimeout(() => setCopiedToken(false), 2000);
+                                    }}
+                                    className="flex items-center gap-1.5 rounded-xl border border-emerald-500/40 bg-emerald-500/20 px-4 py-2.5 text-xs font-semibold text-emerald-300 hover:bg-emerald-500/30 transition-all shrink-0"
+                                >
+                                    {copiedToken ? (
+                                        <>
+                                            <Check className="h-4 w-4 text-emerald-400" />
+                                            <span>Copied!</span>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="h-4 w-4" />
+                                            <span>Copy Token</span>
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+
+                        <p className="text-[11px] text-zinc-400 leading-relaxed">
+                            This token has also been automatically inserted into your client configuration snippets on the <strong>Setup &amp; Configuration</strong> tab.
+                        </p>
+
+                        <div className="flex items-center justify-end gap-2 border-t border-white/[0.08] pt-4">
+                            <PrimaryButton
+                                onClick={closeCreateTokenModal}
+                            >
+                                Done
+                            </PrimaryButton>
+                        </div>
                     </div>
-                </div>
+                ) : (
+                    <div className="p-6 space-y-4">
+                        <div className="flex items-center gap-2 border-b border-white/[0.08] pb-3">
+                            <Key className="h-4 w-4 text-violet-400" />
+                            <h3 className="text-base font-bold text-white">Create Agent Access Token</h3>
+                        </div>
+
+                        <p className="text-xs text-zinc-400 leading-relaxed">
+                            Create a scoped personal access token for your AI coding assistant (Cursor, Claude Desktop, Antigravity, or Windsurf).
+                        </p>
+
+                        <div className="space-y-3">
+                            <div>
+                                <InputLabel value="Agent / Token Label" />
+                                <TextInput
+                                    value={tokenName}
+                                    onChange={(e) => setTokenName(e.target.value)}
+                                    placeholder="e.g. Cursor IDE Assistant"
+                                    className="mt-1 w-full"
+                                    autoFocus
+                                />
+                            </div>
+
+                            <div>
+                                <InputLabel value="Permitted Capabilities" />
+                                <div className="mt-2 space-y-2">
+                                    {[
+                                        {
+                                            scope: 'requests:read',
+                                            label: 'Read Requests & Briefings',
+                                            desc: 'Allows reading tasks, sprints, briefing metrics, and task discussions.',
+                                        },
+                                        {
+                                            scope: 'requests:write',
+                                            label: 'Write Requests & Comments',
+                                            desc: 'Allows creating tasks, updating status/blockers, and posting progress comments.',
+                                        },
+                                        {
+                                            scope: '*',
+                                            label: 'Full Workspace Admin Access (*)',
+                                            desc: 'Grants complete read and write access across all tools.',
+                                        },
+                                    ].map((item) => {
+                                        const checked = selectedAbilities.includes(item.scope);
+                                        return (
+                                            <label
+                                                key={item.scope}
+                                                className="flex items-start gap-2.5 rounded-lg border border-white/[0.06] bg-[#07090e]/60 p-2.5 cursor-pointer hover:bg-white/[0.02]"
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    checked={checked}
+                                                    onChange={(e) => {
+                                                        if (e.target.checked) {
+                                                            setSelectedAbilities([...selectedAbilities, item.scope]);
+                                                        } else {
+                                                            setSelectedAbilities(
+                                                                selectedAbilities.filter((s) => s !== item.scope)
+                                                            );
+                                                        }
+                                                    }}
+                                                    className="mt-0.5 rounded border-white/20 bg-black text-violet-500 focus:ring-violet-500"
+                                                />
+                                                <div className="text-xs">
+                                                    <div className="font-semibold text-zinc-200">
+                                                        {item.label}
+                                                    </div>
+                                                    <div className="text-[11px] text-zinc-400">{item.desc}</div>
+                                                </div>
+                                            </label>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-end gap-2 border-t border-white/[0.08] pt-4">
+                            <SecondaryButton
+                                onClick={closeCreateTokenModal}
+                                disabled={creatingToken}
+                            >
+                                Cancel
+                            </SecondaryButton>
+                            <PrimaryButton
+                                onClick={handleCreateToken}
+                                disabled={creatingToken || !tokenName.trim()}
+                            >
+                                {creatingToken ? 'Generating…' : 'Generate Token'}
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                )}
             </Modal>
 
             {/* Revoke Token Confirmation Dialog */}
