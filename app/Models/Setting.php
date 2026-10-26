@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
 
 final class Setting extends Model
 {
@@ -22,7 +21,7 @@ final class Setting extends Model
     public static function get(string $key, mixed $default = null): mixed
     {
         try {
-            $record = static::query()->where('key', $key)->first();
+            $record = self::query()->where('key', $key)->first();
             if ($record === null || $record->value === null) {
                 return $default;
             }
@@ -45,7 +44,7 @@ final class Setting extends Model
                 ? json_encode($value)
                 : (string) $value;
 
-            static::query()->updateOrCreate(
+            self::query()->updateOrCreate(
                 ['key' => $key],
                 ['value' => $serialized]
             );
@@ -60,7 +59,7 @@ final class Setting extends Model
     public static function forget(string $key): void
     {
         try {
-            static::query()->where('key', $key)->delete();
+            self::query()->where('key', $key)->delete();
         } catch (\Throwable) {
             // Ignore
         }

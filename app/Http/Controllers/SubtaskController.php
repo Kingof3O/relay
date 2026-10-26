@@ -11,6 +11,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 final class SubtaskController extends Controller
 {
@@ -27,9 +28,15 @@ final class SubtaskController extends Controller
             abort(422, 'Cannot nest subtasks under another subtask.');
         }
 
+        $wsId = $workRequest->workspace_id;
         $validated = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'assignee_id' => ['sometimes', 'nullable', 'integer', 'exists:users,id'],
+            'assignee_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(fn ($q) => $wsId ? $q->whereIn('id', fn ($sub) => $sub->select('user_id')->from('workspace_user')->where('workspace_id', $wsId))->where('active', true) : $q->where('active', true)),
+            ],
             'story_points' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:100'],
         ]);
 

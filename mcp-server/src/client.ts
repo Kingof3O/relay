@@ -11,7 +11,7 @@ export class RelayClient {
   private token: string;
 
   constructor(baseUrl?: string, token?: string) {
-    const rawUrl = baseUrl || process.env.RELAY_URL || 'https://relay.schmobinquiz.de';
+    const rawUrl = baseUrl || process.env.RELAY_URL || 'http://localhost:8080';
     this.baseUrl = rawUrl.replace(/\/+$/, '');
     this.token = (token || process.env.RELAY_API_TOKEN || '').trim();
 
@@ -28,6 +28,8 @@ export class RelayClient {
       'Authorization': `Bearer ${this.token}`,
       'Accept': 'application/json',
       'Content-Type': 'application/json',
+      'User-Agent': 'Relay-MCP-Server/1.0',
+      'X-Relay-Agent': 'mcp-server',
       ...(options.headers as Record<string, string> | undefined),
     };
 
@@ -63,7 +65,9 @@ export class RelayClient {
    * Fetches the daily morning briefing.
    */
   async getBriefing(sinceHours: number = 24): Promise<RelayBriefing> {
-    return this.request<RelayBriefing>(`/api/v1/briefing?since_hours=${encodeURIComponent(sinceHours)}`);
+    return this.request<RelayBriefing>(`/api/v1/briefing?since_hours=${encodeURIComponent(sinceHours)}`, {
+      headers: { 'X-Relay-Tool': 'relay_get_daily_briefing' },
+    });
   }
 
   /**
@@ -84,14 +88,18 @@ export class RelayClient {
     if (filters.page) params.set('page', String(filters.page));
 
     const qs = params.toString();
-    return this.request<{ data: RelayTask[]; meta?: any }>(`/api/v1/work-requests${qs ? `?${qs}` : ''}`);
+    return this.request<{ data: RelayTask[]; meta?: any }>(`/api/v1/work-requests${qs ? `?${qs}` : ''}`, {
+      headers: { 'X-Relay-Tool': 'relay_list_tasks' },
+    });
   }
 
   /**
    * Fetches full details for a single task.
    */
   async getTask(id: number): Promise<{ data: RelayTask }> {
-    return this.request<{ data: RelayTask }>(`/api/v1/work-requests/${id}`);
+    return this.request<{ data: RelayTask }>(`/api/v1/work-requests/${id}`, {
+      headers: { 'X-Relay-Tool': 'relay_get_task' },
+    });
   }
 
   /**
@@ -112,6 +120,7 @@ export class RelayClient {
   }): Promise<{ data: RelayTask }> {
     return this.request<{ data: RelayTask }>('/api/v1/work-requests', {
       method: 'POST',
+      headers: { 'X-Relay-Tool': 'relay_create_task' },
       body: JSON.stringify(data),
     });
   }
@@ -137,6 +146,7 @@ export class RelayClient {
   ): Promise<{ data: RelayTask }> {
     return this.request<{ data: RelayTask }>(`/api/v1/work-requests/${id}`, {
       method: 'PATCH',
+      headers: { 'X-Relay-Tool': 'relay_update_task' },
       body: JSON.stringify(data),
     });
   }
@@ -145,7 +155,9 @@ export class RelayClient {
    * Lists comments on a task.
    */
   async listComments(taskId: number): Promise<{ request_id: number; comments: RelayComment[] }> {
-    return this.request<{ request_id: number; comments: RelayComment[] }>(`/api/v1/work-requests/${taskId}/comments`);
+    return this.request<{ request_id: number; comments: RelayComment[] }>(`/api/v1/work-requests/${taskId}/comments`, {
+      headers: { 'X-Relay-Tool': 'relay_list_comments' },
+    });
   }
 
   /**
@@ -154,6 +166,7 @@ export class RelayClient {
   async addComment(taskId: number, body: string): Promise<{ message: string; comment: RelayComment }> {
     return this.request<{ message: string; comment: RelayComment }>(`/api/v1/work-requests/${taskId}/comments`, {
       method: 'POST',
+      headers: { 'X-Relay-Tool': 'relay_add_comment' },
       body: JSON.stringify({ body }),
     });
   }
@@ -162,20 +175,26 @@ export class RelayClient {
    * Lists projects/areas in the workspace.
    */
   async listProjects(): Promise<{ data: RelayProject[] }> {
-    return this.request<{ data: RelayProject[] }>('/api/v1/projects');
+    return this.request<{ data: RelayProject[] }>('/api/v1/projects', {
+      headers: { 'X-Relay-Tool': 'relay_list_projects' },
+    });
   }
 
   /**
    * Gets the current active cycle.
    */
   async getActiveCycle(): Promise<{ active_cycle: RelayCycle | null; message?: string }> {
-    return this.request<{ active_cycle: RelayCycle | null; message?: string }>('/api/v1/cycles/current');
+    return this.request<{ active_cycle: RelayCycle | null; message?: string }>('/api/v1/cycles/current', {
+      headers: { 'X-Relay-Tool': 'relay_get_active_cycle' },
+    });
   }
 
   /**
    * Lists recent cycles.
    */
   async listCycles(): Promise<{ data: RelayCycle[] }> {
-    return this.request<{ data: RelayCycle[] }>('/api/v1/cycles');
+    return this.request<{ data: RelayCycle[] }>('/api/v1/cycles', {
+      headers: { 'X-Relay-Tool': 'relay_list_cycles' },
+    });
   }
 }

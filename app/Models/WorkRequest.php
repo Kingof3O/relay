@@ -59,7 +59,10 @@ class WorkRequest extends Model
         static::creating(function (WorkRequest $request): void {
             if ($request->workspace_id === null) {
                 $user = auth()->user() ?? ($request->requester_id ? User::find($request->requester_id) : null);
-                $workspaceId = $user?->currentWorkspace()?->id ?? $user?->workspaces()->first()?->id;
+                $workspaceId = $user?->currentWorkspace()?->id
+                    ?? $user?->workspaces()->first()?->id
+                    ?? $user?->ownedWorkspaces()->first()?->id
+                    ?? ($request->area_id ? Area::find($request->area_id)?->workspace_id : null);
                 if ($workspaceId) {
                     $request->workspace_id = $workspaceId;
                 }

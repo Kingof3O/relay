@@ -2,7 +2,7 @@ import Card from '@/Components/Card';
 import { RequestActivityItem, WorkspaceUser } from '@/types/workspace';
 import { usePage } from '@inertiajs/react';
 import { FormEvent, useState, useRef, useEffect, KeyboardEvent, ChangeEvent } from 'react';
-import { MessageSquare, Send, AtSign } from 'lucide-react';
+import { MessageSquare, Send, AtSign, Bot } from 'lucide-react';
 
 interface RequestDiscussionSectionProps {
     activities: RequestActivityItem[];
@@ -210,37 +210,71 @@ export default function RequestDiscussionSection({
 
             {activities.length ? (
                 <div className="mt-5 divide-y divide-white/[0.04]">
-                    {activities.map((activity) => (
-                        <div key={activity.id} className="flex gap-3 py-3.5 first:pt-0">
-                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-indigo-600 text-xs font-bold text-white shadow-sm">
-                                {(activity.user?.name ?? 'S').charAt(0)}
-                            </div>
-                            <div className="min-w-0 flex-1">
-                                <div className="flex flex-wrap items-baseline gap-2">
-                                    <span className="text-xs font-bold text-zinc-200">
-                                        {activity.user?.name ?? 'System'}
-                                    </span>
-                                    {activity.user?.username && (
-                                        <span className="font-mono text-[10px] text-zinc-500">
-                                            @{activity.user.username}
-                                        </span>
+                    {activities.map((activity) => {
+                        const isAgent = Boolean(
+                            activity.is_agent ||
+                            activity.type === 'agent_action' ||
+                            activity.metadata?.is_agent
+                        );
+                        const toolName = activity.metadata?.tool ? String(activity.metadata.tool) : null;
+                        const tokenName = activity.metadata?.token_name ? String(activity.metadata.token_name) : null;
+
+                        return (
+                            <div key={activity.id} className="flex gap-3 py-3.5 first:pt-0">
+                                <div
+                                    className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white shadow-sm ${
+                                        isAgent
+                                            ? 'bg-gradient-to-br from-violet-600 via-indigo-600 to-cyan-500 shadow-violet-500/20'
+                                            : 'bg-gradient-to-br from-violet-500 to-indigo-600'
+                                    }`}
+                                >
+                                    {isAgent ? (
+                                        <Bot className="h-3.5 w-3.5 text-white" />
+                                    ) : (
+                                        (activity.user?.name ?? 'S').charAt(0)
                                     )}
-                                    <span className="text-[10px] text-zinc-500">
-                                        {dateLabel(activity.created_at)}
-                                    </span>
                                 </div>
-                                {activity.type === 'comment' ? (
-                                    <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-zinc-300">
-                                        {renderCommentBody(activity.body || '')}
-                                    </p>
-                                ) : (
-                                    <p className="mt-1 text-xs text-zinc-400">
-                                        {activity.body || activityLabel(activity.type)}
-                                    </p>
-                                )}
+                                <div className="min-w-0 flex-1">
+                                    <div className="flex flex-wrap items-baseline gap-2">
+                                        <span className="text-xs font-bold text-zinc-200">
+                                            {activity.user?.name ?? 'System'}
+                                        </span>
+                                        {activity.user?.username && (
+                                            <span className="font-mono text-[10px] text-zinc-500">
+                                                @{activity.user.username}
+                                            </span>
+                                        )}
+                                        {isAgent && (
+                                            <span
+                                                className="inline-flex items-center gap-1 rounded-md border border-violet-500/40 bg-violet-500/15 px-1.5 py-0.5 text-[10px] font-semibold text-violet-300 shadow-sm shadow-violet-500/10"
+                                                title={tokenName ? `Authorized via ${tokenName}` : 'AI / MCP Agent'}
+                                            >
+                                                <Bot className="h-3 w-3 text-violet-400" />
+                                                <span>Agent</span>
+                                                {toolName && (
+                                                    <span className="text-[9px] font-mono text-violet-400/80">
+                                                        ({toolName})
+                                                    </span>
+                                                )}
+                                            </span>
+                                        )}
+                                        <span className="text-[10px] text-zinc-500">
+                                            {dateLabel(activity.created_at)}
+                                        </span>
+                                    </div>
+                                    {activity.type === 'comment' ? (
+                                        <p className="mt-1 whitespace-pre-wrap text-xs leading-relaxed text-zinc-300">
+                                            {renderCommentBody(activity.body || '')}
+                                        </p>
+                                    ) : (
+                                        <p className="mt-1 text-xs text-zinc-400">
+                                            {activity.body || activityLabel(activity.type)}
+                                        </p>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             ) : (
                 <div className="py-8 text-center text-xs text-zinc-600">

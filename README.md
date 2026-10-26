@@ -3,114 +3,193 @@
 </p>
 
 <p align="center">
-  <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/License-Apache_2.0-blue.svg?style=for-the-badge" alt="License" /></a>
+  <a href="docs/licensing.md"><img src="https://img.shields.io/badge/License-Commercial_Source--Available-blue.svg?style=for-the-badge" alt="License" /></a>
   <a href="https://www.php.net/"><img src="https://img.shields.io/badge/PHP-8.3_%7C_8.4-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" /></a>
   <a href="https://laravel.com/"><img src="https://img.shields.io/badge/Laravel-13.x-FF2D20?style=for-the-badge&logo=laravel&logoColor=white" alt="Laravel" /></a>
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" /></a>
   <a href="https://www.typescriptlang.org/"><img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" /></a>
   <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
-  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/Model_Context_Protocol-MCP_Ready-8B5CF6?style=for-the-badge&logo=anthropic&logoColor=white" alt="MCP Ready" /></a>
+  <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/Model_Context_Protocol-1st_Party_MCP-8B5CF6?style=for-the-badge&logo=anthropic&logoColor=white" alt="MCP Ready" /></a>
   <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-Production_Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" /></a>
-  <a href="https://pestphp.com/"><img src="https://img.shields.io/badge/Tests-244_Passing-10B981?style=for-the-badge&logo=pest&logoColor=white" alt="Tests" /></a>
+  <a href="#-verified-technical-benchmarks"><img src="https://img.shields.io/badge/Tests-251_Passing-10B981?style=for-the-badge&logo=pest&logoColor=white" alt="Tests" /></a>
 </p>
 
 <p align="center">
-  <strong>Linear-inspired ergonomics, sub-second cycle velocity, and complete data sovereignty for modern software teams.</strong>
+  <strong>The self-hosted workspace for software teams and AI coding agents.</strong><br/>
+  Linear-inspired speed, complete data sovereignty, and native Model Context Protocol (MCP) integration.
 </p>
 
 <p align="center">
-  <a href="#-overview">Overview</a> •
-  <a href="#-why-relay-studio-competitive-breakdown">Competitive Breakdown</a> •
-  <a href="#-core-capabilities">Capabilities</a> •
-  <a href="#-model-context-protocol-mcp--autonomous-ai-agents">AI &amp; MCP Integration</a> •
-  <a href="#-interface-showcase">Interface Showcase</a> •
+  <a href="#-why-relay-studio">Why Relay Studio</a> •
+  <a href="#-1-command-quickstart">Quickstart</a> •
+  <a href="#-key-capabilities">Capabilities</a> •
+  <a href="#-first-party-mcp-ai-assistant-guide">AI &amp; MCP Integration</a> •
+  <a href="#-interface-showcase">Showcase</a> •
   <a href="#-system-architecture">Architecture</a> •
-  <a href="#-quickstart-guide">Quickstart</a> •
-  <a href="#-configuration-reference">Configuration</a> •
-  <a href="#-artisan-cli-tools">CLI Tools</a> •
-  <a href="#-rest-api-v1--webhooks">REST API &amp; Webhooks</a> •
-  <a href="#-verification--quality-benchmarks">Verification</a>
+  <a href="#-verified-technical-benchmarks">Benchmarks</a> •
+  <a href="#-licensing--commercial-tiers">Licensing</a> •
+  <a href="#-documentation-suite">Documentation</a>
 </p>
 
 ---
 
-## 🎯 Overview
+## ⚡ Why Relay Studio?
 
-**Relay Studio** is an open-source, self-hostable project management and agile issue delivery platform engineered for studios and engineering teams who refuse to compromise between **interface speed** and **data sovereignty**.
+Traditional issue trackers force engineering teams into an uncomfortable compromise: surrender your confidential roadmap data to third-party multi-tenant clouds and endure sluggish page transitions, or deploy legacy self-hosted software that requires gigabytes of RAM and lacks modern AI capabilities.
 
-While commercial issue trackers trap engineering workflows inside proprietary clouds, enforce punitive per-seat licensing taxes, and suffer from sluggish page transitions, Relay Studio delivers:
+Relay Studio delivers a third way:
 
-* **Sub-Second Latency:** Inertia.js SPA hydration powered by Laravel 13 and React 19 with zero full page reloads.
-* **Keyboard-First Ergonomics:** Seamless `⌘K` command launcher, quick-capture drawers, and Vim cursor navigation (`j`/`k`/`Enter`/`c`).
-* **Autonomous AI Integration:** First-party Model Context Protocol (MCP) server enables Antigravity, Cursor, and Claude Desktop agents to fetch morning briefings, triage tasks, transition Kanban cards, and post comments.
-* **Complete Self-Hosting Control:** Zero phone-home telemetry, full multi-tenancy, and turnkey Docker orchestration with automated backup tooling.
-* **Real-Time Collaboration:** Laravel Reverb WebSocket presence and live issue synchronization without third-party SaaS dependencies.
-
----
-
-## 🥊 Why Relay Studio? (Competitive Breakdown)
-
-How does Relay Studio compare against industry standards and open-source alternatives?
-
-| Dimension | ⚡ Relay Studio | 📐 Linear | 🐘 Jira (Atlassian) | ✈️ Plane | 📋 GitHub Issues |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Hosting Model** | **100% Self-Hosted & Sovereign** | Cloud Only (SaaS) | Cloud Only (Server EOL) | Self-Hosted / Cloud | Cloud Only |
-| **Per-Seat License Cost** | **$0 (Apache 2.0)** | $8 – $16 / user / mo | $8.15 – $16 / user / mo | Free tier + Paid Enterprise | Bundled in GitHub |
-| **Interface Latency** | **< 100ms (Inertia SPA)** | < 100ms (SPA) | 1,200ms – 3,500ms | 300ms – 800ms | 400ms – 1,000ms |
-| **Keyboard Ergonomics (⌘K / Vim)** | **Full Native Support** | Native Support | Partial / Mouse-heavy | Partial | Basic Shortcuts |
-| **Real-Time Multi-User Presence** | **Native WebSocket (Reverb)** | Proprietary Sync | Polling / Slow Webhooks | WebSockets | Polling |
-| **Agile Cycles & Auto-Rollover** | **Automated & Idempotent** | Native Cycles | Manual Sprints | Sprints Module | Milestones only |
-| **Disaster Recovery & CLI Backups** | **Built-in (`relay:backup`)** | Cloud Export (JSON) | Paid Add-on / Manual | Docker DB Dump | Git Export |
-| **Tech Stack Architecture** | **Laravel 13 + React 19** | Custom React Stack | Java / OSGi Legacy | Next.js + Django | Rails + Web Components |
-| **AI Agent MCP Integration** | **Native 1st-Party MCP Server** | Community plugins only | Atlassian Forge only | Limited REST | Copilot only |
-| **Memory Footprint (App runtime)** | **~180 MB RAM** | N/A (Closed source) | 4 GB – 8 GB RAM min | 1.5 GB – 3 GB RAM | N/A (Closed source) |
-| **Data Privacy & Telemetry** | **0 Telemetry / Air-Gappable** | Closed telemetry | Extensive Tracking | Community telemetry | Microsoft Telemetry |
+* 🛡️ **Complete Data Sovereignty:** Run on your own servers, VPS, or air-gapped private cloud. Zero phone-home telemetry, zero third-party data profiling, and complete compliance with EU GDPR, HIPAA, and SOC 2 data residency policies.
+* ⚡ **Sub-Second Interface Latency:** Inertia.js client-side routing combined with React 19 and Laravel 13 delivers instant transitions with zero full-page reloads. Pages render in under 100 milliseconds.
+* 🤖 **First-Party Native MCP Integration:** Built-in Model Context Protocol server lets autonomous AI coding agents (Antigravity, Cursor, Claude Desktop, Windsurf) triage tickets, update sprint boards, post technical comments, and summarize morning catch-ups directly via standard JSON-RPC.
+* ⌨️ **Keyboard-First Ergonomics:** Designed for developers who live on the keyboard. Global `⌘K` command launcher, fast fuzzy search, and full Vim key navigation (`j`, `k`, `Enter`, `c`).
+* 🔄 **Real-Time Collaboration Without SaaS Taxes:** Laravel Reverb WebSocket presence and live board synchronization run natively on your infrastructure without monthly per-seat SaaS bills.
 
 ---
 
-## ⚡ Core Capabilities
+## 🥊 Competitive Breakdown
+
+| Feature / Metric | ⚡ Relay Studio | 📐 Linear | 🐘 Jira Cloud | ✈️ Plane |
+| :--- | :---: | :---: | :---: | :---: |
+| **Hosting Model** | **100% Self-Hosted (Sovereign)** | SaaS Cloud Only | SaaS Cloud Only | Self-Hosted / Cloud |
+| **Pricing Model** | **One-time Purchase (Perpetual)** | $8 – $16 / user / mo | $8.15 – $16 / user / mo | $8 – $15 / user / mo |
+| **First-Party MCP Server** | **Native Built-in (`@relay/mcp-server`)** | None (Community REST) | None (Atlassian Forge) | None |
+| **Average Page Latency** | **< 100 ms (Inertia SPA)** | < 100 ms | 1,200 ms – 3,500 ms | 300 ms – 800 ms |
+| **Keyboard Ergonomics** | **`⌘K` + Vim Navigation (`j`/`k`/`c`)** | `⌘K` Support | Basic Shortcuts | Basic Shortcuts |
+| **Real-Time Presence** | **Native Reverb WebSockets** | Proprietary Sync | Polling / Delays | WebSockets |
+| **Automated Sprint Rollover** | **Built-in CLI (`relay:cycle-rollover`)** | Native Cycles | Manual Scrum Sprints | Sprints Module |
+| **Disaster Recovery Tools** | **Built-in (`relay:backup` / `restore`)** | JSON Export | Manual Export | Manual Docker Dump |
+| **Runtime Memory Footprint** | **~180 MB RAM** | N/A (Closed SaaS) | 4 GB – 8 GB RAM min | 1.5 GB – 3 GB RAM |
+| **Source Code Access** | **Complete Source Included** | Proprietary Closed | Proprietary Closed | Open Source Core |
+
+---
+
+## 🚀 1-Command Quickstart
+
+Deploy Relay Studio on a fresh Docker-enabled host in under two minutes:
+
+```bash
+curl -fsSL https://get.relay.studio/install.sh | bash
+```
+
+### What happens automatically:
+1. Validates Docker and Docker Compose v2.
+2. Generates cryptographic production secrets (`APP_KEY`, `DB_PASSWORD`, `REVERB_APP_SECRET`).
+3. Boots the container cluster (`relay-app`, `relay-db`, `relay-redis`, `relay-mailpit`).
+4. Executes database schema migrations and establishes the initial workspace.
+5. Runs `php artisan relay:doctor` to verify container networking and health.
+
+After installation completes, navigate to:
+* **Web Workspace:** `http://localhost:8080`
+* **Default Admin Account:** `admin@relay.studio` / `password` *(Prompted to update on first login)*
+
+---
+
+## 🎯 Key Capabilities
 
 ### 1. Issue Triage & Delivery Pipeline (`/requests`)
-* **Optimistic Kanban Board:** Smooth drag-and-drop transitions (`@hello-pangea/dnd`) across `new` (Backlog), `ready` (Ready), `doing` (In Progress), `review` (In Review), and `done` (Done).
-* **Status Workflows & Validations:** Forward and backward state transitions with optimistic UI rollbacks on network failure.
+* **High-Velocity Kanban Board:** Drag-and-drop status transitions across `new` (Backlog), `ready` (Ready), `doing` (In Progress), `review` (In Review), and `done` (Done) with optimistic UI updates.
 * **Blocking Dependencies:** Explicit "Blocks" and "Blocked By" relationship tracking with circular dependency detection.
-* **Subtasks & Hierarchical Breakdown:** Track parent tickets with real-time aggregate completion percentage bars.
-* **Story Points & Estimation:** Fibonacci points sizing (`1, 2, 3, 5, 8, 13`) with aggregate sprint load forecasting.
-* **Taxonomy & Tags:** Multi-label tagging, area classification, and priority assignment (`urgent`, `normal`, `low`).
+* **Subtasks & Hierarchical Breakdown:** Track parent tickets with real-time aggregate completion progress bars.
+* **Story Points Sizing:** Fibonacci estimation scale (`1, 2, 3, 5, 8, 13`) with sprint load forecasting.
+* **Taxonomy & Tags:** Multi-label tagging, area classification, and priority matrix (`urgent`, `normal`, `low`).
 
 ### 2. Sprints, Cycles & Velocity Tracking (`/cycles`)
 * **Automated Cycle Rollover:** Scheduled automated rollover (`relay:cycle-rollover`) moves incomplete issues to subsequent sprints with strict idempotency guards.
-* **Burndown Analytics:** Dynamic burndown visualization powered by Recharts, tracking ideal vs. actual remaining story points.
-* **Velocity Metrics:** Rolling historical velocity calculation across delivered iterations.
-* **Quarterly Roadmaps (`/roadmap`):** Milestone timeline grouping tasks by target horizon and release dates.
+* **Burndown Analytics:** Interactive burndown charts powered by Recharts, tracking ideal vs. actual remaining story points.
+* **Historical Velocity:** Rolling velocity calculations across delivered iterations.
+* **Quarterly Roadmaps (`/roadmap`):** Milestone timeline grouping projects by target release horizons.
 
 ### 3. Keyboard-First Ergonomics
-* **Global Command Launcher (`⌘K` / `Ctrl+K`):** Instantly jump to any project, issue, cycle, or settings view.
-* **Vim Keyboard Navigation:** Navigate lists and Kanban boards with `j` (down), `k` (up), `Enter` (open), `c` (new issue), and `Esc` (dismiss).
-* **Instant Slideout Drawers:** Inspect and edit ticket attributes without losing context or leaving the board.
+* **Global Command Launcher (`⌘K` / `Ctrl+K`):** Instantly search and jump to any project, issue, cycle, or settings view in under 50ms.
+* **Vim Keyboard Shortcuts:** Browse issues and Kanban columns using `j` (down), `k` (up), `Enter` (open), `c` (create issue), and `Esc` (dismiss).
+* **Context Slideout Drawers:** Inspect and update ticket attributes without losing context or leaving the board.
 
 ### 4. Real-Time Collaboration & Discussion
 * **WebSocket Presence:** Powered by Laravel Reverb and Echo; see who is viewing or editing an issue simultaneously.
-* **Rich Markdown Editor:** Built on TipTap with syntax highlighting, bullet/task lists, quotes, and image previews.
+* **TipTap Markdown Editor:** Rich editing with syntax highlighting, bullet/task lists, quotes, and inline image previews.
 * **User Mentions & Instant Notifications:** In-app activity bell, chronological discussion logs, and email notifications.
 
 ### 5. Media Pipeline & Secure Storage
-* **Drag-and-Drop File Uploads:** Upload screenshots, design mockups, logs, and specs.
-* **WebP Image Pipeline:** Automatic image conversion and thumbnail creation for high-performance previews.
-* **Secure Storage Driver:** Local disk or AWS S3 / MinIO compatible object storage.
+* **Drag-and-Drop File Uploads:** Upload screenshots, design mockups, and logs directly onto tickets and comments.
+* **WebP Pipeline:** Automatic image optimization and thumbnail creation for high-performance previews.
+* **Storage Driver Compatibility:** Local NVMe disk or AWS S3 / MinIO / Cloudflare R2 object storage.
 
 ### 6. Enterprise Security & Governance
 * **Multi-Tenancy & Workspace Scoping:** Strict workspace boundary enforcement across all queries, search indices, and API controllers.
-* **Granular RBAC:** Five distinct workspace roles: `Owner`, `Admin`, `Developer`, `Designer`, and `Member`.
-* **Two-Factor Authentication (2FA):** Time-based One-Time Passwords (TOTP via Google Authenticator / 1Password) with emergency recovery codes.
-* **Sanctum Personal Access Tokens (PAT):** Scoped REST API tokens with individual revocation (`/profile/tokens`).
-* **Audit Trails:** Immutable audit logs capturing every ticket transition, assignment modification, and workspace setting update.
+* **Role-Based Access Control (RBAC):** Five distinct workspace roles: `Owner`, `Admin`, `Developer`, `Designer`, and `Member`.
+* **Two-Factor Authentication (2FA):** Time-based One-Time Passwords (TOTP via Google Authenticator, 1Password) with emergency recovery codes.
+* **Personal Access Tokens (PAT):** Scoped REST API tokens (`requests:read`, `requests:write`, `comments:write`, `*`) with instant revocation.
+* **Immutable Audit Trail:** Comprehensive activity logging in `workspace_audits` capturing before/after diffs for all mutations.
 
-### 7. Autonomous AI & Model Context Protocol (MCP)
-* **First-Party MCP Server (`@relay/mcp-server`):** Standard stdio JSON-RPC implementation for AI assistants.
-* **The Morning Catch-Up:** `relay_get_daily_briefing` provides an instant morning summary of urgent blockers, overnight tickets, and sprint velocity.
-* **Bi-Directional Action:** Agents can autonomously move tasks (`relay_update_task`), post progress comments (`relay_add_comment`), and create bug tickets (`relay_create_task`).
-* **Multi-Client Ready:** Turnkey support for Antigravity, Cursor, Claude Desktop, and Windsurf (see [MCP Integration Guide](docs/mcp-integration.md)).
+---
+
+## 🤖 First-Party MCP AI Assistant Guide
+
+Relay Studio includes a first-party **Model Context Protocol (MCP)** server (`@relay/mcp-server`), allowing AI coding agents in **Antigravity**, **Cursor**, **Claude Desktop**, and **Windsurf** to act as autonomous technical peers.
+
+```mermaid
+flowchart LR
+    subgraph Client IDE / AI Application
+        Agent["Autonomous Agent<br/>(Cursor / Claude / Antigravity / Windsurf)"]
+    end
+
+    subgraph Local Workstation
+        MCP["Relay MCP Server<br/><code>mcp-server/dist/index.js</code>"]
+    end
+
+    subgraph Relay Studio Server
+        API["REST API v1<br/><code>/api/v1/*</code>"]
+        Auth["Sanctum Token Gate"]
+        Workspace["Tenant Scoping"]
+        DB[(Database)]
+    end
+
+    Agent <-->|stdio JSON-RPC 2.0| MCP
+    MCP <-->|HTTPS Bearer Authorization| API
+    API --> Auth --> Workspace --> DB
+```
+
+### 🌅 The Morning Catch-Up Workflow
+Ask your agent: *"Good morning! What's our sprint status and what should I work on today?"*
+
+The agent calls `relay_get_daily_briefing` and provides:
+1. 🚨 **Urgent & Blocked Tasks:** Immediate items needing engineering attention.
+2. 📥 **Overnight Tickets:** New requests created in the last 24 hours.
+3. 🏁 **Active Sprint Status:** Points delivered, remaining tasks, and cycle end countdown.
+4. 📬 **Assigned & Mentions:** Tasks assigned to you or mentioning your username.
+
+### 🛠️ Core MCP Tools
+| Tool | Description |
+| :--- | :--- |
+| **`relay_get_daily_briefing`** | Fetches the full morning digest in one roundtrip |
+| **`relay_list_tasks`** | Filters tasks by status (`ready`, `doing`, `review`, etc.), priority, or project |
+| **`relay_get_task`** | Retrieves complete ticket details, description, subtasks & blockers |
+| **`relay_update_task`** | Moves cards across board stages and updates properties with concurrency locks |
+| **`relay_add_comment`** | Adds technical progress comments and notifies `@mentions` |
+| **`relay_create_task`** | Creates new tasks, bugs, or subtasks under any project |
+| **`relay_get_active_cycle`** | Retrieves active sprint velocity and burndown progress |
+| **`relay_list_projects`** | Lists all workspace projects and areas |
+
+### Quick Cursor / Claude Setup
+Generate a Personal Access Token (`php artisan relay:token <username> "agent-mcp"`), build the server (`cd mcp-server && npm run build`), and add to your client config (`~/.cursor/mcp.json` or `claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "relay": {
+      "command": "node",
+      "args": ["/path/to/relay/mcp-server/dist/index.js"],
+      "env": {
+        "RELAY_URL": "https://relay.yourdomain.com",
+        "RELAY_API_TOKEN": "1|your_personal_access_token_here"
+      }
+    }
+  }
+}
+```
+
+For complete setup guides, client walkthroughs, and security hardening, see the **[MCP Integration Guide](docs/mcp.md)** and **[MCP Security Guide](docs/mcp-security.md)**.
 
 ---
 
@@ -151,7 +230,7 @@ How does Relay Studio compare against industry standards and open-source alterna
 
 ## 🏗️ System Architecture
 
-Relay Studio is built following clean, testable architectural principles:
+Relay Studio is built on a modern, decoupled web architecture:
 
 ```mermaid
 flowchart TD
@@ -161,8 +240,8 @@ flowchart TD
     Agent["AI Coding Agents (Antigravity / Cursor / Claude)"]
     MCP["Relay MCP Server (stdio / JSON-RPC)"]
     
-    Reverb["Laravel Reverb Server"]
-    Nginx["Nginx Web Server"]
+    Reverb["Laravel Reverb Server (:8080)"]
+    Nginx["Nginx Reverse Proxy (:443)"]
     
     Controller["Laravel 13 Controllers"]
     FormRequest["FormRequest Validation"]
@@ -172,11 +251,11 @@ flowchart TD
     
     Database[(MySQL 8.4 / PostgreSQL / SQLite)]
     Redis[(Redis 7 Cache / Queues)]
-    Storage["Object Storage / Local Disk"]
+    Storage["Object Storage / NVMe Disk"]
     
     Client -->|Inertia Navigation| Inertia
     Client -->|Live Presence & Events| Echo
-    Echo <-->|WebSocket ws://| Reverb
+    Echo <-->|WebSocket wss://| Reverb
     
     Agent <-->|stdio JSON-RPC| MCP
     MCP -->|HTTPS REST API / Token Auth| Nginx
@@ -196,251 +275,63 @@ flowchart TD
 * **Backend Framework:** [Laravel 13](https://laravel.com/) (PHP 8.3 / 8.4)
 * **Frontend Architecture:** [React 19](https://react.dev/), [TypeScript 5.9](https://www.typescriptlang.org/), [Inertia.js 3](https://inertiajs.com/)
 * **Styling System:** [Tailwind CSS 4](https://tailwindcss.com/) with Dark Obsidian palette
-* **WebSocket Server:** [Laravel Reverb](https://reverb.laravel.com/)
-* **Database Compatibility:** MySQL 8.4+, PostgreSQL 15+, SQLite 3
+* **WebSocket Engine:** [Laravel Reverb](https://reverb.laravel.com/)
+* **Database Engines:** MySQL 8.4+, PostgreSQL 15+, SQLite 3
 * **Cache & Queues:** Redis 7
-* **Testing Engine:** Pest PHP & PHPUnit (244 passing tests)
+* **Process Supervisor:** Supervisord
 
 ---
 
-## 🤖 Model Context Protocol (MCP) & Autonomous AI Agents
+## 🧪 Verified Technical Benchmarks
 
-Relay Studio ships with a first-party **Model Context Protocol (MCP)** server (`mcp-server/`), allowing AI coding agents in **Antigravity**, **Cursor**, **Claude Desktop**, and **Windsurf** to act as autonomous technical peers.
+Relay Studio enforces strict static analysis, strict TypeScript typing, and automated regression testing before every release:
 
-### 🌅 The Morning Catch-Up Workflow
-Ask your agent: *"Good morning! What's new in Relay today?"*
-The agent calls `relay_get_daily_briefing` and provides:
-1. 🚨 **Urgent & Blocked Tasks:** Immediate items needing engineering attention.
-2. 📥 **Overnight Tickets:** New requests created in the last 24 hours.
-3. 🏁 **Active Sprint Status:** Points delivered, remaining tasks, and cycle end countdown.
-4. 📬 **Assigned & Mentions:** Tasks assigned to you or mentioning your username.
-
-### 🛠️ Core MCP Tools
-| Tool | Description |
-| :--- | :--- |
-| **`relay_get_daily_briefing`** | Fetches the full morning digest in one roundtrip |
-| **`relay_list_tasks`** | Filters tasks by status (`ready`, `doing`, `review`, etc.), priority, or project |
-| **`relay_get_task`** | Retrieves complete ticket details, description, subtasks & blockers |
-| **`relay_update_task`** | Moves cards across board stages and updates properties |
-| **`relay_add_comment`** | Adds technical progress comments and notifies `@mentions` |
-| **`relay_create_task`** | Creates new tasks, bugs, or subtasks under any project |
-| **`relay_get_active_cycle`** | Retrieves active sprint velocity and burndown progress |
-
-For complete configuration instructions, client setup examples, and security details, see the **[MCP Integration Guide](docs/mcp-integration.md)**.
-
----
-
-## 🚀 Quickstart Guide
-
-### Option 1: Turnkey Docker Compose (Recommended for Self-Hosters)
-
-Get Relay Studio up and running in under 2 minutes:
+* ✅ **Automated Tests:** **251 passing tests** with 1,256 assertions (`php artisan test`).
+* ✅ **Static Analysis:** **0 errors at Level Max** across 135 files (`./vendor/bin/phpstan analyse`).
+* ✅ **TypeScript Compilation:** **0 type errors** in strict mode (`npx tsc --noEmit`).
+* ✅ **Code Formatting:** 100% compliant with Laravel Pint PSR-12 styling standards.
+* ✅ **Asset Optimization:** Production bundles compiled via Vite with WebP image pipeline.
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/Kingof3O/relay.git relay
-cd relay
-
-# 2. Boot the full container stack (App, MySQL 8.4, Redis 7, Mailpit)
-docker compose up -d
-
-# 3. Access Relay Studio in your browser
-open http://localhost:8080
-```
-
-> [!NOTE]
-> **Default Service Endpoints:**
-> * **Relay Studio Web UI:** `http://localhost:8080`
-> * **Mailpit (Email Inspector):** `http://localhost:8025`
-> * **MySQL 8.4 Server:** `127.0.0.1:3306`
-> * **Redis 7 Server:** `127.0.0.1:6379`
-
----
-
-### Option 2: Native Local Development (macOS / Linux)
-
-For developers using [Laravel Herd](https://herd.laravel.com/), Valet, or system PHP/Node:
-
-```bash
-# 1. Clone and install PHP dependencies
-git clone https://github.com/Kingof3O/relay.git relay
-cd relay
-composer install
-
-# 2. Setup environment configuration
-cp .env.example .env
-php artisan key:generate
-
-# 3. Run migrations and seed essential permissions
-php artisan migrate --seed
-
-# 4. Install JavaScript dependencies & compile assets
-npm install
-npm run build
-
-# 5. Start development servers
-php artisan serve
-npm run dev
-```
-
----
-
-## ⚙️ Configuration Reference
-
-Relay Studio provides granular configuration toggles via `.env` and [`config/relay.php`](config/relay.php):
-
-| Environment Variable | Default | Description |
-| :--- | :---: | :--- |
-| `RELAY_BACKUP_ENABLED` | `false` | Enable or disable automated database & file backup scheduler |
-| `RELAY_BACKUP_SCHEDULE` | `0 2 * * *` | Cron interval for backups (`0 2 * * *` = daily at 02:00 UTC) |
-| `RELAY_BACKUP_RETENTION_DAYS`| `14` | Automatic retention window; backups older than this are pruned |
-| `RELAY_BACKUP_INCLUDE_FILES` | `false` | Include user attachments and uploaded media inside backup archives |
-| `RELAY_AGILE_AUTO_ROLLOVER_ENABLED` | `true` | Automatically move incomplete issues to next cycle at sprint end |
-| `RELAY_AGILE_ROLLOVER_TIME` | `00:05` | Time of day for cycle roll-forward execution |
-| `RELAY_OUTGOING_WEBHOOKS_ENABLED` | `true` | Master switch for dispatching outgoing webhooks |
-| `RELAY_DISCORD_ENABLED` | `true` | Dispatch Discord notifications on issue creation / cycle close |
-| `RELAY_SLACK_ENABLED` | `true` | Dispatch Slack channel notifications |
-| `RELAY_GITHUB_SYNC_ENABLED` | `true` | Process GitHub push webhook events to associate commits |
-| `RELAY_INBOUND_EMAIL_ENABLED` | `true` | Allow issue creation via inbound email webhook endpoint |
-| `RELAY_REALTIME_ENABLED` | `true` | Enable live WebSocket broadcasting and presence channels |
-| `RELAY_AUDIT_ENABLED` | `true` | Capture tamper-resistant activity records into `workspace_audits` |
-| `RELAY_SHOW_DEMO_CREDENTIALS` | `false` | Render demo login helpers on login page (disabled in production) |
-
----
-
-## 🛠️ Artisan CLI Tools
-
-Relay Studio provides operational Artisan CLI commands in the `relay:*` namespace:
-
-### 1. Stack Diagnostics (`relay:doctor`)
-Audit environment health, PHP extensions, database connectivity, directory permissions, and build manifests:
-```bash
-php artisan relay:doctor
-```
-
-### 2. Interactive Setup Wizard (`relay:install`)
-Step-by-step terminal wizard to configure `.env`, generate keys, migrate schemas, and establish the initial Owner account:
-```bash
-php artisan relay:install
-# Or unattended non-interactive mode:
-php artisan relay:install --force --no-seed --admin-name="Admin" --admin-email="admin@relay.studio" --admin-password="secretpassword"
-```
-
-### 3. Automated Disaster Recovery (`relay:backup` & `relay:restore`)
-Safely back up and restore database records and attachment files:
-```bash
-# Database only snapshot
-php artisan relay:backup --only-db
-
-# Complete snapshot including file attachments
-php artisan relay:backup --include-files
-
-# Restore from backup archive
-php artisan relay:restore /path/to/relay-backup-2026-10-19.tar.gz
-```
-
-### 4. Sprint Rollover (`relay:cycle-rollover`)
-Manually trigger idempotent cycle rollover:
-```bash
-php artisan relay:cycle-rollover
-```
-
-### 5. Integration Diagnostics (`relay:discord-test` & `relay:oauth`)
-Test Discord webhooks and manage OAuth providers:
-```bash
-# Test Discord webhook notification
-php artisan relay:discord-test
-
-# Inspect OAuth provider status
-php artisan relay:oauth
-```
-
-### 6. Personal Access Token Generation (`relay:token`)
-Instantly generate an API token for your MCP agent or REST integrations:
-```bash
-php artisan relay:token <username> "agent-mcp"
-```
-
----
-
-## 🔌 REST API v1 & Webhooks
-
-Relay Studio exposes a complete REST API (v1) authenticated via **Laravel Sanctum Personal Access Tokens (PAT)**.
-
-### Authenticating API Requests
-Create a token under **Profile > API Tokens** (`/profile/tokens`) or via `php artisan relay:token <username>`, then pass it via the `Authorization` header:
-
-```bash
-curl -X GET "http://localhost:8080/api/v1/work-requests" \
-     -H "Authorization: Bearer 1|abcdef1234567890..." \
-     -H "Accept: application/json"
-```
-
-### REST API v1 Endpoints (`routes/api.php`)
-
-| Method | Endpoint | Description | Query / Body Parameters |
-| :--- | :--- | :--- | :--- |
-| `GET` | `/api/v1/briefing` | Instant morning briefing (metrics, urgent blockers, overnight requests, active sprint, notifications) | `since_hours` (default: 24) |
-| `GET` | `/api/v1/work-requests` | Paginated list of issues with filter criteria | `status`, `priority`, `area_id`, `search`, `page` |
-| `POST` | `/api/v1/work-requests` | Create a new work request / issue | `title`, `description`, `status`, `priority`, `area_id`, `story_points`, `due_date`, `tags` |
-| `GET` | `/api/v1/work-requests/{id}` | Retrieve complete issue details with relations, subtasks, activities & attachments | `{id}` (issue ID) |
-| `PATCH` | `/api/v1/work-requests/{id}` | Update issue properties with optimistic locking | `lock_version`, `title`, `description`, `status`, `priority`, `story_points`, `due_date`, `tags` |
-| `DELETE` | `/api/v1/work-requests/{id}` | Soft-delete a work request | `{id}` (issue ID) |
-| `POST` | `/api/v1/work-requests/{id}/restore` | Restore a soft-deleted work request | `{id}` (issue ID) |
-| `GET` | `/api/v1/work-requests/{id}/comments` | Retrieve full chronological discussion history | `{id}` (issue ID) |
-| `POST` | `/api/v1/work-requests/{id}/comments` | Add comment / technical note with `@mention` notifications | `body` |
-| `GET` | `/api/v1/projects` | List all active workspace areas / projects | — |
-| `GET` | `/api/v1/cycles` | List recent agile cycles / sprints | — |
-| `GET` | `/api/v1/cycles/current` | Retrieve current active cycle, burndown & status breakdown | — |
-| `GET` | `/api/search` | Fast global search across issues & projects | `q` (search query) |
-
-### GitHub Push Auto-Close Webhook
-Link GitHub commits directly to Relay tickets:
-* **Webhook Endpoint:** `POST /api/webhooks/github`
-* **Commit Message Syntax:** `fixes REQ-104` or `closes #REQ-104`
-* **HMAC Verification:** Automatically validates `X-Hub-Signature-256` using `GITHUB_WEBHOOK_SECRET`.
-
-### Inbound Email Ingestion
-* **Webhook Endpoint:** `POST /api/webhooks/inbound-email`
-* Automatically creates formatted work requests from incoming SendGrid, Mailgun, or Postmark MIME webhooks.
-
----
-
-## 🧪 Verification & Quality Benchmarks
-
-The codebase undergoes rigorous static analysis and automated regression testing before every release:
-
-```bash
-# 1. Run automated test suite (244/244 passing)
+# Verify benchmarks locally:
 php artisan test
-
-# 2. Run static analysis (Level max, 0 errors across 124 files)
 ./vendor/bin/phpstan analyse --memory-limit=2G
-
-# 3. Verify Laravel Pint code styling standards
-./vendor/bin/pint --test
-
-# 4. Strict TypeScript type-checking
 npx tsc --noEmit
-
-# 5. Production client and SSR bundle compilation
-npm run build
 ```
 
 ---
 
-## 🤝 Contributing
+## 💳 Licensing & Commercial Tiers
 
-Contributions from the open-source community are warmly welcomed! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guide for details on coding conventions, branch management, and submitting pull requests.
+Relay Studio is distributed as a commercial, source-available product. Every purchase includes **complete, un-obfuscated source code** and **perpetual self-hosting rights** on your own infrastructure.
+
+| Tier | Price | Instances | Team Seats | Features Included |
+| :--- | :---: | :---: | :---: | :--- |
+| **Solo** | **$149** (One-time) | 1 Production | 1 User | Complete Source Code, First-Party MCP Server, 1 Year of Updates |
+| **Team** | **$299** (One-time) | 1 Production + Dev | **Unlimited** | Everything in Solo + Unlimited Seats, Real-Time Reverb WebSockets, Discord/Slack Webhooks, Automated Sprint Rollover |
+| **Agency** | **$599** (One-time) | **Up to 5 Production** | **Unlimited** | Everything in Team + 5 Client/Production Deployments, White-Label Custom Branding, Priority Technical Support |
+
+Read the full [Commercial License Terms & Usage Agreement](docs/licensing.md).
+
+---
+
+## 📚 Documentation Suite
+
+Explore our comprehensive technical guides in `docs/`:
+
+* 📖 **[Installation Guide](docs/installation.md):** Complete guide for Docker Compose and Ubuntu VPS manual setup.
+* 🐳 **[Production Docker Guide](docs/docker.md):** Container topology, Nginx reverse proxy, and SSL termination (Certbot / Caddy / Cloudflare).
+* 🔄 **[Safe Upgrade Guide](docs/updating.md):** Step-by-step procedures for zero-downtime updates and emergency rollbacks.
+* 💾 **[Backup & Disaster Recovery](docs/backup-restore.md):** Automated backup retention (`RELAY_BACKUP_SCHEDULE`), S3 off-site sync, and running `relay:restore`.
+* 🤖 **[MCP Integration Guide](docs/mcp.md):** Definitive guide with copyable configs for Cursor, Claude Desktop, Antigravity, and Windsurf.
+* 🔒 **[MCP Security & Scoping](docs/mcp-security.md):** Token permission scoping, rate-limiting, and network security for AI agents.
+* ⚡ **[Laravel Reverb WebSockets](docs/reverb.md):** WebSocket setup, Supervisord daemon management, and Nginx proxying.
+* 🩺 **[Troubleshooting & Diagnostics](docs/troubleshooting.md):** Diagnosing issues using `php artisan relay:doctor` and log analysis.
+* 📜 **[Commercial Licensing](docs/licensing.md):** License terms, usage rights, and redistribution boundaries.
+* 📣 **[Commercial Product Marketing Copy](docs/commercial-copy.md):** Landing page copy, value propositions, and buyer FAQ.
 
 ---
 
 ## 🔒 Security & Vulnerability Reporting
 
 If you discover a security vulnerability within Relay Studio, please review our [Security Policy](SECURITY.md) for responsible disclosure procedures.
-
----
-
-## 📄 License
-
-Relay Studio is open-source software licensed under the **[Apache License, Version 2.0](LICENSE)**.

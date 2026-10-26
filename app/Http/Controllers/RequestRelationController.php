@@ -38,7 +38,7 @@ class RequestRelationController extends Controller
         $type = $validated['type'] ?? 'blocks';
 
         $related = WorkRequest::findOrFail($validated['related_id']);
-        if ($target->workspace_id !== null && $related->workspace_id !== null && $target->workspace_id !== $related->workspace_id) {
+        if ($target->workspace_id !== $related->workspace_id) {
             if ($httpRequest->expectsJson()) {
                 return response()->json([
                     'message' => 'Cannot link requests from different workspaces.',

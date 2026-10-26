@@ -42,8 +42,32 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withExceptions(function (Exceptions $exceptions) {
+        $exceptions->dontFlash([
+            'current_password',
+            'password',
+            'password_confirmation',
+            'two_factor_secret',
+            'recovery_code',
+            'token',
+            'plainTextToken',
+        ]);
+
         $exceptions->respond(function ($response, Throwable $e, Request $request) {
+            if ($response->getStatusCode() === 500 && ($request->expectsJson() || $request->is('api/*'))) {
+                if (! config('app.debug')) {
+                    return response()->json([
+                        'message' => 'Internal server error.',
+                    ], 500);
+                }
+            }
+
             if (! app()->environment(['local', 'testing']) && in_array($response->getStatusCode(), [500, 503, 404, 403])) {
+                if ($request->expectsJson() || $request->is('api/*')) {
+                    return response()->json([
+                        'message' => $response->getStatusCode() === 403 ? 'Unauthorized.' : ($response->getStatusCode() === 404 ? 'Resource not found.' : 'Internal server error.'),
+                    ], $response->getStatusCode());
+                }
+
                 return inertia('Error', ['status' => $response->getStatusCode()])
                     ->toResponse($request)
                     ->setStatusCode($response->getStatusCode());

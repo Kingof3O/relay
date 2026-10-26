@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgentHubController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\CycleController;
 use App\Http\Controllers\DashboardController;
@@ -33,6 +34,7 @@ Route::get('/invitations/{token}', [InvitationAcceptController::class, 'show'])-
 Route::post('/invitations/{token}', [InvitationAcceptController::class, 'store'])->name('invitations.store');
 
 Route::middleware(['auth', 'active'])->group(function (): void {
+    Route::post('/workspaces/seed-demo', [WorkspaceController::class, 'seedDemo'])->name('workspaces.seed-demo');
     Route::post('/workspaces/{workspace}/switch', [WorkspaceController::class, 'switch'])->name('workspaces.switch');
     Route::post('/workspaces', [WorkspaceController::class, 'store'])->name('workspaces.store');
 
@@ -72,6 +74,9 @@ Route::middleware(['auth', 'active'])->group(function (): void {
 
     // Roadmap
     Route::get('/roadmap', [RoadmapController::class, 'index'])->name('roadmap.index');
+
+    // Agent Hub & MCP
+    Route::get('/agents', [AgentHubController::class, 'index'])->name('agents.index');
 
     Route::middleware('permission:manage_workspace')->group(function (): void {
         Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');

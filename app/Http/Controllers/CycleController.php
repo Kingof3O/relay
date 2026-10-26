@@ -137,7 +137,7 @@ final class CycleController extends Controller
         );
 
         $activeWorkspace = $request->user()?->currentWorkspace();
-        if ($cycle->workspace_id !== null && $activeWorkspace && $cycle->workspace_id !== $activeWorkspace->id) {
+        if ($cycle->workspace_id !== null && (! $request->user()->belongsToWorkspace($cycle->workspace_id) || ($activeWorkspace && $cycle->workspace_id !== $activeWorkspace->id))) {
             abort(403, 'Unauthorized access to cycle.');
         }
 

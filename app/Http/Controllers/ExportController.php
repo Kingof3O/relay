@@ -12,6 +12,8 @@ class ExportController extends Controller
 {
     public function export(Request $request): StreamedResponse
     {
+        $this->authorize('viewAny', WorkRequest::class);
+
         $format = strtolower((string) $request->query('format', 'csv'));
         $user = $request->user();
         $activeWorkspace = $user?->currentWorkspace();

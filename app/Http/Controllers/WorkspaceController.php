@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Enums\RoleName;
 use App\Models\Role;
 use App\Models\Workspace;
+use Database\Seeders\AtlasDesktopDemoSeeder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -86,5 +87,17 @@ class WorkspaceController extends Controller
         session(['active_workspace_id' => $workspace->id]);
 
         return back();
+    }
+
+    public function seedDemo(Request $request): RedirectResponse
+    {
+        $seeder = new AtlasDesktopDemoSeeder;
+        $workspace = $seeder->run(user: $request->user());
+
+        if ($workspace) {
+            session(['active_workspace_id' => $workspace->id]);
+        }
+
+        return redirect()->route('dashboard')->with('success', 'Atlas Desktop demo data successfully seeded!');
     }
 }

@@ -14,6 +14,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Validation\Rule;
+use Laravel\Sanctum\PersonalAccessToken;
 
 final class WorkRequestApiController extends Controller
 {
@@ -92,6 +93,25 @@ final class WorkRequestApiController extends Controller
 
         $workRequest = $this->service->create($user, $validated);
 
+        $token = $user?->currentAccessToken();
+        $isAgent = $request->hasHeader('X-Relay-Agent') || $request->hasHeader('X-Relay-Tool') || $token !== null;
+        if ($isAgent) {
+            $toolName = (string) $request->header('X-Relay-Tool', 'relay_create_task');
+            $tokenName = $token instanceof PersonalAccessToken ? $token->name : ($token ? 'Personal Access Token' : 'Agent Session');
+            $this->service->recordActivity(
+                $workRequest,
+                $user,
+                'agent_action',
+                "AI Agent created work request via MCP tool {$toolName}.",
+                [
+                    'is_agent' => true,
+                    'source' => (string) $request->header('X-Relay-Agent', 'mcp'),
+                    'tool' => $toolName,
+                    'token_name' => $tokenName,
+                ]
+            );
+        }
+
         return (new WorkRequestResource($workRequest->fresh(['area', 'requester', 'assignee', 'subtasks'])))
             ->response()
             ->setStatusCode(201);
@@ -159,6 +179,28 @@ final class WorkRequestApiController extends Controller
         }
 
         $updated = $this->service->update($workRequest, $user, $validated);
+
+        $token = $user?->currentAccessToken();
+        $isAgent = $request->hasHeader('X-Relay-Agent') || $request->hasHeader('X-Relay-Tool') || $token !== null;
+        if ($isAgent) {
+            $toolName = (string) $request->header('X-Relay-Tool', 'relay_update_task');
+            $tokenName = $token instanceof PersonalAccessToken ? $token->name : ($token ? 'Personal Access Token' : 'Agent Session');
+            $changedFields = array_keys($validated);
+            $changesDesc = ! empty($changedFields) ? ' ('.implode(', ', $changedFields).')' : '';
+            $this->service->recordActivity(
+                $updated,
+                $user,
+                'agent_action',
+                "AI Agent modified work request via MCP tool {$toolName}{$changesDesc}.",
+                [
+                    'is_agent' => true,
+                    'source' => (string) $request->header('X-Relay-Agent', 'mcp'),
+                    'tool' => $toolName,
+                    'token_name' => $tokenName,
+                    'fields_updated' => $changedFields,
+                ]
+            );
+        }
 
         return new WorkRequestResource($updated->fresh(['area', 'requester', 'assignee', 'subtasks', 'pullRequests']));
     }

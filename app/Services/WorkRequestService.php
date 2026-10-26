@@ -26,6 +26,9 @@ final class WorkRequestService
     {
         return DB::transaction(function () use ($actor, $attributes): WorkRequest {
             $workspaceId = $attributes['workspace_id'] ?? $actor->currentWorkspace()?->id;
+            if ($workspaceId !== null && ! $actor->belongsToWorkspace($workspaceId)) {
+                abort(403, 'Actor does not belong to specified workspace.');
+            }
 
             $request = WorkRequest::query()->create([
                 'workspace_id' => $workspaceId,
@@ -196,9 +199,10 @@ final class WorkRequestService
         });
     }
 
-    public function addComment(WorkRequest $request, User $actor, string $body): RequestActivity
+    /** @param array<string, mixed>|null $metadata */
+    public function addComment(WorkRequest $request, User $actor, string $body, ?array $metadata = null): RequestActivity
     {
-        $activity = $this->recordActivity($request, $actor, 'comment', $body);
+        $activity = $this->recordActivity($request, $actor, 'comment', $body, $metadata);
         $this->notifyRelevantUsers($request, 'comment', "{$actor->name} commented on this request.", $actor);
 
         WorkRequestCommented::dispatch($request, $activity, $actor->id);
@@ -281,6 +285,8 @@ final class WorkRequestService
         $chunkSize = max(1, (int) config('workspace.bulk_chunk_size', 25));
         $index = 0;
 
+        $workspaceId = $actor->currentWorkspace()?->id;
+
         foreach (array_chunk($rows, $chunkSize, true) as $chunk) {
             foreach ($chunk as $row) {
                 $row = is_array($row) ? $row : [];
@@ -288,7 +294,7 @@ final class WorkRequestService
                     ? (int) $row['client_index']
                     : $index;
 
-                $validator = Validator::make($row, BulkWorkRequestRequest::rowRules());
+                $validator = Validator::make($row, BulkWorkRequestRequest::rowRules($workspaceId));
 
                 if ($validator->fails()) {
                     $results[] = [

@@ -23,6 +23,31 @@ export default function Authenticated({
     const [shortcutsOpen, setShortcutsOpen] = useState(false);
     const [mobileNavOpen, setMobileNavOpen] = useState(false);
     const [currentTime, setCurrentTime] = useState('');
+    const [wsConnected, setWsConnected] = useState<boolean>(() => {
+        const echo = (window as unknown as { Echo?: any }).Echo;
+        return Boolean(echo);
+    });
+
+    useEffect(() => {
+        const echo = (window as unknown as { Echo?: any }).Echo;
+        if (!echo) return;
+
+        try {
+            const connector = echo.connector;
+            const pusher = connector?.pusher || connector?.options?.client;
+            if (pusher?.connection) {
+                pusher.connection.bind('connected', () => setWsConnected(true));
+                pusher.connection.bind('disconnected', () => setWsConnected(false));
+                pusher.connection.bind('unavailable', () => setWsConnected(false));
+                pusher.connection.bind('failed', () => setWsConnected(false));
+                if (pusher.connection.state === 'connected') {
+                    setWsConnected(true);
+                }
+            }
+        } catch {
+            // Graceful fallback
+        }
+    }, []);
 
     useEffect(() => {
         const updateTime = () => {
@@ -178,12 +203,17 @@ export default function Authenticated({
 
                     <div className="flex items-center gap-3">
                         {/* Live Studio Status Pill */}
-                        <div className="hidden xl:flex h-10 items-center gap-2.5 rounded-xl border border-zinc-800 bg-[#121318] px-3.5 text-xs text-zinc-400 font-mono shadow-sm">
+                        <div
+                            className="hidden xl:flex h-10 items-center gap-2.5 rounded-xl border border-zinc-800 bg-[#121318] px-3.5 text-xs text-zinc-400 font-mono shadow-sm transition-colors"
+                            title={wsConnected ? 'WebSockets connected: Live real-time collaboration enabled' : 'Connecting to real-time server...'}
+                        >
                             <span className="relative flex h-2 w-2">
-                                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                                <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${wsConnected ? 'bg-emerald-400' : 'bg-amber-400'}`} />
+                                <span className={`relative inline-flex h-2 w-2 rounded-full ${wsConnected ? 'bg-emerald-500' : 'bg-amber-500'}`} />
                             </span>
-                            <span className="text-zinc-300">{currentTime || 'Studio Active'}</span>
+                            <span className="text-zinc-300">
+                                {wsConnected ? (currentTime ? `Live · ${currentTime}` : 'Live Sync') : 'Connecting…'}
+                            </span>
                         </div>
 
                         {/* Precision Search Pill */}

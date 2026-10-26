@@ -156,6 +156,7 @@ final class WorkRequestPresenter
                     'type' => $activity->type,
                     'body' => $activity->body,
                     'metadata' => $activity->metadata,
+                    'is_agent' => (bool) ($activity->type === 'agent_action' || ($activity->metadata['is_agent'] ?? false)),
                     'user' => $activity->user?->only(['id', 'name', 'username']),
                     'created_at' => $activity->created_at?->toIso8601String(),
                 ])

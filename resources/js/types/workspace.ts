@@ -59,6 +59,7 @@ export interface RequestActivityItem {
     type: string;
     body?: string | null;
     metadata?: Record<string, unknown> | null;
+    is_agent?: boolean;
     user?: WorkspaceUser | null;
     created_at?: string | null;
 }

@@ -170,25 +170,51 @@ final class RelayBackupCommand extends Command
 
     private function exportTablesViaPdo(string $targetFile): void
     {
+        $driver = DB::connection()->getDriverName();
         $tables = $this->getTableNames();
         $handle = fopen($targetFile, 'w');
 
+        if (! $handle) {
+            throw new \RuntimeException("Unable to open backup target file for writing: {$targetFile}");
+        }
+
         fwrite($handle, "-- Relay Studio Portable Database Backup\n");
-        fwrite($handle, '-- Generated: '.now()->toIso8601String()."\n\n");
-        fwrite($handle, "SET FOREIGN_KEY_CHECKS = 0;\n\n");
+        fwrite($handle, '-- Generated: '.now()->toIso8601String()."\n");
+        fwrite($handle, "-- Driver: {$driver}\n\n");
+
+        if ($driver === 'mysql') {
+            fwrite($handle, "SET FOREIGN_KEY_CHECKS = 0;\n\n");
+        } elseif ($driver === 'pgsql') {
+            fwrite($handle, "SET session_replication_role = 'replica';\n\n");
+        } elseif ($driver === 'sqlite') {
+            fwrite($handle, "PRAGMA foreign_keys = OFF;\n\n");
+        }
+
+        $quoteIdent = function (string $ident) use ($driver): string {
+            return match ($driver) {
+                'pgsql' => "\"{$ident}\"",
+                'sqlite', 'mysql' => "`{$ident}`",
+                default => "`{$ident}`",
+            };
+        };
 
         foreach ($tables as $table) {
             if (empty($table)) {
                 continue;
             }
-            $rows = DB::table($table)->get();
-            if ($rows->isEmpty()) {
+
+            $count = DB::table($table)->count();
+            if ($count === 0) {
                 continue;
             }
-            fwrite($handle, "-- Table: {$table} (".count($rows)." rows)\n");
-            foreach ($rows as $row) {
+
+            $quotedTable = $quoteIdent($table);
+            fwrite($handle, "-- Table: {$table} ({$count} rows)\n");
+
+            // Stream rows memory-efficiently using lazy database cursor
+            foreach (DB::table($table)->cursor() as $row) {
                 $rowArr = (array) $row;
-                $columns = implode(', ', array_map(fn ($c) => "`{$c}`", array_keys($rowArr)));
+                $columns = implode(', ', array_map($quoteIdent, array_keys($rowArr)));
                 $values = implode(', ', array_map(function ($val) {
                     if ($val === null) {
                         return 'NULL';
@@ -197,12 +223,19 @@ final class RelayBackupCommand extends Command
                     return DB::getPdo()->quote((string) $val);
                 }, array_values($rowArr)));
 
-                fwrite($handle, "INSERT INTO `{$table}` ({$columns}) VALUES ({$values});\n");
+                fwrite($handle, "INSERT INTO {$quotedTable} ({$columns}) VALUES ({$values});\n");
             }
             fwrite($handle, "\n");
         }
 
-        fwrite($handle, "SET FOREIGN_KEY_CHECKS = 1;\n");
+        if ($driver === 'mysql') {
+            fwrite($handle, "SET FOREIGN_KEY_CHECKS = 1;\n");
+        } elseif ($driver === 'pgsql') {
+            fwrite($handle, "SET session_replication_role = 'origin';\n");
+        } elseif ($driver === 'sqlite') {
+            fwrite($handle, "PRAGMA foreign_keys = ON;\n");
+        }
+
         fclose($handle);
     }
 }

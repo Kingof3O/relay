@@ -11,6 +11,7 @@ use App\Models\WorkRequest;
 use App\Services\DiscordNotificationService;
 use App\Services\WorkRequestService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Queue;
 use Tests\TestCase;
@@ -284,7 +285,7 @@ final class DiscordNotificationTest extends TestCase
         ]);
 
         // Completely flush the application cache (simulating php artisan optimize:clear or cache:clear on deploy)
-        \Illuminate\Support\Facades\Cache::flush();
+        Cache::flush();
 
         // Verify settings and URLs are permanently retained from database
         $status = DiscordNotificationService::getStatus();

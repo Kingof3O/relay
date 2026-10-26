@@ -216,6 +216,48 @@ export default function CyclesIndex({
         return t.status === filterStatus;
     });
 
+    if (!currentCycle || cycles.length === 0) {
+        return (
+            <AuthenticatedLayout
+                header={
+                    <PageHeader
+                        crumbs={[
+                            { label: 'Planning', href: route('cycles.index') },
+                            { label: 'Cycles' },
+                        ]}
+                        title="Sprint Cycles"
+                    />
+                }
+            >
+                <Head title="Cycles · Planning" />
+                <div className="mx-auto max-w-[1200px] py-16">
+                    <EmptyState
+                        icon={Calendar}
+                        title="No cycles scheduled"
+                        description="No cycles scheduled. Start your first sprint cycle to track velocity and story points."
+                        action={
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    router.post(route('cycles.store'), {
+                                        name: 'Cycle 1 · Foundation Sprint',
+                                        start_date: new Date().toISOString().split('T')[0],
+                                        end_date: new Date(Date.now() + 14 * 86400000).toISOString().split('T')[0],
+                                        is_active: true,
+                                    });
+                                }}
+                                className="inline-flex items-center gap-2 rounded-xl bg-violet-600 px-4 py-2 text-xs font-semibold text-white shadow-lg shadow-violet-600/30 hover:bg-violet-500 active:scale-[0.98] transition-all"
+                            >
+                                <Plus className="h-4 w-4" />
+                                <span>Start First Sprint Cycle</span>
+                            </button>
+                        }
+                    />
+                </div>
+            </AuthenticatedLayout>
+        );
+    }
+
     const metrics = burndown.metrics;
 
     return (
@@ -452,9 +494,28 @@ export default function CyclesIndex({
                         ) : (
                             <EmptyState
                                 icon={Calendar}
-                                title="No tasks found"
-                                description="No tasks found for this cycle and filter criteria."
-                                className="py-10"
+                                title="No work requests assigned to this cycle"
+                                description="Assign existing tasks or create new issues to track sprint velocity and story points."
+                                action={
+                                    <div className="flex items-center gap-2">
+                                        <Link
+                                            href={route('requests.index')}
+                                            className="inline-flex items-center gap-1.5 rounded-xl border border-violet-500/30 bg-violet-600/20 px-3.5 py-1.5 text-xs font-semibold text-violet-300 hover:bg-violet-600/30 transition-colors shadow-sm"
+                                        >
+                                            <ArrowRight className="h-3.5 w-3.5" />
+                                            <span>Assign Work Requests</span>
+                                        </Link>
+                                        <button
+                                            type="button"
+                                            onClick={() => window.dispatchEvent(new CustomEvent('open-quick-create'))}
+                                            className="inline-flex items-center gap-1 rounded-xl border border-white/[0.1] bg-white/[0.04] px-3 py-1.5 text-xs font-medium text-zinc-300 hover:bg-white/[0.08] hover:text-white transition-colors"
+                                        >
+                                            <Plus className="h-3 w-3" />
+                                            <span>New Issue</span>
+                                        </button>
+                                    </div>
+                                }
+                                className="py-12"
                             />
                         )}
                     </div>

@@ -20,6 +20,7 @@ import {
     Radio,
     X,
     Plus,
+    Bot,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import type { PageProps, WorkspaceProject, WorkspaceNotification } from '@/types';
@@ -95,6 +96,13 @@ export default function Sidebar({ mobileOpen = false, onCloseMobile }: SidebarPr
             active: route().current('roadmap.*'),
             icon: CalendarRange,
             shortcut: '⌘R',
+        },
+        {
+            name: 'Agents & MCP',
+            href: route('agents.index'),
+            active: route().current('agents.*'),
+            icon: Bot,
+            shortcut: '⌘A',
         },
     ];
 

@@ -46,6 +46,8 @@ export interface DashboardActivityItem {
     request_title: string;
     type: string;
     body?: string | null;
+    metadata?: Record<string, unknown> | null;
+    is_agent?: boolean;
     user?: { id: number; name: string } | null;
     created_at?: string | null;
 }

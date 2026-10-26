@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Jobs\SendRequestEmail;
 use App\Models\User;
 use App\Models\WorkRequest;
+use App\Models\Workspace;
 use App\Notifications\RequestDatabaseNotification;
 use App\Services\WorkRequestPresenter;
 use App\Services\WorkRequestService;
@@ -33,12 +34,22 @@ final class RequestCommentController extends Controller
         if (preg_match_all('/@([a-zA-Z0-9_\-\.]+)/', $validated['body'], $matches)) {
             $tokens = array_slice(array_unique($matches[1]), 0, 10);
             if (! empty($tokens)) {
-                $mentionedUsers = User::query()
+                $query = User::query()
                     ->where('active', true)
                     ->whereIn('username', $tokens)
-                    ->where('id', '!=', $author->id)
-                    ->limit(10)
-                    ->get();
+                    ->where('id', '!=', $author->id);
+
+                $wsId = $request->workspace_id ?? $request->area?->workspace_id ?? $author->currentWorkspace()?->id;
+                if ($wsId) {
+                    $query->where(function ($sub) use ($wsId) {
+                        $sub->whereHas('workspaces', fn ($w) => $w->where('workspaces.id', $wsId))
+                            ->orWhereHas('ownedWorkspaces', fn ($w) => $w->where('workspaces.id', $wsId));
+                    });
+                } elseif (Workspace::query()->exists()) {
+                    $query->whereRaw('0 = 1');
+                }
+
+                $mentionedUsers = $query->limit(10)->get();
 
                 $payload = [
                     'event' => 'mention',

@@ -41,16 +41,41 @@ final class UpdateWorkRequestRequest extends FormRequest
     /** @return array<string, array<int, mixed>> */
     public function rules(): array
     {
+        $targetRequest = $this->route('request');
+        $workspaceId = $targetRequest instanceof WorkRequest
+            ? $targetRequest->workspace_id
+            : $this->user()?->currentWorkspace()?->id;
+
         return [
             'title' => ['sometimes', 'required', 'string', 'max:255'],
             'description' => ['sometimes', 'nullable', 'string'],
-            'area_id' => ['sometimes', 'required', 'integer', Rule::exists('areas', 'id')->where(fn ($query) => $query->whereNull('archived_at'))],
+            'area_id' => [
+                'sometimes',
+                'required',
+                'integer',
+                Rule::exists('areas', 'id')->where(fn ($query) => $workspaceId ? $query->where('workspace_id', $workspaceId)->whereNull('archived_at') : $query->whereNull('archived_at')),
+            ],
             'priority' => ['sometimes', Rule::in(array_keys(RequestPriority::options()))],
             'status' => ['sometimes', Rule::in(array_keys(RequestStatus::options()))],
             'story_points' => ['sometimes', 'nullable', 'integer', 'min:0', 'max:100'],
-            'cycle_id' => ['sometimes', 'nullable', 'integer', 'exists:cycles,id'],
-            'parent_id' => ['sometimes', 'nullable', 'integer', 'exists:requests,id'],
-            'assignee_id' => ['sometimes', 'nullable', 'integer', Rule::exists('users', 'id')->where(fn ($query) => $query->where('active', true))],
+            'cycle_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('cycles', 'id')->where(fn ($query) => $workspaceId ? $query->where('workspace_id', $workspaceId) : $query),
+            ],
+            'parent_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('requests', 'id')->where(fn ($query) => $workspaceId ? $query->where('workspace_id', $workspaceId) : $query),
+            ],
+            'assignee_id' => [
+                'sometimes',
+                'nullable',
+                'integer',
+                Rule::exists('users', 'id')->where(fn ($query) => $workspaceId ? $query->whereIn('id', fn ($sub) => $sub->select('user_id')->from('workspace_user')->where('workspace_id', $workspaceId))->where('active', true) : $query->where('active', true)),
+            ],
             'is_blocked' => ['sometimes', 'boolean'],
             'blocked_reason' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'due_date' => ['sometimes', 'nullable', 'date'],

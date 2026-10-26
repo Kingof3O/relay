@@ -45,7 +45,7 @@ final class AreaController extends Controller
     {
         $this->ensureCanManage($request);
         $activeWorkspace = $request->user()?->currentWorkspace();
-        if ($area->workspace_id !== null && $activeWorkspace && $area->workspace_id !== $activeWorkspace->id) {
+        if ($area->workspace_id !== null && (! $request->user()->belongsToWorkspace($area->workspace_id) || ($activeWorkspace && $area->workspace_id !== $activeWorkspace->id))) {
             abort(403, 'Unauthorized access to project.');
         }
 
@@ -98,7 +98,7 @@ final class AreaController extends Controller
     {
         $this->ensureCanManage($request);
         $activeWorkspace = $request->user()?->currentWorkspace();
-        if ($area->workspace_id !== null && $activeWorkspace && $area->workspace_id !== $activeWorkspace->id) {
+        if ($area->workspace_id !== null && (! $request->user()->belongsToWorkspace($area->workspace_id) || ($activeWorkspace && $area->workspace_id !== $activeWorkspace->id))) {
             abort(403, 'Unauthorized access to project.');
         }
 

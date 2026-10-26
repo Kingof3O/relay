@@ -276,8 +276,8 @@ export default function KanbanBoard({
             <div className="flex min-h-[480px] w-full items-center justify-center rounded-2xl border border-dashed border-zinc-800 bg-[#0c0d12]/50 p-12 text-center backdrop-blur-sm animate-in fade-in duration-200">
                 <EmptyState
                     icon={Inbox}
-                    title="No work requests in pipeline"
-                    description="The pipeline is currently clear. Create a new work request or adjust your active board filters to inspect backlog items."
+                    title="No work requests found in this view"
+                    description="Create a new request [C] or adjust your filters."
                     action={
                         <button
                             type="button"

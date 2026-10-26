@@ -8,6 +8,7 @@ use App\Models\Area;
 use App\Models\RequestActivity;
 use App\Models\User;
 use App\Models\WorkRequest;
+use App\Models\Workspace;
 use Illuminate\Database\Eloquent\Builder;
 
 final class DashboardService
@@ -166,7 +167,17 @@ final class DashboardService
             ->when($workspaceId, fn ($q) => $q->where('workspace_id', $workspaceId))
             ->when(! $workspaceId, fn ($q) => $q->where(fn ($sq) => $sq->where('requester_id', $user->id)->orWhere('assignee_id', $user->id)->orWhereNull('workspace_id')));
 
+        $onboarding = [
+            'hasWorkspace' => (bool) $activeWorkspace,
+            'hasAreas' => count($projectStats) > 0,
+            'hasTasks' => $totalCount > 0,
+            'hasTokens' => $user->tokens()->exists(),
+            'hasTeammates' => $activeWorkspace ? $activeWorkspace->users()->count() > 1 : User::query()->count() > 1,
+            'isDemoSeeded' => Workspace::query()->where('slug', 'atlas-desktop')->exists(),
+        ];
+
         return [
+            'onboarding' => $onboarding,
             'stats' => $stats,
             'velocity' => $velocity,
             'projectStats' => $projectStats,
@@ -201,6 +212,8 @@ final class DashboardService
                         'request_title' => $activity->request?->title,
                         'type' => $activity->type,
                         'body' => $activity->body,
+                        'metadata' => $activity->metadata,
+                        'is_agent' => (bool) ($activity->type === 'agent_action' || ($activity->metadata['is_agent'] ?? false)),
                         'user' => $activity->user?->only(['id', 'name']),
                         'created_at' => $activity->created_at?->toIso8601String(),
                     ];

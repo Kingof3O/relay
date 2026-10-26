@@ -18,6 +18,7 @@ import {
     type TeamMemberWorkload,
     type DashboardActivityItem,
 } from '@/Features/Dashboard';
+import OnboardingGuide, { type OnboardingStatus } from '@/Components/Dashboard/OnboardingGuide';
 import { useEffect, useState } from 'react';
 
 export type {
@@ -29,6 +30,7 @@ export type {
 };
 
 export default function Dashboard({
+    onboarding,
     stats: initialStats,
     velocity = [],
     projectStats = [],
@@ -41,6 +43,7 @@ export default function Dashboard({
     urgentRequests: initialUrgentRequests = [],
     recentActivity: initialRecentActivity = [],
 }: PageProps<{
+    onboarding?: OnboardingStatus;
     stats: DashboardStats;
     velocity?: VelocityPoint[];
     projectStats?: ProjectStat[];
@@ -350,6 +353,24 @@ export default function Dashboard({
             <Head title="Dashboard · Overview" />
 
             <div className="mx-auto max-w-[1600px] space-y-6">
+                {/* Sleek First-Run Onboarding Setup Guide */}
+                <OnboardingGuide
+                    onboarding={
+                        onboarding ?? {
+                            hasWorkspace: Boolean(currentWorkspace),
+                            hasAreas: projectStats.length > 0,
+                            hasTasks: stats.total > 0,
+                            hasTokens: false,
+                            hasTeammates: teamWorkload.length > 1,
+                            isDemoSeeded: false,
+                        }
+                    }
+                    totalTasks={stats.total}
+                    onOpenCreateTask={() => {
+                        window.dispatchEvent(new CustomEvent('open-quick-create'));
+                    }}
+                />
+
                 {/* Hero Mission Control Banner */}
                 <DashboardHero
                     firstName={firstName}

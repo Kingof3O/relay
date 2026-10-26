@@ -112,6 +112,7 @@ final class RequestFileController extends Controller
     public function retry(Request $httpRequest, WorkRequest $request, RequestFile $file): JsonResponse
     {
         $this->authorize('upload', $request);
+        $this->ensureBelongsToRequest($request, $file);
         $updated = $this->files->retry($request, $file);
 
         return response()->json([

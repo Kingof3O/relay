@@ -12,6 +12,7 @@ import {
     ChevronUp,
     ChevronDown,
     Inbox,
+    Plus,
 } from 'lucide-react';
 
 interface RequestListViewProps {
@@ -258,11 +259,22 @@ export default function RequestListView({
                             })
                         ) : (
                             <tr>
-                                <td colSpan={9} className="py-8">
+                                <td colSpan={9} className="py-12">
                                     <EmptyState
                                         icon={Inbox}
-                                        title="No requests found in this view"
-                                        description="Try adjusting your filters or create a new request."
+                                        title="No work requests found in this view"
+                                        description="Create a new request [C] or adjust your filters."
+                                        action={
+                                            <button
+                                                type="button"
+                                                onClick={() => window.dispatchEvent(new CustomEvent('open-quick-create'))}
+                                                className="inline-flex items-center gap-1.5 rounded-xl border border-violet-500/30 bg-violet-600/20 px-4 py-2 text-xs font-semibold text-violet-200 hover:bg-violet-600/30 active:scale-[0.98] transition-all shadow-[0_0_15px_rgba(139,92,246,0.15)]"
+                                            >
+                                                <Plus className="h-3.5 w-3.5" />
+                                                <span>Create Work Request</span>
+                                                <kbd className="ml-1 rounded border border-violet-400/30 bg-violet-500/20 px-1 py-0.2 text-[10px] font-mono">C</kbd>
+                                            </button>
+                                        }
                                     />
                                 </td>
                             </tr>

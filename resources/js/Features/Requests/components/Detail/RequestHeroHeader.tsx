@@ -3,7 +3,7 @@ import PriorityBadge from '@/Components/PriorityBadge';
 import ConfirmDialog from '@/Components/ConfirmDialog';
 import { WorkRequestDetail } from '@/types/workspace';
 import { router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import {
     Play,
@@ -13,6 +13,7 @@ import {
     Trash2,
     RefreshCw,
     Copy,
+    Bot,
 } from 'lucide-react';
 
 interface RequestHeroHeaderProps {
@@ -49,6 +50,7 @@ export default function RequestHeroHeader({
     onDelete,
 }: RequestHeroHeaderProps) {
     const [copied, setCopied] = useState(false);
+    const [agentCopied, setAgentCopied] = useState(false);
     const [duplicating, setDuplicating] = useState(false);
     const [showDuplicateDialog, setShowDuplicateDialog] = useState(false);
 
@@ -58,6 +60,80 @@ export default function RequestHeroHeader({
         toast.success('Ticket link copied to clipboard');
         setTimeout(() => setCopied(false), 2000);
     };
+
+    const handleCopyAgentContext = () => {
+        const subtasks =
+            request.subtasks && request.subtasks.length > 0
+                ? request.subtasks
+                      .map((st) => `- [${st.status === 'done' ? 'x' : ' '}] #${st.id}: ${st.title}`)
+                      .join('\n')
+                : 'None';
+
+        const discussions =
+            request.comments && request.comments.length > 0
+                ? request.comments
+                      .slice(-5)
+                      .map((c) => `- @${c.user?.username || c.user?.name || 'user'}: ${c.body?.replace(/\n/g, ' ')}`)
+                      .join('\n')
+                : request.activities && request.activities.length > 0
+                ? request.activities
+                      .filter((a) => a.type === 'comment' && a.body)
+                      .slice(-5)
+                      .map((c) => `- @${c.user?.username || c.user?.name || 'user'}: ${c.body?.replace(/\n/g, ' ')}`)
+                      .join('\n')
+                : 'None';
+
+        const rawDesc = request.description?.trim() || 'No description provided.';
+        let acceptanceCriteria = 'None defined';
+        const acMatch = rawDesc.match(/(?:acceptance criteria|ac):?\s*([\s\S]*?)(?=(?:\n#{1,4}\s+|\n\*\*|$))/i);
+        if (acMatch && acMatch[1]?.trim()) {
+            acceptanceCriteria = acMatch[1].trim();
+        }
+
+        const agentPrompt = [
+            `### Task: #REQ-${request.id}: ${request.title}`,
+            `**Status:** ${request.status_label || request.status} | **Priority:** ${request.priority_label || request.priority} | **Story Points:** ${request.story_points ?? 'Unestimated'}`,
+            `**Area:** ${request.project?.name ?? 'General'} | **Cycle:** ${request.cycle?.name ? `${request.cycle.name} (#${request.cycle.number})` : 'None'}`,
+            `**Assignee:** ${request.assignee?.name ?? 'Unassigned'} | **Requester:** ${request.requester?.name ?? 'Unknown'}${request.due_human ? ` | **Due:** ${request.due_human}` : ''}`,
+            request.is_blocked ? `**Blocker Warning:** ⚠️ ${request.blocked_reason || 'Blocked'}` : '',
+            '',
+            `**Description:**`,
+            rawDesc,
+            '',
+            `**Subtasks:**`,
+            subtasks,
+            '',
+            `**Discussion Context:**`,
+            discussions || 'None',
+            '',
+            `**Acceptance Criteria:**`,
+            acceptanceCriteria,
+            '',
+            `---`,
+            `*Target Ticket URL:* ${typeof window !== 'undefined' ? window.location.href : ''}`,
+            `*Agent Directive:* Transition this card to "doing" when beginning work, add progress comments, and move to "review" upon completion.`,
+        ]
+            .filter(Boolean)
+            .join('\n');
+
+        if (typeof navigator !== 'undefined' && navigator.clipboard) {
+            navigator.clipboard.writeText(agentPrompt);
+            setAgentCopied(true);
+            toast.success('Agent prompt context copied to clipboard!');
+            setTimeout(() => setAgentCopied(false), 2000);
+        }
+    };
+
+    useEffect(() => {
+        const handleKeyDown = (e: globalThis.KeyboardEvent) => {
+            if ((e.metaKey || e.ctrlKey) && (e.altKey || e.shiftKey) && (e.key === 'c' || e.key === 'C')) {
+                e.preventDefault();
+                handleCopyAgentContext();
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [request]);
 
     const handleDuplicate = () => {
         setShowDuplicateDialog(true);
@@ -208,6 +284,22 @@ export default function RequestHeroHeader({
                         >
                             <Copy className="h-3 w-3 text-violet-400" />
                             <span>{duplicating ? 'Duplicating…' : 'Duplicate'}</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleCopyAgentContext}
+                            className="flex items-center gap-1.5 rounded-md border border-violet-500/40 bg-gradient-to-r from-violet-600/20 to-indigo-600/20 px-2.5 py-0.5 text-[11px] font-semibold text-violet-200 hover:border-violet-400 hover:bg-violet-600/30 hover:text-white transition-all shadow-sm shadow-violet-500/20 group"
+                            title="Copy structured agent prompt context (⌘⌥C or ⌃⌥C)"
+                        >
+                            {agentCopied ? (
+                                <Check className="h-3.5 w-3.5 text-emerald-400" />
+                            ) : (
+                                <Bot className="h-3.5 w-3.5 text-violet-400 group-hover:scale-110 transition-transform" />
+                            )}
+                            <span>{agentCopied ? 'Context Copied!' : 'Copy Agent Context'}</span>
+                            <kbd className="hidden sm:inline-block rounded border border-violet-500/30 bg-violet-950/40 px-1 py-0.2 font-mono text-[9px] text-violet-300/80">
+                                ⌘⌥C
+                            </kbd>
                         </button>
                     </div>
 
