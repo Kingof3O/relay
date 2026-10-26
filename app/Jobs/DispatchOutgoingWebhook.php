@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Models\Webhook;
 use App\Models\WorkRequest;
+use App\Services\DiscordNotificationService;
 use App\Support\UrlSecurity;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -80,6 +81,8 @@ class DispatchOutgoingWebhook implements ShouldQueue
         ];
 
         $discordPayload = [
+            'username' => DiscordNotificationService::getBotName(),
+            'avatar_url' => DiscordNotificationService::getAvatarUrl(),
             'content' => $headline,
             'embeds' => [
                 [

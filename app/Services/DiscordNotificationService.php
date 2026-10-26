@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\IntegrationDeliveryLog;
+use App\Models\Setting;
 use App\Models\Webhook;
 use App\Models\WorkRequest;
 use App\Support\UrlSecurity;
@@ -89,6 +90,13 @@ final class DiscordNotificationService
             return (bool) $override;
         }
 
+        $dbOverride = Setting::get(self::CACHE_KEY_ENABLED);
+        if ($dbOverride !== null) {
+            Cache::forever(self::CACHE_KEY_ENABLED, (bool) $dbOverride);
+
+            return (bool) $dbOverride;
+        }
+
         $configured = config('services.discord.enabled');
         if ($configured !== null && $configured !== '') {
             return filter_var($configured, FILTER_VALIDATE_BOOLEAN);
@@ -116,6 +124,24 @@ final class DiscordNotificationService
             $urls = array_merge($urls, self::parseUrls($cachedSingle));
         }
 
+        // Database permanent settings fallback
+        if (empty($urls)) {
+            $dbUrls = Setting::get(self::CACHE_KEY_WEBHOOK_URLS);
+            if (! blank($dbUrls)) {
+                $urls = array_merge($urls, self::parseUrls($dbUrls));
+            }
+
+            $dbSingle = Setting::get(self::CACHE_KEY_WEBHOOK_URL);
+            if (! blank($dbSingle)) {
+                $urls = array_merge($urls, self::parseUrls($dbSingle));
+            }
+
+            if (! empty($urls)) {
+                Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $urls);
+                Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $urls[0] ?? '');
+            }
+        }
+
         $configUrls = config('services.discord.webhook_urls');
         if (! blank($configUrls)) {
             $urls = array_merge($urls, self::parseUrls($configUrls));
@@ -129,11 +155,19 @@ final class DiscordNotificationService
         if (empty($urls)) {
             $matching = Webhook::query()
                 ->where('is_active', true)
-                ->where('url', 'like', '%discord.com/api/webhooks%')
+                ->where(function ($q): void {
+                    $q->where('name', 'discord')
+                        ->orWhere('url', 'like', '%discord.com/api/webhooks%');
+                })
                 ->pluck('url')
                 ->all();
 
             $urls = array_merge($urls, self::parseUrls($matching));
+
+            if (! empty($urls)) {
+                Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $urls);
+                Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $urls[0] ?? '');
+            }
         }
 
         $unique = array_values(array_unique($urls));
@@ -150,14 +184,36 @@ final class DiscordNotificationService
 
     public static function getBotName(): string
     {
-        return (string) (Cache::get(self::CACHE_KEY_BOT_NAME)
-            ?: config('services.discord.username', 'Relay Studio'));
+        $cached = Cache::get(self::CACHE_KEY_BOT_NAME);
+        if (! blank($cached)) {
+            return (string) $cached;
+        }
+
+        $db = Setting::get(self::CACHE_KEY_BOT_NAME);
+        if (! blank($db)) {
+            Cache::forever(self::CACHE_KEY_BOT_NAME, (string) $db);
+
+            return (string) $db;
+        }
+
+        return (string) config('services.discord.username', 'Relay Studio');
     }
 
     public static function getAvatarUrl(): ?string
     {
-        return Cache::get(self::CACHE_KEY_AVATAR_URL)
-            ?: config('services.discord.avatar_url');
+        $cached = Cache::get(self::CACHE_KEY_AVATAR_URL);
+        if (! blank($cached)) {
+            return (string) $cached;
+        }
+
+        $db = Setting::get(self::CACHE_KEY_AVATAR_URL);
+        if (! blank($db)) {
+            Cache::forever(self::CACHE_KEY_AVATAR_URL, (string) $db);
+
+            return (string) $db;
+        }
+
+        return config('services.discord.avatar_url');
     }
 
     /** @return array<string, bool> */
@@ -176,6 +232,13 @@ final class DiscordNotificationService
             return array_merge($defaults, $cached);
         }
 
+        $db = Setting::get(self::CACHE_KEY_EVENTS);
+        if (is_array($db)) {
+            Cache::forever(self::CACHE_KEY_EVENTS, $db);
+
+            return array_merge($defaults, $db);
+        }
+
         return $defaults;
     }
 
@@ -187,29 +250,63 @@ final class DiscordNotificationService
     public static function updateSettings(array $settings): void
     {
         if (array_key_exists('enabled', $settings)) {
-            Cache::forever(self::CACHE_KEY_ENABLED, (bool) $settings['enabled']);
+            $enabled = (bool) $settings['enabled'];
+            Cache::forever(self::CACHE_KEY_ENABLED, $enabled);
+            Setting::set(self::CACHE_KEY_ENABLED, $enabled);
         }
 
+        $urls = null;
         if (array_key_exists('webhook_urls', $settings)) {
-            $parsed = self::parseUrls($settings['webhook_urls']);
-            Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $parsed);
-            Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $parsed[0] ?? '');
+            $urls = self::parseUrls($settings['webhook_urls']);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $urls);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $urls[0] ?? '');
+            Setting::set(self::CACHE_KEY_WEBHOOK_URLS, $urls);
+            Setting::set(self::CACHE_KEY_WEBHOOK_URL, $urls[0] ?? '');
         } elseif (array_key_exists('webhook_url', $settings)) {
-            $parsed = self::parseUrls($settings['webhook_url']);
-            Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $parsed);
-            Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $parsed[0] ?? '');
+            $urls = self::parseUrls($settings['webhook_url']);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URLS, $urls);
+            Cache::forever(self::CACHE_KEY_WEBHOOK_URL, $urls[0] ?? '');
+            Setting::set(self::CACHE_KEY_WEBHOOK_URLS, $urls);
+            Setting::set(self::CACHE_KEY_WEBHOOK_URL, $urls[0] ?? '');
         }
 
         if (array_key_exists('bot_name', $settings)) {
-            Cache::forever(self::CACHE_KEY_BOT_NAME, (string) ($settings['bot_name'] ?? 'Relay Studio'));
+            $botName = (string) ($settings['bot_name'] ?? 'Relay Studio');
+            Cache::forever(self::CACHE_KEY_BOT_NAME, $botName);
+            Setting::set(self::CACHE_KEY_BOT_NAME, $botName);
         }
 
         if (array_key_exists('avatar_url', $settings)) {
-            Cache::forever(self::CACHE_KEY_AVATAR_URL, (string) ($settings['avatar_url'] ?? ''));
+            $avatar = (string) ($settings['avatar_url'] ?? '');
+            Cache::forever(self::CACHE_KEY_AVATAR_URL, $avatar);
+            Setting::set(self::CACHE_KEY_AVATAR_URL, $avatar);
         }
 
         if (array_key_exists('events', $settings) && is_array($settings['events'])) {
             Cache::forever(self::CACHE_KEY_EVENTS, $settings['events']);
+            Setting::set(self::CACHE_KEY_EVENTS, $settings['events']);
+        }
+
+        // Synchronize with database webhooks table for permanent multi-source redundancy
+        if ($urls !== null) {
+            $active = self::isEnabled();
+            $events = self::getSubscribedEvents();
+
+            Webhook::query()
+                ->where('name', 'discord')
+                ->whereNotIn('url', $urls)
+                ->update(['is_active' => false]);
+
+            foreach ($urls as $url) {
+                Webhook::query()->updateOrCreate(
+                    ['url' => $url],
+                    [
+                        'name' => 'discord',
+                        'is_active' => $active,
+                        'events' => $events,
+                    ]
+                );
+            }
         }
     }
 

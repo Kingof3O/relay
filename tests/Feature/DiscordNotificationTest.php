@@ -60,7 +60,7 @@ final class DiscordNotificationTest extends TestCase
             $data = $request->data();
 
             return str_contains($request->url(), 'discord.com/api/webhooks')
-                && $data['username'] === 'Relay Test Bot'
+                && ($data['username'] ?? null) === 'Relay Test Bot'
                 && isset($data['embeds'][0])
                 && str_contains($data['embeds'][0]['title'], 'Test Discord Alert Ticket');
         });
@@ -268,5 +268,41 @@ final class DiscordNotificationTest extends TestCase
             ->assertJsonPath('discord.configured', true)
             ->assertJsonCount(2, 'discord.webhook_urls')
             ->assertJsonCount(2, 'discord.masked_webhook_urls');
+    }
+
+    public function test_discord_settings_survive_cache_clear(): void
+    {
+        $urls = [
+            'https://discord.com/api/webhooks/persistent-one/token1111111111111111',
+            'https://discord.com/api/webhooks/persistent-two/token2222222222222222',
+        ];
+
+        DiscordNotificationService::updateSettings([
+            'enabled' => true,
+            'webhook_urls' => $urls,
+            'bot_name' => 'Permanent Bot',
+        ]);
+
+        // Completely flush the application cache (simulating php artisan optimize:clear or cache:clear on deploy)
+        \Illuminate\Support\Facades\Cache::flush();
+
+        // Verify settings and URLs are permanently retained from database
+        $status = DiscordNotificationService::getStatus();
+        $this->assertTrue($status['enabled']);
+        $this->assertTrue($status['configured']);
+        $this->assertSame('Permanent Bot', $status['bot_name']);
+        $this->assertEquals($urls, $status['webhook_urls']);
+
+        // Verify webhooks table is also populated
+        $this->assertDatabaseHas('webhooks', [
+            'name' => 'discord',
+            'url' => $urls[0],
+            'is_active' => true,
+        ]);
+        $this->assertDatabaseHas('webhooks', [
+            'name' => 'discord',
+            'url' => $urls[1],
+            'is_active' => true,
+        ]);
     }
 }

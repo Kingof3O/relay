@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Mail\WorkRequestNotificationMail;
 use App\Models\Area;
 use App\Models\IntegrationDeliveryLog;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\WorkRequest;
 use Illuminate\Support\Facades\Cache;
@@ -31,12 +32,31 @@ final class EmailNotificationService
             return (string) $cached;
         }
 
+        $db = Setting::get(self::CACHE_KEY_SENDER_NAME);
+        if (! blank($db)) {
+            Cache::forever(self::CACHE_KEY_SENDER_NAME, (string) $db);
+
+            return (string) $db;
+        }
+
         return 'Relay Studio';
     }
 
     public static function getAccentColor(): string
     {
-        return (string) (Cache::get(self::CACHE_KEY_ACCENT_COLOR) ?: '#8B5CF6');
+        $cached = Cache::get(self::CACHE_KEY_ACCENT_COLOR);
+        if (! blank($cached)) {
+            return (string) $cached;
+        }
+
+        $db = Setting::get(self::CACHE_KEY_ACCENT_COLOR);
+        if (! blank($db)) {
+            Cache::forever(self::CACHE_KEY_ACCENT_COLOR, (string) $db);
+
+            return (string) $db;
+        }
+
+        return '#8B5CF6';
     }
 
     public static function getLogoUrl(): string
@@ -46,13 +66,31 @@ final class EmailNotificationService
             return (string) $cached;
         }
 
+        $db = Setting::get(self::CACHE_KEY_LOGO_URL);
+        if (! blank($db)) {
+            Cache::forever(self::CACHE_KEY_LOGO_URL, (string) $db);
+
+            return (string) $db;
+        }
+
         return url('/img/logo.png');
     }
 
     public static function getFooterNote(): string
     {
-        return (string) (Cache::get(self::CACHE_KEY_FOOTER_NOTE)
-            ?: 'Relay Studio · Enterprise Engineering & Dispatch Automation');
+        $cached = Cache::get(self::CACHE_KEY_FOOTER_NOTE);
+        if (! blank($cached)) {
+            return (string) $cached;
+        }
+
+        $db = Setting::get(self::CACHE_KEY_FOOTER_NOTE);
+        if (! blank($db)) {
+            Cache::forever(self::CACHE_KEY_FOOTER_NOTE, (string) $db);
+
+            return (string) $db;
+        }
+
+        return 'Relay Studio · Enterprise Engineering & Dispatch Automation';
     }
 
     /** @return array<string, bool> */
@@ -71,6 +109,13 @@ final class EmailNotificationService
             return array_merge($defaults, $cached);
         }
 
+        $db = Setting::get(self::CACHE_KEY_EVENTS);
+        if (is_array($db)) {
+            Cache::forever(self::CACHE_KEY_EVENTS, $db);
+
+            return array_merge($defaults, $db);
+        }
+
         return $defaults;
     }
 
@@ -82,23 +127,32 @@ final class EmailNotificationService
     public static function updateSettings(array $settings): void
     {
         if (array_key_exists('sender_name', $settings)) {
-            Cache::forever(self::CACHE_KEY_SENDER_NAME, (string) ($settings['sender_name'] ?? 'Relay Studio'));
+            $sender = (string) ($settings['sender_name'] ?? 'Relay Studio');
+            Cache::forever(self::CACHE_KEY_SENDER_NAME, $sender);
+            Setting::set(self::CACHE_KEY_SENDER_NAME, $sender);
         }
 
         if (array_key_exists('accent_color', $settings)) {
-            Cache::forever(self::CACHE_KEY_ACCENT_COLOR, (string) ($settings['accent_color'] ?? '#8B5CF6'));
+            $accent = (string) ($settings['accent_color'] ?? '#8B5CF6');
+            Cache::forever(self::CACHE_KEY_ACCENT_COLOR, $accent);
+            Setting::set(self::CACHE_KEY_ACCENT_COLOR, $accent);
         }
 
         if (array_key_exists('logo_url', $settings)) {
-            Cache::forever(self::CACHE_KEY_LOGO_URL, (string) ($settings['logo_url'] ?? ''));
+            $logo = (string) ($settings['logo_url'] ?? '');
+            Cache::forever(self::CACHE_KEY_LOGO_URL, $logo);
+            Setting::set(self::CACHE_KEY_LOGO_URL, $logo);
         }
 
         if (array_key_exists('footer_note', $settings)) {
-            Cache::forever(self::CACHE_KEY_FOOTER_NOTE, (string) ($settings['footer_note'] ?? ''));
+            $footer = (string) ($settings['footer_note'] ?? '');
+            Cache::forever(self::CACHE_KEY_FOOTER_NOTE, $footer);
+            Setting::set(self::CACHE_KEY_FOOTER_NOTE, $footer);
         }
 
         if (array_key_exists('events', $settings) && is_array($settings['events'])) {
             Cache::forever(self::CACHE_KEY_EVENTS, $settings['events']);
+            Setting::set(self::CACHE_KEY_EVENTS, $settings['events']);
         }
     }
 
