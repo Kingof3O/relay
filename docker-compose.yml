@@ -27,6 +27,17 @@ services:
       CACHE_STORE: redis
       QUEUE_CONNECTION: redis
       SESSION_DRIVER: redis
+      BROADCAST_CONNECTION: reverb
+      REVERB_APP_ID: "${REVERB_APP_ID:-relay-studio}"
+      REVERB_APP_KEY: "${REVERB_APP_KEY:-relay-key}"
+      REVERB_APP_SECRET: "${REVERB_APP_SECRET:-relay-secret}"
+      REVERB_HOST: "0.0.0.0"
+      REVERB_PORT: "8080"
+      REVERB_SCHEME: "${REVERB_SCHEME:-http}"
+      VITE_REVERB_APP_KEY: "${REVERB_APP_KEY:-relay-key}"
+      VITE_REVERB_HOST: "${VITE_REVERB_HOST:-localhost}"
+      VITE_REVERB_PORT: "${VITE_REVERB_PORT:-8080}"
+      VITE_REVERB_SCHEME: "${VITE_REVERB_SCHEME:-http}"
       MAIL_MAILER: smtp
       MAIL_HOST: mailpit
       MAIL_PORT: 1025

@@ -53,5 +53,5 @@ if [ "$APP_ENV" = "production" ]; then
     php /var/www/html/artisan view:cache || true
 fi
 
-echo "==> Starting Supervisord (Nginx + PHP-FPM + Queue Worker + Scheduler)..."
+echo "==> Starting Supervisord (Nginx + PHP-FPM + Queue Worker + Scheduler + Reverb)..."
 exec /usr/bin/supervisord -n -c /etc/supervisor/conf.d/supervisord.conf
