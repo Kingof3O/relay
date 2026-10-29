@@ -70,11 +70,20 @@ Personal Access Token created successfully for @hussien (Hussien):
 Add this token as RELAY_API_TOKEN in your MCP client configuration.
 ```
 
-### Option B: Via Web UI
-1. Navigate to **Profile > Personal Access Tokens** (`/profile/tokens`).
-2. Click **Create Token**.
-3. Name the token (e.g., `cursor-mcp-agent`) and select appropriate ability scopes (`requests:read`, `requests:write`, or `*`).
-4. Copy the generated token string.
+### Option B: Via Dedicated AI Agents & MCP Hub (`/agents`)
+1. In the sidebar, navigate to **Agents & MCP** (`/agents`).
+2. Click **Create Agent Token** (top right) or **New Token** (on the *Active Agents & Tokens* tab).
+3. Enter a label (e.g., `Cursor Assistant`, `Claude Desktop`) and select permitted capabilities (`requests:read`, `requests:write`, `*`).
+4. Click **Generate Token**.
+5. The plaintext token appears immediately inside the modal with a one-click **Copy Token** button.
+6. The token is also automatically injected into the ready-to-paste JSON configuration snippets for Cursor, Claude Desktop, Antigravity, and Windsurf on the **Setup & Configuration** tab.
+
+> [!NOTE]
+> For security, Relay Studio cryptographically hashes all personal access tokens using SHA-256 upon generation. Plaintext secrets cannot be recovered after leaving the screen. If a token is lost, revoke it and generate a new one.
+
+### Option C: Via User Profile (`/profile`)
+1. Navigate to **Profile > Personal Access Tokens**.
+2. Click **Generate New Token**, configure scopes, and copy the secret.
 
 ---
 

@@ -11,7 +11,7 @@
   <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-4.x-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" /></a>
   <a href="https://modelcontextprotocol.io/"><img src="https://img.shields.io/badge/Model_Context_Protocol-1st_Party_MCP-8B5CF6?style=for-the-badge&logo=anthropic&logoColor=white" alt="MCP Ready" /></a>
   <a href="https://www.docker.com/"><img src="https://img.shields.io/badge/Docker-Production_Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white" alt="Docker" /></a>
-  <a href="#-verified-technical-benchmarks"><img src="https://img.shields.io/badge/Tests-251_Passing-10B981?style=for-the-badge&logo=pest&logoColor=white" alt="Tests" /></a>
+  <a href="#-verified-technical-benchmarks"><img src="https://img.shields.io/badge/Tests-264_Passing-10B981?style=for-the-badge&logo=pest&logoColor=white" alt="Tests" /></a>
 </p>
 
 <p align="center">
@@ -110,12 +110,19 @@ After installation completes, navigate to:
 * **TipTap Markdown Editor:** Rich editing with syntax highlighting, bullet/task lists, quotes, and inline image previews.
 * **User Mentions & Instant Notifications:** In-app activity bell, chronological discussion logs, and email notifications.
 
-### 5. Media Pipeline & Secure Storage
+### 5. Multi-Channel Webhook & Notification Engine (`/integrations`)
+* **Multi-Webhook Discord Broadcast:** Broadcast workspace events to multiple Discord channels or servers in parallel via asynchronous queue workers.
+* **Granular Event Subscriptions:** Independent notification triggers for ticket creation, assignments, Kanban movement across columns (`new` → `ready` → `doing` → `review` → `done`), roadblocks/blockers, and `@mentions`.
+* **Rich Embeds & Deep Links:** Dark-mode Discord embeds with dynamic priority colors, project tags, assignee avatars, and direct links to tickets.
+* **Database-Backed Settings:** Settings architecture stored in the database guarantees webhook URLs and notification preferences survive cache clears and container restarts.
+* **Branded Transactional HTML Emails:** Live email sandbox with customizable branding, accent colors, and dark-mode templates.
+
+### 6. Media Pipeline & Secure Storage
 * **Drag-and-Drop File Uploads:** Upload screenshots, design mockups, and logs directly onto tickets and comments.
 * **WebP Pipeline:** Automatic image optimization and thumbnail creation for high-performance previews.
 * **Storage Driver Compatibility:** Local NVMe disk or AWS S3 / MinIO / Cloudflare R2 object storage.
 
-### 6. Enterprise Security & Governance
+### 7. Enterprise Security & Governance
 * **Multi-Tenancy & Workspace Scoping:** Strict workspace boundary enforcement across all queries, search indices, and API controllers.
 * **Role-Based Access Control (RBAC):** Five distinct workspace roles: `Owner`, `Admin`, `Developer`, `Designer`, and `Member`.
 * **Two-Factor Authentication (2FA):** Time-based One-Time Passwords (TOTP via Google Authenticator, 1Password) with emergency recovery codes.
@@ -171,8 +178,15 @@ The agent calls `relay_get_daily_briefing` and provides:
 | **`relay_get_active_cycle`** | Retrieves active sprint velocity and burndown progress |
 | **`relay_list_projects`** | Lists all workspace projects and areas |
 
+### 🖥️ Dedicated AI Agents & MCP Hub (`/agents`)
+Relay Studio features a native web control center for managing autonomous AI coding assistants:
+* **Interactive Client Configs:** 1-click ready-to-paste JSON snippets for **Cursor**, **Claude Desktop**, **Antigravity**, and **Windsurf**.
+* **Instant In-Modal Token Reveal:** Create scoped personal access tokens with instant plaintext secret reveal, 1-click clipboard copying, and persistent cross-tab callouts.
+* **SHA-256 Cryptographic Hashing:** Full compliance with modern credential standards — tokens are hashed on creation and cannot be compromised from server dumps.
+* **Live Agent Activity Stream:** Real-time visibility into all tool invocations, status transitions, and progress notes posted by autonomous bots.
+
 ### Quick Cursor / Claude Setup
-Generate a Personal Access Token (`php artisan relay:token <username> "agent-mcp"`), build the server (`cd mcp-server && npm run build`), and add to your client config (`~/.cursor/mcp.json` or `claude_desktop_config.json`):
+Generate a Personal Access Token via UI (`/agents`) or Artisan (`php artisan relay:token <username> "agent-mcp"`), build the server (`cd mcp-server && npm run build`), and add to your client config (`~/.cursor/mcp.json` or `claude_desktop_config.json`):
 
 ```json
 {
@@ -200,27 +214,47 @@ For complete setup guides, client walkthroughs, and security hardening, see the 
     <tr>
       <td width="50%">
         <img src="docs/assets/kanban-board.png" alt="Kanban Board View" />
-        <p align="center"><em>High-velocity Kanban board with optimistic status movement &amp; story points</em></p>
+        <p align="center"><em>High-velocity Kanban board with optimistic status movement, story points &amp; blockers</em></p>
+      </td>
+      <td width="50%">
+        <img src="docs/assets/mcp-agent-hub.png" alt="AI Agents &amp; MCP Hub" />
+        <p align="center"><em>AI Agents &amp; MCP Hub with 1-click client snippets &amp; live activity stream</em></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="50%">
+        <img src="docs/assets/mcp-token-modal.png" alt="In-Modal Token Reveal" />
+        <p align="center"><em>Instant in-modal token creation with SHA-256 security hashing &amp; 1-click copy</em></p>
       </td>
       <td width="50%">
         <img src="docs/assets/command-palette.png" alt="Command Palette" />
-        <p align="center"><em>Global ⌘K command launcher and sub-second instant search</em></p>
+        <p align="center"><em>Global ⌘K command launcher and sub-second fuzzy instant search</em></p>
       </td>
     </tr>
     <tr>
       <td width="50%">
         <img src="docs/assets/issue-detail.png" alt="Issue Detail View" />
-        <p align="center"><em>Deep issue view with TipTap discussion, subtasks &amp; dependencies</em></p>
+        <p align="center"><em>Deep issue view with markdown scope, subtasks progress tracking &amp; dependency relations</em></p>
       </td>
       <td width="50%">
         <img src="docs/assets/cycle-analytics.png" alt="Cycle Analytics" />
-        <p align="center"><em>Sprint cycle burndown, velocity breakdown &amp; story point distribution</em></p>
+        <p align="center"><em>Sprint cycle burndown velocity, rolling trajectory &amp; story point delivery breakdown</em></p>
+      </td>
+    </tr>
+    <tr>
+      <td width="50%">
+        <img src="docs/assets/discord-integrations.png" alt="Discord Multi-Webhook Integrations" />
+        <p align="center"><em>Multi-webhook Discord notification broadcast system with rich embeds &amp; event triggers</em></p>
+      </td>
+      <td width="50%">
+        <img src="docs/assets/dashboard-overview.png" alt="Executive KPI Dashboard" />
+        <p align="center"><em>Command Center overview with live delivery pipelines, project workload &amp; sprint health</em></p>
       </td>
     </tr>
     <tr>
       <td colspan="2" width="100%">
         <img src="docs/assets/roadmap-timeline.png" alt="Roadmap Timeline" />
-        <p align="center"><em>Quarterly roadmap timeline tracking milestones and project delivery</em></p>
+        <p align="center"><em>Quarterly roadmap timeline tracking milestones, engineering areas &amp; project horizons</em></p>
       </td>
     </tr>
   </table>
@@ -286,7 +320,7 @@ flowchart TD
 
 Relay Studio enforces strict static analysis, strict TypeScript typing, and automated regression testing before every release:
 
-* ✅ **Automated Tests:** **251 passing tests** with 1,256 assertions (`php artisan test`).
+* ✅ **Automated Tests:** **264 passing tests** with 1,443 assertions (`php artisan test`).
 * ✅ **Static Analysis:** **0 errors at Level Max** across 135 files (`./vendor/bin/phpstan analyse`).
 * ✅ **TypeScript Compilation:** **0 type errors** in strict mode (`npx tsc --noEmit`).
 * ✅ **Code Formatting:** 100% compliant with Laravel Pint PSR-12 styling standards.
@@ -308,7 +342,7 @@ Relay Studio is distributed as a commercial, source-available product. Every pur
 | Tier | Price | Instances | Team Seats | Features Included |
 | :--- | :---: | :---: | :---: | :--- |
 | **Solo** | **$149** (One-time) | 1 Production | 1 User | Complete Source Code, First-Party MCP Server, 1 Year of Updates |
-| **Team** | **$299** (One-time) | 1 Production + Dev | **Unlimited** | Everything in Solo + Unlimited Seats, Real-Time Reverb WebSockets, Discord/Slack Webhooks, Automated Sprint Rollover |
+| **Team** | **$299** (One-time) | 1 Production + Dev | **Unlimited** | Everything in Solo + Unlimited Seats, Real-Time Reverb WebSockets, Multi-Channel Discord & Email Webhooks, Automated Sprint Rollover |
 | **Agency** | **$599** (One-time) | **Up to 5 Production** | **Unlimited** | Everything in Team + 5 Client/Production Deployments, White-Label Custom Branding, Priority Technical Support |
 
 Read the full [Commercial License Terms & Usage Agreement](docs/licensing.md).
@@ -325,6 +359,7 @@ Explore our comprehensive technical guides in `docs/`:
 * 💾 **[Backup & Disaster Recovery](docs/backup-restore.md):** Automated backup retention (`RELAY_BACKUP_SCHEDULE`), S3 off-site sync, and running `relay:restore`.
 * 🤖 **[MCP Integration Guide](docs/mcp.md):** Definitive guide with copyable configs for Cursor, Claude Desktop, Antigravity, and Windsurf.
 * 🔒 **[MCP Security & Scoping](docs/mcp-security.md):** Token permission scoping, rate-limiting, and network security for AI agents.
+* 🔔 **[Integrations & Notifications](docs/integrations.md):** Multi-webhook Discord broadcast setup, event subscriptions, and transactional email.
 * ⚡ **[Laravel Reverb WebSockets](docs/reverb.md):** WebSocket setup, Supervisord daemon management, and Nginx proxying.
 * 🩺 **[Troubleshooting & Diagnostics](docs/troubleshooting.md):** Diagnosing issues using `php artisan relay:doctor` and log analysis.
 * 📜 **[Commercial Licensing](docs/licensing.md):** License terms, usage rights, and redistribution boundaries.
